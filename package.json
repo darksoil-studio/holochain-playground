@@ -1,0 +1,16 @@
+{
+  "name": "@holochain-playground/dev",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "start": "concurrently -k \"npm run build:watch -w @holochain-playground/simulator\" \"npm start -w @holochain-playground/elements\"",
+    "start:golden-layout": "concurrently -k \"npm run build:watch -w @holochain-playground/simulator\" \"npm run build:watch -w @holochain-playground/elements\" \"npm start -w @holochain-playground/golden-layout\"",
+    "test": "npm t -w @holochain-playground/simulator",
+    "build": "npm run build -w @holochain-playground/simulator -w @holochain-playground/elements"
+  },
+  "devDependencies": {
+    "concurrently": "^6.4.0"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "name": "@holochain-playground/simulator",
+  "version": "0.0.1",
+  "description": "",
+  "author": "guillem.cordoba@gmail.com",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "scripts": {
+    "build": "rimraf dist && rollup -c rollup.config.js",
+    "build:watch": "rollup -c -w",
+    "lint": "eslint --ext .ts,.html . --ignore-path .gitignore && prettier \"**/*.ts\" --check --ignore-path .gitignore",
+    "format": "eslint --ext .ts,.html . --fix --ignore-path .gitignore && prettier \"**/*.ts\" --write --ignore-path .gitignore",
+    "test": "npm run build && wtr --coverage",
+    "test:watch": "concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wtr --watch\""
+  },
+  "dependencies": {
+    "@holochain-open-dev/core-types": "file:~/projects/holochain/open-dev/core-types",
+    "@holochain/conductor-api": "github:holochain/holochain-conductor-api#dump-full-state",
+    "@msgpack/msgpack": "^2.7.1",
+    "blakejs": "^1.1.0",
+    "js-base64": "^3.7.2",
+    "lodash-es": "^4.17.20",
+    "unique-names-generator": "^4.4.0"
+  },
+  "devDependencies": {
+    "@esm-bundle/chai": "^4.1.5",
+    "@open-wc/eslint-config": "^4.2.0",
+    "@open-wc/testing": "^2.0.0",
+    "@rollup/plugin-commonjs": "^17.0.0",
+    "@rollup/plugin-node-resolve": "^11.1.0",
+    "@rollup/plugin-typescript": "^8.1.0",
+    "@types/lodash-es": "^4.17.4",
+    "@typescript-eslint/eslint-plugin": "^4.15.0",
+    "@typescript-eslint/parser": "^4.15.0",
+    "@web/dev-server": "^0.1.7",
+    "@web/dev-server-rollup": "^0.3.2",
+    "@web/test-runner": "^0.12.15",
+    "@web/test-runner-playwright": "^0.8.4",
+    "concurrently": "^5.3.0",
+    "deepmerge": "^4.2.2",
+    "eslint": "^7.20.0",
+    "eslint-config-prettier": "^7.2.0",
+    "gh-pages": "^3.1.0",
+    "husky": "^1.0.0",
+    "lint-staged": "^10.0.0",
+    "prettier": "^2.0.4",
+    "rimraf": "^2.6.3",
+    "rollup": "^2.3.4",
+    "tslib": "^2.0.3",
+    "typescript": "^4.1.3"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "arrowParens": "avoid"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ]
+  }
+}

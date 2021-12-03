@@ -1,0 +1,272 @@
+{
+  "version": "experimental",
+  "tags": [
+    {
+      "name": "json-viewer",
+      "path": "./dist/index.js",
+      "description": "Custom Element that shows a JavaScript object's properties as syntax-highlighted JSON.\n\nThe element will respect `prefers-color-scheme` by default, but if you use the\nCSS Custom Properties listed below, you should customize both light and dark themes.\n\n❤️ Proudly uses [open-wc](https://open-wc.org) tools and recommendations.",
+      "attributes": [
+        {
+          "name": "object",
+          "description": "JavaScript Object to display\nSetting this property will override `<script type=\"application/json\">` children",
+          "type": "string|object"
+        },
+        {
+          "name": "allowlist",
+          "description": "User-defined allowlist of top-level keys for the object.\nOptional for plain objects,\nRequired when setting `object` to a non-serializable object (e.g. an HTMLElement)\nProperty is an Array of strings\nAttribute is a comma-separated string",
+          "type": "string[]"
+        }
+      ],
+      "properties": [
+        {
+          "name": "object",
+          "attribute": "object",
+          "description": "JavaScript Object to display\nSetting this property will override `<script type=\"application/json\">` children",
+          "type": "string|object"
+        },
+        {
+          "name": "allowlist",
+          "attribute": "allowlist",
+          "description": "User-defined allowlist of top-level keys for the object.\nOptional for plain objects,\nRequired when setting `object` to a non-serializable object (e.g. an HTMLElement)\nProperty is an Array of strings\nAttribute is a comma-separated string",
+          "type": "string[]"
+        },
+        {
+          "name": "error",
+          "description": "JSON.parse error",
+          "type": "Error"
+        },
+        {
+          "name": "floatingLabelFoundation",
+          "type": "MDCFloatingLabelFoundation | undefined"
+        },
+        {
+          "name": "lineRippleFoundation",
+          "type": "MDCLineRippleFoundation | undefined"
+        }
+      ],
+      "events": [
+        {
+          "name": "json-parse-error",
+          "description": "when JSON parse fails"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "JSON scripts or JSON strings appended as text nodes will be parsed and displayed"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--json-viewer-color",
+          "description": "Color for generic text. Light white, Dark #212121"
+        },
+        {
+          "name": "--json-viewer-background",
+          "description": "Color for generic text. Light #212121, Dark white"
+        },
+        {
+          "name": "--json-viewer-key-color",
+          "description": "Color for keys. Light #f76707, Dark #ff922b"
+        },
+        {
+          "name": "--json-viewer-boolean-color",
+          "description": "Color for booleans. Light #f76707, Dark #22b8cf"
+        },
+        {
+          "name": "--json-viewer-number-color",
+          "description": "Color for numbers. Light #0ca678, Dark #51cf66"
+        },
+        {
+          "name": "--json-viewer-null-color",
+          "description": "Color for nulls. Light #e03131, Dark #ff6b6b"
+        },
+        {
+          "name": "--json-viewer-string-color",
+          "description": "Color for strings. Light #0c8599, Dark #22b8cf"
+        }
+      ]
+    },
+    {
+      "name": "dht-cells",
+      "path": "./src/elements/dht-cells/index.ts",
+      "attributes": [
+        {
+          "name": "animationDelay",
+          "type": "number",
+          "default": "2000"
+        },
+        {
+          "name": "workflowsToDisplay",
+          "type": "WorkflowType[]",
+          "default": "[\"Call Zome Function\",\"App Validation\"]"
+        },
+        {
+          "name": "networkRequestsToDisplay",
+          "type": "NetworkRequestType[]",
+          "default": "[\"Publish Request\",\"Call Remote\"]"
+        },
+        {
+          "name": "hide-time-controller",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "step-by-step",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "activeDna",
+          "description": "Context variables",
+          "type": "string | undefined"
+        },
+        {
+          "name": "activeAgentPubKey",
+          "type": "string | undefined"
+        },
+        {
+          "name": "activeHash",
+          "type": "string | undefined"
+        },
+        {
+          "name": "conductors",
+          "type": "Conductor[]",
+          "default": "[]"
+        },
+        {
+          "name": "conductorsUrls",
+          "type": "string[] | undefined"
+        }
+      ],
+      "properties": [
+        {
+          "name": "animationDelay",
+          "attribute": "animationDelay",
+          "type": "number",
+          "default": "2000"
+        },
+        {
+          "name": "workflowsToDisplay",
+          "attribute": "workflowsToDisplay",
+          "type": "WorkflowType[]",
+          "default": "[\"Call Zome Function\",\"App Validation\"]"
+        },
+        {
+          "name": "networkRequestsToDisplay",
+          "attribute": "networkRequestsToDisplay",
+          "type": "NetworkRequestType[]",
+          "default": "[\"Publish Request\",\"Call Remote\"]"
+        },
+        {
+          "name": "hideTimeController",
+          "attribute": "hide-time-controller",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "stepByStep",
+          "attribute": "step-by-step",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "activeDna",
+          "attribute": "activeDna",
+          "description": "Context variables",
+          "type": "string | undefined"
+        },
+        {
+          "name": "activeAgentPubKey",
+          "attribute": "activeAgentPubKey",
+          "type": "string | undefined"
+        },
+        {
+          "name": "activeHash",
+          "attribute": "activeHash",
+          "type": "string | undefined"
+        },
+        {
+          "name": "conductors",
+          "attribute": "conductors",
+          "type": "Conductor[]",
+          "default": "[]"
+        },
+        {
+          "name": "conductorsUrls",
+          "attribute": "conductorsUrls",
+          "type": "string[] | undefined"
+        }
+      ],
+      "events": [
+        {
+          "name": "show-message"
+        },
+        {
+          "name": "update-context"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-container",
+      "path": "./stories/dht-graph.stories.js",
+      "properties": [
+        {
+          "name": "numberOfSimulatedConductors",
+          "type": "number"
+        },
+        {
+          "name": "simulatedDnaTemplate",
+          "type": "SimulatedDnaTemplate"
+        },
+        {
+          "name": "activeDna",
+          "description": "Context variables",
+          "type": "string | undefined"
+        },
+        {
+          "name": "activeAgentPubKey",
+          "type": "string | undefined"
+        },
+        {
+          "name": "activeHash",
+          "type": "string | undefined"
+        },
+        {
+          "name": "conductors",
+          "type": "Conductor[]"
+        },
+        {
+          "name": "conductorsUrls",
+          "type": "string[] | undefined"
+        }
+      ]
+    },
+    {
+      "name": "dht-cells",
+      "path": "./stories/dht-graph.stories.js",
+      "properties": [
+        {
+          "name": "animationDelay",
+          "type": "number"
+        },
+        {
+          "name": "workflowsToDisplay",
+          "type": "WorkflowType[]"
+        },
+        {
+          "name": "networkRequestsToDisplay",
+          "type": "NetworkRequestType[]"
+        },
+        {
+          "name": "hideTimeController",
+          "type": "boolean"
+        },
+        {
+          "name": "stepByStep",
+          "type": "boolean"
+        }
+      ]
+    }
+  ]
+}

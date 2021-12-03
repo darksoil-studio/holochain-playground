@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        background: #fafafa;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        display: flex;
+      }
+    </style>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <simulated-playground-context id="context" style="flex: 1">
+      <entry-contents style="flex: 1"></entry-contents>
+      <dht-entries style="flex: 1"></dht-entries>
+      <source-chain style="flex: 1"></source-chain>
+    </simulated-playground-context>
+
+    <script type="module">
+      import { html, render } from 'lit';
+      import { get } from 'svelte/store';
+      import {
+        SourceChain,
+        DhtCells,
+        ConnectedPlaygroundContext,
+        SimulatedPlaygroundContext,
+        EntryContents,
+        DhtEntries,
+        ConductorAdmin,
+        CallZomeFns,
+
+        /*
+        HolochainPlaygroundGoldenLayout,
+        HolochainPlaygroundGoldenLayoutMenu,
+        SelectActiveDna,
+        RunSteps,
+        HappsManager,
+        conductorStore */
+      } from '../dist';
+      import {
+        GetStrategy,
+        WorkflowType,
+        NetworkRequestType,
+      } from '@holochain-playground/simulator'; /*
+      import {
+        GoldenLayoutRoot,
+        GoldenLayoutRow,
+        GoldenLayoutColumn,
+        GoldenLayoutComponent,
+      } from '@scoped-elements/golden-layout'; */
+
+      customElements.define('dht-cells', DhtCells);
+      customElements.define(
+        'simulated-playground-context',
+        SimulatedPlaygroundContext
+      );
+      customElements.define(
+        'connected-playground-context',
+        ConnectedPlaygroundContext
+      ); /*
+      customElements.define(
+        'holochain-playground-golden-layout-menu',
+        HolochainPlaygroundGoldenLayoutMenu
+      );
+      customElements.define('golden-layout-root', GoldenLayoutRoot);
+      customElements.define('golden-layout-row', GoldenLayoutRow);
+      customElements.define('golden-layout-column', GoldenLayoutColumn);
+      customElements.define('golden-layout-component', GoldenLayoutComponent);
+      customElements.define('run-steps', RunSteps);
+      customElements.define('select-active-dna', SelectActiveDna);
+      customElements.define('zome-fns-results', ZomeFnsResults);
+      customElements.define('happs-manager', HappsManager);
+      */
+      customElements.define('call-zome-fns', CallZomeFns);
+      customElements.define('conductor-admin', ConductorAdmin);
+      customElements.define('dht-entries', DhtEntries);
+      customElements.define('source-chain', SourceChain);
+      customElements.define('entry-contents', EntryContents);
+
+      const context = document.getElementById('context');
+
+      context.urls = ['ws://localhost:38023'];
+      context.addEventListener('playground-ready', (e) => {
+        const store = e.detail.store;
+        store.conductors.subscribe((c) => {
+          c &&
+            c[0].cells.subscribe((cells) => {
+              if (cells.entries().length > 0) {
+                store.activeAgentPubKey.set(cells.entries()[0][0][1]);
+                store.activeDna.set(cells.entries()[0][0][0]);
+              }
+            });
+        });
+      });
+    </script>
+  </body>
+</html>

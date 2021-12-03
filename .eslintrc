@@ -1,0 +1,14 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "extends": ["@open-wc/eslint-config", "eslint-config-prettier"],
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error"],
+    "import/no-unresolved": "off",
+    "import/extensions": "off",
+    "no-bitwise": "off",
+    "no-shadow": "off",
+    "class-methods-use-this": "off"
+  }
+}
