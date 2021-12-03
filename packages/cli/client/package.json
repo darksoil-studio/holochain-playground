@@ -1,0 +1,98 @@
+{
+  "name": "@holochain-playground/cli-client",
+  "description": "Webcomponent devcamp-8 following open-wc recommendations",
+  "license": "MIT",
+  "author": "guillem.cordoba@gmail.com",
+  "version": "0.0.1",
+  "scripts": {
+    "lint": "eslint --ext .ts,.html . --ignore-path .gitignore && prettier \"**/*.ts\" --check --ignore-path .gitignore",
+    "format": "eslint --ext .ts,.html . --fix --ignore-path .gitignore && prettier \"**/*.ts\" --write --ignore-path .gitignore",
+    "build": "rimraf dist && tsc && rollup -c rollup.config.js && npm run analyze -- --exclude dist",
+    "build:watch": "tsc --incremental && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"rollup -w -c\"",
+    "start:build": "web-dev-server --root-dir dist --app-index index.html --open",
+    "analyze": "cem analyze --litelement",
+    "start": "tsc && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wds\"",
+    "gh-pages": "npm run build && gh-pages -d ./dist -b gh-pages"
+  },
+  "dependencies": {
+    "@holochain-open-dev/core-types": "^0.1.1",
+    "@holochain-playground/elements": "0.0.1",
+    "@holochain-playground/golden-layout": "0.0.1",
+    "@holochain-playground/simulator": "0.0.1",
+    "@open-wc/scoped-elements": "^2.0.0-next.6",
+    "@scoped-elements/golden-layout": "^0.0.2",
+    "@scoped-elements/material-web": "^0.0.16",
+    "golden-layout": "^2.4.0",
+    "lit": "^2.0.2",
+    "lodash-es": "^4.17.21",
+    "socket.io-client": "^4.4.0",
+    "svelte": "^3.44.2"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.15.8",
+    "@custom-elements-manifest/analyzer": "^0.4.17",
+    "@open-wc/building-rollup": "^1.10.0",
+    "@open-wc/eslint-config": "^4.3.0",
+    "@rollup/plugin-babel": "^5.3.0",
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-node-resolve": "^13.0.5",
+    "@types/lodash-es": "^4.17.5",
+    "@typescript-eslint/eslint-plugin": "^4.33.0",
+    "@typescript-eslint/parser": "^4.33.0",
+    "@web/dev-server": "^0.1.25",
+    "@web/rollup-plugin-html": "^1.10.1",
+    "@web/rollup-plugin-import-meta-assets": "^1.0.7",
+    "babel-plugin-template-html-minifier": "^4.1.0",
+    "concurrently": "^5.3.0",
+    "deepmerge": "^4.2.2",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "gh-pages": "^3.2.3",
+    "husky": "^4.3.8",
+    "lint-staged": "^10.5.4",
+    "prettier": "^2.4.1",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.58.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-workbox": "^6.2.0",
+    "tslib": "^2.3.1",
+    "typescript": "^4.4.3"
+  },
+  "eslintConfig": {
+    "parser": "@typescript-eslint/parser",
+    "extends": [
+      "@open-wc",
+      "prettier"
+    ],
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "rules": {
+      "no-use-before-define": "off",
+      "no-await-in-loop": "off",
+      "camelcase": "off",
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "error"
+      ],
+      "import/no-unresolved": "off",
+      "import/extensions": "off"
+    }
+  },
+  "prettier": {
+    "singleQuote": true,
+    "arrowParens": "avoid"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
+  "customElements": "custom-elements.json"
+}

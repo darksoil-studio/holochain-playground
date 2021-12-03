@@ -158,47 +158,50 @@ export class DhtEntries extends PlaygroundElement {
         ></mwc-checkbox
       ></mwc-formfield>
 
-      <span class="vertical-divider"></span>
+      ${this.store instanceof SimulatedPlaygroundStore
+        ? html`
+            <span class="vertical-divider"></span>
 
-      <div class="row" style="position: relative;">
-        <mwc-button
-          label="Visible entries"
-          style="--mdc-theme-primary: rgba(0,0,0,0.7); margin-left: 16px;"
-          icon="arrow_drop_down"
-          id="visible-entries-button"
-          trailingIcon
-          @click=${() => this._visibleEntriesMenu.show()}
-        ></mwc-button>
-        <mwc-menu
-          corner="BOTTOM_RIGHT"
-          multi
-          activatable
-          id="visible-entries-menu"
-          .anchor=${this._visibleEntriesButton}
-          @selected=${(e) => {
-            const includedEntryTypes = [...e.detail.index];
-            this.excludedEntryTypes = this._entryTypes.filter(
-              (type, index) => !includedEntryTypes.includes(index)
-            );
-          }}
-        >
-          ${this.store instanceof SimulatedPlaygroundStore &&
-          this._entryTypes.map(
-            (type) => html`
-              <mwc-list-item
-                graphic="icon"
-                .selected=${!this.excludedEntryTypes.includes(type)}
-                .activated=${!this.excludedEntryTypes.includes(type)}
+            <div class="row" style="position: relative;">
+              <mwc-button
+                label="Visible entries"
+                style="--mdc-theme-primary: rgba(0,0,0,0.7); margin-left: 16px;"
+                icon="arrow_drop_down"
+                id="visible-entries-button"
+                trailingIcon
+                @click=${() => this._visibleEntriesMenu.show()}
+              ></mwc-button>
+              <mwc-menu
+                corner="BOTTOM_RIGHT"
+                multi
+                activatable
+                id="visible-entries-menu"
+                .anchor=${this._visibleEntriesButton}
+                @selected=${(e) => {
+                  const includedEntryTypes = [...e.detail.index];
+                  this.excludedEntryTypes = this._entryTypes.filter(
+                    (type, index) => !includedEntryTypes.includes(index)
+                  );
+                }}
               >
-                ${!this.excludedEntryTypes.includes(type)
-                  ? html` <mwc-icon slot="graphic">check</mwc-icon> `
-                  : html``}
-                ${type}
-              </mwc-list-item>
-            `
-          )}
-        </mwc-menu>
-      </div>
+                ${this._entryTypes.map(
+                  (type) => html`
+                    <mwc-list-item
+                      graphic="icon"
+                      .selected=${!this.excludedEntryTypes.includes(type)}
+                      .activated=${!this.excludedEntryTypes.includes(type)}
+                    >
+                      ${!this.excludedEntryTypes.includes(type)
+                        ? html` <mwc-icon slot="graphic">check</mwc-icon> `
+                        : html``}
+                      ${type}
+                    </mwc-list-item>
+                  `
+                )}
+              </mwc-menu>
+            </div>
+          `
+        : html``}
     </div>`;
   }
 

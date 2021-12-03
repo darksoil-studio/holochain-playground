@@ -1,0 +1,261 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "out-tsc/holochain-playground.d.ts",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "socket",
+          "type": {
+            "text": "Socket"
+          }
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "HolochainPlayground",
+          "members": [
+            {
+              "kind": "field",
+              "name": "drawer",
+              "type": {
+                "text": "Drawer"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "urls",
+              "type": {
+                "text": "string[]"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "ready",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "scopedElements",
+              "type": {
+                "text": "{\n        'connected-playground-golden-layout': typeof ConnectedPlaygroundGoldenLayout;\n        'golden-layout-root': typeof GoldenLayoutRoot;\n        'mwc-top-app-bar': typeof TopAppBar;\n        'mwc-drawer': typeof Drawer;\n        'mwc-icon-button': typeof IconButton;\n        'mwc-circular-progress': typeof CircularProgress;\n        'golden-layout-row': typeof GoldenLayoutRow;\n        'golden-layout-stack': typeof GoldenLayoutStack;\n        'golden-layout-component': typeof GoldenLayoutComponent;\n        'golden-layout-column': typeof GoldenLayoutColumn;\n        'connected-playground-golden-layout-menu': typeof ConnectedPlaygroundGoldenLayoutMenu;\n    }"
+              },
+              "static": true
+            }
+          ],
+          "superclass": {
+            "name": "HolochainPlayground_base",
+            "module": "out-tsc/holochain-playground.d.ts"
+          },
+          "tagName": "holochain-playground",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "socket",
+          "declaration": {
+            "name": "socket",
+            "module": "out-tsc/holochain-playground.d.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "HolochainPlayground",
+          "declaration": {
+            "name": "HolochainPlayground",
+            "module": "out-tsc/holochain-playground.d.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "out-tsc/holochain-playground.js",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "socket"
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "HolochainPlayground",
+          "members": [
+            {
+              "kind": "field",
+              "name": "scopedElements",
+              "static": true
+            },
+            {
+              "kind": "field",
+              "name": "urls",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "ready",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            }
+          ],
+          "mixins": [
+            {
+              "name": "ScopedElementsMixin",
+              "package": "@open-wc/scoped-elements"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "holochain-playground",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "socket",
+          "declaration": {
+            "name": "socket",
+            "module": "out-tsc/holochain-playground.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "HolochainPlayground",
+          "declaration": {
+            "name": "HolochainPlayground",
+            "module": "out-tsc/holochain-playground.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "out-tsc/index.d.ts",
+      "declarations": [],
+      "exports": []
+    },
+    {
+      "kind": "javascript-module",
+      "path": "out-tsc/index.js",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "holochain-playground",
+          "declaration": {
+            "name": "HolochainPlayground",
+            "module": "/out-tsc/holochain-playground"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/holochain-playground.ts",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "socket",
+          "type": {
+            "text": "Socket"
+          }
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "HolochainPlayground",
+          "members": [
+            {
+              "kind": "field",
+              "name": "drawer",
+              "type": {
+                "text": "Drawer"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "urls",
+              "type": {
+                "text": "string[]"
+              },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "ready",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "scopedElements",
+              "static": true
+            }
+          ],
+          "mixins": [
+            {
+              "name": "ScopedElementsMixin",
+              "package": "@open-wc/scoped-elements"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "holochain-playground",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "socket",
+          "declaration": {
+            "name": "socket",
+            "module": "src/holochain-playground.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "HolochainPlayground",
+          "declaration": {
+            "name": "HolochainPlayground",
+            "module": "src/holochain-playground.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "holochain-playground",
+          "declaration": {
+            "name": "HolochainPlayground",
+            "module": "/src/holochain-playground"
+          }
+        }
+      ]
+    }
+  ]
+}

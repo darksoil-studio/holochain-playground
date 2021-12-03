@@ -2,13 +2,15 @@
   "name": "@holochain-playground/dev",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "packages/cli/*"
   ],
   "scripts": {
     "start": "concurrently -k \"npm run build:watch -w @holochain-playground/simulator\" \"npm start -w @holochain-playground/elements\"",
     "start:golden-layout": "concurrently -k \"npm run build:watch -w @holochain-playground/simulator\" \"npm run build:watch -w @holochain-playground/elements\" \"npm start -w @holochain-playground/golden-layout\"",
+    "start:cli": "npm run build -w @holochain-playground/cli-client && concurrently -k \"npm run build:watch -w @holochain-playground/cli-client\" \"npm start -w @holochain-playground/cli\"",
     "test": "npm t -w @holochain-playground/simulator",
-    "build": "npm run build -w @holochain-playground/simulator -w @holochain-playground/elements"
+    "build": "npm run build -w @holochain-playground/simulator -w @holochain-playground/elements -w @holochain-playground/golden-layout"
   },
   "devDependencies": {
     "concurrently": "^6.4.0"
