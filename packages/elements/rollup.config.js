@@ -19,6 +19,7 @@ export default {
     'lit/directives/style-map.js',
     'lit/directives/class-map.js',
     /lodash-es/,
+    /lodash/,
   ],
   plugins: [
     replace({

@@ -8,6 +8,6 @@ export type HashEntryFn = (args: { content: any }) => Promise<EntryHash>;
 export const hash_entry: HostFn<HashEntryFn> =
   (worskpace: HostFnWorkspace): HashEntryFn =>
   async (args): Promise<EntryHash> => {
-    const entry: Entry = { entry_type: 'App', content: args.content };
+    const entry: Entry = { entry_type: 'App', entry: args.content };
     return hashEntry(entry);
   };

@@ -29,7 +29,7 @@ export const create_cap_grant: HostFn<CreateCapGrantFn> =
       throw new Error('Tried to assign a capability to an invalid agent');
     }
 
-    const entry: Entry = { entry_type: 'CapGrant', content: cap_grant };
+    const entry: Entry = { entry_type: 'CapGrant', entry: cap_grant };
 
     return common_create(worskpace, entry, 'CapGrant');
   };

@@ -1,52 +1,36 @@
-# @holochain/create
+# @holochain-playground/cli
 
-RAD tool to rapidly scaffold Holochain applications.
+Small CLI utility to run the [Holochain Playground](https://holochain-playground.github.io/) connected to a real Holochain conductor.
 
-To execute this, run:
+This is useful as an introspection tool, to understand what's really going on in your Holochain node.
 
-```bash
-npm init @holochain
-```
-
-If you want to make sure you are running the latest version, run this before running `npm init @holochain`:
+## Running directly pointing to an existing URL
 
 ```bash
-npx clear-npx-cache
+npx @holochain-playground/cli ws://localhost:8888 ws://localhost:8889
 ```
 
-You will get this output and a browser tab to guide you through scaffolding your first Holochain app.
+## Setting up in an NPM hApp development environment that uses `hc sandbox`
 
+If you run this CLI from the same folder from which you run your hc sandboxes, it will automatically connect with the conductors that are live.
+
+1. Install the CLI with:
+
+```bash
+npm install -D @holochain-playground/cli
 ```
 
-                                        .
-                                     ::.:-.-:.-.    .    .
-                                ....-:=-==++***+--==.: :.:..
-                           .    ::--=**%@%@@@@@@@@@@%*-. =:=
-                            . .-.:*%@@@@@@%####%@@@@@@%%+=:...
-                        . :-::*#@@@@#=:            .-*@@@@%*= :: .
-                        -.:-*#@@@@+.                   =@@@@#+-:.  .
-                      .:-::+%@@@#.                       *@@@#-=:. .
-                       :..=*@@@#                          *@@%#-.-:
-                      ..:.#+@@@.                           @@%#-:*:
-                      .::-**@@%                            #@@*=--..
-                     ..:.:=#@@%                            #@@%+:....
-                      :. :+*@@@:                          .@@@%=::..
-                     ::- -+*@@@%.                         #@@@=-::::.
-                      . -=:=*%@@%:                      :%@@%+:.:.
-                       .- .-.+%%@@*:                  :*@@%**.: .-
-                           .:=++%@@@%*-:.        ..-+%@@@#*=+-:  .
-                          .. ...-.-#@@@@@@@@@@@@@@@@@@#+--.::.:
-                              . .::-==-#%%@@@@@@%@@#+--:. ::
-                              . .:-  .:+:=+++***++--:.:-:...
-                                  :  .::-:..::.::: .. ..
-                                        .: . :. .:      .
+2. Add a `playground` script in your `package.json`:
 
-  _   _       _            _           _        ______  ___ ______   _____           _
- | | | |     | |          | |         (_)       | ___ \/ _ \|  _  \ |_   _|         | |
- | |_| | ___ | | ___   ___| |__   __ _ _ _ __   | |_/ / /_\ \ | | |   | | ___   ___ | |___
- |  _  |/ _ \| |/ _ \ / __| '_ \ / _` | | '_ \  |    /|  _  | | | |   | |/ _ \ / _ \| / __|
- | | | | (_) | | (_) | (__| | | | (_| | | | | | | |\ \| | | | |/ /    | | (_) | (_) | \__ \
- \_| |_/\___/|_|\___/ \___|_| |_|\__,_|_|_| |_| \_| \_\_| |_/___/     \_/\___/ \___/|_|___/
-
-
+```json
+{
+    ...
+    "scripts": {
+        "start": "concurrently \"npm run start:hc\" \"npm run playground\"",
+        "start:hc": "hc s generate --run=8888",
+        "playground": "holochain-playground"
+    }
+}
 ```
+
+Now, when you run `npm start`, it will bring up the playground connected to the conductor.

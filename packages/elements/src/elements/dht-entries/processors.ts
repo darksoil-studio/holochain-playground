@@ -6,11 +6,11 @@ import {
   HoloHashMap,
   SimulatedDna,
 } from '@holochain-playground/simulator';
-import { decode } from '@msgpack/msgpack';
+import uniq from 'lodash-es/uniq';
 
 import { shortenStrRec } from '../utils/hash';
 import { isEntryDeleted, summarizeDht } from './dht';
-import uniq from 'lodash-es/uniq';
+import { getEntryContents } from '../utils/utils';
 
 export function allEntries(
   dhtShards: CellMap<DhtOp[]>,
@@ -81,16 +81,21 @@ export function allEntries(
       }
 
       if (showEntryContents) {
-        const entryContent = simulatedDna ? entry.content : decode(entry);
-        const content = shortenStrRec(entryContent);
+        let entryContent = entry.entry;
+
+        if (!simulatedDna) {
+          entryContent = getEntryContents(entry).entry;
+        }
+        const content = shortenStrRec(entryContent, true);
         if (typeof content === 'object') {
-          const properties = Object.keys(entry.content);
+          const properties = Object.keys(entryContent);
           for (const property of properties) {
             const propertyParentId = `${strEntryHash}:${property}`;
             nodes.push({
               data: {
                 id: propertyParentId,
                 parent: strEntryHash,
+                label: '',
               },
             });
             nodes.push({
@@ -285,7 +290,7 @@ export function allEntries(
       nodes.push({
         data: {
           id: serializeHash(dep),
-          label: 'Not Held'
+          label: 'Not Held',
         },
         classes: ['not-held'],
       });

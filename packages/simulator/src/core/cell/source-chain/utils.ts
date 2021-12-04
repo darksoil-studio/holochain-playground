@@ -131,7 +131,7 @@ export function valid_cap_grant(
     .values()
     .map(
       headerHash =>
-        (state.CAS.get(headerHash.header.content.entry_hash) as Entry).content
+        (state.CAS.get(headerHash.header.content.entry_hash) as Entry).entry
     );
 
   return !!aliveCapGrants.find(capGrant =>

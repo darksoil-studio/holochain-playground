@@ -22,14 +22,14 @@
     "@msgpack/msgpack": "^2.7.1",
     "@open-wc/scoped-elements": "^2.0.1",
     "@power-elements/json-viewer": "^2.1.1",
-    "@scoped-elements/cytoscape": "file:~/projects/scoped-elements/cytoscape",
+    "@scoped-elements/cytoscape": "0.0.3",
     "@scoped-elements/material-web": "^0.0.16",
     "@vaadin/grid": "^22.0.0-beta1",
     "cytoscape": "^3.17.0",
+    "js-base64": "^3.7.2",
     "lit": "^2.0.2",
     "lit-svelte-stores": "^0.1.4",
     "lodash-es": "^4.17.21",
-    "resize-observer-polyfill": "^1.5.1",
     "svelte": "^3.44.1"
   },
   "devDependencies": {

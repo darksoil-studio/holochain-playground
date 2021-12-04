@@ -10,7 +10,7 @@ export function pollingStore<T>(
     const interval = setInterval(async () => {
       value = await pollingRequest(value);
       set(value);
-    }, 500);
+    }, 1000);
 
     return function stop() {
       clearInterval(interval);

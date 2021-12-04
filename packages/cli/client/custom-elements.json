@@ -41,6 +41,22 @@
             },
             {
               "kind": "field",
+              "name": "store",
+              "type": {
+                "text": "ConnectedPlaygroundStore"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getUrls",
+              "return": {
+                "type": {
+                  "text": "string"
+                }
+              }
+            },
+            {
+              "kind": "field",
               "name": "scopedElements",
               "type": {
                 "text": "{\n        'connected-playground-golden-layout': typeof ConnectedPlaygroundGoldenLayout;\n        'golden-layout-root': typeof GoldenLayoutRoot;\n        'mwc-top-app-bar': typeof TopAppBar;\n        'mwc-drawer': typeof Drawer;\n        'mwc-icon-button': typeof IconButton;\n        'mwc-circular-progress': typeof CircularProgress;\n        'golden-layout-row': typeof GoldenLayoutRow;\n        'golden-layout-stack': typeof GoldenLayoutStack;\n        'golden-layout-component': typeof GoldenLayoutComponent;\n        'golden-layout-column': typeof GoldenLayoutColumn;\n        'connected-playground-golden-layout-menu': typeof ConnectedPlaygroundGoldenLayoutMenu;\n    }"
@@ -88,6 +104,14 @@
           "description": "",
           "name": "HolochainPlayground",
           "members": [
+            {
+              "kind": "field",
+              "name": "store"
+            },
+            {
+              "kind": "method",
+              "name": "getUrls"
+            },
             {
               "kind": "field",
               "name": "scopedElements",
@@ -202,6 +226,17 @@
                 "text": "boolean"
               },
               "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "store",
+              "type": {
+                "text": "ConnectedPlaygroundStore"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getUrls"
             },
             {
               "kind": "field",

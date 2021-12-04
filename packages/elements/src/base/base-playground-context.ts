@@ -13,9 +13,11 @@ import { ContextProvider } from '@lit-labs/context';
 import { PlaygroundContext, playgroundContext } from './context';
 import { PlaygroundStore } from '../store/playground-store';
 import { PlaygroundMode } from '../store/mode';
+import { sharedStyles } from '../elements/utils/shared-styles';
 
 export abstract class BasePlaygroundContext<
-  T extends PlaygroundMode
+  T extends PlaygroundMode,
+  S extends PlaygroundStore<T>
 > extends ScopedElementsMixin(LitElement) {
   @query('#snackbar')
   private snackbar: Snackbar;
@@ -24,11 +26,10 @@ export abstract class BasePlaygroundContext<
   private message: string | undefined;
 
   /** Context variables */
-  abstract buildStore(): Promise<PlaygroundStore<T>>;
+  abstract buildStore(): Promise<S>;
 
-  _playgroundStoreContext: ContextProvider<
-    PlaygroundContext<T>
-  > = new ContextProvider(this, playgroundContext, undefined);
+  _playgroundStoreContext: ContextProvider<PlaygroundContext<T, S>> =
+    new ContextProvider(this, playgroundContext, undefined);
 
   async firstUpdated() {
     const store = await this.buildStore();
@@ -46,6 +47,8 @@ export abstract class BasePlaygroundContext<
     this.addEventListener('show-message', (e: CustomEvent) => {
       this.showMessage(e.detail.message);
     });
+
+    this.requestUpdate();
   }
 
   showMessage(message: string) {
@@ -64,9 +67,7 @@ export abstract class BasePlaygroundContext<
   render() {
     return html`
       ${this.renderSnackbar()}
-      ${this._playgroundStoreContext.value
-        ? html` <mwc-circular-progress></mwc-circular-progress>`
-        : html` <slot></slot> `}
+      <slot></slot>
     `;
   }
 
@@ -80,6 +81,7 @@ export abstract class BasePlaygroundContext<
 
   static get styles() {
     return [
+      sharedStyles,
       css`
         :host {
           display: contents;

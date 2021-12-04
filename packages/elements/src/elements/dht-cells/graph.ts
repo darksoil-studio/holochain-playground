@@ -1,3 +1,5 @@
+import { commonGraphStyles } from '../utils/common-graph-styles';
+
 export const layoutConfig = {
   startAngle: (4 / 2) * Math.PI,
   ready: (e) => {
@@ -6,6 +8,7 @@ export const layoutConfig = {
 };
 
 export const graphStyles = `
+  ${commonGraphStyles}
   node {
     background-color: lightblue;
     border-color: black;
@@ -49,6 +52,13 @@ export const graphStyles = `
     height: 10px;
     background-color: grey;
     border-width: 0px;
+  }
+
+
+  .not-held {
+    height: 10px;
+    width: 10px;
+    background-color: white;
   }
 `;
 

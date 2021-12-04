@@ -145,7 +145,7 @@ export function check_new_entry_header(header: Header): void {
 export const MAX_ENTRY_SIZE = 16 * 1000 * 1000;
 
 export function check_entry_size(entry: Entry): void {
-  if (JSON.stringify(entry.content).length > MAX_ENTRY_SIZE)
+  if (JSON.stringify(entry.entry).length > MAX_ENTRY_SIZE)
     throw new Error(`Entry size exceeds the MAX_ENTRY_SIZE`);
 }
 

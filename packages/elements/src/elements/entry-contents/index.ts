@@ -7,6 +7,7 @@ import { sharedStyles } from '../utils/shared-styles';
 import { shortenStrRec } from '../utils/hash';
 import { CopyableHash } from '../helpers/copyable-hash';
 import { PlaygroundElement } from '../../base/playground-element';
+import { getEntryContents } from '../utils/utils';
 
 /**
  * @element entry-contents
@@ -40,7 +41,9 @@ export class EntryContents extends PlaygroundElement {
                     <div class="flex-scrollable-container">
                       <div class="flex-scrollable-y" style="height: 100%;">
                         <json-viewer
-                          .object=${shortenStrRec(this._activeContent.value)}
+                          .object=${shortenStrRec(
+                            getEntryContents(this._activeContent.value)
+                          )}
                           class="fill"
                         ></json-viewer>
                       </div>

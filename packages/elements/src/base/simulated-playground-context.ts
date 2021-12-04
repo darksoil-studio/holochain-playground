@@ -4,7 +4,10 @@ import { BasePlaygroundContext } from './base-playground-context';
 import { SimulatedPlaygroundStore } from '../store/simulated-playground-store';
 import { PlaygroundMode } from '../store/mode';
 
-export class SimulatedPlaygroundContext extends BasePlaygroundContext<PlaygroundMode.Simulated> {
+export class SimulatedPlaygroundContext extends BasePlaygroundContext<
+  PlaygroundMode.Simulated,
+  SimulatedPlaygroundStore
+> {
   @property({ type: Number })
   numberOfSimulatedConductors: number = 10;
 

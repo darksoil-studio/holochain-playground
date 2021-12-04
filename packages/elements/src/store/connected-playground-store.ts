@@ -18,7 +18,12 @@ import {
 } from '@holochain/conductor-api';
 import merge from 'lodash-es/merge';
 import isEqual from 'lodash-es/isEqual';
-import { CellMap, HoloHashMap } from '@holochain-playground/simulator';
+import {
+  AGENT_PREFIX,
+  CellMap,
+  HoloHashMap,
+} from '@holochain-playground/simulator';
+import { Base64 } from 'js-base64';
 
 import { CellStore, ConductorStore, PlaygroundStore } from './playground-store';
 import { pollingStore } from './polling-store';
@@ -69,7 +74,15 @@ export class ConnectedCellStore extends CellStore<PlaygroundMode.Connected> {
         : []
     );
     this.peers = derived(this._state, (s) =>
-      s ? s.peer_dump.peers.map((peerDump) => peerDump.kitsune_agent) : []
+      s
+        ? s.peer_dump.peers.map(
+            (peerDump) =>
+              new Uint8Array([
+                ...Base64.toUint8Array(AGENT_PREFIX),
+                ...peerDump.kitsune_agent,
+              ])
+          )
+        : []
     );
     this.dhtShard = derived(this._state, (s) =>
       s ? s.integration_dump.integrated : []
@@ -117,18 +130,48 @@ export class ConnectedConductorStore extends ConductorStore<PlaygroundMode.Conne
 }
 
 export class ConnectedPlaygroundStore extends PlaygroundStore<PlaygroundMode.Connected> {
-  conductors: Readable<ConnectedConductorStore[]>;
+  conductors: Writable<ConnectedConductorStore[]>;
 
-  private constructor(adminWss: AdminWebsocket[]) {
+  private constructor() {
     super();
-    this.conductors = readable(
-      adminWss.map((ws) => new ConnectedConductorStore(ws))
-    );
+    this.conductors = writable([]);
   }
 
   static async create(urls: string[]): Promise<ConnectedPlaygroundStore> {
-    const promises = urls.map((url) => AdminWebsocket.connect(url));
-    const adminWss = await Promise.all(promises);
-    return new ConnectedPlaygroundStore(adminWss);
+    const store = new ConnectedPlaygroundStore();
+    await store.setConductors(urls);
+    return store;
   }
+
+  async setConductors(urls: string[]) {
+    urls = urls.map((u) => normalizeUrl(u));
+
+    const currentUrls = get(this.conductors).map((c) => c.url);
+
+    const toAdd = urls.filter((u) => !currentUrls.includes(u));
+    const toRemove = currentUrls.filter((u) => !urls.includes(u));
+
+    const promises = toAdd.map(async (url) => {
+      try {
+        const ws = await AdminWebsocket.connect(url);
+        return ws;
+      } catch (e) {
+        return false;
+      }
+    });
+    const maybeAdminWss = await Promise.all(promises);
+    const adminWss = maybeAdminWss.filter((ws) => !!ws) as AdminWebsocket[];
+
+    if (toAdd.length > 0 || toRemove.length > 0) {
+      this.conductors.update((conductors) => [
+        ...conductors.filter((c) => toRemove.includes(c.url)),
+        ...adminWss.map((ws) => new ConnectedConductorStore(ws)),
+      ]);
+    }
+  }
+}
+
+function normalizeUrl(url: string): string {
+  if (url.endsWith('/')) return url;
+  return `${url}/`;
 }

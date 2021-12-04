@@ -23,8 +23,8 @@ import { hash, HashType } from '../../processors/hash';
 import { SimulatedDna } from '../../dnas/simulated-dna';
 
 export function hashEntry(entry: Entry): EntryHash {
-  if (entry.entry_type === 'Agent') return entry.content;
-  return hash(entry.content, HashType.ENTRY);
+  if (entry.entry_type === 'Agent') return entry.entry;
+  return hash(entry.entry, HashType.ENTRY);
 }
 
 export function getAppEntryType(

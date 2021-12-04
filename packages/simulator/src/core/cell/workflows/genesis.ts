@@ -30,7 +30,7 @@ export const genesis =
     );
 
     const entry: Entry = {
-      content: agentId,
+      entry: agentId,
       entry_type: 'Agent',
     };
     const create_agent_pub_key_entry = buildCreate(

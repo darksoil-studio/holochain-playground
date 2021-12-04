@@ -104,7 +104,7 @@ export function areEqual(b1: Uint8Array, b2: Uint8Array): boolean {
 }
 
 export function hashToString(holoHash: HoloHash): string {
-  return new DataView(holoHash.buffer).getBigUint64(0) as any as string;
+  return holoHash.toString();
 }
 
 export function shortest_arc_distance(

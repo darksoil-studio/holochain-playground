@@ -87,14 +87,13 @@ export class ConductorAdmin extends PlaygroundElement {
   }
 
   setupGrid(grid: Grid) {
-    if (!grid) return;
-
     setTimeout(() => {
+      if (!grid) return;
       const dnaColumn = this.shadowRoot.querySelector(
         '#dna-column'
       ) as GridColumn;
       dnaColumn.renderer = (root: any, column, model) => {
-        const cell = (model.item as any) as CellStore<any>;
+        const cell = model.item as any as CellStore<any>;
         root.innerHTML = `<copyable-hash hash="${serializeHash(
           cell.cellId[0]
         )}"></copyable-hash>`;
@@ -104,7 +103,7 @@ export class ConductorAdmin extends PlaygroundElement {
         '#agent-pub-key-column'
       ) as GridColumn;
       agentPubKeyColumn.renderer = (root: any, column, model) => {
-        const cell = (model.item as any) as CellStore<any>;
+        const cell = model.item as any as CellStore<any>;
         root.innerHTML = `<copyable-hash hash="${serializeHash(
           cell.cellId[1]
         )}"></copyable-hash>`;
@@ -114,7 +113,7 @@ export class ConductorAdmin extends PlaygroundElement {
       if (this.isSimulated) {
         grid.rowDetailsRenderer = function (root, grid, model) {
           if (!root.firstElementChild) {
-            const cell = (model.item as any) as CellStore<any>;
+            const cell = model.item as any as CellStore<any>;
 
             if (cell instanceof SimulatedCellStore) {
               root.innerHTML = `
@@ -158,7 +157,7 @@ export class ConductorAdmin extends PlaygroundElement {
         '#select'
       ) as GridColumn;
       selectColumn.renderer = (root: any, column, model) => {
-        const cell = (model.item as any) as CellStore<any>;
+        const cell = model.item as any as CellStore<any>;
 
         const isSelected =
           isEqual(this._activeDna.value, cell.cellId[0]) &&
@@ -167,7 +166,7 @@ export class ConductorAdmin extends PlaygroundElement {
           isSelected ? 'disabled' : ''
         }></mwc-button>`;
         root.firstElementChild.addEventListener('click', (e: any) => {
-          const cell = (model.item as any) as CellStore<any>;
+          const cell = model.item as any as CellStore<any>;
 
           this.store.activeDna.set(cell.cellId[0]);
           this.store.activeAgentPubKey.set(cell.cellId[1]);

@@ -1,17 +1,19 @@
 import { serializeHash } from '@holochain-open-dev/core-types';
 
-export function shortenStrRec(object: any) {
+export function shortenStrRec(object: any, shorten = false) {
   if (object === undefined || object === null) {
     return object;
   } else if (Array.isArray(object)) {
-    return object.map(shortenStrRec);
+    return object.map((o) => shortenStrRec(o, shorten));
   } else if (typeof object === 'object') {
     if (object.buffer && ArrayBuffer.isView(object)) {
-      return serializeHash(object as Uint8Array);
+      const hash = serializeHash(object as Uint8Array);
+
+      return shorten ? `${hash.slice(0, 7)}...` : hash;
     }
     const o = {};
     for (const key of Object.keys(object)) {
-      o[key] = shortenStrRec(object[key]);
+      o[key] = shortenStrRec(object[key], shorten);
     }
     return o;
   }

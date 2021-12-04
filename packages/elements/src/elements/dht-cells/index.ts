@@ -296,12 +296,13 @@ export class DhtCells extends PlaygroundElement {
     if (this._peers.value) {
       if (this.store instanceof SimulatedPlaygroundStore) {
         edges = simulatedNeighbors(
+          this._cellsForActiveDna.value,
           this._peers.value,
           this._farPeers.value,
           this._recognizedBadActors.value
         );
       } else {
-        edges = allPeersEdges(this._peers.value);
+        edges = allPeersEdges(this._cellsForActiveDna.value, this._peers.value);
       }
     }
 
@@ -590,8 +591,8 @@ export class DhtCells extends PlaygroundElement {
       sharedStyles,
       css`
         :host {
-          min-height: 600px;
-          min-width: 600px;
+          min-height: 350px;
+          min-width: 400px;
           display: flex;
         }
 

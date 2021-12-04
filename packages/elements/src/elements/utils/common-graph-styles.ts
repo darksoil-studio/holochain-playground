@@ -60,4 +60,8 @@ export const commonGraphStyles = `
   text-halign: center;        
 }
 
+.not-held {
+  height: 1px;
+  width: 1px;
+}
 `;

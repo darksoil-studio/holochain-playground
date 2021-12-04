@@ -10,9 +10,6 @@ export const colaConfig = {
     e.cy.fit();
     e.cy.center();
   },
-  nodeSpacing: function (node) {
-    return 20;
-  },
   edgeLength: (edge) => {
     return edge.data().headerReference ? 50 : undefined;
   },
@@ -26,6 +23,13 @@ node {
   width: 16px;
   label: data(label);
   height: 16px;
+}
+
+
+.not-held {
+  height: 10px;
+  width: 10px;
+  background-color: white;
 }
 
 .entry {
@@ -57,10 +61,6 @@ node > node {
   opacity: 0.3 !important;
 }
 
-.not-held {
-  height: 1px;
-  width: 1px;
-}
 `;
 
 export const cytoscapeConfig = {

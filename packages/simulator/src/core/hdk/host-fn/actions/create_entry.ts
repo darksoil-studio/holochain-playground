@@ -11,7 +11,7 @@ export type CreateEntryFn = (args: {
 export const create_entry: HostFn<CreateEntryFn> =
   (workspace: HostFnWorkspace, zome_index: number): CreateEntryFn =>
   async (args: { content: any; entry_def_id: string }): Promise<HeaderHash> => {
-    const entry: Entry = { entry_type: 'App', content: args.content };
+    const entry: Entry = { entry_type: 'App', entry: args.content };
 
     const entryDefIndex = workspace.dna.zomes[zome_index].entry_defs.findIndex(
       entry_def => entry_def.id === args.entry_def_id

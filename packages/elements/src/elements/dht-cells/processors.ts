@@ -53,11 +53,12 @@ export function dhtCellsNodes(
 }
 
 export function simulatedNeighbors(
+  cells: CellMap<CellStore<any>>,
   peers: CellMap<AgentPubKey[]>,
   farPeers: CellMap<AgentPubKey[]>,
   badAgents: CellMap<AgentPubKey[]>
 ) {
-  const normalEdges = allPeersEdges(peers);
+  const normalEdges = allPeersEdges(cells, peers);
 
   // Add the far peers
 
@@ -80,10 +81,15 @@ export function simulatedNeighbors(
   return normalEdges;
 }
 
-export function allPeersEdges(cellsNeighbors: CellMap<Array<AgentPubKey>>) {
+export function allPeersEdges(
+  cells: CellMap<CellStore<any>>,
+  cellsNeighbors: CellMap<Array<AgentPubKey>>
+) {
   // Segmented by originAgentPubKey/targetAgentPubKey
   const visited: HoloHashMap<HoloHashMap<boolean>> = new HoloHashMap();
   const edges: Array<any> = [];
+
+  const neighborsNotConnected = new CellMap<boolean>();
 
   for (const [cellId, neighbors] of cellsNeighbors.entries()) {
     const cellAgentPubKey = cellId[1];
@@ -107,10 +113,24 @@ export function allPeersEdges(cellsNeighbors: CellMap<Array<AgentPubKey>>) {
           },
           classes: ['neighbor-edge'],
         });
+
+        if (!cells.has([cellId[0], cellNeighbor])) {
+          neighborsNotConnected.put([cellId[0], cellNeighbor], true);
+        }
       }
 
       visited.get(cellAgentPubKey).put(cellNeighbor, true);
     }
+  }
+
+  for (const [cellId, _] of neighborsNotConnected.entries()) {
+    edges.push({
+      data: {
+        id: serializeHash(cellId[1]),
+        label: `${serializeHash(cellId[1]).slice(0, 7)}... (Not Connected)`,
+      },
+      classes: ['not-held'],
+    });
   }
 
   return edges;

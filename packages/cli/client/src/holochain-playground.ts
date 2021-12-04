@@ -20,7 +20,11 @@ import {
 import { query, state } from 'lit/decorators.js';
 import { get } from 'svelte/store';
 import { io, Socket } from 'socket.io-client';
-import { ConnectedPlaygroundStore } from '@holochain-playground/elements';
+import {
+  ConnectedPlaygroundContext,
+  ConnectedPlaygroundStore,
+} from '@holochain-playground/elements';
+import isEqual from 'lodash-es/isEqual';
 
 export const socket: Socket = io();
 
@@ -34,22 +38,38 @@ export class HolochainPlayground extends ScopedElementsMixin(LitElement) {
   ready = false;
 
   async firstUpdated() {
-    socket.emit(
-      'requesturls',
-      (response: { urls: string[] }) => (this.urls = response.urls)
-    );
+    socket.on('urls-updated', (response: { urls: string[] }) => {
+      if (!isEqual(this.urls, response.urls)) {
+        this.urls = response.urls;
+      }
+    });
   }
 
   render() {
     if (this.urls.length === 0)
       return html`
-        <div style="flex: 1; display: flex; align-items: center; justify-content: center">
+        <div
+          style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center"
+        >
           <mwc-circular-progress indeterminate></mwc-circular-progress>
+          <span style="margin-top: 16px;">Connecting to conductors... </span
+          ><span style="margin-top: 16px; width: 600px;"
+            >If this doesn't work, check that the holochain-playground command
+            is being run in a folder with <b>.hc_live_*</b> files, or with some
+            URLs as arguments, like
+            <b>holochain-playground ws://localhost:8888</b>.</span
+          ><span style="margin-top: 16px; width: 600px;"
+            >See the documentation at
+            <a href="https://www.npmjs.com/package/@holochain-playground/cli"
+              >https://www.npmjs.com/package/@holochain-playground/cli</a
+            >.</span
+          >
         </div>
       `;
 
     return html`
       <connected-playground-golden-layout
+        id="context"
         style="flex: 1;"
         .urls=${this.urls}
         @playground-ready=${e => {
@@ -89,10 +109,20 @@ export class HolochainPlayground extends ScopedElementsMixin(LitElement) {
             <golden-layout-root style="flex: 1; margin-top: 66px;">
               <golden-layout-row>
                 <golden-layout-component
-                  component-type="dht-cells"
+                  component-type="source-chain"
+                  width="30"
                 ></golden-layout-component>
                 <golden-layout-column>
+                  <golden-layout-component
+                    component-type="dht-entries"
+                  ></golden-layout-component>
+
                   <golden-layout-row>
+                    <golden-layout-component
+                      component-type="dht-cells"
+                      height="40"
+                    ></golden-layout-component>
+
                     <golden-layout-stack>
                       <golden-layout-component
                         component-type="entry-contents"
@@ -102,14 +132,6 @@ export class HolochainPlayground extends ScopedElementsMixin(LitElement) {
                       ></golden-layout-component>
                     </golden-layout-stack>
                   </golden-layout-row>
-                  <golden-layout-stack>
-                    <golden-layout-component
-                      component-type="dht-entries"
-                    ></golden-layout-component>
-                    <golden-layout-component
-                      component-type="source-chain"
-                    ></golden-layout-component>
-                  </golden-layout-stack>
                 </golden-layout-column>
               </golden-layout-row>
             </golden-layout-root>

@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import open from 'open';
 import http from 'http';
 import { Server } from 'socket.io';
+import { getUrls } from './urls';
 
 export async function launchApp() {
   dotenv.config();
@@ -41,14 +42,16 @@ export async function launchApp() {
     maxHttpBufferSize: 1e8,
   });
 
-  io.on('connection', (socket) => {
-    socket.on('requesturls', (callback) => callback({ urls: process.argv.slice(2) }));
-  });
-
   console.log('');
   console.log('Welcome to the Holochain Playground!');
   console.log('');
 
   // opens the url in the default browser
   open(URL);
+
+  io.on('connection', (socket) => {
+    setInterval(() => {
+      socket.emit('urls-updated', { urls: getUrls() });
+    }, 1000);
+  });
 }
