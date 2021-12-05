@@ -13,6 +13,8 @@
     "build": "npm run build -w @holochain-playground/simulator -w @holochain-playground/elements -w @holochain-playground/golden-layout -w @holochain-playground/cli-client -w @holochain-playground/cli"
   },
   "devDependencies": {
+    "@holochain-playground/cli-client": "file:packages/cli/client",
+    "@rollup/plugin-typescript": "^8.3.0",
     "concurrently": "^6.4.0"
   }
 }

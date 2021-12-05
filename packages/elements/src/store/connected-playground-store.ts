@@ -15,6 +15,7 @@ import {
   DhtOp,
   AnyDhtHash,
   NewEntryHeader,
+  FullIntegrationStateDump,
 } from '@holochain/conductor-api';
 import merge from 'lodash-es/merge';
 import isEqual from 'lodash-es/isEqual';
@@ -50,9 +51,31 @@ export class ConnectedCellStore extends CellStore<PlaygroundMode.Connected> {
           ? currentState.integration_dump.dht_ops_cursor
           : undefined,
       });
-      const integration_dump = currentState
-        ? merge(currentState.integration_dump, fullState.integration_dump)
-        : fullState.integration_dump;
+      const currentIntegration: FullIntegrationStateDump | undefined =
+        currentState?.integration_dump;
+
+      const integration_dump: FullIntegrationStateDump = {
+        dht_ops_cursor: fullState.integration_dump.dht_ops_cursor,
+        integrated: currentState
+          ? [
+              ...currentIntegration.integrated,
+              ...fullState.integration_dump.integrated,
+            ]
+          : fullState.integration_dump.integrated,
+        validation_limbo: currentState
+          ? [
+              ...currentIntegration.validation_limbo,
+              ...fullState.integration_dump.validation_limbo,
+            ]
+          : fullState.integration_dump.validation_limbo,
+        integration_limbo: currentState
+          ? [
+              ...currentIntegration.integration_limbo,
+              ...fullState.integration_dump.integration_limbo,
+            ]
+          : fullState.integration_dump.integration_limbo,
+      };
+
       return {
         ...fullState,
         integration_dump,

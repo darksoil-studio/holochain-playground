@@ -1,6 +1,7 @@
 import nodeResolve from '@rollup/plugin-node-resolve';
 import babel from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
+import typescript from '@rollup/plugin-typescript';
 import html from '@web/rollup-plugin-html';
 import { importMetaAssets } from '@web/rollup-plugin-import-meta-assets';
 import { terser } from 'rollup-plugin-terser';
@@ -21,6 +22,7 @@ export default {
     html({
       minify: true,
     }),
+    typescript(),
     /** Resolve bare module imports */
     nodeResolve({
       preferBuiltins: false,

@@ -21,7 +21,7 @@ export class EntryContents extends PlaygroundElement {
       <mwc-card style="width: auto; min-height: 200px;" class="fill">
         <div class="column fill" style="padding: 16px;">
           <span class="title row" style="margin-bottom: 8px;">
-            ${this._activeContent.value && this._activeContent.value.header
+            ${this._activeContent.value && this._activeContent.value.type
               ? 'Header'
               : 'Entry'}
             Contents${this._activeDhtHash.value

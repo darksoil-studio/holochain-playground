@@ -61,16 +61,29 @@ export function hash(content: any, type: HashType): HoloHash {
   const fullhash = new Uint8Array([
     ...Base64.toUint8Array(getPrefix(type)),
     ...bytesHash,
+    ...locationBytes(bytesHash),
   ]);
 
   return fullhash;
 }
 
-const hashLocationCache: HoloHashMap<number> = new HoloHashMap();
+const hashLocationCache: HoloHashMap<Uint8Array> = new HoloHashMap();
 
 export function location(bytesHash: HoloHash): number {
-  if (hashLocationCache.has(bytesHash)) return hashLocationCache.get(bytesHash);
+  let bytes;
+  if (hashLocationCache.has(bytesHash)) {
+    bytes = hashLocationCache.get(bytesHash);
+  } else {
+    bytes = locationBytes(bytesHash);
+    hashLocationCache.put(bytesHash, bytes);
+  }
+  const view = new DataView(bytes.buffer, 0);
+  const location = wrap(view.getUint32(0, false));
 
+  return location;
+}
+
+function locationBytes(bytesHash: HoloHash): Uint8Array {
   const hash128: Uint8Array = blake.blake2b(bytesHash, null, 16);
 
   const out = [hash128[0], hash128[1], hash128[2], hash128[3]];
@@ -81,13 +94,7 @@ export function location(bytesHash: HoloHash): number {
     out[2] ^= hash128[i + 2];
     out[3] ^= hash128[i + 3];
   }
-
-  const view = new DataView(new Uint8Array(out).buffer, 0);
-  const location = wrap(view.getUint32(0, false));
-
-  hashLocationCache.put(bytesHash, location);
-
-  return location;
+  return new Uint8Array(out);
 }
 
 // We return the distance as the shortest distance between two hashes in the circle

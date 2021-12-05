@@ -51,7 +51,7 @@ export class SourceChain extends PlaygroundElement {
   }
 
   renderHelp() {
-    return html` <help-button heading="Source-Chain" class="block-help">
+    return html` <help-button heading="Source Chain" class="block-help">
       <span>
         This graph displays the source chain of the selected cell. On the
         top-left sequence, you can see the hash-chain of headers. On the

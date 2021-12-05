@@ -10,7 +10,7 @@ import uniq from 'lodash-es/uniq';
 
 import { shortenStrRec } from '../utils/hash';
 import { isEntryDeleted, summarizeDht } from './dht';
-import { getEntryContents } from '../utils/utils';
+import { getEntryContents, getLinkTagStr } from '../utils/utils';
 
 export function allEntries(
   dhtShards: CellMap<DhtOp[]>,
@@ -21,8 +21,7 @@ export function allEntries(
   excludedEntryTypes: string[]
 ) {
   const summary = summarizeDht(dhtShards, simulatedDna);
-
-  const nodes = [];
+  let nodes = [];
   const edges = [];
 
   const depsNotHeld = new HoloHashMap<boolean>();
@@ -87,41 +86,9 @@ export function allEntries(
           entryContent = getEntryContents(entry).entry;
         }
         const content = shortenStrRec(entryContent, true);
-        if (typeof content === 'object') {
-          const properties = Object.keys(entryContent);
-          for (const property of properties) {
-            const propertyParentId = `${strEntryHash}:${property}`;
-            nodes.push({
-              data: {
-                id: propertyParentId,
-                parent: strEntryHash,
-                label: '',
-              },
-            });
-            nodes.push({
-              data: {
-                id: `${propertyParentId}:key`,
-                label: property,
-                parent: propertyParentId,
-              },
-            });
-            nodes.push({
-              data: {
-                id: `${propertyParentId}:value`,
-                label: content[property],
-                parent: propertyParentId,
-              },
-            });
-          }
-        } else {
-          nodes.push({
-            data: {
-              id: `${strEntryHash}:content`,
-              label: content,
-              parent: strEntryHash,
-            },
-          });
-        }
+
+        const entryContentsNode = getEntryContentsNode(content, strEntryHash);
+        nodes = nodes.concat(entryContentsNode);
       }
     }
   }
@@ -137,7 +104,8 @@ export function allEntries(
             summary.entryTypes.get(link.target_address)
           )
         ) {
-          const tag = JSON.stringify(link.tag);
+          const linkTag = simulatedDna ? link.tag : getLinkTagStr(link.tag);
+          const tag = JSON.stringify(linkTag);
           const target = serializeHash(link.target_address);
 
           edges.push({
@@ -339,4 +307,48 @@ export function getEmbeddedReferences(
     return [].concat(...values);
   }
   return [];
+}
+
+function getEntryContentsNode(content: any, parentId: string): Array<any> {
+  if (typeof content === 'string') {
+    const label = content.length > 20 ? `${content.slice(0, 20)}...` : content;
+    return [
+      {
+        data: {
+          id: `${parentId}:content`,
+          label,
+          parent: parentId,
+        },
+      },
+    ];
+  }
+  if (typeof content !== 'object') {
+    return [
+      {
+        data: {
+          id: `${parentId}:content`,
+          label: `${content}`,
+          parent: parentId,
+        },
+      },
+    ];
+  }
+
+  let nodes = [];
+  const properties = Object.keys(content);
+  for (const property of properties) {
+    const propertyParentId = `${parentId}:${property}`;
+    nodes.push({
+      data: {
+        id: propertyParentId,
+        parent: parentId,
+        label: property,
+      },
+    });
+
+    nodes = nodes.concat(
+      getEntryContentsNode(content[property], propertyParentId)
+    );
+  }
+  return nodes;
 }

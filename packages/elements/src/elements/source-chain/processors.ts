@@ -63,7 +63,7 @@ export function sourceChainNodes(
           newEntryHeader.entry_type
         );
       } else {
-        entryType = 'Entry';
+        entryType = element.entry.entry_type;
       }
 
       nodes.push({

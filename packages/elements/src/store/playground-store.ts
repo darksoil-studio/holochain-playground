@@ -34,7 +34,7 @@ export abstract class CellStore<T extends PlaygroundMode> {
         for (const element of sourceChain) {
           const headerHashed = element.signed_header.header;
           if (isEqual(headerHashed.hash, dhtHash)) {
-            return element.signed_header;
+            return element.signed_header.header.content;
           }
           if (
             (headerHashed.content as NewEntryHeader).entry_hash &&

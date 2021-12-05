@@ -39,9 +39,7 @@ export class HolochainPlayground extends ScopedElementsMixin(LitElement) {
 
   async firstUpdated() {
     socket.on('urls-updated', (response: { urls: string[] }) => {
-      if (!isEqual(this.urls, response.urls)) {
-        this.urls = response.urls;
-      }
+      this.urls = response.urls;
     });
   }
 
