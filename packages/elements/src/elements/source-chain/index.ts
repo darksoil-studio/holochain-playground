@@ -13,6 +13,8 @@ import { HelpButton } from '../helpers/help-button';
 import { PlaygroundElement } from '../../base/playground-element';
 import { graphStyles } from './graph';
 import { CopyableHash } from '../helpers/copyable-hash';
+import isEqual from 'lodash-es/isEqual';
+import { NewEntryHeader } from '@holochain/conductor-api';
 
 /**
  * @element source-chain
@@ -37,8 +39,25 @@ export class SourceChain extends PlaygroundElement {
   }
 
   get selectedNodesIds() {
-    if (!this._activeHash.value) return [];
-    else return [serializeHash(this._activeHash.value)];
+    if (!this._activeHash.value || !this._sourceChain.value) return [];
+    else {
+      const nodesIds = [];
+      for (const element of this._sourceChain.value) {
+        const header = element.signed_header.header;
+        if (isEqual(header.hash, this._activeHash.value)) {
+          return [serializeHash(this._activeHash.value)];
+        }
+
+        const entry_hash = (header.content as NewEntryHeader).entry_hash;
+        if (isEqual(entry_hash, this._activeHash.value)) {
+          nodesIds.push(
+            `${serializeHash(header.hash)}:${serializeHash(entry_hash)}`
+          );
+        }
+      }
+
+      return nodesIds;
+    }
   }
 
   get cytoscapeOptions() {
