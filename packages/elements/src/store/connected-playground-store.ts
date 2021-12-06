@@ -187,7 +187,7 @@ export class ConnectedPlaygroundStore extends PlaygroundStore<PlaygroundMode.Con
 
     if (toAdd.length > 0 || toRemove.length > 0) {
       this.conductors.update((conductors) => [
-        ...conductors.filter((c) => toRemove.includes(c.url)),
+        ...conductors.filter((c) => !toRemove.includes(c.url)),
         ...adminWss.map((ws) => new ConnectedConductorStore(ws)),
       ]);
     }
