@@ -4,11 +4,13 @@ Small CLI utility to run the [Holochain Playground](https://holochain-playground
 
 This is useful as an introspection tool, to understand what's really going on in your Holochain node.
 
-## Running directly pointing to an existing URL
+## Running directly pointing to a running conductor
 
 ```bash
 npx @holochain-playground/cli ws://localhost:8888 ws://localhost:8889
 ```
+
+This URL should point to the Admin interfaces of the conductors.
 
 ## Setting up in an NPM hApp development environment that uses `hc sandbox`
 
