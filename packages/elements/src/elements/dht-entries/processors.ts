@@ -3,7 +3,12 @@ import {
   EntryHashB64,
   serializeHash,
 } from '@holochain-open-dev/core-types';
-import { NewEntryHeader, DhtOp, EntryHash } from '@holochain/conductor-api';
+import {
+  NewEntryHeader,
+  DhtOp,
+  EntryHash,
+  HoloHash,
+} from '@holochain/conductor-api';
 import {
   getAppEntryType,
   CellMap,
@@ -11,11 +16,12 @@ import {
   retype,
   HoloHashMap,
   SimulatedDna,
+  getHashType,
 } from '@holochain-playground/simulator';
 import uniq from 'lodash-es/uniq';
 
 import { shortenStrRec } from '../utils/hash';
-import { isEntryDeleted, summarizeDht } from './dht';
+import { DhtSummary, isEntryDeleted, summarizeDht } from './dht';
 import { getEntryContents, getLinkTagStr } from '../utils/utils';
 
 export function allEntries(
@@ -61,7 +67,8 @@ export function allEntries(
       const header = summary.headers.get(headers[0]);
       if (getAppEntryType((header as NewEntryHeader).entry_type)) {
         const implicitLinks = getEmbeddedReferences(
-          summary.entries,
+          summary,
+          showHeaders,
           getEntryContents(entry)
         );
 
@@ -280,39 +287,65 @@ export function allEntries(
   };
 }
 
+function hasHash(
+  summary: DhtSummary,
+  showHeaders: boolean,
+  hash: HoloHash
+): HoloHash | undefined {
+  if (getHashType(hash) === HashType.HEADER && showHeaders) {
+    return summary.headers.has(hash) ? hash : undefined;
+  } else {
+    let hashToCheck = hash;
+    if (getHashType(hash) === HashType.AGENT) {
+      hashToCheck = retype(hash, HashType.ENTRY);
+    }
+    return summary.entries.has(hashToCheck) ? hashToCheck : undefined;
+  }
+}
+
+function convertToHash(value: any): HoloHash | undefined {
+  if (typeof value === 'string' && value.length === 53) {
+    return deserializeHash(value);
+  } else if (typeof value === 'object' && ArrayBuffer.isView(value)) {
+    return value as HoloHash;
+  }
+}
+
 export function getEmbeddedReferences(
-  allEntries: HoloHashMap<any>,
+  summary: DhtSummary,
+  showHeaders: boolean,
   value: any
 ): Array<{ label: string; target: EntryHashB64 }> {
   if (!value) return [];
-  if (typeof value === 'string' && value.length === 53) {
-    return allEntries.has(retype(deserializeHash(value), HashType.ENTRY))
+
+  const hash = convertToHash(value);
+
+  if (hash) {
+    const presentHash = hasHash(summary, showHeaders, hash);
+    return presentHash
       ? [
           {
             label: undefined,
-            target: serializeHash(
-              retype(deserializeHash(value), HashType.ENTRY)
-            ),
+            target: serializeHash(presentHash),
           },
         ]
       : [];
   }
-  if (
-    Array.isArray(value) &&
-    value.length > 0 &&
-    typeof value[0] === 'string' &&
-    value[0].length === 53
-  ) {
+  if (Array.isArray(value) && value.length > 0 && convertToHash(value[0])) {
     return value
-      .filter((v) => allEntries.has(retype(deserializeHash(v), HashType.ENTRY)))
+      .filter(
+        (v) =>
+          !!convertToHash(v) &&
+          !!hasHash(summary, showHeaders, convertToHash(v))
+      )
       .map((v) => ({
-        target: serializeHash(retype(deserializeHash(v), HashType.ENTRY)),
+        target: serializeHash(hasHash(summary, showHeaders, convertToHash(v))),
         label: undefined,
       }));
   }
   if (typeof value === 'object') {
     const values = Object.entries(value).map(([key, v]) => {
-      const implicitLinks = getEmbeddedReferences(allEntries, v);
+      const implicitLinks = getEmbeddedReferences(summary, showHeaders, v);
       for (const implicitLink of implicitLinks) {
         if (!implicitLink.label) {
           implicitLink.label = key;

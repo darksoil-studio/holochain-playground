@@ -21,6 +21,8 @@ import {
   DeleteLink,
   Delete,
   Update,
+  Entry,
+  AppEntryType,
 } from '@holochain/conductor-api';
 
 function appendToArray<T>(map: HoloHashMap<T[]>, key: HoloHash, value: T) {
@@ -104,7 +106,7 @@ export function summarizeDht(
                 simulatedDna,
                 (header as NewEntryHeader).entry_type
               )
-            : entry.entry_type;
+            : getConnectedEntryType(header as NewEntryHeader, entry);
           entryTypes.put(entry_hash, entryType);
         } else if (dhtOpType === DhtOpType.RegisterAddLink) {
           const base_address = (header as CreateLink).base_address;
@@ -155,4 +157,20 @@ export function isEntryDeleted(
   const aliveHeaders = headers.filter((h) => !summary.headerDeletes.has(h));
 
   return aliveHeaders.length === 0;
+}
+
+function getConnectedEntryType(header: NewEntryHeader, entry: Entry): string {
+  if (
+    entry.entry_type !== 'App' &&
+    (entry.entry_type as any) !== 'CounterSign'
+  ) {
+    return entry.entry_type;
+  }
+  const appEntryType = (
+    header.entry_type as {
+      App: AppEntryType;
+    }
+  ).App;
+
+  return `ZomeId=${appEntryType.zome_id},EntryId=${appEntryType.id}`;
 }

@@ -14,6 +14,7 @@ import blake from 'blakejs';
 import { encode } from '@msgpack/msgpack';
 import { Base64 } from 'js-base64';
 import { HoloHashMap } from './holo-hash-map';
+import isEqual from 'lodash-es/isEqual';
 
 export enum HashType {
   AGENT,
@@ -141,10 +142,9 @@ export function wrap(uint: number): number {
 export function getHashType(hash: HoloHash): HashType {
   const hashExt = serializeHash(hash).slice(1, 5);
 
-  if (hashExt === AGENT_PREFIX) return HashType.AGENT;
-  if (hashExt === DNA_PREFIX) return HashType.DNA;
-  if (hashExt === DHTOP_PREFIX) return HashType.DHTOP;
-  if (hashExt === HEADER_PREFIX) return HashType.HEADER;
-  if (hashExt === ENTRY_PREFIX) return HashType.ENTRY;
-  throw new Error('Could not get hash type');
+  if (isEqual(hashExt, AGENT_PREFIX)) return HashType.AGENT;
+  if (isEqual(hashExt, DNA_PREFIX)) return HashType.DNA;
+  if (isEqual(hashExt, DHTOP_PREFIX)) return HashType.DHTOP;
+  if (isEqual(hashExt, HEADER_PREFIX)) return HashType.HEADER;
+  if (isEqual(hashExt, ENTRY_PREFIX)) return HashType.ENTRY;
 }
