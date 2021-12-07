@@ -6,6 +6,7 @@ import open from 'open';
 import http from 'http';
 import { Server } from 'socket.io';
 import { getUrls } from './urls';
+import { getPort } from 'get-port-please';
 
 export async function launchApp() {
   dotenv.config();
@@ -13,7 +14,8 @@ export async function launchApp() {
   const app = express();
   const server = http.createServer(app);
 
-  const PORT = process.env.SERVER_PORT || 8282;
+  const port = await getPort({ port: 8282 });
+  const PORT = process.env.SERVER_PORT || port;
   const URL = `http://localhost:${PORT}`;
 
   app.set('port', PORT);

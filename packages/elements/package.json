@@ -22,7 +22,7 @@
     "@msgpack/msgpack": "^2.7.1",
     "@open-wc/scoped-elements": "^2.0.1",
     "@power-elements/json-viewer": "^2.1.1",
-    "@scoped-elements/cytoscape": "0.0.3",
+    "@scoped-elements/cytoscape": "0.0.4",
     "@scoped-elements/material-web": "^0.0.16",
     "@vaadin/grid": "^22.0.0-beta1",
     "cytoscape": "^3.17.0",

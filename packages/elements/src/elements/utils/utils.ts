@@ -45,5 +45,19 @@ export function getLinkTagStr(linkTag: Uint8Array): string {
   if (linkTag.length > 8 && linkTag[0] === 0x68) {
     const pathContent = linkTag.slice(8);
     return decodePath(decode(pathContent) as Uint8Array[]);
-  } else return JSON.stringify(decode(linkTag));
+  } else {
+    try {
+      return JSON.stringify(decode(linkTag));
+    } catch (e) {
+      return bin2String(linkTag);
+    }
+  }
+}
+
+function bin2String(array) {
+  var result = '';
+  for (var i = 0; i < array.length; i++) {
+    result += String.fromCharCode(array[i]);
+  }
+  return result;
 }

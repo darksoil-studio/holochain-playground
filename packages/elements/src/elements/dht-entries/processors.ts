@@ -1,8 +1,14 @@
-import { serializeHash } from '@holochain-open-dev/core-types';
+import {
+  deserializeHash,
+  EntryHashB64,
+  serializeHash,
+} from '@holochain-open-dev/core-types';
 import { NewEntryHeader, DhtOp, EntryHash } from '@holochain/conductor-api';
 import {
   getAppEntryType,
   CellMap,
+  HashType,
+  retype,
   HoloHashMap,
   SimulatedDna,
 } from '@holochain-playground/simulator';
@@ -56,25 +62,25 @@ export function allEntries(
       if (getAppEntryType((header as NewEntryHeader).entry_type)) {
         const implicitLinks = getEmbeddedReferences(
           summary.entries,
-          entry.content
+          getEntryContents(entry)
         );
 
         for (const implicitLink of implicitLinks) {
           if (
             !excludedEntryTypes.includes(
-              summary.entryTypes.get(implicitLink.target)
+              summary.entryTypes.get(deserializeHash(implicitLink.target))
             )
           ) {
             edges.push({
               data: {
-                id: `${entryHash}->${implicitLink.target}`,
-                source: entryHash,
+                id: `${strEntryHash}->${implicitLink.target}`,
+                source: strEntryHash,
                 target: implicitLink.target,
                 label: implicitLink.label,
               },
               classes: ['embedded-reference'],
             });
-            depsNotHeld.put(implicitLink.target, true);
+            depsNotHeld.put(deserializeHash(implicitLink.target), true);
           }
         }
       }
@@ -277,22 +283,32 @@ export function allEntries(
 export function getEmbeddedReferences(
   allEntries: HoloHashMap<any>,
   value: any
-): Array<{ label: string; target: EntryHash }> {
+): Array<{ label: string; target: EntryHashB64 }> {
   if (!value) return [];
-  if (typeof value === 'object' && ArrayBuffer.isView(value)) {
-    return allEntries.has(value as Uint8Array)
-      ? [{ label: undefined, target: value as Uint8Array }]
+  if (typeof value === 'string' && value.length === 53) {
+    return allEntries.has(retype(deserializeHash(value), HashType.ENTRY))
+      ? [
+          {
+            label: undefined,
+            target: serializeHash(
+              retype(deserializeHash(value), HashType.ENTRY)
+            ),
+          },
+        ]
       : [];
   }
   if (
     Array.isArray(value) &&
     value.length > 0 &&
-    typeof value[0] === 'object' &&
-    ArrayBuffer.isView(value)
+    typeof value[0] === 'string' &&
+    value[0].length === 53
   ) {
     return value
-      .filter((v) => allEntries.has(v))
-      .map((v) => ({ target: v, label: undefined }));
+      .filter((v) => allEntries.has(retype(deserializeHash(v), HashType.ENTRY)))
+      .map((v) => ({
+        target: serializeHash(retype(deserializeHash(v), HashType.ENTRY)),
+        label: undefined,
+      }));
   }
   if (typeof value === 'object') {
     const values = Object.entries(value).map(([key, v]) => {

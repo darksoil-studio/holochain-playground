@@ -19,13 +19,13 @@ import { deserializeHash, serializeHash } from '@holochain-open-dev/core-types';
 import { StoreSubscriber } from 'lit-svelte-stores';
 import { DhtOp } from '@holochain/conductor-api';
 import { CellMap } from '@holochain-playground/simulator';
-import { CytoscapeCola } from '@scoped-elements/cytoscape';
+import { CytoscapeCoseBilkent } from '@scoped-elements/cytoscape';
 
 import { allEntries } from './processors';
 import { sharedStyles } from '../utils/shared-styles';
 import { HelpButton } from '../helpers/help-button';
 
-import { colaConfig, cytoscapeConfig } from './graph';
+import { cytoscapeConfig } from './graph';
 import { PlaygroundElement } from '../../base/playground-element';
 import { CopyableHash } from '../helpers/copyable-hash';
 import { cytoscapeOptions } from '../dht-cells/graph';
@@ -133,6 +133,7 @@ export class DhtEntries extends PlaygroundElement {
     return html` <div
       class="row"
       style="align-items: center; justify-content: start;"
+      style="margin: 8px;"
     >
       <mwc-formfield label="Show Entry Contents" style="margin-right: 16px">
         <mwc-checkbox
@@ -208,8 +209,8 @@ export class DhtEntries extends PlaygroundElement {
   render() {
     return html`
       <mwc-card class="block-card" style="position: relative;">
-        <div class="column fill" style="margin: 16px;">
-          <span class="block-title row"
+        <div class="column fill">
+          <span class="block-title row" style="margin: 16px; margin-bottom: 0;"
             >Dht
             Entries${this._activeDna.value
               ? html`
@@ -224,15 +225,14 @@ export class DhtEntries extends PlaygroundElement {
               : html``}</span
           >
 
-          <cytoscape-cola
+          <cytoscape-cose-bilkent
             .elements=${this.elements}
             .selectedNodesIds=${this.selectedNodesIds}
             class="fill"
             .options=${cytoscapeConfig}
-            .colaOptions=${colaConfig}
             @node-selected=${(e) =>
               this.store?.activeDhtHash.set(deserializeHash(e.detail.id()))}
-          ></cytoscape-cola>
+          ></cytoscape-cose-bilkent>
 
           ${this.renderHelp()}
           ${!this.hideFilter ? this.renderFilter() : html``}
@@ -253,7 +253,7 @@ export class DhtEntries extends PlaygroundElement {
       'mwc-list-item': ListItem,
       'mwc-button': Button,
       'help-button': HelpButton,
-      'cytoscape-cola': CytoscapeCola,
+      'cytoscape-cose-bilkent': CytoscapeCoseBilkent,
     };
   }
 

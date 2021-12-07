@@ -44,6 +44,13 @@ function getPrefix(type: HashType) {
   }
 }
 
+export function retype(hash: HoloHash, type: HashType): HoloHash {
+  return new Uint8Array([
+    ...Base64.toUint8Array(getPrefix(type)),
+    ...hash.slice(3),
+  ]);
+}
+
 export function isHash(hash: string): boolean {
   return !![
     AGENT_PREFIX,

@@ -1,8 +1,4 @@
-import {
-  deserializeHash,
-  Dictionary,
-  serializeHash,
-} from '@holochain-open-dev/core-types';
+import { Dictionary } from '@holochain-open-dev/core-types';
 import {
   AgentPubKey,
   CellId,
@@ -24,22 +20,22 @@ export class HoloHashMap<T> {
   }
 
   has(key: HoloHash): boolean {
-    return !!this._values[hashToString(key)];
+    return !!this._values[this.stringify(key)];
   }
 
   get(key: HoloHash): T {
-    return this._values[hashToString(key)]?.value;
+    return this._values[this.stringify(key)]?.value;
   }
 
   put(key: HoloHash, value: T) {
-    this._values[hashToString(key)] = {
+    this._values[this.stringify(key)] = {
       hash: key,
       value,
     };
   }
 
   delete(key: HoloHash) {
-    const str = hashToString(key);
+    const str = this.stringify(key);
     if (this._values[str]) {
       this._values[str] = undefined as any;
       delete this._values[str];
@@ -59,6 +55,12 @@ export class HoloHashMap<T> {
       value.hash,
       value.value,
     ]);
+  }
+
+  private stringify(hash: Uint8Array): string {
+    // We remove the first two bytes to be able to compare the hashes
+    // of different types (Entry and Agents) and be them return the same
+    return hashToString(hash);
   }
 }
 

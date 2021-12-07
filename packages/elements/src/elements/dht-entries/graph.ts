@@ -1,20 +1,5 @@
 import { commonGraphStyles } from '../utils/common-graph-styles';
 
-export const colaConfig = {
-  animate: true,
-  /*   flow: {
-    axis: 'x',
-    minSeparation: 40,
-  },
- */ ready: (e) => {
-    e.cy.fit();
-    e.cy.center();
-  },
-  edgeLength: (edge) => {
-    return edge.data().headerReference ? 50 : undefined;
-  },
-};
-
 export const graphStyles = `
 ${commonGraphStyles}
 
