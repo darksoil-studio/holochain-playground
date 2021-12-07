@@ -172,5 +172,5 @@ function getConnectedEntryType(header: NewEntryHeader, entry: Entry): string {
     }
   ).App;
 
-  return `ZomeId=${appEntryType.zome_id},EntryId=${appEntryType.id}`;
+  return `Zome:${appEntryType.zome_id},Entry:${appEntryType.id}`;
 }
