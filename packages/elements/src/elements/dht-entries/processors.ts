@@ -359,6 +359,8 @@ export function getEmbeddedReferences(
 }
 
 function getEntryContentsNode(content: any, parentId: string): Array<any> {
+  if (content === null || content === undefined) return [];
+
   if (typeof content === 'string') {
     const label = content.length > 20 ? `${content.slice(0, 20)}...` : content;
     return [
