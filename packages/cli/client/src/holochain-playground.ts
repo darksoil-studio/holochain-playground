@@ -74,6 +74,7 @@ export class HolochainPlayground extends ScopedElementsMixin(LitElement) {
           const store = e.detail.store as ConnectedPlaygroundStore;
           store.conductors.subscribe(c => {
             c &&
+              c.length > 0 &&
               c[0].cells.subscribe(cells => {
                 if (!this.ready && cells.entries().length > 0) {
                   this.ready = true;
