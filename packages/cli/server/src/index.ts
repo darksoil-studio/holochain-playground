@@ -3,7 +3,9 @@ import semver from 'semver';
 import chalk from 'chalk';
 import { launchApp } from './app';
 
-console.log('@holochain-playground/cli v0.0.6');
+const pkg = require('../package.json');
+
+console.log(`@holochain-playground/cli v${pkg.version}`);
 
 (async () => {
   try {

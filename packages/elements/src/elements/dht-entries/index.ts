@@ -173,6 +173,7 @@ export class DhtEntries extends PlaygroundElement {
         <mwc-menu
           corner="BOTTOM_RIGHT"
           multi
+          fixed
           activatable
           id="visible-entries-menu"
           .anchor=${this._visibleEntriesButton}

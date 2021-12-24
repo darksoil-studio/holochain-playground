@@ -10,11 +10,11 @@
     "start:golden-layout": "concurrently -k \"npm run build:watch -w @holochain-playground/simulator\" \"npm run build:watch -w @holochain-playground/elements\" \"npm start -w @holochain-playground/golden-layout\"",
     "start:cli": "npm run build -w @holochain-playground/cli-client && concurrently -k \"npm run build:watch -w @holochain-playground/cli-client\" \"npm start -w @holochain-playground/cli\"",
     "test": "npm t -w @holochain-playground/simulator",
-    "build": "npm run build -w @holochain-playground/simulator -w @holochain-playground/elements -w @holochain-playground/golden-layout -w @holochain-playground/cli-client -w @holochain-playground/cli"
+    "build": "npm run build -w @holochain-playground/simulator -w @holochain-playground/elements -w @holochain-playground/golden-layout -w @holochain-playground/cli-client -w @holochain-playground/cli",
+    "playground": "holochain-playground"
   },
   "devDependencies": {
     "@holochain-playground/cli-client": "file:packages/cli/client",
-    "@rollup/plugin-typescript": "^8.3.0",
     "concurrently": "^6.4.0"
   }
 }

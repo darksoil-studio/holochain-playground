@@ -1,3 +1,4 @@
+import { serializeHash } from '@holochain-open-dev/core-types';
 import { Entry } from '@holochain/conductor-api';
 import { decode } from '@msgpack/msgpack';
 
@@ -26,8 +27,10 @@ export function getEntryContents(entry: Entry): any {
       typeof entryContent[0] === 'object' &&
       ArrayBuffer.isView(entryContent[0])
     ) {
-      // Convert from path
-      entryContent = decodePath(entryContent);
+      // Try convert from path
+      try {
+        entryContent = decodePath(entryContent);
+      } catch (e) {}
     }
   }
 
@@ -37,20 +40,45 @@ export function getEntryContents(entry: Entry): any {
   };
 }
 
-export function decodePath(path: Uint8Array[]): string {
-  return path.map((c) => utf32Decode(c)).join('.');
+export function decodeComponent(component: Uint8Array): string {
+  try {
+    const result = utf32Decode(component);
+    return result;
+  } catch (e) {}
+  try {
+    const result2 = JSON.stringify(decode(component));
+    return result2;
+  } catch (e) {}
+
+  return serializeHash(component);
 }
 
+export function decodePath(path: Uint8Array[]): string {
+  return path.map((c) => decodeComponent(c)).join('.');
+}
 export function getLinkTagStr(linkTag: Uint8Array): string {
-  if (linkTag.length > 8 && linkTag[0] === 0x68) {
-    const pathContent = linkTag.slice(8);
-    return decodePath(decode(pathContent) as Uint8Array[]);
-  } else {
-    try {
-      return JSON.stringify(decode(linkTag));
-    } catch (e) {
-      return bin2String(linkTag);
+  let tagStr = getLinkTagStrInner(linkTag);
+
+  if (tagStr.length > 15) tagStr = `${tagStr.slice(0, 13)}...`;
+  return tagStr;
+}
+
+export function getLinkTagStrInner(linkTag: Uint8Array): string {
+  // Check if this tag belongs to a Path
+  try {
+    if (linkTag.length > 8 && linkTag[0] === 0x68) {
+      const pathContent = linkTag.slice(8);
+      return decodePath(decode(pathContent) as Uint8Array[]);
+    } else if (linkTag.length > 1 && linkTag[0] === 0x0) {
+      const pathContent = linkTag.slice(1);
+      return decodePath(decode(pathContent) as Uint8Array[]);
     }
+  } catch (e) {}
+
+  try {
+    return JSON.stringify(decode(linkTag));
+  } catch (e) {
+    return bin2String(linkTag);
   }
 }
 
