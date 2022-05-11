@@ -11,7 +11,7 @@ import {
   getDhtOpHeader,
   getDhtOpType,
   NewEntryHeader,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 import isEqual from 'lodash-es/isEqual';
 import { derived, get, Readable, writable, Writable } from 'svelte/store';
 

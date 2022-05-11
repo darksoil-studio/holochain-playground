@@ -8,13 +8,14 @@ import {
   CellId,
   DnaHash,
   HoloHash,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 // @ts-ignore
 import blake from 'blakejs';
 import { encode } from '@msgpack/msgpack';
 import { Base64 } from 'js-base64';
 import { HoloHashMap } from './holo-hash-map';
 import isEqual from 'lodash-es/isEqual';
+import { hashToString } from './hash-to-string';
 
 export enum HashType {
   AGENT,
@@ -116,10 +117,6 @@ export function distance(hash1: HoloHash, hash2: HoloHash): number {
 export function areEqual(b1: Uint8Array, b2: Uint8Array): boolean {
   if (b1.length !== b2.length) return false;
   return hashToString(b1) === hashToString(b2);
-}
-
-export function hashToString(holoHash: HoloHash): string {
-  return holoHash.toString();
 }
 
 export function shortest_arc_distance(

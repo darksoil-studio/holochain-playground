@@ -17,7 +17,7 @@ import { isEqual } from 'lodash-es';
 
 import { deserializeHash, serializeHash } from '@holochain-open-dev/core-types';
 import { StoreSubscriber } from 'lit-svelte-stores';
-import { DhtOp } from '@holochain/conductor-api';
+import { DhtOp } from '@holochain/client';
 import { CellMap } from '@holochain-playground/simulator';
 import { CytoscapeCoseBilkent } from '@scoped-elements/cytoscape';
 

@@ -1,4 +1,4 @@
-import { Update } from '@holochain/conductor-api';
+import { Update } from '@holochain/client';
 import { areEqual } from '../processors/hash';
 
 import { GetStrategy } from '../types';

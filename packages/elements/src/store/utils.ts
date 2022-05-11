@@ -1,5 +1,5 @@
 import { CellMap } from '@holochain-playground/simulator';
-import { CellId } from '@holochain/conductor-api';
+import { CellId } from '@holochain/client';
 import isEqual from 'lodash-es/isEqual';
 import { Readable, derived } from 'svelte/store';
 import { unnest } from './unnest';

@@ -1,5 +1,5 @@
 import { serializeHash } from '@holochain-open-dev/core-types';
-import { Entry } from '@holochain/conductor-api';
+import { Entry } from '@holochain/client';
 import { decode } from '@msgpack/msgpack';
 
 export const sleep = (ms: number) =>

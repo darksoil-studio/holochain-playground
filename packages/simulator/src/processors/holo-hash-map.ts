@@ -4,9 +4,9 @@ import {
   CellId,
   DnaHash,
   HoloHash,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 import flatMap from 'lodash-es/flatMap';
-import { hashToString } from './hash';
+import { hashToString } from './hash-to-string';
 
 export class HoloHashMap<T> {
   _values: Dictionary<{ hash: HoloHash; value: T }> = {};

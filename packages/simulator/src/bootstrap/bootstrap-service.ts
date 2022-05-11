@@ -3,7 +3,7 @@ import {
   AnyDhtHash,
   CellId,
   DnaHash,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 
 import { Cell } from '../core/cell';
 import {

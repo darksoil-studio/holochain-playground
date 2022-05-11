@@ -18,7 +18,7 @@ import {
   getDhtOpType,
   HeaderHash,
   NewEntryHeader,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 import isEqual from 'lodash-es/isEqual';
 import { CellStore } from '../../store/playground-store';
 import { SimulatedCellStore } from '../../store/simulated-playground-store';

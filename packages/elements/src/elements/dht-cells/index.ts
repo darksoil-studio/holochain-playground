@@ -6,7 +6,7 @@ import { classMap } from 'lit/directives/class-map.js';
 import { NodeSingular } from 'cytoscape';
 
 import { deserializeHash, serializeHash } from '@holochain-open-dev/core-types';
-import { DhtOp, getDhtOpType } from '@holochain/conductor-api';
+import { DhtOp, getDhtOpType } from '@holochain/client';
 import {
   sleep,
   NetworkRequestType,

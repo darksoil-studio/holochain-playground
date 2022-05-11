@@ -12,7 +12,7 @@ import {
 import { css, html } from 'lit';
 import { styleMap } from 'lit-html/directives/style-map.js';
 import { property, state } from 'lit/decorators.js';
-import { CellId } from '@holochain/conductor-api';
+import { CellId } from '@holochain/client';
 import { StoreSubscriber } from 'lit-svelte-stores';
 
 import {

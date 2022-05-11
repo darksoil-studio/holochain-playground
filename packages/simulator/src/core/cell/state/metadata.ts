@@ -4,7 +4,7 @@ import {
   Timestamp,
   EntryHash,
   HeaderHash,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 import { HoloHashMap } from '../../../processors/holo-hash-map';
 
 // From https://github.com/holochain/holochain/blob/develop/crates/holochain/src/core/state/metadata.rs

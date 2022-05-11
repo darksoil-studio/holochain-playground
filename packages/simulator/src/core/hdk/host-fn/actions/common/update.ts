@@ -4,7 +4,7 @@ import {
   Entry,
   EntryType,
   HeaderHash,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 
 import { GetStrategy } from '../../../../../types';
 import {

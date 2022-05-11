@@ -1,4 +1,4 @@
-import { CellId } from '@holochain/conductor-api';
+import { CellId } from '@holochain/client';
 
 export interface ZomeFunctionResult {
   cellId: CellId;

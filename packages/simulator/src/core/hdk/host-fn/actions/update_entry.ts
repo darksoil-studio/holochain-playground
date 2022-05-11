@@ -1,4 +1,4 @@
-import { Entry, HeaderHash } from '@holochain/conductor-api';
+import { Entry, HeaderHash } from '@holochain/client';
 
 import { HostFn, HostFnWorkspace } from '../../host-fn';
 import { common_update } from './common/update';

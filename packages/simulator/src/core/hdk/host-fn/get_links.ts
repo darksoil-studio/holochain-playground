@@ -1,4 +1,4 @@
-import { EntryHash } from '@holochain/conductor-api';
+import { EntryHash } from '@holochain/client';
 
 import { GetLinksOptions, GetStrategy } from '../../../types';
 import { Link } from '../../cell/cascade/types';

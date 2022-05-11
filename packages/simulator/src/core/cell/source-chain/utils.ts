@@ -19,7 +19,7 @@ import {
   CapSecret,
   DnaHash,
   HeaderHash,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 import { areEqual } from '../../../processors/hash';
 
 import { HoloHashMap } from '../../../processors/holo-hash-map';

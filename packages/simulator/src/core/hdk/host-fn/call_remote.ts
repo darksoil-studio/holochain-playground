@@ -1,4 +1,4 @@
-import { AgentPubKey, CapSecret } from '@holochain/conductor-api';
+import { AgentPubKey, CapSecret } from '@holochain/client';
 import { HostFn, HostFnWorkspace } from '../host-fn';
 
 export type CallRemoteFn = (args: {

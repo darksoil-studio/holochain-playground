@@ -4,7 +4,7 @@ import {
   HeaderType,
   NewEntryHeader,
   SignedHeaderHashed,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 import { cloneDeep } from 'lodash-es';
 
 import { SimulatedZome } from '../../../dnas/simulated-dna';

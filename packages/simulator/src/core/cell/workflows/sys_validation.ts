@@ -8,7 +8,7 @@ import {
   Signature,
   Update,
   AnyDhtHash,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 import { Element } from '@holochain-open-dev/core-types';
 
 import { ValidationLimboStatus } from '../state';

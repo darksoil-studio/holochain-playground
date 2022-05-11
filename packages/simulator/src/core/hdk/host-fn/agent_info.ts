@@ -1,4 +1,4 @@
-import { AgentPubKey } from '@holochain/conductor-api';
+import { AgentPubKey } from '@holochain/client';
 import { getCellId } from '../../cell/source-chain/utils';
 import { HostFn, HostFnWorkspace } from '../host-fn';
 

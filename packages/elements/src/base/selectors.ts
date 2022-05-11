@@ -5,7 +5,7 @@ import {
   AnyDhtHash,
   AgentPubKey,
   HeaderHash,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 
 import {
   AgentPubKeyB64,

@@ -23,7 +23,7 @@ import {
   Update,
   Entry,
   AppEntryType,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 
 function appendToArray<T>(map: HoloHashMap<T[]>, key: HoloHash, value: T) {
   if (!map.has(key)) map.put(key, []);

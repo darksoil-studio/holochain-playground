@@ -11,7 +11,7 @@ import {
   BadAgent,
 } from '@holochain-playground/simulator';
 import { Dictionary, Element } from '@holochain-open-dev/core-types';
-import { AgentPubKey, CellId, DhtOp } from '@holochain/conductor-api';
+import { AgentPubKey, CellId, DhtOp } from '@holochain/client';
 import { readable, Readable, writable, Writable } from 'svelte/store';
 
 import { PlaygroundMode } from './mode';

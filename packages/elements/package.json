@@ -15,10 +15,10 @@
     "publish-to-branch": "npm run build && rm -rf node_modules && gh-pages -d . -b build && npm i"
   },
   "dependencies": {
-    "@holochain-open-dev/core-types": "file:~/projects/holochain/open-dev/core-types",
+    "@holochain/client": "0.3.2",
+    "@holochain-open-dev/core-types": "^0.2.0",
     "@holochain-playground/simulator": "0.0.1",
-    "@holochain/conductor-api": "github:holochain/holochain-conductor-api#dump-full-state",
-    "@lit-labs/context": "github:holochain-open-dev/context#build",
+    "@lit-labs/context": "^0.1.0",
     "@msgpack/msgpack": "^2.7.1",
     "@open-wc/scoped-elements": "^2.0.1",
     "@power-elements/json-viewer": "^2.1.1",
