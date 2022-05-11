@@ -4,7 +4,7 @@ import {
   HeaderHash,
   NewEntryHeader,
   SignedHeaderHashed,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 import { areEqual, hash, HashType } from '../../../processors/hash';
 
 import { CellState } from '../state';

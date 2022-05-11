@@ -1,5 +1,5 @@
 import { Element } from '@holochain-open-dev/core-types';
-import { HeaderHash, NewEntryHeader } from '@holochain/conductor-api';
+import { HeaderHash, NewEntryHeader } from '@holochain/client';
 
 import { GetStrategy } from '../../../../../types';
 import {

@@ -3,7 +3,7 @@ import {
   AgentPubKeyB64,
   serializeHash,
 } from '@holochain-open-dev/core-types';
-import { AgentPubKey, DhtOp } from '@holochain/conductor-api';
+import { AgentPubKey, DhtOp } from '@holochain/client';
 
 import { ValidationLimboValue, ValidationLimboStatus } from '../state';
 import { putValidationLimboValue } from '../dht/put';

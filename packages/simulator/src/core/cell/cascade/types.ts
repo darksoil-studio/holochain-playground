@@ -8,7 +8,7 @@ import {
   CreateLink,
   DeleteLink,
   EntryHash,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 import { ValidationStatus } from '../state';
 
 export interface GetEntryResponse {

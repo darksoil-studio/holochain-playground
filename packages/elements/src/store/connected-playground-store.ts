@@ -8,15 +8,17 @@ import {
   writable,
 } from 'svelte/store';
 import {
-  FullStateDump,
+  DumpFullStateResponse,
   CellId,
   AdminWebsocket,
   AgentPubKey,
   DhtOp,
   AnyDhtHash,
   NewEntryHeader,
+} from '@holochain/client';
+import {
   FullIntegrationStateDump,
-} from '@holochain/conductor-api';
+} from '@holochain/client/lib/api/state-dump';
 import merge from 'lodash-es/merge';
 import isEqual from 'lodash-es/isEqual';
 import {
@@ -32,7 +34,7 @@ import { PlaygroundMode } from './mode';
 import { cellChanges } from './utils';
 
 export class ConnectedCellStore extends CellStore<PlaygroundMode.Connected> {
-  _state: Readable<FullStateDump | undefined>;
+  _state: Readable<DumpFullStateResponse | undefined>;
 
   sourceChain: Readable<Element[]>;
   peers: Readable<AgentPubKey[]>;

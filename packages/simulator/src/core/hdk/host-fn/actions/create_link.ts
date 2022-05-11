@@ -1,5 +1,5 @@
 import { Element } from '@holochain-open-dev/core-types';
-import { EntryHash, HeaderHash } from '@holochain/conductor-api';
+import { EntryHash, HeaderHash } from '@holochain/client';
 import {
   buildCreateLink,
   buildShh,

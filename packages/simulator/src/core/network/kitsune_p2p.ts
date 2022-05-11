@@ -1,4 +1,4 @@
-import { AgentPubKey, AnyDhtHash, DnaHash } from '@holochain/conductor-api';
+import { AgentPubKey, AnyDhtHash, DnaHash } from '@holochain/client';
 import { Cell } from '../cell/cell';
 import { Network } from './network';
 import { NetworkRequest } from './network-request';

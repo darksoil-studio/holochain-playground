@@ -3,7 +3,7 @@ import {
   Entry,
   NewEntryHeader,
   SignedHeaderHashed,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 import { Element, serializeHash } from '@holochain-open-dev/core-types';
 import { getEntryTypeString } from '@holochain-playground/simulator';
 

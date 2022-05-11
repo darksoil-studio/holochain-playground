@@ -1,5 +1,5 @@
 import { Details } from '@holochain-open-dev/core-types';
-import { AnyDhtHash } from '@holochain/conductor-api';
+import { AnyDhtHash } from '@holochain/client';
 
 import { GetOptions, GetStrategy } from '../../../types';
 import { HostFn, HostFnWorkspace } from '../host-fn';

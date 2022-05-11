@@ -4,7 +4,7 @@ import {
   CapSecret,
   AgentPubKey,
   HeaderHash,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 import { HostFn, HostFnWorkspace } from '../../host-fn';
 import { common_create } from './common/create';
 

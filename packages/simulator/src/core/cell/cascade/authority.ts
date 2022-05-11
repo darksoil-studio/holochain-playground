@@ -8,7 +8,7 @@ import {
   Update,
   EntryHash,
   HeaderHash,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 
 import { P2pCell } from '../../..';
 import { GetLinksOptions, GetOptions } from '../../../types';

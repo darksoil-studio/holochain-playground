@@ -1,4 +1,4 @@
-import { HeaderHash } from '@holochain/conductor-api';
+import { HeaderHash } from '@holochain/client';
 import { HostFn, HostFnWorkspace } from '../../host-fn';
 import { common_delete } from './common/delete';
 

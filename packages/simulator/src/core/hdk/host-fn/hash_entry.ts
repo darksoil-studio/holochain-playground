@@ -1,4 +1,4 @@
-import { Entry, EntryHash } from '@holochain/conductor-api';
+import { Entry, EntryHash } from '@holochain/client';
 import { hashEntry } from '../../cell/utils';
 import { HostFn, HostFnWorkspace } from '../host-fn';
 

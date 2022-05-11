@@ -5,7 +5,7 @@ import {
   Entry,
   NewEntryHeader,
   SignedHeaderHashed,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 import { CellState } from './core/cell/state';
 import { P2pCellState } from './core/network/p2p-cell';
 

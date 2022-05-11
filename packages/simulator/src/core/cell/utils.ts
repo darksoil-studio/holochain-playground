@@ -16,7 +16,7 @@ import {
   getDhtOpType,
   getDhtOpEntry,
   getDhtOpHeader,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 import { Element } from '@holochain-open-dev/core-types';
 
 import { hash, HashType } from '../../processors/hash';

@@ -23,7 +23,7 @@ import {
   HeaderHash,
   getDhtOpType,
   getDhtOpHeader,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 
 import { uniqWith } from 'lodash-es';
 import { areEqual, hash, HashType } from '../../../processors/hash';

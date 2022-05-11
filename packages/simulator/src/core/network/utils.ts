@@ -7,7 +7,7 @@ import {
   AnyDhtHash,
   DhtOp,
   getDhtOpHeader,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 import { uniq } from 'lodash-es';
 import { distance, location, wrap } from '../../processors/hash';
 import { CellState } from '../cell';

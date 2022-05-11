@@ -1,4 +1,4 @@
-import { AdminWebsocket } from '@holochain/conductor-api';
+import { AdminWebsocket } from '@holochain/client';
 import { PropertyValues } from 'lit';
 import { property } from 'lit/decorators.js';
 import { ConnectedPlaygroundStore } from '../store/connected-playground-store';

@@ -15,7 +15,7 @@ import {
   DnaHash,
   EntryHash,
   HeaderHash,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 
 import { hash, HashType } from '../../../processors/hash';
 import { CellState } from '../state';

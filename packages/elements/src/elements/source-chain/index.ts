@@ -14,7 +14,7 @@ import { PlaygroundElement } from '../../base/playground-element';
 import { graphStyles } from './graph';
 import { CopyableHash } from '../helpers/copyable-hash';
 import isEqual from 'lodash-es/isEqual';
-import { NewEntryHeader } from '@holochain/conductor-api';
+import { NewEntryHeader } from '@holochain/client';
 
 /**
  * @element source-chain

@@ -11,7 +11,7 @@ import {
   Signature,
   Timestamp,
   Update,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 
 
 import { EntryDef, SimulatedDna } from '../../../dnas/simulated-dna';

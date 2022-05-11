@@ -8,7 +8,7 @@ import {
   DhtOp,
   EntryHash,
   HoloHash,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 import {
   getAppEntryType,
   CellMap,

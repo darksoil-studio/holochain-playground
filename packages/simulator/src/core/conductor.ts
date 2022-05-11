@@ -3,7 +3,7 @@ import {
   AgentPubKey,
   DnaHash,
   CapSecret,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 import {
   deserializeHash,
   Dictionary,

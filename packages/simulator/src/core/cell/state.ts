@@ -11,7 +11,7 @@ import {
   DnaHash,
   HeaderHash,
   HoloHash,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 import { location } from '../../processors/hash';
 import { HoloHashMap } from '../../processors/holo-hash-map';
 import { contains, DhtArc } from '../network/dht_arc';

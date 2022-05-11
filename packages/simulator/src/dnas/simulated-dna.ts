@@ -10,7 +10,7 @@ import {
   DnaHash,
   AgentPubKey,
   HoloHash,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 import { ValidationOutcome } from '../core/cell/sys_validate/types';
 import {
   SimulatedValidateFunctionContext,

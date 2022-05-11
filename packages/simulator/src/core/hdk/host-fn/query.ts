@@ -1,5 +1,5 @@
 import { Element } from '@holochain-open-dev/core-types';
-import { NewEntryHeader } from '@holochain/conductor-api';
+import { NewEntryHeader } from '@holochain/client';
 
 import { QueryFilter } from '../../../types';
 import { getAllAuthoredHeaders } from '../../cell/source-chain/get';

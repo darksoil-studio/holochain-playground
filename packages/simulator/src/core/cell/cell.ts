@@ -12,7 +12,7 @@ import {
   DhtOp,
   DnaHash,
   EntryHash,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 
 import { GetLinksOptions, GetOptions } from '../../types';
 import { Conductor } from '../conductor';
@@ -40,7 +40,7 @@ import {
 } from './workflows/app_validation';
 import { getSourceChainElements } from './source-chain/get';
 import { publish_dht_ops_task } from './workflows/publish_dht_ops';
-import { CapSecret } from '@holochain/conductor-api';
+import { CapSecret } from '@holochain/client';
 
 export type CellSignal = 'after-workflow-executed' | 'before-workflow-executed';
 export type CellSignalListener = (payload: any) => void;

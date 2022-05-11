@@ -5,7 +5,7 @@ import {
   CellId,
   DhtOp,
   EntryHash,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 
 import { MiddlewareExecutor } from '../../executor/middleware-executor';
 import { areEqual, location } from '../../processors/hash';

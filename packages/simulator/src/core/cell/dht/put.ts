@@ -21,7 +21,7 @@ import {
   CreateLink,
   DeleteLink,
   getDhtOpSignature,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 import {
   ChainStatus,
   LinkMetaKey,

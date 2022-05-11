@@ -1,4 +1,4 @@
-import { Entry, CellId, DnaHash, AgentPubKey } from '@holochain/conductor-api';
+import { Entry, CellId, DnaHash, AgentPubKey } from '@holochain/client';
 
 import {
   buildAgentValidationPkg,
