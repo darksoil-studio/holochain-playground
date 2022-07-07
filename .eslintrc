@@ -9,6 +9,7 @@
     "import/extensions": "off",
     "no-bitwise": "off",
     "no-shadow": "off",
-    "class-methods-use-this": "off"
+    "class-methods-use-this": "off",
+    "max-classes-per-file": "off"
   }
 }

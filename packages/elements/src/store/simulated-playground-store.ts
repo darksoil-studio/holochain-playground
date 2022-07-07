@@ -20,10 +20,13 @@ import { cellChanges } from './utils';
 
 export class SimulatedCellStore extends CellStore<PlaygroundMode.Simulated> {
   sourceChain: Writable<Element[]> = writable([]);
+
   peers: Writable<AgentPubKey[]> = writable([]);
+
   dhtShard: Writable<DhtOp[]> = writable([]);
 
   badAgents: Writable<AgentPubKey[]> = writable([]);
+
   farPeers: Writable<AgentPubKey[]> = writable([]);
 
   constructor(
@@ -56,6 +59,7 @@ export class SimulatedCellStore extends CellStore<PlaygroundMode.Simulated> {
 
 export class SimulatedConductorStore extends ConductorStore<PlaygroundMode.Simulated> {
   cells: Readable<CellMap<SimulatedCellStore>>;
+  
   badAgent: Readable<BadAgent>;
 
   constructor(public conductor: Conductor) {
