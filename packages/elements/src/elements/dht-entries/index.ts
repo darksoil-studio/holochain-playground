@@ -15,9 +15,9 @@ import {
 } from '@scoped-elements/material-web';
 import { isEqual } from 'lodash-es';
 
-import { deserializeHash, serializeHash } from '@holochain-open-dev/core-types';
+import { deserializeHash, serializeHash } from '@holochain-open-dev/utils';
 import { StoreSubscriber } from 'lit-svelte-stores';
-import { DhtOp } from '@holochain/conductor-api';
+import { DhtOp } from '@holochain/client';
 import { CellMap } from '@holochain-playground/simulator';
 import { CytoscapeCoseBilkent } from '@scoped-elements/cytoscape';
 
@@ -46,8 +46,8 @@ export class DhtEntries extends PlaygroundElement {
 
   @property({ type: Boolean, attribute: 'hide-deleted' })
   hideDeleted: boolean = false;
-  @property({ type: Boolean, attribute: 'show-headers' })
-  showHeaders: boolean = false;
+  @property({ type: Boolean, attribute: 'show-actions' })
+  showActions: boolean = false;
   @property({ type: Boolean, attribute: 'show-only-active-agents-shard' })
   showOnlyActiveAgentsShard: boolean = false;
 
@@ -99,7 +99,7 @@ export class DhtEntries extends PlaygroundElement {
       this._simulatedDna,
       this.showEntryContents,
       !this.hideDeleted,
-      this.showHeaders,
+      this.showActions,
       this.excludedEntryTypes
     );
     this._entryTypes = entryTypes;
@@ -142,10 +142,10 @@ export class DhtEntries extends PlaygroundElement {
         ></mwc-checkbox
       ></mwc-formfield>
 
-      <mwc-formfield label="Show Headers" style="margin-right: 16px">
+      <mwc-formfield label="Show Actions" style="margin-right: 16px">
         <mwc-checkbox
-          .checked=${this.showHeaders}
-          @change=${(e) => (this.showHeaders = e.target.checked)}
+          .checked=${this.showActions}
+          @change=${(e) => (this.showActions = e.target.checked)}
         ></mwc-checkbox
       ></mwc-formfield>
 

@@ -4,7 +4,7 @@ import { StoreSubscriber } from 'lit-svelte-stores';
 import { CytoscapeDagre } from '@scoped-elements/cytoscape';
 
 import { Card } from '@scoped-elements/material-web';
-import { deserializeHash, serializeHash } from '@holochain-open-dev/core-types';
+import { deserializeHash, serializeHash } from '@holochain-open-dev/utils';
 
 import { sourceChainNodes } from './processors';
 import { sharedStyles } from '../utils/shared-styles';
@@ -14,7 +14,7 @@ import { PlaygroundElement } from '../../base/playground-element';
 import { graphStyles } from './graph';
 import { CopyableHash } from '../helpers/copyable-hash';
 import isEqual from 'lodash-es/isEqual';
-import { NewEntryHeader } from '@holochain/conductor-api';
+import { NewEntryAction } from '@holochain/client';
 
 /**
  * @element source-chain
@@ -43,15 +43,15 @@ export class SourceChain extends PlaygroundElement {
     else {
       const nodesIds = [];
       for (const element of this._sourceChain.value) {
-        const header = element.signed_header.header;
-        if (isEqual(header.hash, this._activeHash.value)) {
+        const action = element.signed_action.hashed;
+        if (isEqual(action.hash, this._activeHash.value)) {
           return [serializeHash(this._activeHash.value)];
         }
 
-        const entry_hash = (header.content as NewEntryHeader).entry_hash;
+        const entry_hash = (action.content as NewEntryAction).entry_hash;
         if (isEqual(entry_hash, this._activeHash.value)) {
           nodesIds.push(
-            `${serializeHash(header.hash)}:${serializeHash(entry_hash)}`
+            `${serializeHash(action.hash)}:${serializeHash(entry_hash)}`
           );
         }
       }
@@ -73,18 +73,19 @@ export class SourceChain extends PlaygroundElement {
     return html` <help-button heading="Source Chain" class="block-help">
       <span>
         This graph displays the source chain of the selected cell. On the
-        top-left sequence, you can see the hash-chain of headers. On the
+        top-left sequence, you can see the hash-chain of actions. On the
         bottom-right sequence, you can see the entries associated with each
-        header. Links between headers
+        action. Links between actions
         <br />
         <br />
-        Dashed relationships are embedded references: the headers contain the
-        hash of the last header, and also the entry hash if they have an entry.
+        Dashed relationships are embedded references: the actions contain the
+        hash of the last action, and also the entry hash if they have an entry.
       </span>
     </help-button>`;
   }
 
   render() {
+    console.log("RENDERING SOURCE CHAIN AND STORE IS: ", this.store);
     return html`
       <mwc-card class="block-card">
         <div class="column fill">

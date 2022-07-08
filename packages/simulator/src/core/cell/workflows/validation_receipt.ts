@@ -15,7 +15,7 @@ export const validation_receipt = async (
   );
   const pretendIsValid =
     workspace.badAgentConfig &&
-    workspace.badAgentConfig.pretend_invalid_elements_are_valid;
+    workspace.badAgentConfig.pretend_invalid_records_are_valid;
 
   for (const [
     dhtOpHash,

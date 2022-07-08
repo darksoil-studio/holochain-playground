@@ -5,15 +5,15 @@ import {
   CellId,
   DhtOp,
   EntryHash,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 
 import { MiddlewareExecutor } from '../../executor/middleware-executor';
 import { areEqual, location } from '../../processors/hash';
 import { HoloHashMap } from '../../processors/holo-hash-map';
 import { GetLinksOptions, GetOptions } from '../../types';
-import { Cell, getSourceChainElements } from '../cell';
+import { Cell, getSourceChainRecords } from '../cell';
 import {
-  GetElementResponse,
+  GetRecordResponse,
   GetEntryResponse,
   GetLinksResponse,
 } from '../cell/cascade/types';
@@ -86,7 +86,7 @@ export class P2pCell {
   get badAgents() {
     if (
       this.cell.conductor.badAgent &&
-      this.cell.conductor.badAgent.config.pretend_invalid_elements_are_valid
+      this.cell.conductor.badAgent.config.pretend_invalid_records_are_valid
     )
       return [];
 
@@ -124,7 +124,7 @@ export class P2pCell {
   async get(
     dht_hash: AnyDhtHash,
     options: GetOptions
-  ): Promise<GetElementResponse | GetEntryResponse | undefined> {
+  ): Promise<GetRecordResponse | GetEntryResponse | undefined> {
     const gets = await this.network.kitsune.rpc_multi(
       this.cellId[0],
       this.cellId[1],
@@ -199,10 +199,10 @@ export class P2pCell {
   }
 
   async check_agent_valid(peer: Cell): Promise<void> {
-    const peerFirst3Elements = getSourceChainElements(peer._state, 0, 3);
+    const peerFirst3Records = getSourceChainRecords(peer._state, 0, 3);
 
     try {
-      await this.cell.handle_check_agent(peerFirst3Elements);
+      await this.cell.handle_check_agent(peerFirst3Records);
     } catch (e) {
       if (!this.cell._state.badAgents.find(a => areEqual(a, peer.agentPubKey)))
         this.cell._state.badAgents.push(peer.agentPubKey);

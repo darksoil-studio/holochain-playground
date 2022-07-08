@@ -10,8 +10,8 @@ import {
   SimulatedDna,
   BadAgent,
 } from '@holochain-playground/simulator';
-import { Dictionary, Element } from '@holochain-open-dev/core-types';
-import { AgentPubKey, CellId, DhtOp } from '@holochain/conductor-api';
+import { Dictionary } from '@holochain-open-dev/core-types';
+import { AgentPubKey, CellId, DhtOp, Record } from '@holochain/client';
 import { readable, Readable, writable, Writable } from 'svelte/store';
 
 import { PlaygroundMode } from './mode';
@@ -19,7 +19,7 @@ import { CellStore, ConductorStore, PlaygroundStore } from './playground-store';
 import { cellChanges } from './utils';
 
 export class SimulatedCellStore extends CellStore<PlaygroundMode.Simulated> {
-  sourceChain: Writable<Element[]> = writable([]);
+  sourceChain: Writable<Record[]> = writable([]);
 
   peers: Writable<AgentPubKey[]> = writable([]);
 
@@ -59,7 +59,7 @@ export class SimulatedCellStore extends CellStore<PlaygroundMode.Simulated> {
 
 export class SimulatedConductorStore extends ConductorStore<PlaygroundMode.Simulated> {
   cells: Readable<CellMap<SimulatedCellStore>>;
-  
+
   badAgent: Readable<BadAgent>;
 
   constructor(public conductor: Conductor) {

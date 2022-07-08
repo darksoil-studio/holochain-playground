@@ -1,20 +1,19 @@
-import { Element } from '@holochain-open-dev/core-types';
-import { HeaderHash, CreateLink } from '@holochain/conductor-api';
+import { ActionHash, CreateLink, Record } from '@holochain/client';
 
 import { GetStrategy } from '../../../../types';
 import {
   buildDeleteLink,
   buildShh,
-} from '../../../cell/source-chain/builder-headers';
-import { putElement } from '../../../cell/source-chain/put';
+} from '../../../cell/source-chain/builder-actions';
+import { putRecord } from '../../../cell/source-chain/put';
 import { HostFn, HostFnWorkspace } from '../../host-fn';
 
-export type DeleteLinkFn = (deletes_address: HeaderHash) => Promise<HeaderHash>;
+export type DeleteLinkFn = (deletes_address: ActionHash) => Promise<ActionHash>;
 
-// Creates a new Create header and its entry in the source chain
+// Creates a new Create action and its entry in the source chain
 export const delete_link: HostFn<DeleteLinkFn> =
   (worskpace: HostFnWorkspace): DeleteLinkFn =>
-  async (deletes_address): Promise<HeaderHash> => {
+  async (deletes_address): Promise<ActionHash> => {
     const elementToDelete = await worskpace.cascade.dht_get(deletes_address, {
       strategy: GetStrategy.Contents,
     });
@@ -23,23 +22,23 @@ export const delete_link: HostFn<DeleteLinkFn> =
       throw new Error('Could not find element to be deleted');
 
     const baseAddress = (
-      elementToDelete.signed_header.header.content as CreateLink
+      elementToDelete.signed_action.hashed.content as CreateLink
     ).base_address;
 
     if (!baseAddress)
-      throw new Error('Header for the given hash is not a CreateLink header');
+      throw new Error('Action for the given hash is not a CreateLink action');
 
-    const deleteHeader = buildDeleteLink(
+    const deleteAction = buildDeleteLink(
       worskpace.state,
       baseAddress,
       deletes_address
     );
 
-    const element: Element = {
-      signed_header: buildShh(deleteHeader),
+    const element: Record = {
+      signed_action: buildShh(deleteAction),
       entry: undefined,
     };
-    putElement(element)(worskpace.state);
+    putRecord(element)(worskpace.state);
 
-    return element.signed_header.header.hash;
+    return element.signed_action.hashed.hash;
   };

@@ -1,10 +1,10 @@
-import { Entry, EntryHash } from '@holochain/conductor-api';
+import { Entry, EntryHash } from '@holochain/client';
 import { hashEntry } from '../../cell/utils';
 import { HostFn, HostFnWorkspace } from '../host-fn';
 
 export type HashEntryFn = (args: { content: any }) => Promise<EntryHash>;
 
-// Creates a new Create header and its entry in the source chain
+// Creates a new Create action and its entry in the source chain
 export const hash_entry: HostFn<HashEntryFn> =
   (worskpace: HostFnWorkspace): HashEntryFn =>
   async (args): Promise<EntryHash> => {

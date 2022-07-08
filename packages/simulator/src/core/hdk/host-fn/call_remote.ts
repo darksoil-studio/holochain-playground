@@ -1,4 +1,4 @@
-import { AgentPubKey, CapSecret } from '@holochain/conductor-api';
+import { AgentPubKey, CapSecret } from '@holochain/client';
 import { HostFn, HostFnWorkspace } from '../host-fn';
 
 export type CallRemoteFn = (args: {
@@ -9,7 +9,7 @@ export type CallRemoteFn = (args: {
   payload: any;
 }) => Promise<any>;
 
-// Creates a new Create header and its entry in the source chain
+// Creates a new Create action and its entry in the source chain
 export const call_remote: HostFn<CallRemoteFn> =
   (workspace: HostFnWorkspace): CallRemoteFn =>
   async (args): Promise<any> => {

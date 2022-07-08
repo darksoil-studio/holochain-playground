@@ -1,4 +1,4 @@
-import { serializeHash } from '@holochain-open-dev/core-types';
+import { serializeHash } from '@holochain-open-dev/utils';
 
 export function shortenStrRec(object: any, shorten = false) {
   if (object === undefined || object === null) {

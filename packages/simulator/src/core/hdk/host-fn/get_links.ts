@@ -1,4 +1,4 @@
-import { EntryHash } from '@holochain/conductor-api';
+import { EntryHash } from '@holochain/client';
 
 import { GetLinksOptions, GetStrategy } from '../../../types';
 import { Link } from '../../cell/cascade/types';
@@ -9,7 +9,7 @@ export type GetLinksFn = (
   options?: GetLinksOptions
 ) => Promise<Link[] | undefined>;
 
-// Creates a new Create header and its entry in the source chain
+// Creates a new Create action and its entry in the source chain
 export const get_links: HostFn<GetLinksFn> =
   (workspace: HostFnWorkspace): GetLinksFn =>
   async (base_address, options): Promise<Link[]> => {

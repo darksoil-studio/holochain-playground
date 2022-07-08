@@ -22,7 +22,7 @@ export class EntryContents extends PlaygroundElement {
         <div class="column fill" style="padding: 16px;">
           <span class="title row" style="margin-bottom: 8px;">
             ${this._activeContent.value && this._activeContent.value.type
-              ? 'Header'
+              ? 'Action'
               : 'Entry'}
             Contents${this._activeDhtHash.value
               ? html`<span class="row placeholder">

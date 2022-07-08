@@ -1,23 +1,16 @@
 import {
-  SignedHeaderHashed,
-  NewEntryHeader,
+  SignedActionHashed,
+  NewEntryAction,
   DnaHash,
   AnyDhtHash,
   AgentPubKey,
-  HeaderHash,
-} from '@holochain/conductor-api';
-
-import {
-  AgentPubKeyB64,
-  DnaHashB64,
-  AnyDhtHashB64,
-  HeaderHashB64,
-} from '@holochain-open-dev/core-types';
+  ActionHash,
+} from '@holochain/client';
 import {
   Conductor,
   Cell,
   isHoldingEntry,
-  isHoldingElement,
+  isHoldingRecord,
   getHashType,
   HashType,
   HoloHashMap,
@@ -46,7 +39,7 @@ export function selectGlobalDHTOpsCount(cells: Cell[]): number {
 export function selectHoldingCells(hash: AnyDhtHash, cells: Cell[]): Cell[] {
   if (getHashType(hash) === HashType.ENTRY)
     return cells.filter((cell) => isHoldingEntry(cell._state, hash));
-  return cells.filter((cell) => isHoldingElement(cell._state, hash));
+  return cells.filter((cell) => isHoldingRecord(cell._state, hash));
 }
 
 export function selectConductorByAgent(
@@ -98,12 +91,12 @@ export function selectFromCAS(hash: AnyDhtHash, cells: Cell[]): any {
   return undefined;
 }
 
-export function selectHeaderEntry(headerHash: HeaderHash, cells: Cell[]): any {
-  const header: SignedHeaderHashed<NewEntryHeader> = selectFromCAS(
-    headerHash,
+export function selectActionEntry(actionHash: ActionHash, cells: Cell[]): any {
+  const action: SignedActionHashed<NewEntryAction> = selectFromCAS(
+    actionHash,
     cells
   );
-  return selectFromCAS(header.header.content.entry_hash, cells);
+  return selectFromCAS(action.hashed.content.entry_hash, cells);
 }
 
 export function selectMedianHoldingDHTOps(cells: Cell[]): number {

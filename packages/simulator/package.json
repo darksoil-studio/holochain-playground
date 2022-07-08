@@ -15,8 +15,9 @@
     "test:watch": "concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wtr --watch\""
   },
   "dependencies": {
-    "@holochain-open-dev/core-types": "file:~/projects/holochain/open-dev/core-types",
-    "@holochain/conductor-api": "github:holochain/holochain-conductor-api#dump-full-state",
+    "@holochain-open-dev/core-types": "^0.3.1",
+    "@holochain-open-dev/utils": "^0.1.0",
+    "@holochain/client": "file:~/code/holochain/holochain/holochain-client-js",
     "@msgpack/msgpack": "^2.7.1",
     "blakejs": "^1.1.0",
     "js-base64": "^3.7.2",

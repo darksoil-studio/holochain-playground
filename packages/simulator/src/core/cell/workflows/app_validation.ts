@@ -6,12 +6,12 @@ import {
   DeleteLink,
   DhtOp,
   Entry,
-  getDhtOpHeader,
-  HeaderType,
-  NewEntryHeader,
+  getDhtOpAction,
+  ActionType,
+  NewEntryAction,
   getDhtOpSignature,
-} from '@holochain/conductor-api';
-import { Element } from '@holochain-open-dev/core-types';
+  Record,
+} from '@holochain/client';
 
 import {
   ValidationLimboStatus,
@@ -127,7 +127,7 @@ function shouldValidate(
   badAgentConfig?: BadAgentConfig
 ): boolean {
   if (!badAgentConfig) return true;
-  return !areEqual(getDhtOpHeader(dhtOp).author, agentPubKey);
+  return !areEqual(getDhtOpAction(dhtOp).author, agentPubKey);
 }
 
 export async function validate_op(
@@ -135,9 +135,9 @@ export async function validate_op(
   from_agent: AgentPubKey | undefined,
   workspace: Workspace
 ): Promise<ValidationOutcome> {
-  const element = dht_ops_to_element(op);
+  const record = dht_ops_to_record(op);
 
-  const entry_type = (element.signed_header.header.content as NewEntryHeader)
+  const entry_type = (record.signed_action.hashed.content as NewEntryAction)
     .entry_type;
   if (entry_type === 'CapClaim' || entry_type === 'CapGrant')
     return {
@@ -148,7 +148,7 @@ export async function validate_op(
   // TODO: implement validation package
 
   const maybeEntryDef = await get_associated_entry_def(
-    element,
+    record,
     workspace.dna,
     workspace
   );
@@ -158,7 +158,7 @@ export async function validate_op(
       depsHashes: (maybeEntryDef as DepsMissing).depsHashes,
     };
 
-  const zomes_to_invoke = await get_zomes_to_invoke(element, workspace);
+  const zomes_to_invoke = await get_zomes_to_invoke(record, workspace);
 
   if (zomes_to_invoke && (zomes_to_invoke as DepsMissing).depsHashes)
     return {
@@ -168,34 +168,34 @@ export async function validate_op(
 
   const zomes = zomes_to_invoke as Array<SimulatedZome>;
 
-  const header = element.signed_header.header.content;
-  if (header.type === HeaderType.DeleteLink) {
-    return run_delete_link_validation_callback(zomes[0], header, workspace);
-  } else if (header.type === HeaderType.CreateLink) {
+  const action = record.signed_action.hashed.content;
+  if (action.type === ActionType.DeleteLink) {
+    return run_delete_link_validation_callback(zomes[0], action, workspace);
+  } else if (action.type === ActionType.CreateLink) {
     const cascade = new Cascade(workspace.state, workspace.p2p);
 
-    const maybeBaseEntry = await cascade.retrieve_entry(header.base_address, {
+    const maybeBaseEntry = await cascade.retrieve_entry(action.base_address, {
       strategy: GetStrategy.Contents,
     });
     if (!maybeBaseEntry)
       return {
         resolved: false,
-        depsHashes: [header.base_address],
+        depsHashes: [action.base_address],
       };
 
     const maybeTargetEntry = await cascade.retrieve_entry(
-      header.target_address,
+      action.target_address,
       { strategy: GetStrategy.Contents }
     );
     if (!maybeTargetEntry)
       return {
         resolved: false,
-        depsHashes: [header.target_address],
+        depsHashes: [action.target_address],
       };
 
     return run_create_link_validation_callback(
       zomes[0],
-      header,
+      action,
       maybeBaseEntry,
       maybeTargetEntry,
       workspace
@@ -203,27 +203,27 @@ export async function validate_op(
   } else {
     return run_validation_callback_inner(
       zomes,
-      element,
+      record,
       maybeEntryDef as EntryDef,
       workspace
     );
   }
 }
 
-function dht_ops_to_element(op: DhtOp): Element {
-  const header = getDhtOpHeader(op);
-  const headerHash = hash(header, HashType.HEADER);
+function dht_ops_to_record(op: DhtOp): Record {
+  const action = getDhtOpAction(op);
+  const actionHash = hash(action, HashType.HEADER);
   let entry = undefined;
-  if ((header as NewEntryHeader).entry_hash) {
+  if ((action as NewEntryAction).entry_hash) {
     entry = getEntry(op);
   }
 
   return {
     entry,
-    signed_header: {
-      header: {
-        content: header,
-        hash: headerHash,
+    signed_action: {
+      hashed: {
+        content: action,
+        hash: actionHash,
       },
       signature: getDhtOpSignature(op),
     },
@@ -233,10 +233,10 @@ function dht_ops_to_element(op: DhtOp): Element {
 export async function run_validation_callback_direct(
   zome: SimulatedZome,
   dna: SimulatedDna,
-  element: Element,
+  record: Record,
   workspace: Workspace
 ): Promise<ValidationOutcome> {
-  const maybeEntryDef = await get_associated_entry_def(element, dna, workspace);
+  const maybeEntryDef = await get_associated_entry_def(record, dna, workspace);
 
   if (maybeEntryDef && (maybeEntryDef as DepsMissing).depsHashes)
     return {
@@ -248,19 +248,19 @@ export async function run_validation_callback_direct(
 
   return run_validation_callback_inner(
     [zome],
-    element,
+    record,
     maybeEntryDef as EntryDef | undefined,
     workspace
   );
 }
 
 async function get_associated_entry_def(
-  element: Element,
+  record: Record,
   dna: SimulatedDna,
   workspace: Workspace
 ): Promise<DepsMissing | EntryDef | undefined> {
   const cascade = new Cascade(workspace.state, workspace.p2p);
-  const maybeAppEntryType = await get_app_entry_type(element, cascade);
+  const maybeAppEntryType = await get_app_entry_type(record, cascade);
 
   if (!maybeAppEntryType) return undefined;
   if ((maybeAppEntryType as DepsMissing).depsHashes)
@@ -271,13 +271,13 @@ async function get_associated_entry_def(
 }
 
 async function get_app_entry_type(
-  element: Element,
+  record: Record,
   cascade: Cascade
 ): Promise<DepsMissing | AppEntryType | undefined> {
-  if (element.signed_header.header.content.type === HeaderType.Delete)
-    return get_app_entry_type_from_dep(element, cascade);
+  if (record.signed_action.hashed.content.type === ActionType.Delete)
+    return get_app_entry_type_from_dep(record, cascade);
 
-  const entryType = (element.signed_header.header.content as NewEntryHeader)
+  const entryType = (record.signed_action.hashed.content as NewEntryAction)
     .entry_type;
   if (!entryType) return undefined;
   if (
@@ -290,21 +290,21 @@ async function get_app_entry_type(
 }
 
 async function get_app_entry_type_from_dep(
-  element: Element,
+  record: Record,
   cascade: Cascade
 ): Promise<DepsMissing | AppEntryType | undefined> {
-  if (element.signed_header.header.content.type !== HeaderType.Delete)
+  if (record.signed_action.hashed.content.type !== ActionType.Delete)
     return undefined;
 
-  const deletedHeaderHash =
-    element.signed_header.header.content.deletes_address;
-  const header = await cascade.retrieve_header(deletedHeaderHash, {
+  const deletedActionHash =
+    record.signed_action.hashed.content.deletes_address;
+  const action = await cascade.retrieve_action(deletedActionHash, {
     strategy: GetStrategy.Contents,
   });
 
-  if (!header) return { depsHashes: [deletedHeaderHash] };
+  if (!action) return { depsHashes: [deletedActionHash] };
 
-  const entryType = (header.header.content as NewEntryHeader).entry_type;
+  const entryType = (action.hashed.content as NewEntryAction).entry_type;
   if (
     !entryType ||
     entryType === 'Agent' ||
@@ -316,35 +316,35 @@ async function get_app_entry_type_from_dep(
 }
 
 async function get_zomes_to_invoke(
-  element: Element,
+  record: Record,
   workspace: Workspace
 ): Promise<DepsMissing | Array<SimulatedZome>> {
   const cascade = new Cascade(workspace.state, workspace.p2p);
-  const maybeAppEntryType = await get_app_entry_type(element, cascade);
+  const maybeAppEntryType = await get_app_entry_type(record, cascade);
 
   if (maybeAppEntryType && (maybeAppEntryType as DepsMissing).depsHashes)
     return maybeAppEntryType as DepsMissing;
 
   if (maybeAppEntryType) {
-    // It's a newEntryHeader
+    // It's a newEntryAction
     return [workspace.dna.zomes[(maybeAppEntryType as AppEntryType).zome_id]];
   } else {
-    const header = element.signed_header.header.content;
-    if (header.type === HeaderType.CreateLink) {
-      return [workspace.dna.zomes[header.zome_id]];
-    } else if (header.type === HeaderType.DeleteLink) {
-      const maybeHeader = await cascade.retrieve_header(
-        header.link_add_address,
+    const action = record.signed_action.hashed.content;
+    if (action.type === ActionType.CreateLink) {
+      return [workspace.dna.zomes[action.zome_id]];
+    } else if (action.type === ActionType.DeleteLink) {
+      const maybeAction = await cascade.retrieve_action(
+        action.link_add_address,
         { strategy: GetStrategy.Contents }
       );
 
-      if (!maybeHeader)
+      if (!maybeAction)
         return {
-          depsHashes: [header.link_add_address],
+          depsHashes: [action.link_add_address],
         };
 
       return [
-        workspace.dna.zomes[(maybeHeader.header.content as CreateLink).zome_id],
+        workspace.dna.zomes[(maybeAction.hashed.content as CreateLink).zome_id],
       ];
     }
 
@@ -354,19 +354,19 @@ async function get_zomes_to_invoke(
 
 async function run_validation_callback_inner(
   zomes_to_invoke: Array<SimulatedZome>,
-  element: Element,
+  record: Record,
   entry_def: EntryDef | undefined,
   workspace: Workspace
 ): Promise<ValidationOutcome> {
-  const fnsToCall = get_element_validate_functions_to_invoke(
-    element,
+  const fnsToCall = get_record_validate_functions_to_invoke(
+    record,
     entry_def
   );
 
   return invoke_validation_fns(
     zomes_to_invoke,
     fnsToCall,
-    { element },
+    { record },
     workspace
   );
 }
@@ -407,27 +407,27 @@ async function invoke_validation_fns(
 
 export async function run_agent_validation_callback(
   workspace: Workspace,
-  elements: Element[]
+  records: Record[]
 ) {
-  const create_agent_element = elements[2];
+  const create_agent_record = records[2];
   const fnsToCall = ['validate_create_agent'];
 
   const zomes_to_invoke = await get_zomes_to_invoke(
-    create_agent_element,
+    create_agent_record,
     workspace
   );
 
   const membrane_proof = (
-    elements[1].signed_header.header.content as AgentValidationPkg
+    records[1].signed_action.hashed.content as AgentValidationPkg
   ).membrane_proof;
 
   return invoke_validation_fns(
     zomes_to_invoke as SimulatedZome[],
     fnsToCall,
     {
-      element: elements[2],
+      record: records[2],
       membrane_proof,
-      agent_pub_key: create_agent_element.signed_header.header.content.author,
+      agent_pub_key: create_agent_record.signed_action.hashed.content.author,
     },
     workspace
   );
@@ -499,19 +499,19 @@ export async function run_delete_link_validation_callback(
   };
 }
 
-function get_element_validate_functions_to_invoke(
-  element: Element,
+function get_record_validate_functions_to_invoke(
+  record: Record,
   maybeEntryDef: EntryDef | undefined
 ): Array<string> {
   const fnsComponents = ['validate'];
 
-  const header = element.signed_header.header.content;
+  const action = record.signed_action.hashed.content;
 
-  if (header.type === HeaderType.Create) fnsComponents.push('create');
-  if (header.type === HeaderType.Update) fnsComponents.push('update');
-  if (header.type === HeaderType.Delete) fnsComponents.push('delete');
+  if (action.type === ActionType.Create) fnsComponents.push('create');
+  if (action.type === ActionType.Update) fnsComponents.push('update');
+  if (action.type === ActionType.Delete) fnsComponents.push('delete');
 
-  const entry_type = (header as NewEntryHeader).entry_type;
+  const entry_type = (action as NewEntryAction).entry_type;
   if (entry_type) {
     // if (entry_type === 'Agent') fnsComponents.push('agent');
     if ((entry_type as { App: AppEntryType }).App) {

@@ -3,7 +3,7 @@ import { hookUpConductors } from './message';
 
 export function downloadFile(name: string, blob: Blob) {
   const url = window.URL.createObjectURL(blob);
-  const a = document.createElement('a');
+  const a = document.createRecord('a');
   a.style.display = 'none';
   a.href = url;
   // the filename you want

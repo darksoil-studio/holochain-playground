@@ -1,29 +1,28 @@
-import { Element } from '@holochain-open-dev/core-types';
-import { NewEntryHeader } from '@holochain/conductor-api';
+import { NewEntryAction, Record } from '@holochain/client';
 
 import { QueryFilter } from '../../../types';
-import { getAllAuthoredHeaders } from '../../cell/source-chain/get';
+import { getAllAuthoredActions } from '../../cell/source-chain/get';
 import { HostFn, HostFnWorkspace } from '../host-fn';
 
-export type QueryFn = (filter: QueryFilter) => Promise<Array<Element>>;
+export type QueryFn = (filter: QueryFilter) => Promise<Array<Record>>;
 
-// Creates a new Create header and its entry in the source chain
+// Creates a new Create action and its entry in the source chain
 export const query: HostFn<QueryFn> =
   (workspace: HostFnWorkspace): QueryFn =>
-  async (filter): Promise<Array<Element>> => {
-    const authoredHeaders = getAllAuthoredHeaders(workspace.state);
+  async (filter): Promise<Array<Record>> => {
+    const authoredActions = getAllAuthoredActions(workspace.state);
 
-    return authoredHeaders.map(header => {
+    return authoredActions.map(action => {
       let entry = undefined;
 
-      if ((header.header.content as NewEntryHeader).entry_hash) {
+      if ((action.hashed.content as NewEntryAction).entry_hash) {
         entry = workspace.state.CAS.get(
-          (header.header.content as NewEntryHeader).entry_hash
+          (action.hashed.content as NewEntryAction).entry_hash
         );
       }
 
       return {
-        signed_header: header,
+        signed_action: action,
         entry,
       };
     });

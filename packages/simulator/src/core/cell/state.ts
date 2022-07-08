@@ -1,5 +1,4 @@
 import {
-  deserializeHash,
   DhtOpHash,
   DhtOpHashB64,
   Dictionary,
@@ -9,9 +8,9 @@ import {
   AgentPubKey,
   DhtOp,
   DnaHash,
-  HeaderHash,
+  ActionHash,
   HoloHash,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 import { location } from '../../processors/hash';
 import { HoloHashMap } from '../../processors/holo-hash-map';
 import { contains, DhtArc } from '../network/dht_arc';
@@ -20,7 +19,7 @@ import { Metadata } from './state/metadata';
 export interface CellState {
   dnaHash: DnaHash;
   agentPubKey: AgentPubKey;
-  sourceChain: Array<HeaderHash>;
+  sourceChain: Array<ActionHash>;
   CAS: HoloHashMap<any>;
   metadata: Metadata; // For the moment only DHT shard
   integratedDHTOps: HoloHashMap<IntegratedDhtOpsValue>; // Key is the hash of the DHT op

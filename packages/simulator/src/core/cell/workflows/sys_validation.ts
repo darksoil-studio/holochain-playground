@@ -2,14 +2,14 @@ import {
   AppEntryType,
   Create,
   Entry,
-  Header,
-  HeaderType,
-  NewEntryHeader,
+  Action,
+  ActionType,
+  NewEntryAction,
   Signature,
   Update,
   AnyDhtHash,
-} from '@holochain/conductor-api';
-import { Element } from '@holochain-open-dev/core-types';
+  Record,
+} from '@holochain/client';
 
 import { ValidationLimboStatus } from '../state';
 import { getValidationLimboDhtOps } from '../dht/get';
@@ -23,16 +23,17 @@ import {
   check_entry_hash,
   check_entry_size,
   check_entry_type,
-  check_new_entry_header,
+  check_new_entry_action,
   check_not_private,
-  check_prev_header,
+  check_prev_action,
   check_prev_seq,
   check_prev_timestamp,
   check_update_reference,
-  verify_header_signature,
+  verify_action_signature,
 } from '../sys_validate';
 import { GetStrategy } from '../../../types';
 import { Cascade } from '../cascade/cascade';
+import { extractEntry } from '../utils';
 
 // From https://github.com/holochain/holochain/blob/develop/crates/holochain/src/core/workflow/sys_validation_workflow.rs
 export const sys_validation = async (
@@ -70,34 +71,34 @@ export function sys_validation_task(): SysValidationWorkflow {
 
 function validate_op() {}
 
-export async function sys_validate_element(
-  element: Element,
+export async function sys_validate_record(
+  record: Record,
   workspace: Workspace,
   network: P2pCell
 ): Promise<void | DepsMissing> {
   try {
     const isNotCounterfeit = await counterfeit_check(
-      element.signed_header.signature,
-      element.signed_header.header.content
+      record.signed_action.signature,
+      record.signed_action.hashed.content
     );
     if (!isNotCounterfeit)
-      throw new Error(`Trying to validate counterfeited element`);
+      throw new Error(`Trying to validate counterfeited record`);
   } catch (e) {
-    throw new Error(`Trying to validate counterfeited element`);
+    throw new Error(`Trying to validate counterfeited record`);
   }
 
-  let maybeDepsMissing = await store_element(
-    element.signed_header.header.content,
+  let maybeDepsMissing = await store_record(
+    record.signed_action.hashed.content,
     workspace,
     network
   );
   if (maybeDepsMissing) return maybeDepsMissing;
 
-  const entry_type = (element.signed_header.header.content as NewEntryHeader)
+  const entry_type = (record.signed_action.hashed.content as NewEntryAction)
     .entry_type;
 
   if (
-    element.entry &&
+    record.entry &&
     (
       entry_type as {
         App: AppEntryType;
@@ -110,8 +111,8 @@ export async function sys_validate_element(
     ).App.visibility === 'Public'
   ) {
     maybeDepsMissing = await store_entry(
-      element.signed_header.header.content as NewEntryHeader,
-      element.entry,
+      record.signed_action.hashed.content as NewEntryAction,
+      extractEntry(record),
       workspace,
       network
     );
@@ -125,11 +126,11 @@ export async function sys_validate_element(
 /// Ops that fail this check should be dropped.
 export async function counterfeit_check(
   signature: Signature,
-  header: Header
+  action: Action
 ): Promise<Boolean> {
   return (
-    (await verify_header_signature(signature, header)) &&
-    (await author_key_is_valid(header.author))
+    (await verify_action_signature(signature, action)) &&
+    (await author_key_is_valid(action.author))
   );
 }
 
@@ -137,70 +138,70 @@ export interface DepsMissing {
   depsHashes: Array<AnyDhtHash>;
 }
 
-export async function store_element(
-  header: Header,
+export async function store_record(
+  action: Action,
   workspace: Workspace,
   network: P2pCell
 ): Promise<void | DepsMissing> {
-  check_prev_header(header);
+  check_prev_action(action);
 
-  const prev_header_hash = (header as Create).prev_header;
-  if (prev_header_hash) {
-    const prev_header = await new Cascade(
+  const prev_action_hash = (action as Create).prev_action;
+  if (prev_action_hash) {
+    const prev_action = await new Cascade(
       workspace.state,
       workspace.p2p
-    ).retrieve_header(prev_header_hash, {
+    ).retrieve_action(prev_action_hash, {
       strategy: GetStrategy.Contents,
     });
 
-    if (!prev_header)
+    if (!prev_action)
       return {
-        depsHashes: [prev_header_hash],
+        depsHashes: [prev_action_hash],
       };
 
-    check_prev_timestamp(header, prev_header.header.content);
-    check_prev_seq(header, prev_header.header.content);
+    check_prev_timestamp(action, prev_action.hashed.content);
+    check_prev_seq(action, prev_action.hashed.content);
   }
 }
 
 export async function store_entry(
-  header: NewEntryHeader,
+  action: NewEntryAction,
   entry: Entry,
   workspace: Workspace,
   network: P2pCell
 ): Promise<void | DepsMissing> {
-  check_entry_type(header.entry_type, entry);
-  const appEntryType = (header.entry_type as { App: AppEntryType }).App;
+  check_entry_type(action.entry_type, entry);
+  const appEntryType = (action.entry_type as { App: AppEntryType }).App;
   if (appEntryType) {
     const entry_def = check_app_entry_type(appEntryType, workspace.dna);
     check_not_private(entry_def);
   }
 
-  check_entry_hash(header.entry_hash, entry);
+  check_entry_hash(action.entry_hash, entry);
   check_entry_size(entry);
 
-  if (header.type === HeaderType.Update) {
-    const signed_header = await new Cascade(
+  if (action.type === ActionType.Update) {
+    const signed_action = await new Cascade(
       workspace.state,
       workspace.p2p
-    ).retrieve_header(header.original_header_address, {
+    ).retrieve_action(action.original_action_address, {
       strategy: GetStrategy.Contents,
     });
-    if (!signed_header) {
+    if (!signed_action) {
       return {
-        depsHashes: [header.original_header_address],
+        depsHashes: [action.original_action_address],
       };
     }
 
-    update_check(header, signed_header.header.content);
+    update_check(action, signed_action.hashed.content);
   }
 }
 
-function update_check(entry_update: Update, original_header: Header): void {
-  check_new_entry_header(original_header);
+function update_check(entry_update: Update, original_action: Action): void {
+  check_new_entry_action(original_action);
 
-  if (!(original_header as NewEntryHeader).entry_type)
-    throw new Error(`Trying to update a header that didn't create any entry`);
+  if (!(original_action as NewEntryAction).entry_type)
+    throw new Error(`Trying to update a action that didn't create any entry`);
 
-  check_update_reference(entry_update, original_header as NewEntryHeader);
+  check_update_reference(entry_update, original_action as NewEntryAction);
 }

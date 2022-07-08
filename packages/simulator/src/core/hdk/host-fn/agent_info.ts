@@ -1,4 +1,4 @@
-import { AgentPubKey } from '@holochain/conductor-api';
+import { AgentPubKey } from '@holochain/client';
 import { getCellId } from '../../cell/source-chain/utils';
 import { HostFn, HostFnWorkspace } from '../host-fn';
 
@@ -9,7 +9,7 @@ export interface AgentInfo {
 
 export type AgentInfoFn = () => Promise<AgentInfo>;
 
-// Creates a new Create header and its entry in the source chain
+// Creates a new Create action and its entry in the source chain
 export const agent_info: HostFn<AgentInfoFn> =
   (worskpace: HostFnWorkspace): AgentInfoFn =>
   async (): Promise<AgentInfo> => {

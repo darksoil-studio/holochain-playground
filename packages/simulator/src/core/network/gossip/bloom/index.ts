@@ -48,7 +48,7 @@ export class SimpleBloomMod {
     const pretendValid =
       this.p2pCell.cell.conductor.badAgent &&
       this.p2pCell.cell.conductor.badAgent.config
-        .pretend_invalid_elements_are_valid;
+        .pretend_invalid_records_are_valid;
 
     const badActions = pretendValid ? [] : getBadActions(state);
 

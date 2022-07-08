@@ -1,25 +1,27 @@
-import { Element } from '@holochain-open-dev/core-types';
-import { HeaderHash, Entry, EntryType } from '@holochain/conductor-api';
+import { ActionHash, Entry, EntryType, Record } from '@holochain/client';
 
 import {
   buildCreate,
   buildShh,
-} from '../../../../cell/source-chain/builder-headers';
-import { putElement } from '../../../../cell/source-chain/put';
+} from '../../../../cell/source-chain/builder-actions';
+import { putRecord } from '../../../../cell/source-chain/put';
 import { HostFnWorkspace } from '../../../host-fn';
 
 export function common_create(
   worskpace: HostFnWorkspace,
   entry: Entry,
   entry_type: EntryType
-): HeaderHash {
+): ActionHash {
   const create = buildCreate(worskpace.state, entry, entry_type);
 
-  const element: Element = {
-    signed_header: buildShh(create),
-    entry,
+  const record: Record = {
+    signed_action: buildShh(create),
+    entry: {
+      Present: entry
+    }
   };
-  putElement(element)(worskpace.state);
 
-  return element.signed_header.header.hash;
+  putRecord(record)(worskpace.state);
+
+  return record.signed_action.hashed.hash;
 }

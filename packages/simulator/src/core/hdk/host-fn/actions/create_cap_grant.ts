@@ -3,19 +3,19 @@ import {
   ZomeCallCapGrant,
   CapSecret,
   AgentPubKey,
-  HeaderHash,
-} from '@holochain/conductor-api';
+  ActionHash,
+} from '@holochain/client';
 import { HostFn, HostFnWorkspace } from '../../host-fn';
 import { common_create } from './common/create';
 
 export type CreateCapGrantFn = (
   cap_grant: ZomeCallCapGrant
-) => Promise<HeaderHash>;
+) => Promise<ActionHash>;
 
-// Creates a new Create header and its entry in the source chain
+// Creates a new Create action and its entry in the source chain
 export const create_cap_grant: HostFn<CreateCapGrantFn> =
   (worskpace: HostFnWorkspace): CreateCapGrantFn =>
-  async (cap_grant: ZomeCallCapGrant): Promise<HeaderHash> => {
+  async (cap_grant: ZomeCallCapGrant): Promise<ActionHash> => {
     if (
       (
         cap_grant.access as {

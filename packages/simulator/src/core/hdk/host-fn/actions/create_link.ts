@@ -1,22 +1,21 @@
-import { Element } from '@holochain-open-dev/core-types';
-import { EntryHash, HeaderHash } from '@holochain/conductor-api';
+import { EntryHash, ActionHash, Record } from '@holochain/client';
 import {
   buildCreateLink,
   buildShh,
-} from '../../../cell/source-chain/builder-headers';
-import { putElement } from '../../../cell/source-chain/put';
+} from '../../../cell/source-chain/builder-actions';
+import { putRecord } from '../../../cell/source-chain/put';
 import { HostFn, HostFnWorkspace } from '../../host-fn';
 
 export type CreateLinkFn = (args: {
   base: EntryHash;
   target: EntryHash;
   tag: any;
-}) => Promise<HeaderHash>;
+}) => Promise<ActionHash>;
 
-// Creates a new CreateLink header in the source chain
+// Creates a new CreateLink action in the source chain
 export const create_link: HostFn<CreateLinkFn> =
   (worskpace: HostFnWorkspace, zome_id: number): CreateLinkFn =>
-  async (args): Promise<HeaderHash> => {
+  async (args): Promise<ActionHash> => {
     const createLink = buildCreateLink(
       worskpace.state,
       zome_id,
@@ -25,11 +24,11 @@ export const create_link: HostFn<CreateLinkFn> =
       args.tag
     );
 
-    const element: Element = {
-      signed_header: buildShh(createLink),
+    const element: Record = {
+      signed_action: buildShh(createLink),
       entry: undefined,
     };
-    putElement(element)(worskpace.state);
+    putRecord(element)(worskpace.state);
 
-    return element.signed_header.header.hash;
+    return element.signed_action.hashed.hash;
   };

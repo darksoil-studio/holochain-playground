@@ -1,14 +1,10 @@
-import {
-  serializeHash,
-  Dictionary,
-  deserializeHash,
-} from '@holochain-open-dev/core-types';
+import { serializeHash } from '@holochain-open-dev/utils';
 import {
   AgentPubKey,
   CellId,
   DnaHash,
   HoloHash,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 // @ts-ignore
 import blake from 'blakejs';
 import { encode } from '@msgpack/msgpack';

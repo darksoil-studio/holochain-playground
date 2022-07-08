@@ -24,7 +24,7 @@ import { adminApi } from './admin-api';
 import { CallFns } from '../helpers/call-functions';
 import { StoreSubscriber } from 'lit-svelte-stores';
 import { derived } from 'svelte/store';
-import { serializeHash } from '@holochain-open-dev/core-types';
+import { serializeHash } from '@holochain-open-dev/utils';
 import { CellStore, ConductorStore } from '../../store/playground-store';
 import isEqual from 'lodash-es/isEqual';
 import { PlaygroundMode } from '../../store/mode';
@@ -121,10 +121,10 @@ export class ConductorAdmin extends PlaygroundElement {
             <span>uid: "${cell.dna.uid}"</span>
             <div class="row">
             <span>Properties:</span>
-            <json-viewer style="margin-left: 8px">  
+            <json-viewer style="margin-left: 8px">
             <script type="application/json">
             ${JSON.stringify(cell.dna.properties)}
-            </script> 
+            </script>
             </json-viewer>
             </div>
             </div>
@@ -192,13 +192,13 @@ export class ConductorAdmin extends PlaygroundElement {
         >
           <vaadin-grid-column
             path="dna"
-            header="Dna"
+            action="Dna"
             id="dna-column"
           ></vaadin-grid-column>
           <vaadin-grid-column
             id="agent-pub-key-column"
             path="agentPubKey"
-            header="Agent Pub Key"
+            action="Agent Pub Key"
           ></vaadin-grid-column>
           ${this.isSimulated
             ? html`

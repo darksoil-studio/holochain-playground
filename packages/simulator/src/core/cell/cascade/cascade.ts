@@ -1,19 +1,19 @@
 import {
   Details,
   DetailsType,
-  Dictionary,
-  Element,
-  ElementDetails,
+  RecordDetails,
   EntryDetails,
 } from '@holochain-open-dev/core-types';
 import {
   AnyDhtHash,
   Entry,
   EntryHash,
-  HeaderHash,
-  NewEntryHeader,
-  SignedHeaderHashed,
-} from '@holochain/conductor-api';
+  ActionHash,
+  NewEntryAction,
+  SignedActionHashed,
+  Record,
+  RecordEntry,
+} from '@holochain/client';
 
 
 import { areEqual, getHashType, HashType } from '../../../processors/hash';
@@ -24,7 +24,7 @@ import { computeDhtStatus, getEntryDhtStatus, getLiveLinks } from '../dht/get';
 import { CellState } from '../state';
 import { Authority } from './authority';
 import {
-  GetElementResponse,
+  GetRecordResponse,
   GetEntryResponse,
   GetLinksResponse,
   Link,
@@ -38,27 +38,27 @@ export class Cascade {
   constructor(protected state: CellState, protected p2p: P2pCell) {}
 
   // TODO refactor when sqlite gets merged
-  public async retrieve_header(
-    hash: HeaderHash,
+  public async retrieve_action(
+    hash: ActionHash,
     options: GetOptions
-  ): Promise<SignedHeaderHashed | undefined> {
+  ): Promise<SignedActionHashed | undefined> {
     if (getHashType(hash) !== HashType.HEADER)
       throw new Error(
-        `Trying to retrieve a header with a hash of another type`
+        `Trying to retrieve a action with a hash of another type`
       );
 
     const isPresent = this.state.CAS.get(hash);
 
     // TODO only return local if GetOptions::content() is given
     if (isPresent && options.strategy === GetStrategy.Contents) {
-      const signed_header = this.state.CAS.get(hash);
-      return signed_header;
+      const signed_action = this.state.CAS.get(hash);
+      return signed_action;
     }
 
     const result = await this.p2p.get(hash, options);
 
-    if (result && (result as GetElementResponse).signed_header) {
-      return (result as GetElementResponse).signed_header;
+    if (result && (result as GetRecordResponse).signed_action) {
+      return (result as GetRecordResponse).signed_action;
     } else return undefined;
   }
 
@@ -87,7 +87,7 @@ export class Cascade {
   public async dht_get(
     hash: AnyDhtHash,
     options: GetOptions
-  ): Promise<Element | undefined> {
+  ): Promise<Record | undefined> {
     // TODO rrDHT arcs
     const authority = new Authority(this.state, this.p2p);
 
@@ -99,11 +99,11 @@ export class Cascade {
 
       if (hashType === HashType.ENTRY) {
         const entry = this.state.CAS.get(hash);
-        const signed_header = this.state.CAS.values().find(
-          header =>
-            (header as SignedHeaderHashed).header &&
+        const signed_action = this.state.CAS.values().find(
+          action =>
+            (action as SignedActionHashed).hashed &&
             areEqual(
-              (header as SignedHeaderHashed<NewEntryHeader>).header.content
+              (action as SignedActionHashed<NewEntryAction>).hashed.content
                 .entry_hash,
               hash
             )
@@ -111,19 +111,19 @@ export class Cascade {
 
         return {
           entry,
-          signed_header,
+          signed_action,
         };
       }
 
       if (hashType === HashType.HEADER) {
-        const signed_header = this.state.CAS.get(hash);
-        const entry_hash = (signed_header as SignedHeaderHashed<NewEntryHeader>)
-          .header.content.entry_hash;
+        const signed_action = this.state.CAS.get(hash);
+        const entry_hash = (signed_action as SignedActionHashed<NewEntryAction>)
+          .hashed.content.entry_hash;
 
         const entry = entry_hash ? this.state.CAS.get(entry_hash) : undefined;
         return {
           entry,
-          signed_header,
+          signed_action,
         };
       }
     }
@@ -132,15 +132,19 @@ export class Cascade {
 
     if (!result) return undefined;
 
-    if ((result as GetElementResponse).signed_header) {
+    if ((result as GetRecordResponse).signed_action) {
       return {
-        entry: (result as GetElementResponse).maybe_entry,
-        signed_header: (result as GetElementResponse).signed_header,
+        entry: {
+          Present: (result as GetRecordResponse).maybe_entry,
+        },
+        signed_action: (result as GetRecordResponse).signed_action,
       };
     } else {
       return {
-        signed_header: (result as GetEntryResponse).live_headers[0],
-        entry: (result as GetEntryResponse).entry,
+        signed_action: (result as GetEntryResponse).live_actions[0],
+        entry: {
+          Present: (result as GetEntryResponse).entry,
+        }
       };
     }
   }
@@ -159,13 +163,13 @@ export class Cascade {
         content: entryDetails,
       };
     } else if (getHashType(hash) === HashType.HEADER) {
-      const elementDetails = await this.getHeaderDetails(hash, options);
+      const recordDetails = await this.getActionDetails(hash, options);
 
-      if (!elementDetails) return undefined;
+      if (!recordDetails) return undefined;
 
       return {
-        type: DetailsType.Element,
-        content: elementDetails,
+        type: DetailsType.Record,
+        content: recordDetails,
       };
     }
 
@@ -190,48 +194,50 @@ export class Cascade {
     const result = await this.p2p.get(entryHash, options);
 
     if (!result) return undefined;
-    if ((result as GetEntryResponse).live_headers === undefined)
+    if ((result as GetEntryResponse).live_actions === undefined)
       throw new Error('Unreachable');
 
     const getEntryFull = result as GetEntryResponse;
 
-    const allHeaders = [
+    const allActions = [
       ...getEntryFull.deletes,
       ...getEntryFull.updates,
-      ...getEntryFull.live_headers,
+      ...getEntryFull.live_actions,
     ];
 
-    const { rejected_headers, entry_dht_status } = computeDhtStatus(allHeaders);
+    const { rejected_actions, entry_dht_status } = computeDhtStatus(allActions);
 
     return {
       entry: getEntryFull.entry,
-      headers: getEntryFull.live_headers,
+      actions: getEntryFull.live_actions,
       deletes: getEntryFull.deletes,
       updates: getEntryFull.updates,
-      rejected_headers,
+      rejected_actions,
       entry_dht_status,
     };
   }
 
-  async getHeaderDetails(
-    headerHash: HeaderHash,
+  async getActionDetails(
+    actionHash: ActionHash,
     options: GetOptions
-  ): Promise<ElementDetails | undefined> {
-    const result = await this.p2p.get(headerHash, options);
+  ): Promise<RecordDetails | undefined> {
+    const result = await this.p2p.get(actionHash, options);
 
     if (!result) return undefined;
-    if ((result as GetElementResponse).validation_status === undefined)
+    if ((result as GetRecordResponse).validation_status === undefined)
       throw new Error('Unreachable');
 
-    const response = result as GetElementResponse;
+    const response = result as GetRecordResponse;
 
-    const element: Element = {
-      entry: response.maybe_entry,
-      signed_header: response.signed_header,
+    const record: Record = {
+      entry: {
+        Present: response.maybe_entry,
+      },
+      signed_action: response.signed_action,
     };
 
     return {
-      element,
+      record,
       deletes: response.deletes,
       updates: response.updates,
       validation_status: response.validation_status,

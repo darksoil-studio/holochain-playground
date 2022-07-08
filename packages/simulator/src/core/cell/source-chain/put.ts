@@ -1,19 +1,21 @@
 import { CellState } from '../state';
-import { Element } from '@holochain-open-dev/core-types';
-import { hashEntry } from '../utils';
+import { Record } from '@holochain/client';
+import { extractEntry, hashEntry } from '../utils';
 
-export const putElement =
-  (element: Element) =>
+export const putRecord =
+  (record: Record) =>
   (state: CellState): void => {
-    // Put header in CAS
-    const headerHash = element.signed_header.header.hash;
-    state.CAS.put(headerHash, element.signed_header);
+    // Put action in CAS
+    const actionHash = record.signed_action.hashed.hash;
+    state.CAS.put(actionHash, record.signed_action);
 
     // Put entry in CAS if it exist
-    if (element.entry) {
-      const entryHash = hashEntry(element.entry);
-      state.CAS.put(entryHash, element.entry);
+    if (record.entry) {
+      const entryHash = hashEntry(extractEntry(record));
+      state.CAS.put(entryHash, extractEntry(record));
     }
 
-    state.sourceChain.push(headerHash);
+
+
+    state.sourceChain.push(actionHash);
   };

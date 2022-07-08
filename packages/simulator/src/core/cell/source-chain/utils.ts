@@ -1,69 +1,64 @@
 import {
-  HeaderHashB64,
-  Element,
-  Dictionary,
-  DnaHashB64,
-} from '@holochain-open-dev/core-types';
-import {
   AgentPubKey,
   Dna,
-  HeaderType,
+  ActionType,
   CellId,
   DhtOp,
-  SignedHeaderHashed,
-  NewEntryHeader,
+  SignedActionHashed,
+  NewEntryAction,
   Delete,
   ZomeCallCapGrant,
   Update,
   Entry,
   CapSecret,
   DnaHash,
-  HeaderHash,
-} from '@holochain/conductor-api';
+  ActionHash,
+  Record,
+} from '@holochain/client';
 import { areEqual } from '../../../processors/hash';
 
 import { HoloHashMap } from '../../../processors/holo-hash-map';
 import { CellState } from '../state';
-import { getAllAuthoredHeaders } from './get';
+import { getAllAuthoredActions } from './get';
 
-export function getTipOfChain(cellState: CellState): HeaderHash {
+export function getTipOfChain(cellState: CellState): ActionHash {
   return cellState.sourceChain[cellState.sourceChain.length - 1];
 }
 
 export function getAuthor(cellState: CellState): AgentPubKey {
-  return getHeaderAt(cellState, 0).header.content.author;
+  return getActionAt(cellState, 0).hashed.content.author;
 }
 
 export function getDnaHash(state: CellState): DnaHash {
-  const firstHeaderHash = state.sourceChain[state.sourceChain.length - 1];
+  const firstActionHash = state.sourceChain[state.sourceChain.length - 1];
 
-  const dna: SignedHeaderHashed<Dna> = state.CAS.get(firstHeaderHash);
-  return dna.header.content.hash;
+  const dna: SignedActionHashed<Dna> = state.CAS.get(firstActionHash);
+  return dna.hashed.content.hash;
 }
 
-export function getHeaderAt(
+export function getActionAt(
   cellState: CellState,
   index: number
-): SignedHeaderHashed {
-  const headerHash = cellState.sourceChain[index];
-  return cellState.CAS.get(headerHash);
+): SignedActionHashed {
+  const actionHash = cellState.sourceChain[index];
+  return cellState.CAS.get(actionHash);
 }
 
-export function getNextHeaderSeq(cellState: CellState): number {
+export function getNextActionSeq(cellState: CellState): number {
   return cellState.sourceChain.length;
 }
 
-export function getElement(state: CellState, headerHash: HeaderHash): Element {
-  const signed_header: SignedHeaderHashed = state.CAS.get(headerHash);
+export function getRecord(state: CellState, actionHash: ActionHash): Record {
+  const signed_action: SignedActionHashed = state.CAS.get(actionHash);
 
   let entry;
   if (
-    signed_header.header.content.type == HeaderType.Create ||
-    signed_header.header.content.type == HeaderType.Update
+    signed_action.hashed.content.type == ActionType.Create ||
+    signed_action.hashed.content.type == ActionType.Update
   ) {
-    entry = state.CAS.get(signed_header.header.content.entry_hash);
+    entry = state.CAS.get(signed_action.hashed.content.entry_hash);
   }
-  return { signed_header, entry };
+  return { signed_action, entry };
 }
 
 export function getCellId(state: CellState): CellId {
@@ -93,45 +88,45 @@ export function valid_cap_grant(
 ): boolean {
   if (areEqual(provenance, getCellId(state)[1])) return true;
 
-  const aliveCapGrantsHeaders: HoloHashMap<SignedHeaderHashed<NewEntryHeader>> =
+  const aliveCapGrantsActions: HoloHashMap<SignedActionHashed<NewEntryAction>> =
     new HoloHashMap();
 
-  const allHeaders = getAllAuthoredHeaders(state);
+  const allActions = getAllAuthoredActions(state);
 
-  for (const header of allHeaders) {
-    if (isCapGrant(header)) {
-      aliveCapGrantsHeaders.put(
-        header.header.hash,
-        header as SignedHeaderHashed<NewEntryHeader>
+  for (const action of allActions) {
+    if (isCapGrant(action)) {
+      aliveCapGrantsActions.put(
+        action.hashed.hash,
+        action as SignedActionHashed<NewEntryAction>
       );
     }
   }
 
-  for (const header of allHeaders) {
-    const headerContent = header.header.content;
+  for (const action of allActions) {
+    const actionContent = action.hashed.content;
     if (
-      (headerContent as Update).original_header_address &&
-      aliveCapGrantsHeaders.has(
-        (headerContent as Update).original_header_address
+      (actionContent as Update).original_action_address &&
+      aliveCapGrantsActions.has(
+        (actionContent as Update).original_action_address
       )
     ) {
-      aliveCapGrantsHeaders.delete(
-        (headerContent as Update).original_header_address
+      aliveCapGrantsActions.delete(
+        (actionContent as Update).original_action_address
       );
     }
     if (
-      (headerContent as Delete).deletes_address &&
-      aliveCapGrantsHeaders.has((headerContent as Delete).deletes_address)
+      (actionContent as Delete).deletes_address &&
+      aliveCapGrantsActions.has((actionContent as Delete).deletes_address)
     ) {
-      aliveCapGrantsHeaders.delete((headerContent as Delete).deletes_address);
+      aliveCapGrantsActions.delete((actionContent as Delete).deletes_address);
     }
   }
 
-  const aliveCapGrants: Array<ZomeCallCapGrant> = aliveCapGrantsHeaders
+  const aliveCapGrants: Array<ZomeCallCapGrant> = aliveCapGrantsActions
     .values()
     .map(
-      headerHash =>
-        (state.CAS.get(headerHash.header.content.entry_hash) as Entry).entry
+      actionHash =>
+        (state.CAS.get(actionHash.hashed.content.entry_hash) as Entry).entry as ZomeCallCapGrant
     );
 
   return !!aliveCapGrants.find(capGrant =>
@@ -176,10 +171,10 @@ function isCapGrantValid(
   }
 }
 
-function isCapGrant(header: SignedHeaderHashed): boolean {
-  const content = header.header.content;
+function isCapGrant(action: SignedActionHashed): boolean {
+  const content = action.hashed.content;
   return !!(
-    (content as NewEntryHeader).entry_hash &&
-    (content as NewEntryHeader).entry_type === 'CapGrant'
+    (content as NewEntryAction).entry_hash &&
+    (content as NewEntryAction).entry_type === 'CapGrant'
   );
 }

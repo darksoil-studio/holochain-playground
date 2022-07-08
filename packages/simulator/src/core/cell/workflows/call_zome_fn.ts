@@ -1,10 +1,10 @@
-import { AgentPubKeyB64, Element } from '@holochain-open-dev/core-types';
 import {
   AgentPubKey,
-  HeaderType,
-  NewEntryHeader,
-  SignedHeaderHashed,
-} from '@holochain/conductor-api';
+  ActionType,
+  NewEntryAction,
+  SignedActionHashed,
+  Record,
+} from '@holochain/client';
 import { cloneDeep } from 'lodash-es';
 
 import { SimulatedZome } from '../../../dnas/simulated-dna';
@@ -23,7 +23,7 @@ import {
   run_validation_callback_direct,
 } from './app_validation';
 import { produce_dht_ops_task } from './produce_dht_ops';
-import { sys_validate_element } from './sys_validation';
+import { sys_validate_record } from './sys_validation';
 import { Workflow, WorkflowType, Workspace } from './workflows';
 
 /**
@@ -44,7 +44,7 @@ export const callZomeFn =
     if (!valid_cap_grant(workspace.state, zomeName, fnName, provenance, cap))
       throw new Error('Unauthorized Zome Call');
 
-    const currentHeader = getTipOfChain(workspace.state);
+    const currentAction = getTipOfChain(workspace.state);
     const chain_head_start_len = workspace.state.sourceChain.length;
 
     const zomeIndex = workspace.dna.zomes.findIndex(
@@ -74,52 +74,52 @@ export const callZomeFn =
     );
 
     let triggers: Array<Workflow<any, any>> = [];
-    if (!areEqual(getTipOfChain(contextState), currentHeader)) {
+    if (!areEqual(getTipOfChain(contextState), currentAction)) {
       // Do validation
       let i = chain_head_start_len;
 
-      const elementsToAppValidate = [];
+      const recordsToAppValidate = [];
 
       while (i < contextState.sourceChain.length) {
-        const headerHash = contextState.sourceChain[i];
-        const signed_header: SignedHeaderHashed =
-          contextState.CAS.get(headerHash);
-        const entry_hash = (signed_header.header.content as NewEntryHeader)
+        const actionHash = contextState.sourceChain[i];
+        const signed_action: SignedActionHashed =
+          contextState.CAS.get(actionHash);
+        const entry_hash = (signed_action.hashed.content as NewEntryAction)
           .entry_hash;
 
-        const element: Element = {
+        const record: Record = {
           entry: entry_hash ? contextState.CAS.get(entry_hash) : undefined,
-          signed_header,
+          signed_action,
         };
 
-        const depsMissing = await sys_validate_element(
-          element,
+        const depsMissing = await sys_validate_record(
+          record,
           { ...workspace, state: contextState },
           workspace.p2p
         );
         if (depsMissing)
           throw new Error(
-            `Could not validate a new element due to missing dependencies`
+            `Could not validate a new record due to missing dependencies`
           );
 
-        elementsToAppValidate.push(element);
+        recordsToAppValidate.push(record);
         i++;
       }
 
       if (shouldValidateBeforePublishing(workspace.badAgentConfig)) {
-        for (const element of elementsToAppValidate) {
+        for (const record of recordsToAppValidate) {
           const outcome = await run_app_validation(
             zome,
-            element,
+            record,
             contextState,
             workspace
           );
           if (!outcome.resolved)
             throw new Error(
-              'Error creating a new element: missing dependencies'
+              'Error creating a new record: missing dependencies'
             );
           if (!outcome.valid)
-            throw new Error('Error creating a new element: invalid');
+            throw new Error('Error creating a new record: invalid');
         }
       }
 
@@ -173,49 +173,49 @@ function shouldValidateBeforePublishing(
 
 async function run_app_validation(
   zome: SimulatedZome,
-  element: Element,
+  record: Record,
   contextState: CellState,
   workspace: Workspace
 ): Promise<ValidationOutcome> {
-  const header = element.signed_header.header.content;
-  if (header.type === HeaderType.CreateLink) {
+  const action = record.signed_action.hashed.content;
+  if (action.type === ActionType.CreateLink) {
     const cascade = new Cascade(contextState, workspace.p2p);
-    const baseEntry = await cascade.retrieve_entry(header.base_address, {
+    const baseEntry = await cascade.retrieve_entry(action.base_address, {
       strategy: GetStrategy.Contents,
     });
     if (!baseEntry) {
       return {
         resolved: false,
-        depsHashes: [header.base_address],
+        depsHashes: [action.base_address],
       };
     }
-    const targetEntry = await cascade.retrieve_entry(header.target_address, {
+    const targetEntry = await cascade.retrieve_entry(action.target_address, {
       strategy: GetStrategy.Contents,
     });
     if (!targetEntry) {
       return {
         resolved: false,
-        depsHashes: [header.target_address],
+        depsHashes: [action.target_address],
       };
     }
     return run_create_link_validation_callback(
       zome,
-      header,
+      action,
       baseEntry,
       targetEntry,
       workspace
     );
-  } else if (header.type === HeaderType.DeleteLink) {
-    return run_delete_link_validation_callback(zome, header, workspace);
+  } else if (action.type === ActionType.DeleteLink) {
+    return run_delete_link_validation_callback(zome, action, workspace);
   } else if (
-    header.type === HeaderType.Create ||
-    header.type === HeaderType.Update ||
-    header.type === HeaderType.Delete
+    action.type === ActionType.Create ||
+    action.type === ActionType.Update ||
+    action.type === ActionType.Delete
   ) {
     return run_validation_callback_direct(
       zome,
       workspace.dna,
-      element,
+      record,
       workspace
     );
   }

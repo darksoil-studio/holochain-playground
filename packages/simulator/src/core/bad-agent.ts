@@ -3,7 +3,7 @@ import { CellMap, HoloHashMap } from '../processors/holo-hash-map';
 
 export interface BadAgentConfig {
   disable_validation_before_publish: boolean;
-  pretend_invalid_elements_are_valid: boolean;
+  pretend_invalid_records_are_valid: boolean;
 }
 
 export interface BadAgent {

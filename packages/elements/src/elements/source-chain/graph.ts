@@ -12,7 +12,7 @@ node {
   text-margin-x: 4px;
 }
 
-.header {
+.action {
   text-margin-x: -5px;
   text-halign: left;
 }

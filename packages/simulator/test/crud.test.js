@@ -11,22 +11,22 @@ describe('CRUD', () => {
 
     const cell = conductors[0].getAllCells()[0];
 
-    let headerHash = await conductors[0].callZomeFn({
+    let actionHash = await conductors[0].callZomeFn({
       cellId: cell.cellId,
       cap: null,
       fnName: 'create_entry',
       payload: { content: 'hi' },
       zome: 'demo_entries',
     });
-    
-    expect(headerHash).to.be.ok;
+
+    expect(actionHash).to.be.ok;
     await sleep(4000);
 
     const content = await conductors[0].callZomeFn({
       cellId: cell.cellId,
       cap: null,
       fnName: 'get',
-      payload: { hash: headerHash },
+      payload: { hash: actionHash },
       zome: 'demo_entries',
     });
 
@@ -50,7 +50,7 @@ describe('CRUD', () => {
         cap: null,
         fnName: 'update_entry',
         payload: {
-          original_header_address: entryHash,
+          original_action_address: entryHash,
           new_content: 'hi2',
         },
         zome: 'demo_entries',
@@ -65,7 +65,7 @@ describe('CRUD', () => {
       cap: null,
       fnName: 'update_entry',
       payload: {
-        original_header_address: headerHash,
+        original_action_address: actionHash,
         new_content: 'hi2',
       },
       zome: 'demo_entries',
@@ -78,7 +78,7 @@ describe('CRUD', () => {
       cap: null,
       fnName: 'delete_entry',
       payload: {
-        deletes_address: headerHash,
+        deletes_address: actionHash,
       },
       zome: 'demo_entries',
     });
@@ -92,7 +92,7 @@ describe('CRUD', () => {
       cap: null,
       fnName: 'get_details',
       payload: {
-        hash: headerHash,
+        hash: actionHash,
       },
       zome: 'demo_entries',
     });

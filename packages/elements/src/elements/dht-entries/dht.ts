@@ -9,13 +9,13 @@ import {
 import {
   HoloHash,
   DhtOp,
-  Header,
-  HeaderHash,
+  Action,
+  ActionHash,
   EntryHash,
   DhtOpType,
-  NewEntryHeader,
+  NewEntryAction,
   getDhtOpType,
-  getDhtOpHeader,
+  getDhtOpAction,
   getDhtOpEntry,
   CreateLink,
   DeleteLink,
@@ -23,7 +23,7 @@ import {
   Update,
   Entry,
   AppEntryType,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 
 function appendToArray<T>(map: HoloHashMap<T[]>, key: HoloHash, value: T) {
   if (!map.has(key)) map.put(key, []);
@@ -33,23 +33,23 @@ function appendToArray<T>(map: HoloHashMap<T[]>, key: HoloHash, value: T) {
 }
 
 export interface DhtSummary {
-  headers: HoloHashMap<Header>;
-  // Updated header -> header that updates
-  headerUpdates: HoloHashMap<HeaderHash[]>;
-  // Deleted header -> header that deletes
-  headerDeletes: HoloHashMap<HeaderHash[]>;
+  actions: HoloHashMap<Action>;
+  // Updated action -> action that updates
+  actionUpdates: HoloHashMap<ActionHash[]>;
+  // Deleted action -> action that deletes
+  actionDeletes: HoloHashMap<ActionHash[]>;
   entries: HoloHashMap<any>;
-  // Entry hash -> header that created that entry
-  headersByEntry: HoloHashMap<HeaderHash[]>;
+  // Entry hash -> action that created that entry
+  actionsByEntry: HoloHashMap<ActionHash[]>;
   entryLinks: HoloHashMap<
     Array<{
       target_address: EntryHash;
       tag: any;
-      add_link_hash: HeaderHash;
+      add_link_hash: ActionHash;
     }>
   >;
-  // Deleted add link -> header that deletes that
-  deletedAddLinks: HoloHashMap<HeaderHash[]>;
+  // Deleted add link -> action that deletes that
+  deletedAddLinks: HoloHashMap<ActionHash[]>;
   entryTypes: HoloHashMap<string>;
 }
 
@@ -57,92 +57,92 @@ export function summarizeDht(
   dhtShards: CellMap<DhtOp[]>,
   simulatedDna?: SimulatedDna
 ): DhtSummary {
-  // For every header hash, the types of Op that have been visited already
+  // For every action hash, the types of Op that have been visited already
   const visited = new HoloHashMap<string[]>();
 
-  const headers = new HoloHashMap<Header>();
-  // Updated header -> header that updates
-  const headerUpdates = new HoloHashMap<HeaderHash[]>();
-  // Deleted header -> header that deletes
-  const headerDeletes = new HoloHashMap<HeaderHash[]>();
+  const actions = new HoloHashMap<Action>();
+  // Updated action -> action that updates
+  const actionUpdates = new HoloHashMap<ActionHash[]>();
+  // Deleted action -> action that deletes
+  const actionDeletes = new HoloHashMap<ActionHash[]>();
   const entries = new HoloHashMap<any>();
-  // Entry hash -> header that created that entry
-  const headersByEntry = new HoloHashMap<HeaderHash[]>();
+  // Entry hash -> action that created that entry
+  const actionsByEntry = new HoloHashMap<ActionHash[]>();
   const entryLinks = new HoloHashMap<
     Array<{
       target_address: EntryHash;
       tag: any;
-      add_link_hash: HeaderHash;
+      add_link_hash: ActionHash;
     }>
   >();
-  // Deleted add link -> header that deletes that
-  const deletedAddLinks = new HoloHashMap<HeaderHash[]>();
+  // Deleted add link -> action that deletes that
+  const deletedAddLinks = new HoloHashMap<ActionHash[]>();
 
   const entryTypes = new HoloHashMap<string>();
   for (const shard of dhtShards.values()) {
     for (const dhtOp of shard) {
       const dhtOpType = getDhtOpType(dhtOp);
 
-      const header = getDhtOpHeader(dhtOp);
+      const action = getDhtOpAction(dhtOp);
 
-      const headerHash = hash(header, HashType.HEADER);
+      const actionHash = hash(action, HashType.HEADER);
 
-      if (!visited.has(headerHash)) {
-        visited.put(headerHash, []);
+      if (!visited.has(actionHash)) {
+        visited.put(actionHash, []);
       }
-      if (!visited.get(headerHash).includes(dhtOpType)) {
-        visited.put(headerHash, [...visited.get(headerHash), dhtOpType]);
+      if (!visited.get(actionHash).includes(dhtOpType)) {
+        visited.put(actionHash, [...visited.get(actionHash), dhtOpType]);
 
-        headers.put(headerHash, header);
+        actions.put(actionHash, action);
 
         if (dhtOpType === DhtOpType.StoreEntry) {
-          const entry_hash = (header as NewEntryHeader).entry_hash;
+          const entry_hash = (action as NewEntryAction).entry_hash;
           const entry = getDhtOpEntry(dhtOp);
           entries.put(entry_hash, entry);
-          appendToArray(headersByEntry, entry_hash, headerHash);
+          appendToArray(actionsByEntry, entry_hash, actionHash);
 
           const entryType = simulatedDna
             ? getEntryTypeString(
                 simulatedDna,
-                (header as NewEntryHeader).entry_type
+                (action as NewEntryAction).entry_type
               )
-            : getConnectedEntryType(header as NewEntryHeader, entry);
+            : getConnectedEntryType(action as NewEntryAction, entry);
           entryTypes.put(entry_hash, entryType);
         } else if (dhtOpType === DhtOpType.RegisterAddLink) {
-          const base_address = (header as CreateLink).base_address;
-          const target_address = (header as CreateLink).target_address;
-          const tag = (header as CreateLink).tag;
+          const base_address = (action as CreateLink).base_address;
+          const target_address = (action as CreateLink).target_address;
+          const tag = (action as CreateLink).tag;
           appendToArray(entryLinks, base_address, {
             tag,
             target_address,
-            add_link_hash: headerHash,
+            add_link_hash: actionHash,
           });
         } else if (dhtOpType === DhtOpType.RegisterRemoveLink) {
-          const add_link_hash = (header as DeleteLink).link_add_address;
-          appendToArray(deletedAddLinks, add_link_hash, headerHash);
+          const add_link_hash = (action as DeleteLink).link_add_address;
+          appendToArray(deletedAddLinks, add_link_hash, actionHash);
         } else if (
           dhtOpType === DhtOpType.RegisterDeletedBy ||
-          dhtOpType === DhtOpType.RegisterDeletedEntryHeader
+          dhtOpType === DhtOpType.RegisterDeletedEntryAction
         ) {
-          const deletedHeader = (header as Delete).deletes_address;
-          appendToArray(headerDeletes, deletedHeader, headerHash);
+          const deletedAction = (action as Delete).deletes_address;
+          appendToArray(actionDeletes, deletedAction, actionHash);
         } else if (
           dhtOpType === DhtOpType.RegisterUpdatedContent ||
-          dhtOpType === DhtOpType.RegisterUpdatedElement
+          dhtOpType === DhtOpType.RegisterUpdatedRecord
         ) {
-          const updatedHeader = (header as Update).original_header_address;
-          appendToArray(headerUpdates, updatedHeader, headerHash);
+          const updatedAction = (action as Update).original_action_address;
+          appendToArray(actionUpdates, updatedAction, actionHash);
         }
       }
     }
   }
 
   return {
-    headers,
-    headerUpdates,
-    headerDeletes,
+    actions,
+    actionUpdates,
+    actionDeletes,
     entries,
-    headersByEntry,
+    actionsByEntry,
     entryLinks,
     deletedAddLinks,
     entryTypes,
@@ -153,13 +153,13 @@ export function isEntryDeleted(
   summary: DhtSummary,
   entryHash: EntryHash
 ): boolean {
-  const headers = summary.headersByEntry.get(entryHash);
-  const aliveHeaders = headers.filter((h) => !summary.headerDeletes.has(h));
+  const actions = summary.actionsByEntry.get(entryHash);
+  const aliveActions = actions.filter((h) => !summary.actionDeletes.has(h));
 
-  return aliveHeaders.length === 0;
+  return aliveActions.length === 0;
 }
 
-function getConnectedEntryType(header: NewEntryHeader, entry: Entry): string {
+function getConnectedEntryType(action: NewEntryAction, entry: Entry): string {
   if (
     entry.entry_type !== 'App' &&
     (entry.entry_type as any) !== 'CounterSign'
@@ -167,7 +167,7 @@ function getConnectedEntryType(header: NewEntryHeader, entry: Entry): string {
     return entry.entry_type;
   }
   const appEntryType = (
-    header.entry_type as {
+    action.entry_type as {
       App: AppEntryType;
     }
   ).App;

@@ -1,4 +1,4 @@
-import { Element } from '@holochain-open-dev/core-types';
+import { Record, Entry } from '@holochain/client';
 import {
   derived,
   get,
@@ -14,9 +14,9 @@ import {
   AgentPubKey,
   DhtOp,
   AnyDhtHash,
-  NewEntryHeader,
+  NewEntryAction,
   FullIntegrationStateDump,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 import merge from 'lodash-es/merge';
 import isEqual from 'lodash-es/isEqual';
 import {
@@ -34,7 +34,7 @@ import { cellChanges } from './utils';
 export class ConnectedCellStore extends CellStore<PlaygroundMode.Connected> {
   _state: Readable<FullStateDump | undefined>;
 
-  sourceChain: Readable<Element[]>;
+  sourceChain: Readable<Record[]>;
   peers: Readable<AgentPubKey[]>;
   dhtShard: Readable<Array<DhtOp>>;
 
@@ -82,17 +82,20 @@ export class ConnectedCellStore extends CellStore<PlaygroundMode.Connected> {
       };
     });
 
+
     this.sourceChain = derived(this._state, (s) =>
       s
-        ? s.source_chain_dump.elements.map((e) => ({
-            signed_header: {
-              header: {
-                content: e.header,
-                hash: e.header_address,
+        ? s.source_chain_dump.records.map((r) => ({
+            signed_action: {
+              hashed: {
+                hash: r.action_address,
+                content: r.action,
               },
-              signature: e.signature,
+              signature: r.signature,
             },
-            entry: e.entry,
+            entry: {
+              Present: r.entry
+            }
           }))
         : []
     );
@@ -167,22 +170,28 @@ export class ConnectedPlaygroundStore extends PlaygroundStore<PlaygroundMode.Con
   }
 
   async setConductors(urls: string[]) {
+    console.log("Hello from the ConnectedPlaygroundStore");
+    console.log("Here are the urls: ", urls);
     urls = urls.map((u) => normalizeUrl(u));
 
     const currentUrls = get(this.conductors).map((c) => c.url);
-
+    console.log("currentUrls: ", currentUrls);
     const toAdd = urls.filter((u) => !currentUrls.includes(u));
+    console.log("toAdd: ", toAdd);
     const toRemove = currentUrls.filter((u) => !urls.includes(u));
+    console.log("toRemove: ", toRemove);
 
     const promises = toAdd.map(async (url) => {
       try {
         const ws = await AdminWebsocket.connect(url);
         return ws;
       } catch (e) {
+        console.log("COULD NOT CONNECT TO ADMINWEBSOCKET AT URL ", url);
         return false;
       }
     });
     const maybeAdminWss = await Promise.all(promises);
+    console.log("Here is the AdminWs: ", maybeAdminWss);
     const adminWss = maybeAdminWss.filter((ws) => !!ws) as AdminWebsocket[];
 
     if (toAdd.length > 0 || toRemove.length > 0) {

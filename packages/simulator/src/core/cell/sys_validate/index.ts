@@ -5,13 +5,13 @@ import {
   Entry,
   EntryHash,
   EntryType,
-  Header,
-  HeaderType,
-  NewEntryHeader,
+  Action,
+  ActionType,
+  NewEntryAction,
   Signature,
   Timestamp,
   Update,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 
 
 import { EntryDef, SimulatedDna } from '../../../dnas/simulated-dna';
@@ -21,10 +21,10 @@ import { hashEntry } from '../utils';
 
 // From https://github.com/holochain/holochain/blob/develop/crates/holochain/src/core/sys_validate.rs
 
-/// Verify the signature for this header
-export async function verify_header_signature(
+/// Verify the signature for this action
+export async function verify_action_signature(
   sig: Signature,
-  header: Header
+  action: Action
 ): Promise<boolean> {
   return true; // TODO: actually implement signatures
 }
@@ -38,20 +38,20 @@ export async function author_key_is_valid(
   return true;
 }
 
-export function check_prev_header(header: Header): void {
-  if (header.type === HeaderType.Dna) return;
-  if (header.header_seq <= 0)
-    throw new Error(`Non-Dna Header contains a 0 or less header_seq`);
-  if (!header.prev_header)
+export function check_prev_action(action: Action): void {
+  if (action.type === ActionType.Dna) return;
+  if (action.action_seq <= 0)
+    throw new Error(`Non-Dna Action contains a 0 or less action_seq`);
+  if (!action.prev_action)
     throw new Error(
-      `Non-Dna Header doesn't contain a reference to the previous header`
+      `Non-Dna Action doesn't contain a reference to the previous action`
     );
 }
 
-export function check_valid_if_dna(header: Header, metadata: Metadata): void {
-  if (metadata.misc_meta.get(header.author))
+export function check_valid_if_dna(action: Action, metadata: Metadata): void {
+  if (metadata.misc_meta.get(action.author))
     throw new Error(
-      `Trying to validate a Dna header when the agent already has committed other headers`
+      `Trying to validate a Dna action when the agent already has committed other actions`
     );
 }
 
@@ -64,31 +64,31 @@ export function check_spam() {
 }
 
 export function check_prev_timestamp(
-  header: Header,
-  prev_header: Header
+  action: Action,
+  prev_action: Action
 ): void {
   const tsToMillis = (t: Timestamp) => Math.floor(t / 1000);
 
-  if (tsToMillis(header.timestamp) <= tsToMillis(prev_header.timestamp)) {
+  if (tsToMillis(action.timestamp) <= tsToMillis(prev_action.timestamp)) {
     // TODO: find out why this isn't working and fix it
     /* throw new Error(
-      `New header must have a greater timestamp than any previous one`
+      `New action must have a greater timestamp than any previous one`
     ); */
   }
 }
 
-export function check_prev_seq(header: Header, prev_header: Header): void {
-  const prev_seq = (prev_header as Create).header_seq
-    ? (prev_header as Create).header_seq
+export function check_prev_seq(action: Action, prev_action: Action): void {
+  const prev_seq = (prev_action as Create).action_seq
+    ? (prev_action as Create).action_seq
     : 0;
   if (
     !(
-      (header as Create).header_seq > 0 &&
-      (header as Create).header_seq === prev_seq + 1
+      (action as Create).action_seq > 0 &&
+      (action as Create).action_seq === prev_seq + 1
     )
   )
     throw new Error(
-      `Immediate following header must have as header_seq the previous one +1`
+      `Immediate following action must have as action_seq the previous one +1`
     );
 }
 
@@ -135,10 +135,10 @@ export function check_entry_hash(hash: EntryHash, entry: Entry): void {
     throw new Error(`Entry hash is invalid`);
 }
 
-export function check_new_entry_header(header: Header): void {
-  if (!(header.type === HeaderType.Create || header.type === HeaderType.Update))
+export function check_new_entry_action(action: Action): void {
+  if (!(action.type === ActionType.Create || action.type === ActionType.Update))
     throw new Error(
-      `A header refering a new entry is not of type Create or Update`
+      `A action refering a new entry is not of type Create or Update`
     );
 }
 
@@ -158,11 +158,11 @@ export function check_tag_size(tag: string): void {
 
 export function check_update_reference(
   update: Update,
-  original_entry_header: NewEntryHeader
+  original_entry_action: NewEntryAction
 ): void {
   if (
     JSON.stringify(update.entry_type) !==
-    JSON.stringify(original_entry_header.entry_type)
+    JSON.stringify(original_entry_action.entry_type)
   )
     throw new Error(`An entry must be updated to the same entry type`);
 }

@@ -6,8 +6,8 @@ import {
   AgentPubKey,
   AnyDhtHash,
   DhtOp,
-  getDhtOpHeader,
-} from '@holochain/conductor-api';
+  getDhtOpAction,
+} from '@holochain/client';
 import { uniq } from 'lodash-es';
 import { distance, location, wrap } from '../../processors/hash';
 import { CellState } from '../cell';
@@ -69,7 +69,7 @@ export function getBadActions(state: CellState): Array<BadAction> {
       };
 
       if (myReceipt.validation_status === ValidationStatus.Rejected) {
-        badAction.badAgents.push(getDhtOpHeader(dhtOp).author);
+        badAction.badAgents.push(getDhtOpAction(dhtOp).author);
       }
       for (const [validatorAgent, receipt] of receipts.entries()) {
         if (receipt.validation_status !== myReceipt.validation_status) {

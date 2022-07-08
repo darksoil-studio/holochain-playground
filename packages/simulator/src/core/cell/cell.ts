@@ -1,9 +1,7 @@
 import { cloneDeep, uniqWith } from 'lodash-es';
 import {
   Dictionary,
-  Element,
   DhtOpHash,
-  serializeHash,
 } from '@holochain-open-dev/core-types';
 import {
   AgentPubKey,
@@ -12,7 +10,9 @@ import {
   DhtOp,
   DnaHash,
   EntryHash,
-} from '@holochain/conductor-api';
+  Record,
+  CapSecret,
+} from '@holochain/client';
 
 import { GetLinksOptions, GetOptions } from '../../types';
 import { Conductor } from '../conductor';
@@ -38,9 +38,8 @@ import {
   app_validation_task,
   run_agent_validation_callback,
 } from './workflows/app_validation';
-import { getSourceChainElements } from './source-chain/get';
+import { getSourceChainRecords } from './source-chain/get';
 import { publish_dht_ops_task } from './workflows/publish_dht_ops';
-import { CapSecret } from '@holochain/conductor-api';
 
 export type CellSignal = 'after-workflow-executed' | 'before-workflow-executed';
 export type CellSignalListener = (payload: any) => void;
@@ -165,7 +164,7 @@ export class Cell {
     if (hashType === HashType.ENTRY || hashType === HashType.AGENT) {
       return authority.handle_get_entry(dht_hash, options);
     } else if (hashType === HashType.HEADER) {
-      return authority.handle_get_element(dht_hash, options);
+      return authority.handle_get_record(dht_hash, options);
     }
     return undefined;
   }
@@ -275,9 +274,9 @@ export class Cell {
   }
 
   // Check if the agent we are trying to connect with passes the membrane rules for this Dna
-  async handle_check_agent(firstElements: Element[]): Promise<void> {
+  async handle_check_agent(firstRecords: Record[]): Promise<void> {
     const result = await this.workflowExecutor.execute(
-      () => run_agent_validation_callback(this.buildWorkspace(), firstElements),
+      () => run_agent_validation_callback(this.buildWorkspace(), firstRecords),
       app_validation_task(true)
     );
 

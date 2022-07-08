@@ -1,4 +1,4 @@
-import { Update } from '@holochain/conductor-api';
+import { Update } from '@holochain/client';
 import { areEqual } from '../processors/hash';
 
 import { GetStrategy } from '../types';
@@ -52,14 +52,14 @@ export const demoEntriesZome: SimulatedZome = {
     update_entry: {
       call:
         ({ update_entry }) =>
-        ({ original_header_address, new_content }) => {
-          return update_entry(original_header_address, {
+        ({ original_action_address, new_content }) => {
+          return update_entry(original_action_address, {
             content: new_content,
             entry_def_id: 'demo_entry',
           });
         },
       arguments: [
-        { name: 'original_header_address', type: 'HeaderHash' },
+        { name: 'original_action_address', type: 'ActionHash' },
         { name: 'new_content', type: 'String' },
       ],
     },
@@ -69,27 +69,27 @@ export const demoEntriesZome: SimulatedZome = {
         ({ deletes_address }) => {
           return delete_entry(deletes_address);
         },
-      arguments: [{ name: 'deletes_address', type: 'HeaderHash' }],
+      arguments: [{ name: 'deletes_address', type: 'ActionHash' }],
     },
   },
   validation_functions: {
     validate_update_entry_demo_entry:
       hdk =>
-      async ({ element }) => {
-        const update = element.signed_header.header.content as Update;
+      async ({ record }) => {
+        const update = record.signed_action.hashed.content as Update;
         const updateAuthor = update.author;
 
-        const originalHeader = await hdk.get(update.original_header_address);
+        const originalAction = await hdk.get(update.original_action_address);
 
-        if (!originalHeader)
+        if (!originalAction)
           return {
             resolved: false,
-            depsHashes: [update.original_header_address],
+            depsHashes: [update.original_action_address],
           };
 
         if (
           !areEqual(
-            originalHeader.signed_header.header.content.author,
+            originalAction.signed_action.hashed.content.author,
             updateAuthor
           )
         ) {
@@ -131,10 +131,10 @@ export const demoLinksZome: SimulatedZome = {
     delete_link: {
       call:
         ({ delete_link }) =>
-        ({ add_link_header }) => {
-          return delete_link(add_link_header);
+        ({ add_link_action }) => {
+          return delete_link(add_link_action);
         },
-      arguments: [{ name: 'add_link_header', type: 'HeaderHash' }],
+      arguments: [{ name: 'add_link_action', type: 'ActionHash' }],
     },
   },
   validation_functions: {},

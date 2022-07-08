@@ -12,7 +12,7 @@ import {
 import { css, html } from 'lit';
 import { styleMap } from 'lit-html/directives/style-map.js';
 import { property, state } from 'lit/decorators.js';
-import { CellId } from '@holochain/conductor-api';
+import { CellId } from '@holochain/client';
 import { StoreSubscriber } from 'lit-svelte-stores';
 
 import {
@@ -96,7 +96,7 @@ export class CellTasks extends PlaygroundElement<SimulatedPlaygroundStore> {
     if (
       task.type === WorkflowType.APP_VALIDATION &&
       cell.conductor.badAgent &&
-      cell.conductor.badAgent.config.pretend_invalid_elements_are_valid
+      cell.conductor.badAgent.config.pretend_invalid_records_are_valid
     ) {
       return;
     }

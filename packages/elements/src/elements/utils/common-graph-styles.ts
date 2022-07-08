@@ -1,5 +1,5 @@
 export const commonGraphStyles = `
-.header {
+.action {
 }
 
 .entry {
@@ -32,7 +32,7 @@ export const commonGraphStyles = `
   width: 4;
   target-arrow-shape: triangle;
   curve-style: bezier;
-  line-style: dotted;  
+  line-style: dotted;
 }
 .embedded-reference[label] {
   label: data(label);
@@ -41,7 +41,7 @@ export const commonGraphStyles = `
   text-margin-x: 0px;
   text-margin-y: -5px;
   text-valign: top;
-  text-halign: center;        
+  text-halign: center;
 }
 
 .explicit-link {
@@ -57,7 +57,7 @@ export const commonGraphStyles = `
   text-margin-x: 0px;
   text-margin-y: -5px;
   text-valign: top;
-  text-halign: center;        
+  text-halign: center;
 }
 
 .not-held {
