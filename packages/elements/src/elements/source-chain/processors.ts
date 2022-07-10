@@ -57,7 +57,6 @@ export function sourceChainNodes(cellStore: CellStore<any>, records: Record[]) {
       const entryNodeId = `${actionHash}:${entryHash}`;
 
       const entry: Entry = (record.entry as any)?.Present;
-      console.log('+_+_+_+_+ extracted Entry: ', entry);
 
       let entryType: string | undefined;
 
