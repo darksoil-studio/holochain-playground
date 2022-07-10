@@ -49,7 +49,7 @@ export class DhtEntries extends PlaygroundElement {
 
   @property({ type: Boolean, attribute: 'hide-actions' })
   hideActions: boolean = true;
-  
+
   @property({ type: Boolean, attribute: 'show-only-active-agents-shard' })
   showOnlyActiveAgentsShard: boolean = false;
 
@@ -61,23 +61,23 @@ export class DhtEntries extends PlaygroundElement {
 
   @query('#visible-entries-button')
   private _visibleEntriesButton: Button;
-  
+
   @query('#visible-entries-menu')
   private _visibleEntriesMenu: Menu;
 
   _cellsForActiveDna = new StoreSubscriber(this, () =>
     this.store?.cellsForActiveDna()
   );
-  
+
   _activeDhtHash = new StoreSubscriber(this, () => this.store?.activeDhtHash);
-  
+
   _activeDna = new StoreSubscriber(this, () => this.store?.activeDna);
-  
+
   _activeAgentPubKey = new StoreSubscriber(
     this,
     () => this.store?.activeAgentPubKey
   );
-  
+
   _dht = new StoreSubscriber(this, () => this.store?.dhtForActiveDna());
 
   get _simulatedDna() {
@@ -139,20 +139,23 @@ export class DhtEntries extends PlaygroundElement {
   renderFilter() {
     return html` <div
       class="row"
-      style="align-items: center; justify-content: start;"
-      style="margin: 8px;"
+      style="align-items: center; justify-content: start; margin: 8px;"
     >
       <mwc-formfield label="Show Entry Contents" style="margin-right: 16px">
         <mwc-checkbox
           .checked=${this.showEntryContents}
-          @change=${(e) => (this.showEntryContents = e.target.checked)}
+          @change=${(e) => {
+            this.showEntryContents = e.target.checked;
+          }}
         ></mwc-checkbox
       ></mwc-formfield>
 
       <mwc-formfield label="Show Actions" style="margin-right: 16px">
         <mwc-checkbox
           .checked=${this.hideActions}
-          @change=${(e) => (this.hideActions = e.target.checked)}
+          @change=${(e) => {
+            this.hideActions = e.target.checked;
+          }}
         ></mwc-checkbox
       ></mwc-formfield>
 
@@ -162,7 +165,9 @@ export class DhtEntries extends PlaygroundElement {
       >
         <mwc-checkbox
           .checked=${this.showOnlyActiveAgentsShard}
-          @change=${(e) => (this.showOnlyActiveAgentsShard = e.target.checked)}
+          @change=${(e) => {
+            this.showOnlyActiveAgentsShard = e.target.checked;
+          }}
         ></mwc-checkbox
       ></mwc-formfield>
 
