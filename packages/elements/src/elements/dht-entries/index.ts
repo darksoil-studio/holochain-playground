@@ -48,7 +48,7 @@ export class DhtEntries extends PlaygroundElement {
   hideDeleted: boolean = false;
 
   @property({ type: Boolean, attribute: 'hide-actions' })
-  hideActions: boolean = true;
+  hideActions: boolean = false;
 
   @property({ type: Boolean, attribute: 'show-only-active-agents-shard' })
   showOnlyActiveAgentsShard: boolean = false;
@@ -150,7 +150,7 @@ export class DhtEntries extends PlaygroundElement {
         ></mwc-checkbox
       ></mwc-formfield>
 
-      <mwc-formfield label="Show Actions" style="margin-right: 16px">
+      <mwc-formfield label="Hide Actions" style="margin-right: 16px">
         <mwc-checkbox
           .checked=${this.hideActions}
           @change=${(e) => {
