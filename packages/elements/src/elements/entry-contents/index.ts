@@ -14,6 +14,7 @@ import { getEntryContents } from '../utils/utils';
  */
 export class EntryContents extends PlaygroundElement {
   _activeDhtHash = new StoreSubscriber(this, () => this.store?.activeDhtHash);
+
   _activeContent = new StoreSubscriber(this, () => this.store?.activeContent());
 
   render() {
@@ -42,7 +43,9 @@ export class EntryContents extends PlaygroundElement {
                       <div class="flex-scrollable-y" style="height: 100%;">
                         <json-viewer
                           .object=${shortenStrRec(
-                            getEntryContents(this._activeContent.value)
+                            this._activeContent.value.type === 'Entry'
+                              ? getEntryContents(this._activeContent.value)
+                              : this._activeContent.value
                           )}
                           class="fill"
                         ></json-viewer>

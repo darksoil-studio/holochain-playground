@@ -164,7 +164,7 @@ export function isHoldingEntry(dhtShard: DhtOp[], entryHash: EntryHash) {
 
 export function isHoldingElement(dhtShard: DhtOp[], actionHash: ActionHash) {
   for (const dhtOp of dhtShard) {
-    const dhtOpactionHash = hash(getDhtOpAction(dhtOp), HashType.HEADER);
+    const dhtOpactionHash = hash(getDhtOpAction(dhtOp), HashType.ACTION);
     if (
       getDhtOpType(dhtOp) === DhtOpType.StoreRecord &&
       isEqual(dhtOpactionHash, actionHash)

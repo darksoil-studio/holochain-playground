@@ -1,0 +1,15 @@
+---
+manifest_version: "1"
+name: test_playground
+description: ~
+roles:
+  - id: test_playground
+    provisioning:
+      strategy: create
+      deferred: false
+    dna:
+      bundled: "./test_playground.dna"
+      properties: ~
+      uuid: ~
+      version: ~
+      clone_limit: 0

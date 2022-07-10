@@ -21,22 +21,14 @@ import {
   EntryContent,
   RecordEntry,
 } from '@holochain/client';
+import { decode } from '@msgpack/msgpack';
 
 import { hash, HashType } from '../../processors/hash';
 import { SimulatedDna } from '../../dnas/simulated-dna';
-import { decode } from '@msgpack/msgpack';
 
-
-
-export function extractEntry(record: Record): Entry {
-  const entry = decode((record.entry as any)?.Present.entry) as any;
-  const entryType = decode((record.entry as any)?.Present.entry_type) as any;
-  return {
-    entry_type: entryType,
-    entry,
-  }
+export function extractEntry(record: Record): Entry | undefined {
+  return (record.entry as any).Present?.entry;
 }
-
 
 export function hashEntry(entry: Entry): EntryHash {
   if (entry.entry_type === 'Agent') return entry.entry;
@@ -67,7 +59,7 @@ export function getEntryTypeString(
 export function getDhtOpBasis(dhtOp: DhtOp): AnyDhtHash {
   const type = getDhtOpType(dhtOp);
   const action = getDhtOpAction(dhtOp);
-  const actionHash = hash(action, HashType.HEADER);
+  const actionHash = hash(action, HashType.ACTION);
 
   switch (type) {
     case DhtOpType.StoreRecord:
@@ -126,7 +118,7 @@ export function recordToDhtOps(record: Record): DhtOp[] {
 
   // Each action derives into different DhtOps
 
-  if (record.signed_action.hashed.content.type == ActionType.Update) {
+  if (record.signed_action.hashed.content.type === ActionType.Update) {
     allDhtOps.push({
       [DhtOpType.RegisterUpdatedContent]: [
         record.signed_action.signature,
@@ -148,7 +140,7 @@ export function recordToDhtOps(record: Record): DhtOp[] {
         extractEntry(record),
       ],
     });
-  } else if (record.signed_action.hashed.content.type == ActionType.Create) {
+  } else if (record.signed_action.hashed.content.type === ActionType.Create) {
     allDhtOps.push({
       [DhtOpType.StoreEntry]: [
         record.signed_action.signature,
@@ -156,7 +148,7 @@ export function recordToDhtOps(record: Record): DhtOp[] {
         extractEntry(record),
       ],
     });
-  } else if (record.signed_action.hashed.content.type == ActionType.Delete) {
+  } else if (record.signed_action.hashed.content.type === ActionType.Delete) {
     allDhtOps.push({
       [DhtOpType.RegisterDeletedBy]: [
         record.signed_action.signature,
@@ -170,7 +162,7 @@ export function recordToDhtOps(record: Record): DhtOp[] {
       ],
     });
   } else if (
-    record.signed_action.hashed.content.type == ActionType.DeleteLink
+    record.signed_action.hashed.content.type === ActionType.DeleteLink
   ) {
     allDhtOps.push({
       [DhtOpType.RegisterRemoveLink]: [
@@ -179,7 +171,7 @@ export function recordToDhtOps(record: Record): DhtOp[] {
       ],
     });
   } else if (
-    record.signed_action.hashed.content.type == ActionType.CreateLink
+    record.signed_action.hashed.content.type === ActionType.CreateLink
   ) {
     allDhtOps.push({
       [DhtOpType.RegisterAddLink]: [

@@ -200,7 +200,7 @@ export function getAllHeldActions(state: CellState): ActionHash[] {
     )
     .map(dhtOpValue => getDhtOpAction(dhtOpValue.op));
 
-  const allActionHashes = actions.map(h => hash(h, HashType.HEADER));
+  const allActionHashes = actions.map(h => hash(h, HashType.ACTION));
 
   return uniqWith(allActionHashes, areEqual);
 }

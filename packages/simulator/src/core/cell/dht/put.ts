@@ -72,7 +72,7 @@ export const putIntegrationLimboValue =
 
 export const putDhtOpData = (dhtOp: DhtOp) => (state: CellState) => {
   const action = getDhtOpAction(dhtOp);
-  const actionHash = hash(action, HashType.HEADER);
+  const actionHash = hash(action, HashType.ACTION);
 
   const ssh: SignedActionHashed = {
     hashed: {
@@ -93,7 +93,7 @@ export const putDhtOpData = (dhtOp: DhtOp) => (state: CellState) => {
 export const putDhtOpMetadata = (dhtOp: DhtOp) => (state: CellState) => {
   const type = getDhtOpType(dhtOp);
   const action = getDhtOpAction(dhtOp);
-  const actionHash = hash(action, HashType.HEADER);
+  const actionHash = hash(action, HashType.ACTION);
 
   if (type === DhtOpType.StoreRecord) {
     state.metadata.misc_meta.put(actionHash, 'StoreRecord');

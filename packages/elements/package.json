@@ -15,7 +15,7 @@
     "publish-to-branch": "npm run build && rm -rf node_modules && gh-pages -d . -b build && npm i"
   },
   "dependencies": {
-    "@holochain-open-dev/core-types": "^0.3.1",
+    "@holochain-open-dev/core-types": "^0.4.0",
     "@holochain-open-dev/utils": "^0.1.0",
     "@holochain-playground/simulator": "0.0.1",
     "@holochain/client": "^0.6.0",

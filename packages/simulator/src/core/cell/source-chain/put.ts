@@ -1,5 +1,6 @@
-import { CellState } from '../state';
 import { Record } from '@holochain/client';
+
+import { CellState } from '../state';
 import { extractEntry, hashEntry } from '../utils';
 
 export const putRecord =
@@ -14,8 +15,6 @@ export const putRecord =
       const entryHash = hashEntry(extractEntry(record));
       state.CAS.put(entryHash, extractEntry(record));
     }
-
-
 
     state.sourceChain.push(actionHash);
   };

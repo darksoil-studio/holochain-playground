@@ -7,15 +7,16 @@ import {
   SignedActionHashed,
 } from '@holochain/client';
 import { serializeHash } from '@holochain-open-dev/utils';
-import { getEntryTypeString, extractEntry } from '@holochain-playground/simulator';
+import {
+  getEntryTypeString,
+  extractEntry,
+} from '@holochain-playground/simulator';
+import { decode } from '@msgpack/msgpack';
 
 import { SimulatedCellStore } from '../../store/simulated-playground-store';
 import { CellStore } from '../../store/playground-store';
 
-export function sourceChainNodes(
-  cellStore: CellStore<any>,
-  records: Record[]
-) {
+export function sourceChainNodes(cellStore: CellStore<any>, records: Record[]) {
   const nodes = [];
 
   for (const record of records) {
@@ -50,13 +51,13 @@ export function sourceChainNodes(
     const action: SignedActionHashed = record.signed_action;
     const actionHash = serializeHash(action.hashed.hash);
 
-    if (record.entry) {
+    if ((record.entry as any).Present) {
       const newEntryAction = action.hashed.content as NewEntryAction;
       const entryHash = serializeHash(newEntryAction.entry_hash);
       const entryNodeId = `${actionHash}:${entryHash}`;
 
-      const entry: Entry = extractEntry(record);
-      console.log("+_+_+_+_+ extracted Entry: ", entry);
+      const entry: Entry = (record.entry as any)?.Present;
+      console.log('+_+_+_+_+ extracted Entry: ', entry);
 
       let entryType: string | undefined;
 
@@ -66,13 +67,22 @@ export function sourceChainNodes(
           newEntryAction.entry_type
         );
       } else {
-        entryType = newEntryAction.entry_type as string
+        entryType = entry.entry_type as string;
+      }
+
+      let data = entry;
+
+      if (entry.entry_type === 'App') {
+        data = {
+          ...data,
+          entry: decode(entry.entry) as any,
+        };
       }
 
       nodes.push({
         data: {
           id: entryNodeId,
-          data: entry,
+          data,
           label: entryType,
         },
         classes: [entryType, 'entry'],

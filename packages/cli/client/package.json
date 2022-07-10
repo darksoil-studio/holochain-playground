@@ -13,7 +13,7 @@
     "gh-pages": "npm run build && gh-pages -d ./dist -b gh-pages"
   },
   "dependencies": {
-    "@holochain-open-dev/core-types": "^0.3.1",
+    "@holochain-open-dev/core-types": "^0.4.0",
     "@holochain-playground/elements": "0.0.1",
     "@holochain-playground/golden-layout": "0.0.1",
     "@holochain-playground/simulator": "0.0.1",

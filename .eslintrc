@@ -4,12 +4,20 @@
   "plugins": ["@typescript-eslint"],
   "rules": {
     "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": ["error"],
+    "@typescript-eslint/no-unused-vars": "off",
     "import/no-unresolved": "off",
     "import/extensions": "off",
     "no-bitwise": "off",
     "no-shadow": "off",
     "class-methods-use-this": "off",
-    "max-classes-per-file": "off"
+    "max-classes-per-file": "off",
+    "camelcase": "off",
+    "no-use-before-define": "off",
+    "no-useless-constructor": "off",
+    "no-else-return": "off",
+    "no-empty-function": "off",
+    "import/no-extraneous-dependencies": "off",
+    "prefer-destructuring": "off",
+    "no-param-reassign": "off"
   }
 }

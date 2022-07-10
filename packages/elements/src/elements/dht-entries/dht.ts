@@ -41,7 +41,8 @@ export interface DhtSummary {
   entries: HoloHashMap<any>;
   // Entry hash -> action that created that entry
   actionsByEntry: HoloHashMap<ActionHash[]>;
-  entryLinks: HoloHashMap<
+
+  links: HoloHashMap<
     Array<{
       target_address: EntryHash;
       tag: any;
@@ -85,7 +86,7 @@ export function summarizeDht(
 
       const action = getDhtOpAction(dhtOp);
 
-      const actionHash = hash(action, HashType.HEADER);
+      const actionHash = hash(action, HashType.ACTION);
 
       if (!visited.has(actionHash)) {
         visited.put(actionHash, []);
@@ -143,7 +144,7 @@ export function summarizeDht(
     actionDeletes,
     entries,
     actionsByEntry,
-    entryLinks,
+    links: entryLinks,
     deletedAddLinks,
     entryTypes,
   };

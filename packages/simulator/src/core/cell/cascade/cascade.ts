@@ -12,23 +12,14 @@ import {
   NewEntryAction,
   SignedActionHashed,
   Record,
-  RecordEntry,
 } from '@holochain/client';
-
 
 import { areEqual, getHashType, HashType } from '../../../processors/hash';
 import { GetLinksOptions, GetOptions, GetStrategy } from '../../../types';
 import { P2pCell } from '../../network/p2p-cell';
-import { Cell } from '../cell';
-import { computeDhtStatus, getEntryDhtStatus, getLiveLinks } from '../dht/get';
+import { computeDhtStatus, getLiveLinks } from '../dht/get';
 import { CellState } from '../state';
-import { Authority } from './authority';
-import {
-  GetRecordResponse,
-  GetEntryResponse,
-  GetLinksResponse,
-  Link,
-} from './types';
+import { GetRecordResponse, GetEntryResponse, Link } from './types';
 
 // From https://github.com/holochain/holochain/blob/develop/crates/holochain_cascade/src/lib.rs#L1523
 
@@ -42,7 +33,7 @@ export class Cascade {
     hash: ActionHash,
     options: GetOptions
   ): Promise<SignedActionHashed | undefined> {
-    if (getHashType(hash) !== HashType.HEADER)
+    if (getHashType(hash) !== HashType.ACTION)
       throw new Error(
         `Trying to retrieve a action with a hash of another type`
       );
@@ -89,7 +80,7 @@ export class Cascade {
     options: GetOptions
   ): Promise<Record | undefined> {
     // TODO rrDHT arcs
-    const authority = new Authority(this.state, this.p2p);
+    // const authority = new Authority(this.state, this.p2p);
 
     const isPresent = this.state.CAS.get(hash);
 
@@ -115,10 +106,11 @@ export class Cascade {
         };
       }
 
-      if (hashType === HashType.HEADER) {
+      if (hashType === HashType.ACTION) {
         const signed_action = this.state.CAS.get(hash);
-        const entry_hash = (signed_action as SignedActionHashed<NewEntryAction>)
-          .hashed.content.entry_hash;
+        const { entry_hash } = (
+          signed_action as SignedActionHashed<NewEntryAction>
+        ).hashed.content;
 
         const entry = entry_hash ? this.state.CAS.get(entry_hash) : undefined;
         return {
@@ -144,7 +136,7 @@ export class Cascade {
         signed_action: (result as GetEntryResponse).live_actions[0],
         entry: {
           Present: (result as GetEntryResponse).entry,
-        }
+        },
       };
     }
   }
@@ -162,7 +154,7 @@ export class Cascade {
         type: DetailsType.Entry,
         content: entryDetails,
       };
-    } else if (getHashType(hash) === HashType.HEADER) {
+    } else if (getHashType(hash) === HashType.ACTION) {
       const recordDetails = await this.getActionDetails(hash, options);
 
       if (!recordDetails) return undefined;

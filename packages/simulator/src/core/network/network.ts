@@ -20,6 +20,7 @@ export interface NetworkState {
 export class Network {
   // P2pCells contained in this conductor
   p2pCells: CellMap<P2pCell>;
+  
   kitsune: KitsuneP2p;
 
   constructor(

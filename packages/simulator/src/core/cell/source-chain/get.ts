@@ -15,7 +15,7 @@ import { CellState } from '../state';
 export function getNewActions(state: CellState): Array<ActionHash> {
   const dhtOps = state.authoredDHTOps.values();
   const actionHashesAlreadyPublished = dhtOps.map(dhtOp =>
-    hash(getDhtOpAction(dhtOp.op), HashType.HEADER)
+    hash(getDhtOpAction(dhtOp.op), HashType.ACTION)
   );
   return state.sourceChain.filter(
     actionHash =>

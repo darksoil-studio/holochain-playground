@@ -5,6 +5,8 @@ import { CytoscapeDagre } from '@scoped-elements/cytoscape';
 
 import { Card } from '@scoped-elements/material-web';
 import { deserializeHash, serializeHash } from '@holochain-open-dev/utils';
+import isEqual from 'lodash-es/isEqual';
+import { NewEntryAction } from '@holochain/client';
 
 import { sourceChainNodes } from './processors';
 import { sharedStyles } from '../utils/shared-styles';
@@ -13,8 +15,6 @@ import { HelpButton } from '../helpers/help-button';
 import { PlaygroundElement } from '../../base/playground-element';
 import { graphStyles } from './graph';
 import { CopyableHash } from '../helpers/copyable-hash';
-import isEqual from 'lodash-es/isEqual';
-import { NewEntryAction } from '@holochain/client';
 
 /**
  * @element source-chain
@@ -24,10 +24,13 @@ export class SourceChain extends PlaygroundElement {
     this,
     () => this.store?.activeAgentPubKey
   );
+
   _activeHash = new StoreSubscriber(this, () => this.store?.activeDhtHash);
+  
   _activeCell = new StoreSubscriber(this, () =>
     this.store ? this.store.activeCell() : undefined
   );
+  
   _sourceChain = new StoreSubscriber(
     this,
     () => this._activeCell.value?.sourceChain
@@ -49,7 +52,7 @@ export class SourceChain extends PlaygroundElement {
         }
 
         const entry_hash = (action.content as NewEntryAction).entry_hash;
-        if (isEqual(entry_hash, this._activeHash.value)) {
+        if (entry_hash !== undefined && isEqual(entry_hash, this._activeHash.value)) {
           nodesIds.push(
             `${serializeHash(action.hash)}:${serializeHash(entry_hash)}`
           );
@@ -85,7 +88,6 @@ export class SourceChain extends PlaygroundElement {
   }
 
   render() {
-    console.log("RENDERING SOURCE CHAIN AND STORE IS: ", this.store);
     return html`
       <mwc-card class="block-card">
         <div class="column fill">

@@ -1,22 +1,18 @@
 import { serializeHash } from '@holochain-open-dev/utils';
-import {
-  AgentPubKey,
-  CellId,
-  DnaHash,
-  HoloHash,
-} from '@holochain/client';
+import { AgentPubKey, CellId, DnaHash, HoloHash } from '@holochain/client';
 // @ts-ignore
 import blake from 'blakejs';
 import { encode } from '@msgpack/msgpack';
 import { Base64 } from 'js-base64';
-import { HoloHashMap } from './holo-hash-map';
 import isEqual from 'lodash-es/isEqual';
+
+import { HoloHashMap } from './holo-hash-map';
 
 export enum HashType {
   AGENT,
   ENTRY,
   DHTOP,
-  HEADER,
+  ACTION,
   DNA,
 }
 
@@ -24,7 +20,7 @@ export const AGENT_PREFIX = 'hCAk';
 export const ENTRY_PREFIX = 'hCEk';
 export const DHTOP_PREFIX = 'hCQk';
 export const DNA_PREFIX = 'hC0k';
-export const HEADER_PREFIX = 'hCkk';
+export const ACTION_PREFIX = 'hCkk';
 
 function getPrefix(type: HashType) {
   switch (type) {
@@ -34,10 +30,12 @@ function getPrefix(type: HashType) {
       return ENTRY_PREFIX;
     case HashType.DHTOP:
       return DHTOP_PREFIX;
-    case HashType.HEADER:
-      return HEADER_PREFIX;
+    case HashType.ACTION:
+      return ACTION_PREFIX;
     case HashType.DNA:
       return DNA_PREFIX;
+    default:
+      return '';
   }
 }
 
@@ -54,7 +52,7 @@ export function isHash(hash: string): boolean {
     ENTRY_PREFIX,
     DHTOP_PREFIX,
     DNA_PREFIX,
-    HEADER_PREFIX,
+    ACTION_PREFIX,
   ].find(prefix => hash.startsWith(`u${prefix}`));
 }
 
@@ -141,6 +139,8 @@ export function getHashType(hash: HoloHash): HashType {
   if (isEqual(hashExt, AGENT_PREFIX)) return HashType.AGENT;
   if (isEqual(hashExt, DNA_PREFIX)) return HashType.DNA;
   if (isEqual(hashExt, DHTOP_PREFIX)) return HashType.DHTOP;
-  if (isEqual(hashExt, HEADER_PREFIX)) return HashType.HEADER;
+  if (isEqual(hashExt, ACTION_PREFIX)) return HashType.ACTION;
   if (isEqual(hashExt, ENTRY_PREFIX)) return HashType.ENTRY;
+
+  return HashType.ENTRY;
 }

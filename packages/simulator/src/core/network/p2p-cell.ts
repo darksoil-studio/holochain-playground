@@ -6,6 +6,7 @@ import {
   DhtOp,
   EntryHash,
 } from '@holochain/client';
+import { isEqual } from 'lodash-es';
 
 import { MiddlewareExecutor } from '../../executor/middleware-executor';
 import { areEqual, location } from '../../processors/hash';
@@ -41,7 +42,9 @@ export class P2pCell {
   farKnownPeers: AgentPubKey[];
 
   storageArc: DhtArc;
+
   neighborNumber: number;
+
   redundancyFactor = 3;
 
   _gossipLoop!: SimpleBloomMod;
@@ -65,7 +68,7 @@ export class P2pCell {
 
     this.storageArc = {
       center_loc: location(this.cellId[1]),
-      half_length: Math.pow(2, 33),
+      half_length: 2 ** 33,
     };
   }
 
@@ -275,7 +278,7 @@ export class P2pCell {
 
     const neighbors = this.network.bootstrapService
       .getNeighborhood(dnaHash, agentPubKey, this.neighborNumber, badAgents)
-      .filter(cell => cell.agentPubKey != agentPubKey);
+      .filter(cell => isEqual(cell.agentPubKey, agentPubKey));
 
     const newNeighbors = neighbors.filter(
       cell => !this.neighbors.find(a => areEqual(a, cell.agentPubKey))

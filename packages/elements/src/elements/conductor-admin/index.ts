@@ -11,9 +11,12 @@ import {
   ListItem,
   Button,
 } from '@scoped-elements/material-web';
-import { Cell, Conductor } from '@holochain-playground/simulator';
 import { Grid, GridColumn } from '@vaadin/grid';
 import { JsonViewer } from '@power-elements/json-viewer';
+import { StoreSubscriber } from 'lit-svelte-stores';
+import { derived } from 'svelte/store';
+import { serializeHash } from '@holochain-open-dev/utils';
+import isEqual from 'lodash-es/isEqual';
 
 import { sharedStyles } from '../utils/shared-styles';
 import { PlaygroundElement } from '../../base/playground-element';
@@ -22,12 +25,7 @@ import { CopyableHash } from '../helpers/copyable-hash';
 import { HelpButton } from '../helpers/help-button';
 import { adminApi } from './admin-api';
 import { CallFns } from '../helpers/call-functions';
-import { StoreSubscriber } from 'lit-svelte-stores';
-import { derived } from 'svelte/store';
-import { serializeHash } from '@holochain-open-dev/utils';
 import { CellStore, ConductorStore } from '../../store/playground-store';
-import isEqual from 'lodash-es/isEqual';
-import { PlaygroundMode } from '../../store/mode';
 import { ConnectedConductorStore } from '../../store/connected-playground-store';
 import {
   SimulatedCellStore,
@@ -40,14 +38,18 @@ export class ConductorAdmin extends PlaygroundElement {
     this,
     () => this.store?.activeAgentPubKey
   );
+
   _activeDna = new StoreSubscriber(this, () => this.store?.activeDna);
+
   _activeConductor = new StoreSubscriber(this, () =>
     derived(this.store?.activeCell(), (c) => c?.conductorStore)
   );
+
   _happs = new StoreSubscriber(
     this,
     () => (this.store as SimulatedPlaygroundStore)?.happs
   );
+
   _cellsForActiveConductor = new StoreSubscriber(
     this,
     () => this._activeConductor.value?.cells
@@ -71,9 +73,11 @@ export class ConductorAdmin extends PlaygroundElement {
       >
         <span>
           You've selected the conductor with Agent ID
-          ${serializeHash(this._activeAgentPubKey.value)}. Here you can see all
-          the cells that it's running, as well as execute admin functions for
-          it.
+          ${this._activeAgentPubKey.value
+            ? serializeHash(this._activeAgentPubKey.value)
+            : undefined}.
+          Here you can see all the cells that it's running, as well as execute
+          admin functions for it.
         </span>
       </help-button>
     `;
@@ -140,7 +144,7 @@ export class ConductorAdmin extends PlaygroundElement {
           if (!root.firstElementChild) {
             root.innerHTML = '<mwc-button label="Details"></mwc-button>';
             let opened = false;
-            root.firstElementChild.addEventListener('click', function (e: any) {
+            root.firstElementChild.addEventListener('click', (e: any) => {
               if (!opened) {
                 grid.openItemDetails(root.item);
               } else {
@@ -249,8 +253,9 @@ export class ConductorAdmin extends PlaygroundElement {
 
       <div class="column fill">
         <mwc-tab-bar
-          @MDCTabBar:activated=${(e) =>
-            (this._selectedTabIndex = e.detail.index)}
+          @MDCTabBar:activated=${(e) => {
+            this._selectedTabIndex = e.detail.index;
+          }}
           .activeIndex=${this._selectedTabIndex}
         >
           <mwc-tab label="Cells"></mwc-tab>

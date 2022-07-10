@@ -14,7 +14,6 @@ import { playgroundContext } from './context';
 import { PlaygroundStore } from '../store/playground-store';
 import { PlaygroundMode } from '../store/mode';
 import { sharedStyles } from '../elements/utils/shared-styles';
-import { get } from 'svelte/store';
 
 export abstract class BasePlaygroundContext<
   T extends PlaygroundMode,
@@ -33,13 +32,8 @@ export abstract class BasePlaygroundContext<
   store!: PlaygroundStore<any>;
 
   async firstUpdated() {
-    console.log("Hello from the BasePlayGroundContext.")
     const store = await this.buildStore();
-    console.log("This is my store after building: ", store);
-    console.log("conductors: ", get(store.conductors));
-    console.log("activeAgentPubKey: ", get(store.activeAgentPubKey));
-    console.log("activeCell(): ", get(store.activeCell()));
-    console.log("activeContent(): ", get(store.activeContent()));
+
     this.store = store;
 
     this.dispatchEvent(

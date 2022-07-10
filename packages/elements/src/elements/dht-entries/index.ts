@@ -46,8 +46,10 @@ export class DhtEntries extends PlaygroundElement {
 
   @property({ type: Boolean, attribute: 'hide-deleted' })
   hideDeleted: boolean = false;
-  @property({ type: Boolean, attribute: 'show-actions' })
-  showActions: boolean = false;
+
+  @property({ type: Boolean, attribute: 'hide-actions' })
+  hideActions: boolean = true;
+  
   @property({ type: Boolean, attribute: 'show-only-active-agents-shard' })
   showOnlyActiveAgentsShard: boolean = false;
 
@@ -59,18 +61,23 @@ export class DhtEntries extends PlaygroundElement {
 
   @query('#visible-entries-button')
   private _visibleEntriesButton: Button;
+  
   @query('#visible-entries-menu')
   private _visibleEntriesMenu: Menu;
 
   _cellsForActiveDna = new StoreSubscriber(this, () =>
     this.store?.cellsForActiveDna()
   );
+  
   _activeDhtHash = new StoreSubscriber(this, () => this.store?.activeDhtHash);
+  
   _activeDna = new StoreSubscriber(this, () => this.store?.activeDna);
+  
   _activeAgentPubKey = new StoreSubscriber(
     this,
     () => this.store?.activeAgentPubKey
   );
+  
   _dht = new StoreSubscriber(this, () => this.store?.dhtForActiveDna());
 
   get _simulatedDna() {
@@ -99,7 +106,7 @@ export class DhtEntries extends PlaygroundElement {
       this._simulatedDna,
       this.showEntryContents,
       !this.hideDeleted,
-      this.showActions,
+      this.hideActions,
       this.excludedEntryTypes
     );
     this._entryTypes = entryTypes;
@@ -144,8 +151,8 @@ export class DhtEntries extends PlaygroundElement {
 
       <mwc-formfield label="Show Actions" style="margin-right: 16px">
         <mwc-checkbox
-          .checked=${this.showActions}
-          @change=${(e) => (this.showActions = e.target.checked)}
+          .checked=${this.hideActions}
+          @change=${(e) => (this.hideActions = e.target.checked)}
         ></mwc-checkbox
       ></mwc-formfield>
 

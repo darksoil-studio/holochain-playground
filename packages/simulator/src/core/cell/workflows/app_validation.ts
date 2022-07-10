@@ -212,7 +212,7 @@ export async function validate_op(
 
 function dht_ops_to_record(op: DhtOp): Record {
   const action = getDhtOpAction(op);
-  const actionHash = hash(action, HashType.HEADER);
+  const actionHash = hash(action, HashType.ACTION);
   let entry = undefined;
   if ((action as NewEntryAction).entry_hash) {
     entry = getEntry(op);

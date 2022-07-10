@@ -24,8 +24,11 @@ import { mapDerive } from './utils';
 
 export abstract class CellStore<T extends PlaygroundMode> {
   abstract sourceChain: Readable<Record[]>;
+
   abstract peers: Readable<AgentPubKey[]>;
+  
   abstract dhtShard: Readable<Array<DhtOp>>;
+  
   abstract cellId: CellId;
 
   constructor(public conductorStore: ConductorStore<T>) {}
@@ -46,13 +49,13 @@ export abstract class CellStore<T extends PlaygroundMode> {
               dhtHash
             )
           ) {
-            return record.entry;
+            return (record.entry as any).Present;
           }
         }
 
         for (const op of dhtShard) {
           const action = getDhtOpAction(op);
-          const actionHash = hash(action, HashType.HEADER);
+          const actionHash = hash(action, HashType.ACTION);
 
           if (isEqual(actionHash, dhtHash)) {
             return action;
@@ -83,13 +86,15 @@ export abstract class ConductorStore<T extends PlaygroundMode> {
 
 export abstract class PlaygroundStore<T extends PlaygroundMode> {
   activeDna: Writable<DnaHash | undefined> = writable(undefined);
+
   activeAgentPubKey: Writable<AgentPubKey | undefined> = writable(undefined);
+  
   activeDhtHash: Writable<AnyDhtHash | undefined> = writable(undefined);
 
   abstract conductors: Readable<Array<ConductorStore<T>>>;
 
   constructor() {
-    let currentvalue = undefined;
+    let currentvalue ;
     this.activeDna.subscribe((v: DnaHash) => {
       if (!isEqual(v, currentvalue)) {
         currentvalue = v;

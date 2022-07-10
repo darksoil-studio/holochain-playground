@@ -1,13 +1,11 @@
-import {
-  deserializeHash,
-  serializeHash,
-} from '@holochain-open-dev/utils';
+import { deserializeHash, serializeHash } from '@holochain-open-dev/utils';
 import { EntryHashB64 } from '@holochain-open-dev/core-types';
 import {
   NewEntryAction,
   DhtOp,
   EntryHash,
   HoloHash,
+  Action,
 } from '@holochain/client';
 import {
   getAppEntryType,
@@ -29,7 +27,7 @@ export function allEntries(
   simulatedDna: SimulatedDna | undefined,
   showEntryContents: boolean,
   showDeleted: boolean,
-  showActions: boolean,
+  hideActions: boolean,
   excludedEntryTypes: string[]
 ) {
   const summary = summarizeDht(dhtShards, simulatedDna);
@@ -68,7 +66,7 @@ export function allEntries(
       if (getAppEntryType((action as NewEntryAction).entry_type)) {
         const implicitLinks = getEmbeddedReferences(
           summary,
-          showActions,
+          !hideActions,
           getEntryContents(entry)
         );
 
@@ -108,13 +106,39 @@ export function allEntries(
 
   // Add link edges
 
-  for (const [baseEntryHash, links] of summary.entryLinks.entries()) {
-    if (!excludedEntryTypes.includes(summary.entryTypes.get(baseEntryHash))) {
-      const strBaseEntryHash = serializeHash(baseEntryHash);
+  for (const [baseAddress, links] of summary.links.entries()) {
+    let entryHash;
+    if (getHashType(baseAddress) === HashType.ENTRY) {
+      entryHash = baseAddress;
+    } else if (getHashType(baseAddress) === HashType.ACTION) {
+      const action: Action = summary.actions.get(baseAddress);
+      if ((action as NewEntryAction).entry_hash) {
+        entryHash = (action as NewEntryAction).entry_hash;
+      }
+    }
+
+    if (
+      !entryHash ||
+      !excludedEntryTypes.includes(summary.entryTypes.get(entryHash))
+    ) {
+      depsNotHeld.put(baseAddress, true);
+
+      const strBaseHash = serializeHash(baseAddress);
       for (const link of links) {
-        if (
+
+        let targetEntryHash;
+        if (getHashType(link.target_address) === HashType.ENTRY) {
+          targetEntryHash = link.target_address;
+        } else if (getHashType(link.target_address) === HashType.ACTION) {
+          const action: Action = summary.actions.get(link.target_address);
+          if ((action as NewEntryAction).entry_hash) {
+            targetEntryHash = (action as NewEntryAction).entry_hash;
+          }
+        }
+    
+        if (!targetEntryHash ||
           !excludedEntryTypes.includes(
-            summary.entryTypes.get(link.target_address)
+            summary.entryTypes.get(targetEntryHash)
           )
         ) {
           const linkTag = simulatedDna ? link.tag : getLinkTagStr(link.tag);
@@ -123,8 +147,8 @@ export function allEntries(
 
           edges.push({
             data: {
-              id: `${strBaseEntryHash}->${target}`,
-              source: strBaseEntryHash,
+              id: `${strBaseHash}->${target}`,
+              source: strBaseHash,
               target,
               label: tag,
             },
@@ -138,7 +162,7 @@ export function allEntries(
 
   // Add action nodes and updates edges
 
-  if (showActions) {
+  if (!hideActions) {
     for (const [entryHash, actionHashes] of summary.actionsByEntry.entries()) {
       if (!excludedEntryTypes.includes(summary.entryTypes.get(entryHash))) {
         const strEntryHash = serializeHash(entryHash);
@@ -292,7 +316,7 @@ function hasHash(
   showActions: boolean,
   hash: HoloHash
 ): HoloHash | undefined {
-  if (getHashType(hash) === HashType.HEADER && showActions) {
+  if (getHashType(hash) === HashType.ACTION && showActions) {
     return summary.actions.has(hash) ? hash : undefined;
   } else {
     let hashToCheck = hash;
@@ -309,6 +333,7 @@ function convertToHash(value: any): HoloHash | undefined {
   } else if (typeof value === 'object' && ArrayBuffer.isView(value)) {
     return value as HoloHash;
   }
+  return undefined;
 }
 
 export function getEmbeddedReferences(

@@ -1,4 +1,3 @@
-import { Record, Entry } from '@holochain/client';
 import {
   derived,
   get,
@@ -13,6 +12,8 @@ import {
   AdminWebsocket,
   AgentPubKey,
   DhtOp,
+  Record,
+  Entry,
   AnyDhtHash,
   NewEntryAction,
   FullIntegrationStateDump,
@@ -35,7 +36,9 @@ export class ConnectedCellStore extends CellStore<PlaygroundMode.Connected> {
   _state: Readable<FullStateDump | undefined>;
 
   sourceChain: Readable<Record[]>;
+
   peers: Readable<AgentPubKey[]>;
+
   dhtShard: Readable<Array<DhtOp>>;
 
   constructor(
@@ -82,7 +85,6 @@ export class ConnectedCellStore extends CellStore<PlaygroundMode.Connected> {
       };
     });
 
-
     this.sourceChain = derived(this._state, (s) =>
       s
         ? s.source_chain_dump.records.map((r) => ({
@@ -94,8 +96,8 @@ export class ConnectedCellStore extends CellStore<PlaygroundMode.Connected> {
               signature: r.signature,
             },
             entry: {
-              Present: r.entry
-            }
+              Present: r.entry,
+            },
           }))
         : []
     );
@@ -170,28 +172,23 @@ export class ConnectedPlaygroundStore extends PlaygroundStore<PlaygroundMode.Con
   }
 
   async setConductors(urls: string[]) {
-    console.log("Hello from the ConnectedPlaygroundStore");
-    console.log("Here are the urls: ", urls);
-    urls = urls.map((u) => normalizeUrl(u));
+    const normalizedUrls = urls.map((u) => normalizeUrl(u));
 
     const currentUrls = get(this.conductors).map((c) => c.url);
-    console.log("currentUrls: ", currentUrls);
-    const toAdd = urls.filter((u) => !currentUrls.includes(u));
-    console.log("toAdd: ", toAdd);
-    const toRemove = currentUrls.filter((u) => !urls.includes(u));
-    console.log("toRemove: ", toRemove);
-
+    
+    const toAdd = normalizedUrls.filter((u) => !currentUrls.includes(u));
+    const toRemove = currentUrls.filter((u) => !normalizedUrls.includes(u));
+    
     const promises = toAdd.map(async (url) => {
       try {
         const ws = await AdminWebsocket.connect(url);
         return ws;
       } catch (e) {
-        console.log("COULD NOT CONNECT TO ADMINWEBSOCKET AT URL ", url);
+        console.log('COULD NOT CONNECT TO ADMINWEBSOCKET AT URL ', url);
         return false;
       }
     });
     const maybeAdminWss = await Promise.all(promises);
-    console.log("Here is the AdminWs: ", maybeAdminWss);
     const adminWss = maybeAdminWss.filter((ws) => !!ws) as AdminWebsocket[];
 
     if (toAdd.length > 0 || toRemove.length > 0) {

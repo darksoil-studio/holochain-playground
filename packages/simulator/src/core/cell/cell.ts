@@ -38,7 +38,6 @@ import {
   app_validation_task,
   run_agent_validation_callback,
 } from './workflows/app_validation';
-import { getSourceChainRecords } from './source-chain/get';
 import { publish_dht_ops_task } from './workflows/publish_dht_ops';
 
 export type CellSignal = 'after-workflow-executed' | 'before-workflow-executed';
@@ -163,7 +162,7 @@ export class Cell {
     const hashType = getHashType(dht_hash);
     if (hashType === HashType.ENTRY || hashType === HashType.AGENT) {
       return authority.handle_get_entry(dht_hash, options);
-    } else if (hashType === HashType.HEADER) {
+    } else if (hashType === HashType.ACTION) {
       return authority.handle_get_record(dht_hash, options);
     }
     return undefined;
@@ -326,12 +325,13 @@ export class Cell {
   /** Private helpers */
 
   private buildWorkspace(): Workspace {
-    let badAgentConfig = undefined;
+    let badAgentConfig;
+
     let dna = this.getSimulatedDna();
     if (this.conductor.badAgent) {
       badAgentConfig = this.conductor.badAgent.config;
 
-      let badDna = this.conductor.badAgent.counterfeitDnas.get(this.cellId);
+      const badDna = this.conductor.badAgent.counterfeitDnas.get(this.cellId);
       if (badDna) {
         dna = badDna;
       }

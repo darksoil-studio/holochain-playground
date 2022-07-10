@@ -18,13 +18,8 @@ import {
   CircularProgress,
 } from '@scoped-elements/material-web';
 import { query, state } from 'lit/decorators.js';
-import { get } from 'svelte/store';
 import { io, Socket } from 'socket.io-client';
-import {
-  ConnectedPlaygroundContext,
-  ConnectedPlaygroundStore,
-} from '@holochain-playground/elements';
-import isEqual from 'lodash-es/isEqual';
+import { ConnectedPlaygroundStore } from '@holochain-playground/elements';
 
 export const socket: Socket = io();
 
@@ -73,17 +68,16 @@ export class HolochainPlayground extends ScopedElementsMixin(LitElement) {
         @playground-ready=${e => {
           const store = e.detail.store as ConnectedPlaygroundStore;
           store.conductors.subscribe(c => {
-            c &&
-              c.length > 0 &&
-              c[0].cells.subscribe(cells => {
-                if (!this.ready && cells.entries().length > 0) {
-                  this.ready = true;
-                  store.activeDna.set(cells.entries()[0][0][0]);
-                  if (this.urls.length === 1) {
-                    store.activeAgentPubKey.set(cells.entries()[0][0][1]);
-                  }
+            if (!c || c.length === 0) return;
+            c[0].cells.subscribe(cells => {
+              if (!this.ready && cells.entries().length > 0) {
+                this.ready = true;
+                store.activeDna.set(cells.entries()[0][0][0]);
+                if (this.urls.length === 1) {
+                  store.activeAgentPubKey.set(cells.entries()[0][0][1]);
                 }
-              });
+              }
+            });
           });
         }}
       >

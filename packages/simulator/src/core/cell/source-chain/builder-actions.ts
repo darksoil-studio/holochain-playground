@@ -26,7 +26,7 @@ export function buildShh(action: Action): SignedActionHashed {
   return {
     hashed: {
       content: action,
-      hash: hash(action, HashType.HEADER),
+      hash: hash(action, HashType.ACTION),
     },
     signature: Uint8Array.from([]),
   };

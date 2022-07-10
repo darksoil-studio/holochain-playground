@@ -7,11 +7,10 @@ import {
   selectSourceChain,
   ConductorSignalType,
   selectDhtShard,
-  SimulatedDna,
   BadAgent,
 } from '@holochain-playground/simulator';
 import { Dictionary } from '@holochain-open-dev/core-types';
-import { AgentPubKey, CellId, DhtOp, Record } from '@holochain/client';
+import { AgentPubKey, DhtOp, Record } from '@holochain/client';
 import { readable, Readable, writable, Writable } from 'svelte/store';
 
 import { PlaygroundMode } from './mode';
@@ -108,12 +107,15 @@ export function pauseStore() {
   const { subscribe, set } = writable(false);
 
   let _awaitResume = Promise.resolve();
-  let awaitResolve = undefined;
+
+  let awaitResolve;
 
   return {
     subscribe,
     pause: () => {
-      _awaitResume = new Promise((r) => (awaitResolve = r));
+      _awaitResume = new Promise((r) => {
+        awaitResolve = r;
+      });
       set(true);
     },
     awaitResume() {
@@ -128,6 +130,7 @@ export function pauseStore() {
 
 export class SimulatedPlaygroundStore extends PlaygroundStore<PlaygroundMode.Simulated> {
   conductors: Writable<Array<SimulatedConductorStore>>;
+
   happs: Writable<Dictionary<SimulatedHappBundle>>;
 
   paused = pauseStore();

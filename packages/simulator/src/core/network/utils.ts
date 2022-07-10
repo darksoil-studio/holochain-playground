@@ -31,10 +31,9 @@ export function getFarthestNeighbors(
   targetHash: AnyDhtHash
 ): AgentPubKey[] {
   const sortedPeers = peers.sort((agentA: AgentPubKey, agentB: AgentPubKey) => {
-    return (
-      wrap(location(agentA) - location(targetHash)) -
-      wrap(location(agentB) - location(targetHash))
-    );
+    const locationA = wrap(location(agentA) - location(targetHash));
+    const locationB = wrap(location(agentB) - location(targetHash));
+    return locationA - locationB;
   });
 
   const index35 = Math.floor(sortedPeers.length * 0.35);

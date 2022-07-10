@@ -2,6 +2,8 @@ import { serializeHash } from '@holochain-open-dev/utils';
 import { Entry } from '@holochain/client';
 import { decode } from '@msgpack/msgpack';
 
+import { shortenStrRec } from './hash';
+
 export const sleep = (ms: number) =>
   new Promise<void>((r) => setTimeout(() => r(), ms));
 
@@ -16,14 +18,10 @@ export function utf32Decode(bytes: Uint8Array): string {
   return result;
 }
 
-
 export function getEntryContents(entry: Entry): any {
-  console.log("Getting entry contents of entry: ", entry);
-
   let entryContent: any = entry.entry;
   if (entry.entry_type === 'App') {
     entryContent = decode(entry.entry);
-    console.log("APP ENTRY CONTENT (decoded): ", entryContent);
 
     if (
       Array.isArray(entryContent) &&
@@ -34,25 +32,16 @@ export function getEntryContents(entry: Entry): any {
       // Try convert from path
       try {
         entryContent = decodePath(entryContent);
-      } catch (e) {}
+      } catch (e) {
+        // TODO: what do?
+      }
     }
   }
 
-  console.log("Entry Content at the end: ", entryContent);
-  console.log("{...entry: }", {...entry});
-  console.log("THIS IS WHAT'S BEING RETURNED: ", {
+  return shortenStrRec({
     ...entry,
     entry: entryContent,
   });
-  console.log("THIS IS WHAT SHOULD BE DISPLAYED: ", shortenStrRec({
-    ...entry,
-    entry: entryContent,
-  }));
-
-  return {
-    ...entry,
-    entry: entryContent,
-  };
 }
 
 export function decodeComponent(component: Uint8Array): string {
@@ -88,7 +77,9 @@ export function getLinkTagStrInner(linkTag: Uint8Array): string {
       const pathContent = linkTag.slice(1);
       return decodePath(decode(pathContent) as Uint8Array[]);
     }
-  } catch (e) {}
+  } catch (e) {
+    // TODO: what do?
+  }
 
   try {
     return JSON.stringify(decode(linkTag));
@@ -98,13 +89,9 @@ export function getLinkTagStrInner(linkTag: Uint8Array): string {
 }
 
 function bin2String(array) {
-  var result = '';
-  for (var i = 0; i < array.length; i++) {
+  let result = '';
+  for (let i = 0; i < array.length; i += 1) {
     result += String.fromCharCode(array[i]);
   }
   return result;
 }
-function shortenStrRec(arg0: { entry: any; entry_type: "Agent"; } | { entry: any; entry_type: "App"; } | { entry: any; entry_type: "CounterSign"; } | { entry: any; entry_type: "CapGrant"; } | { entry: any; entry_type: "CapClaim"; }): any {
-  throw new Error('Function not implemented.');
-}
-
