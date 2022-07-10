@@ -10,7 +10,7 @@ import { PlaygroundMode } from '../store/mode';
 export class PlaygroundElement<
   T extends PlaygroundStore<any> = PlaygroundStore<any>
 > extends ScopedElementsMixin(LitElement) {
-  @contextProvided({ context: playgroundContext, multiple: true })
+  @contextProvided({ context: playgroundContext, subscribe: true })
   @state()
   store: T;
 

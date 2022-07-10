@@ -5,8 +5,8 @@ import { classMap } from 'lit/directives/class-map.js';
 
 import { NodeSingular } from 'cytoscape';
 
-import { deserializeHash, serializeHash } from '@holochain-open-dev/core-types';
-import { DhtOp, getDhtOpType } from '@holochain/conductor-api';
+import { deserializeHash, serializeHash } from '@holochain-open-dev/utils';
+import { DhtOp, getDhtOpType } from '@holochain/client';
 import {
   sleep,
   NetworkRequestType,
@@ -51,6 +51,7 @@ import {
 } from '../../store/simulated-playground-store';
 import { mapDerive } from '../../store/utils';
 import { MiddlewareController } from '../../base/middleware-controller';
+import { CellStore } from '../../store/playground-store';
 
 const MIN_ANIMATION_DELAY = 1;
 const MAX_ANIMATION_DELAY = 7;
@@ -127,13 +128,13 @@ export class DhtCells extends PlaygroundElement {
     this,
     () =>
       this._cellsForActiveDna.value &&
-      mapDerive(this._cellsForActiveDna.value, (store) => store.dhtShard)
+      mapDerive<CellStore<any>, DhtOp[]>(this._cellsForActiveDna.value, (store) => store.dhtShard)
   );
   _peers = new StoreSubscriber(
     this,
     () =>
       this._cellsForActiveDna.value &&
-      mapDerive(this._cellsForActiveDna.value, (store) => store.peers)
+      mapDerive<CellStore<any>, Uint8Array[]>(this._cellsForActiveDna.value, (store) => store.peers)
   );
   _farPeers = new StoreSubscriber(
     this,

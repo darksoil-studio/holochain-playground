@@ -1,32 +1,32 @@
 import {
   Dna,
-  HeaderType,
+  ActionType,
   AgentValidationPkg,
   Entry,
   EntryType,
   Create,
   Update,
-  SignedHeaderHashed,
-  Header,
+  SignedActionHashed,
+  Action,
   CreateLink,
   Delete,
   DeleteLink,
   AgentPubKey,
   DnaHash,
   EntryHash,
-  HeaderHash,
-} from '@holochain/conductor-api';
+  ActionHash,
+} from '@holochain/client';
 
 import { hash, HashType } from '../../../processors/hash';
 import { CellState } from '../state';
 import { hashEntry } from '../utils';
-import { getAuthor, getNextHeaderSeq, getTipOfChain } from './utils';
+import { getAuthor, getNextActionSeq, getTipOfChain } from './utils';
 
-export function buildShh(header: Header): SignedHeaderHashed {
+export function buildShh(action: Action): SignedActionHashed {
   return {
-    header: {
-      content: header,
-      hash: hash(header, HashType.HEADER),
+    hashed: {
+      content: action,
+      hash: hash(action, HashType.HEADER),
     },
     signature: Uint8Array.from([]),
   };
@@ -37,7 +37,7 @@ export function buildDna(dnaHash: DnaHash, agentId: AgentPubKey): Dna {
     author: agentId,
     hash: dnaHash,
     timestamp: Date.now() * 1000,
-    type: HeaderType.Dna,
+    type: ActionType.Dna,
   };
 
   return dna;
@@ -50,7 +50,7 @@ export function buildAgentValidationPkg(
   const pkg: AgentValidationPkg = {
     ...buildCommon(state),
     membrane_proof,
-    type: HeaderType.AgentValidationPkg,
+    type: ActionType.AgentValidationPkg,
   };
   return pkg;
 }
@@ -66,7 +66,7 @@ export function buildCreate(
     ...buildCommon(state),
     entry_hash,
     entry_type,
-    type: HeaderType.Create,
+    type: ActionType.Create,
   };
   return create;
 }
@@ -84,7 +84,7 @@ export function buildCreateLink(
     target_address: target,
     tag,
     zome_id,
-    type: HeaderType.CreateLink,
+    type: ActionType.CreateLink,
   };
   return create_link;
 }
@@ -94,7 +94,7 @@ export function buildUpdate(
   entry: Entry,
   entry_type: EntryType,
   original_entry_address: EntryHash,
-  original_header_address: HeaderHash
+  original_action_address: ActionHash
 ): Update {
   const entry_hash = hashEntry(entry);
 
@@ -103,52 +103,52 @@ export function buildUpdate(
     entry_hash,
     entry_type,
     original_entry_address,
-    original_header_address,
+    original_action_address,
 
-    type: HeaderType.Update,
+    type: ActionType.Update,
   };
   return update;
 }
 
 export function buildDelete(
   state: CellState,
-  deletes_address: HeaderHash,
+  deletes_address: ActionHash,
   deletes_entry_address: EntryHash
 ): Delete {
-  const deleteHeader: Delete = {
+  const deleteAction: Delete = {
     ...buildCommon(state),
-    type: HeaderType.Delete,
+    type: ActionType.Delete,
     deletes_address,
     deletes_entry_address,
   };
-  return deleteHeader;
+  return deleteAction;
 }
 
 export function buildDeleteLink(
   state: CellState,
   base_address: EntryHash,
-  link_add_address: HeaderHash
+  link_add_address: ActionHash
 ): DeleteLink {
-  const deleteHeader: DeleteLink = {
+  const deleteAction: DeleteLink = {
     ...buildCommon(state),
-    type: HeaderType.DeleteLink,
+    type: ActionType.DeleteLink,
     base_address,
     link_add_address,
   };
-  return deleteHeader;
+  return deleteAction;
 }
 /** Helpers */
 
 function buildCommon(state: CellState) {
   const author = getAuthor(state);
-  const header_seq = getNextHeaderSeq(state);
-  const prev_header = getTipOfChain(state);
+  const action_seq = getNextActionSeq(state);
+  const prev_action = getTipOfChain(state);
   const timestamp = Date.now() * 1000;
 
   return {
     author,
-    header_seq,
-    prev_header,
+    action_seq,
+    prev_action,
     timestamp,
   };
 }

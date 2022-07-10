@@ -2,7 +2,7 @@ import {
   AgentPubKeyB64,
   ValidationReceipt,
 } from '@holochain-open-dev/core-types';
-import { AgentPubKey, DhtOp } from '@holochain/conductor-api';
+import { AgentPubKey, DhtOp } from '@holochain/client';
 
 import { HoloHashMap } from '../../../processors/holo-hash-map';
 

@@ -7,7 +7,7 @@
   "main": "dist/index.js",
   "module": "dist/index.js",
   "scripts": {
-    "start": "concurrently -k \"npm:build-watch\" \"wds -c web-dev-server.config.mjs\"",
+    "start": "concurrently -k \"npm run build:watch\" \"wds -c web-dev-server.config.mjs\"",
     "build": "tsc --incremental",
     "build:watch": "tsc -w --preserveWatchOutput --incremental",
     "test": "karma start --coverage",

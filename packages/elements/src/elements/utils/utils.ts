@@ -1,5 +1,5 @@
-import { serializeHash } from '@holochain-open-dev/core-types';
-import { Entry } from '@holochain/conductor-api';
+import { serializeHash } from '@holochain-open-dev/utils';
+import { Entry } from '@holochain/client';
 import { decode } from '@msgpack/msgpack';
 
 export const sleep = (ms: number) =>
@@ -16,10 +16,14 @@ export function utf32Decode(bytes: Uint8Array): string {
   return result;
 }
 
+
 export function getEntryContents(entry: Entry): any {
-  let entryContent = entry.entry;
+  console.log("Getting entry contents of entry: ", entry);
+
+  let entryContent: any = entry.entry;
   if (entry.entry_type === 'App') {
     entryContent = decode(entry.entry);
+    console.log("APP ENTRY CONTENT (decoded): ", entryContent);
 
     if (
       Array.isArray(entryContent) &&
@@ -33,6 +37,17 @@ export function getEntryContents(entry: Entry): any {
       } catch (e) {}
     }
   }
+
+  console.log("Entry Content at the end: ", entryContent);
+  console.log("{...entry: }", {...entry});
+  console.log("THIS IS WHAT'S BEING RETURNED: ", {
+    ...entry,
+    entry: entryContent,
+  });
+  console.log("THIS IS WHAT SHOULD BE DISPLAYED: ", shortenStrRec({
+    ...entry,
+    entry: entryContent,
+  }));
 
   return {
     ...entry,
@@ -89,3 +104,7 @@ function bin2String(array) {
   }
   return result;
 }
+function shortenStrRec(arg0: { entry: any; entry_type: "Agent"; } | { entry: any; entry_type: "App"; } | { entry: any; entry_type: "CounterSign"; } | { entry: any; entry_type: "CapGrant"; } | { entry: any; entry_type: "CapClaim"; }): any {
+  throw new Error('Function not implemented.');
+}
+

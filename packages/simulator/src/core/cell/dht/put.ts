@@ -7,21 +7,21 @@ import {
 import {
   DhtOp,
   DhtOpType,
-  HeaderType,
-  SignedHeaderHashed,
-  NewEntryHeader,
-  HeaderHash,
+  ActionType,
+  SignedActionHashed,
+  NewEntryAction,
+  ActionHash,
   EntryHash,
   AnyDhtHash,
-  Header,
+  Action,
   getDhtOpType,
-  getDhtOpHeader,
+  getDhtOpAction,
   Update,
   Delete,
   CreateLink,
   DeleteLink,
   getDhtOpSignature,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 import {
   ChainStatus,
   LinkMetaKey,
@@ -36,7 +36,7 @@ import {
   IntegratedDhtOpsValue,
 } from '../state';
 
-import { getHeadersForEntry } from './get';
+import { getActionsForEntry } from './get';
 import { HoloHashMap } from '../../../processors/holo-hash-map';
 import { getEntry } from '../utils';
 import { hash, HashType } from '../../../processors/hash';
@@ -71,127 +71,127 @@ export const putIntegrationLimboValue =
   };
 
 export const putDhtOpData = (dhtOp: DhtOp) => (state: CellState) => {
-  const header = getDhtOpHeader(dhtOp);
-  const headerHash = hash(header, HashType.HEADER);
+  const action = getDhtOpAction(dhtOp);
+  const actionHash = hash(action, HashType.HEADER);
 
-  const ssh: SignedHeaderHashed = {
-    header: {
-      content: header,
-      hash: headerHash,
+  const ssh: SignedActionHashed = {
+    hashed: {
+      content: action,
+      hash: actionHash,
     },
     signature: getDhtOpSignature(dhtOp),
   };
-  state.CAS.put(headerHash, ssh);
+  state.CAS.put(actionHash, ssh);
 
   const entry = getEntry(dhtOp);
 
   if (entry) {
-    state.CAS.put((header as NewEntryHeader).entry_hash, entry);
+    state.CAS.put((action as NewEntryAction).entry_hash, entry);
   }
 };
 
 export const putDhtOpMetadata = (dhtOp: DhtOp) => (state: CellState) => {
   const type = getDhtOpType(dhtOp);
-  const header = getDhtOpHeader(dhtOp);
-  const headerHash = hash(header, HashType.HEADER);
+  const action = getDhtOpAction(dhtOp);
+  const actionHash = hash(action, HashType.HEADER);
 
-  if (type === DhtOpType.StoreElement) {
-    state.metadata.misc_meta.put(headerHash, 'StoreElement');
+  if (type === DhtOpType.StoreRecord) {
+    state.metadata.misc_meta.put(actionHash, 'StoreRecord');
   } else if (type === DhtOpType.StoreEntry) {
-    const entryHash = (header as NewEntryHeader).entry_hash;
+    const entryHash = (action as NewEntryAction).entry_hash;
 
-    if (header.type === HeaderType.Update) {
-      register_header_on_basis(headerHash, header, headerHash)(state);
-      register_header_on_basis(entryHash, header, headerHash)(state);
+    if (action.type === ActionType.Update) {
+      register_action_on_basis(actionHash, action, actionHash)(state);
+      register_action_on_basis(entryHash, action, actionHash)(state);
     }
 
-    register_header_on_basis(entryHash, header, headerHash)(state);
+    register_action_on_basis(entryHash, action, actionHash)(state);
     update_entry_dht_status(entryHash)(state);
   } else if (type === DhtOpType.RegisterAgentActivity) {
-    state.metadata.misc_meta.put(headerHash, {
-      ChainItem: header.timestamp,
+    state.metadata.misc_meta.put(actionHash, {
+      ChainItem: action.timestamp,
     });
 
-    state.metadata.misc_meta.put(header.author, {
+    state.metadata.misc_meta.put(action.author, {
       ChainStatus: ChainStatus.Valid,
     });
   } else if (
     type === DhtOpType.RegisterUpdatedContent ||
-    type === DhtOpType.RegisterUpdatedElement
+    type === DhtOpType.RegisterUpdatedRecord
   ) {
-    register_header_on_basis(
-      (header as Update).original_header_address,
-      header,
-      headerHash
+    register_action_on_basis(
+      (action as Update).original_action_address,
+      action,
+      actionHash
     )(state);
-    register_header_on_basis(
-      (header as Update).original_entry_address,
-      header,
-      headerHash
+    register_action_on_basis(
+      (action as Update).original_entry_address,
+      action,
+      actionHash
     )(state);
-    update_entry_dht_status((header as Update).original_entry_address)(state);
+    update_entry_dht_status((action as Update).original_entry_address)(state);
   } else if (
     type === DhtOpType.RegisterDeletedBy ||
-    type === DhtOpType.RegisterDeletedEntryHeader
+    type === DhtOpType.RegisterDeletedEntryAction
   ) {
-    register_header_on_basis(
-      (header as Delete).deletes_address,
-      header,
-      headerHash
+    register_action_on_basis(
+      (action as Delete).deletes_address,
+      action,
+      actionHash
     )(state);
-    register_header_on_basis(
-      (header as Delete).deletes_entry_address,
-      header,
-      headerHash
+    register_action_on_basis(
+      (action as Delete).deletes_entry_address,
+      action,
+      actionHash
     )(state);
 
-    update_entry_dht_status((header as Delete).deletes_entry_address)(state);
+    update_entry_dht_status((action as Delete).deletes_entry_address)(state);
   } else if (type === DhtOpType.RegisterAddLink) {
     const key: LinkMetaKey = {
-      base: (header as CreateLink).base_address,
-      header_hash: headerHash,
-      tag: (header as CreateLink).tag,
-      zome_id: (header as CreateLink).zome_id,
+      base: (action as CreateLink).base_address,
+      action_hash: actionHash,
+      tag: (action as CreateLink).tag,
+      zome_id: (action as CreateLink).zome_id,
     };
     const value: LinkMetaVal = {
-      link_add_hash: headerHash,
-      tag: (header as CreateLink).tag,
-      target: (header as CreateLink).target_address,
-      timestamp: (header as CreateLink).timestamp,
-      zome_id: (header as CreateLink).zome_id,
+      link_add_hash: actionHash,
+      tag: (action as CreateLink).tag,
+      target: (action as CreateLink).target_address,
+      timestamp: (action as CreateLink).timestamp,
+      zome_id: (action as CreateLink).zome_id,
     };
     state.metadata.link_meta.push({ key, value });
   } else if (type === DhtOpType.RegisterRemoveLink) {
     const val: SysMetaVal = {
-      DeleteLink: headerHash,
+      DeleteLink: actionHash,
     };
 
-    putSystemMetadata((header as DeleteLink).link_add_address, val)(state);
+    putSystemMetadata((action as DeleteLink).link_add_address, val)(state);
   }
 };
 
-function is_header_alive(state: CellState, headerHash: HeaderHash): boolean {
-  const dhtHeaders = state.metadata.system_meta.get(headerHash);
-  if (dhtHeaders) {
-    const isHeaderDeleted = !!dhtHeaders.find(
+function is_action_alive(state: CellState, actionHash: ActionHash): boolean {
+  const dhtActions = state.metadata.system_meta.get(actionHash);
+  if (dhtActions) {
+    const isActionDeleted = !!dhtActions.find(
       metaVal =>
         (
           metaVal as {
-            Delete: HeaderHash;
+            Delete: ActionHash;
           }
         ).Delete
     );
-    return !isHeaderDeleted;
+    return !isActionDeleted;
   }
   return true;
 }
 
 const update_entry_dht_status =
   (entryHash: EntryHash) => (state: CellState) => {
-    const headers = getHeadersForEntry(state, entryHash);
+    const actions = getActionsForEntry(state, entryHash);
 
-    const entryIsAlive = headers.some(header =>
-      is_header_alive(state, header.header.hash)
+    const entryIsAlive = actions.some(action =>
+      is_action_alive(state, action.hashed.hash)
     );
 
     state.metadata.misc_meta.put(entryHash, {
@@ -199,17 +199,17 @@ const update_entry_dht_status =
     });
   };
 
-export const register_header_on_basis =
-  (basis: AnyDhtHash, header: Header, headerHash: HeaderHash) =>
+export const register_action_on_basis =
+  (basis: AnyDhtHash, action: Action, actionHash: ActionHash) =>
   (state: CellState) => {
     let value: SysMetaVal | undefined;
-    const headerType = header.type;
-    if (headerType === HeaderType.Create) {
-      value = { NewEntry: headerHash };
-    } else if (headerType === HeaderType.Update) {
-      value = { Update: headerHash };
-    } else if (headerType === HeaderType.Delete) {
-      value = { Delete: headerHash };
+    const actionType = action.type;
+    if (actionType === ActionType.Create) {
+      value = { NewEntry: actionHash };
+    } else if (actionType === ActionType.Update) {
+      value = { Update: actionHash };
+    } else if (actionType === ActionType.Delete) {
+      value = { Delete: actionHash };
     }
 
     if (value) {

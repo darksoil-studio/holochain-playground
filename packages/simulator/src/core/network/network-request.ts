@@ -4,7 +4,7 @@ import {
   Dictionary,
   DnaHashB64,
 } from '@holochain-open-dev/core-types';
-import { AgentPubKey, DnaHash, DhtOp } from '@holochain/conductor-api';
+import { AgentPubKey, DnaHash, DhtOp } from '@holochain/client';
 import { HoloHashMap } from '../../processors/holo-hash-map';
 import { GetOptions } from '../../types';
 import { Cell } from '../cell/cell';

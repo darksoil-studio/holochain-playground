@@ -21,7 +21,7 @@ node {
   background-color: grey;
 }
 
-.header {
+.action {
   opacity: 0.6;
 }
 

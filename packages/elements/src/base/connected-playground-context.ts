@@ -1,8 +1,8 @@
-import { AdminWebsocket } from '@holochain/conductor-api';
 import { PropertyValues } from 'lit';
 import { property } from 'lit/decorators.js';
 import { ConnectedPlaygroundStore } from '../store/connected-playground-store';
 import { PlaygroundMode } from '../store/mode';
+import { PlaygroundStore } from '../store/playground-store';
 
 import { BasePlaygroundContext } from './base-playground-context';
 
@@ -20,8 +20,8 @@ export class ConnectedPlaygroundContext extends BasePlaygroundContext<
   updated(cv: PropertyValues) {
     super.updated(cv);
 
-    if (this._playgroundStoreContext.value && cv.has('urls')) {
-      this._playgroundStoreContext.value.setConductors(this.urls);
+    if (this.store && cv.has('urls')) {
+      (this.store as ConnectedPlaygroundStore).setConductors(this.urls);
     }
   }
 }

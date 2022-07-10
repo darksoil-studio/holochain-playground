@@ -1,41 +1,40 @@
-import { Element } from '@holochain-open-dev/core-types';
-import { HeaderHash, NewEntryHeader } from '@holochain/conductor-api';
+import { ActionHash, NewEntryAction, Record } from '@holochain/client';
 
 import { GetStrategy } from '../../../../../types';
 import {
   buildDelete,
   buildShh,
-} from '../../../../cell/source-chain/builder-headers';
-import { putElement } from '../../../../cell/source-chain/put';
+} from '../../../../cell/source-chain/builder-actions';
+import { putRecord } from '../../../../cell/source-chain/put';
 import { HostFnWorkspace } from '../../../host-fn';
 
 export async function common_delete(
   worskpace: HostFnWorkspace,
-  header_hash: HeaderHash
-): Promise<HeaderHash> {
-  const headerToDelete = await worskpace.cascade.retrieve_header(header_hash, {
+  action_hash: ActionHash
+): Promise<ActionHash> {
+  const actionToDelete = await worskpace.cascade.retrieve_action(action_hash, {
     strategy: GetStrategy.Contents,
   });
 
-  if (!headerToDelete) throw new Error('Could not find element to be deleted');
+  if (!actionToDelete) throw new Error('Could not find record to be deleted');
 
-  const deletesEntryAddress = (headerToDelete.header.content as NewEntryHeader)
+  const deletesEntryAddress = (actionToDelete.hashed.content as NewEntryAction)
     .entry_hash;
 
   if (!deletesEntryAddress)
-    throw new Error(`Trying to delete an element with no entry`);
+    throw new Error(`Trying to delete an record with no entry`);
 
-  const deleteHeader = buildDelete(
+  const deleteAction = buildDelete(
     worskpace.state,
-    header_hash,
+    action_hash,
     deletesEntryAddress
   );
 
-  const element: Element = {
-    signed_header: buildShh(deleteHeader),
+  const record: Record = {
+    signed_action: buildShh(deleteAction),
     entry: undefined,
   };
-  putElement(element)(worskpace.state);
+  putRecord(record)(worskpace.state);
 
-  return element.signed_header.header.hash;
+  return record.signed_action.hashed.hash;
 }

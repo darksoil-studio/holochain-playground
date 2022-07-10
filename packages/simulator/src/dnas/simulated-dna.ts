@@ -1,7 +1,6 @@
 import {
   AgentPubKeyB64,
   Dictionary,
-  Element,
   DnaHashB64,
 } from '@holochain-open-dev/core-types';
 import {
@@ -10,7 +9,8 @@ import {
   DnaHash,
   AgentPubKey,
   HoloHash,
-} from '@holochain/conductor-api';
+  Record,
+} from '@holochain/client';
 import { ValidationOutcome } from '../core/cell/sys_validate/types';
 import {
   SimulatedValidateFunctionContext,
@@ -42,7 +42,7 @@ export interface SimulatedZome {
     validate_create_agent?: (
       context: SimulatedValidateFunctionContext
     ) => (args: {
-      element: Element;
+      record: Record;
       agent_pub_key: AgentPubKeyB64;
       membrane_proof: any;
     }) => Promise<ValidationOutcome>;

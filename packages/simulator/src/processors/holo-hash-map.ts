@@ -4,7 +4,7 @@ import {
   CellId,
   DnaHash,
   HoloHash,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 import flatMap from 'lodash-es/flatMap';
 import { hashToString } from './hash';
 

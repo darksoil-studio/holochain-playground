@@ -3,12 +3,11 @@ import {
   AgentPubKey,
   DnaHash,
   CapSecret,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 import {
-  deserializeHash,
   Dictionary,
-  serializeHash,
 } from '@holochain-open-dev/core-types';
+import { deserializeHash, serializeHash } from '@holochain-open-dev/utils';
 
 import { Cell, getCellId } from '../core/cell';
 import { areEqual, hash, HashType, isHash } from '../processors/hash';
@@ -146,7 +145,7 @@ export class Conductor {
   }
 
   /** Admin API */
-  /* 
+  /*
   async registerDna(dna_template: SimulatedDna): Promise<Hash> {
     const templateHash = hash(dna_template, HashType.DNA);
 

@@ -1,8 +1,8 @@
 import { html, css } from 'lit';
 import { ListItem, Card, Select } from '@scoped-elements/material-web';
 import { StoreSubscriber } from 'lit-svelte-stores';
-import { serializeHash } from '@holochain-open-dev/core-types';
-import { DnaHash } from '@holochain/conductor-api';
+import { serializeHash } from '@holochain-open-dev/utils';
+import { DnaHash } from '@holochain/client';
 import isEqual from 'lodash-es/isEqual';
 
 import { PlaygroundElement } from '../../base/playground-element';

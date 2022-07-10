@@ -1,7 +1,7 @@
 import { hash, HashType } from '../../../processors/hash';
-import { getNewHeaders } from '../source-chain/get';
-import { getElement } from '../source-chain/utils';
-import { elementToDhtOps } from '../utils';
+import { getNewActions } from '../source-chain/get';
+import { getRecord } from '../source-chain/utils';
+import { recordToDhtOps } from '../utils';
 import { publish_dht_ops_task } from './publish_dht_ops';
 import { Workflow, WorkflowReturn, WorkflowType, Workspace } from './workflows';
 
@@ -9,11 +9,11 @@ import { Workflow, WorkflowReturn, WorkflowType, Workspace } from './workflows';
 export const produce_dht_ops = async (
   worskpace: Workspace
 ): Promise<WorkflowReturn<void>> => {
-  const newHeaderHashes = getNewHeaders(worskpace.state);
+  const newActionHashes = getNewActions(worskpace.state);
 
-  for (const newHeaderHash of newHeaderHashes) {
-    const element = getElement(worskpace.state, newHeaderHash);
-    const dhtOps = elementToDhtOps(element);
+  for (const newActionHash of newActionHashes) {
+    const record = getRecord(worskpace.state, newActionHash);
+    const dhtOps = recordToDhtOps(record);
 
     for (const dhtOp of dhtOps) {
       const dhtOpHash = hash(dhtOp, HashType.DHTOP);

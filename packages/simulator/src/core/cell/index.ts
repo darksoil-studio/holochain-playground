@@ -8,7 +8,7 @@ export * from './dht/put';
 export * from './source-chain/get';
 export * from './source-chain/put';
 export * from './source-chain/utils';
-export * from './source-chain/builder-headers';
+export * from './source-chain/builder-actions';
 
 export * from './workflows/app_validation';
 export * from './workflows/call_zome_fn';

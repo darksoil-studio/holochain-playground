@@ -6,7 +6,7 @@ import {
   MiddlewareSubscription,
   SuccessMiddleware,
 } from '@holochain-playground/simulator';
-import { CellId } from '@holochain/conductor-api';
+import { CellId } from '@holochain/client';
 import { ReactiveController, ReactiveElement } from 'lit';
 
 import { cellChanges } from '../store/utils';

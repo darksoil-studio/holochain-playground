@@ -18,13 +18,13 @@ describe('Bad Agent', () => {
 
       const badAgent = conductors[2];
       badAgent.setBadAgent({
-        pretend_invalid_elements_are_valid: true,
+        pretend_invalid_records_are_valid: true,
         disable_validation_before_publish: true,
       });
       const badAgentCell = badAgent.getAllCells()[0];
       conductors[3].setBadAgent({
         disable_validation_before_publish: true,
-        pretend_invalid_elements_are_valid: true,
+        pretend_invalid_records_are_valid: true,
       });
       const badAgent2Address = conductors[3].getAllCells()[0].agentPubKey;
 
@@ -49,7 +49,7 @@ describe('Bad Agent', () => {
           cellId: bobCell.cellId,
           cap: null,
           fnName: 'update_entry',
-          payload: { original_header_address: result, new_content: 'hi2' },
+          payload: { original_action_address: result, new_content: 'hi2' },
           zome: 'demo_entries',
         });
         expect(false).to.be.ok;
@@ -61,7 +61,7 @@ describe('Bad Agent', () => {
         cellId: badAgentCell.cellId,
         cap: null,
         fnName: 'update_entry',
-        payload: { original_header_address: result, new_content: 'hi2' },
+        payload: { original_action_address: result, new_content: 'hi2' },
         zome: 'demo_entries',
       });
       expect(result).to.be.ok;

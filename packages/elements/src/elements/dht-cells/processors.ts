@@ -1,4 +1,4 @@
-import { Dictionary, serializeHash } from '@holochain-open-dev/core-types';
+import { serializeHash } from '@holochain-open-dev/utils';
 import {
   BadAgent,
   Cell,
@@ -14,11 +14,11 @@ import {
   DhtOp,
   DhtOpType,
   EntryHash,
-  getDhtOpHeader,
+  getDhtOpAction,
   getDhtOpType,
-  HeaderHash,
-  NewEntryHeader,
-} from '@holochain/conductor-api';
+  ActionHash,
+  NewEntryAction,
+} from '@holochain/client';
 import isEqual from 'lodash-es/isEqual';
 import { CellStore } from '../../store/playground-store';
 import { SimulatedCellStore } from '../../store/simulated-playground-store';
@@ -153,7 +153,7 @@ export function isHoldingEntry(dhtShard: DhtOp[], entryHash: EntryHash) {
   for (const dhtOp of dhtShard) {
     if (
       getDhtOpType(dhtOp) === DhtOpType.StoreEntry &&
-      isEqual(entryHash, (getDhtOpHeader(dhtOp) as NewEntryHeader).entry_hash)
+      isEqual(entryHash, (getDhtOpAction(dhtOp) as NewEntryAction).entry_hash)
     ) {
       return true;
     }
@@ -162,12 +162,12 @@ export function isHoldingEntry(dhtShard: DhtOp[], entryHash: EntryHash) {
   return false;
 }
 
-export function isHoldingElement(dhtShard: DhtOp[], headerHash: HeaderHash) {
+export function isHoldingElement(dhtShard: DhtOp[], actionHash: ActionHash) {
   for (const dhtOp of dhtShard) {
-    const dhtOpheaderHash = hash(getDhtOpHeader(dhtOp), HashType.HEADER);
+    const dhtOpactionHash = hash(getDhtOpAction(dhtOp), HashType.HEADER);
     if (
-      getDhtOpType(dhtOp) === DhtOpType.StoreElement &&
-      isEqual(dhtOpheaderHash, headerHash)
+      getDhtOpType(dhtOp) === DhtOpType.StoreRecord &&
+      isEqual(dhtOpactionHash, actionHash)
     ) {
       return true;
     }

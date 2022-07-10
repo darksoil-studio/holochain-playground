@@ -3,25 +3,25 @@ import {
   Delete,
   Entry,
   EntryType,
-  NewEntryHeader,
-  SignedHeaderHashed,
+  NewEntryAction,
+  SignedActionHashed,
   Update,
   EntryHash,
-  HeaderHash,
-} from '@holochain/conductor-api';
+  ActionHash,
+} from '@holochain/client';
 
 import { P2pCell } from '../../..';
 import { GetLinksOptions, GetOptions } from '../../../types';
 import {
   getLinksForEntry,
-  getHeaderModifiers,
-  getHeadersForEntry,
+  getActionModifiers,
+  getActionsForEntry,
   getEntryDetails,
 } from '../dht/get';
 import { CellState, ValidationStatus } from '../state';
 import {
   GetEntryResponse,
-  GetElementResponse,
+  GetRecordResponse,
   GetLinksResponse,
 } from './types';
 
@@ -36,43 +36,43 @@ export class Authority {
     const entry = this.state.CAS.get(entry_hash);
     if (!entry) return undefined;
 
-    const allHeaders = getHeadersForEntry(this.state, entry_hash);
+    const allActions = getActionsForEntry(this.state, entry_hash);
 
     const entryDetails = getEntryDetails(this.state, entry_hash);
 
-    const createHeader = allHeaders.find(
-      header => (header.header.content as Create).entry_type
+    const createAction = allActions.find(
+      action => (action.hashed.content as Create).entry_type
     );
     let entry_type: EntryType | undefined = undefined;
-    if (createHeader)
-      entry_type = (createHeader.header.content as Create).entry_type;
+    if (createAction)
+      entry_type = (createAction.hashed.content as Create).entry_type;
 
     return {
       entry,
       entry_type: entry_type as EntryType,
-      deletes: entryDetails.deletes as SignedHeaderHashed<Delete>[],
-      updates: entryDetails.updates as SignedHeaderHashed<Update>[],
-      live_headers: entryDetails.headers as SignedHeaderHashed<Create>[],
+      deletes: entryDetails.deletes as SignedActionHashed<Delete>[],
+      updates: entryDetails.updates as SignedActionHashed<Update>[],
+      live_actions: entryDetails.actions as SignedActionHashed<Create>[],
     };
   }
 
-  public async handle_get_element(
-    header_hash: HeaderHash,
+  public async handle_get_record(
+    action_hash: ActionHash,
     options: GetOptions
-  ): Promise<GetElementResponse | undefined> {
-    if (this.state.metadata.misc_meta.get(header_hash) !== 'StoreElement') {
+  ): Promise<GetRecordResponse | undefined> {
+    if (this.state.metadata.misc_meta.get(action_hash) !== 'StoreRecord') {
       return undefined;
     }
 
-    const header = this.state.CAS.get(header_hash) as SignedHeaderHashed;
+    const action = this.state.CAS.get(action_hash) as SignedActionHashed;
     let maybe_entry: Entry | undefined = undefined;
     let validation_status: ValidationStatus = ValidationStatus.Valid;
 
-    if (header) {
+    if (action) {
       if (
-        (header as SignedHeaderHashed<NewEntryHeader>).header.content.entry_hash
+        (action as SignedActionHashed<NewEntryAction>).hashed.content.entry_hash
       ) {
-        const entryHash = (header as SignedHeaderHashed<NewEntryHeader>).header
+        const entryHash = (action as SignedActionHashed<NewEntryAction>).hashed
           .content.entry_hash;
         maybe_entry = this.state.CAS.get(entryHash);
       }
@@ -80,12 +80,12 @@ export class Authority {
       validation_status = ValidationStatus.Rejected;
     }
 
-    const modifiers = getHeaderModifiers(this.state, header_hash);
+    const modifiers = getActionModifiers(this.state, action_hash);
 
     return {
       deletes: modifiers.deletes,
       updates: modifiers.updates,
-      signed_header: header,
+      signed_action: action,
       validation_status,
       maybe_entry,
     };

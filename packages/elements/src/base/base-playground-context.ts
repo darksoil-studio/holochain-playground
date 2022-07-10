@@ -8,12 +8,13 @@ import { LitElement, html, css, PropertyValues } from 'lit';
 import { property, query } from 'lit/decorators.js';
 
 import { ScopedElementsMixin } from '@open-wc/scoped-elements';
-import { ContextProvider } from '@lit-labs/context';
+import { contextProvider, ContextProvider } from '@lit-labs/context';
 
-import { PlaygroundContext, playgroundContext } from './context';
+import { playgroundContext } from './context';
 import { PlaygroundStore } from '../store/playground-store';
 import { PlaygroundMode } from '../store/mode';
 import { sharedStyles } from '../elements/utils/shared-styles';
+import { get } from 'svelte/store';
 
 export abstract class BasePlaygroundContext<
   T extends PlaygroundMode,
@@ -28,13 +29,18 @@ export abstract class BasePlaygroundContext<
   /** Context variables */
   abstract buildStore(): Promise<S>;
 
-  _playgroundStoreContext: ContextProvider<PlaygroundContext<T, S>> =
-    new ContextProvider(this, playgroundContext, undefined);
+  @contextProvider({ context: playgroundContext })
+  store!: PlaygroundStore<any>;
 
   async firstUpdated() {
+    console.log("Hello from the BasePlayGroundContext.")
     const store = await this.buildStore();
-
-    this._playgroundStoreContext.setValue(store);
+    console.log("This is my store after building: ", store);
+    console.log("conductors: ", get(store.conductors));
+    console.log("activeAgentPubKey: ", get(store.activeAgentPubKey));
+    console.log("activeCell(): ", get(store.activeCell()));
+    console.log("activeContent(): ", get(store.activeContent()));
+    this.store = store;
 
     this.dispatchEvent(
       new CustomEvent('playground-ready', {

@@ -59,7 +59,7 @@ describe('Links', () => {
       cap: null,
       fnName: 'delete_link',
       payload: {
-        add_link_header: add_link_hash,
+        add_link_action: add_link_hash,
       },
       zome: 'demo_links',
     });

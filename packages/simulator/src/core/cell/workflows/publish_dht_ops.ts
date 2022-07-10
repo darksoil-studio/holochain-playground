@@ -1,4 +1,4 @@
-import { DhtOp } from '@holochain/conductor-api';
+import { DhtOp } from '@holochain/client';
 import { HoloHashMap } from '../../../processors/holo-hash-map';
 
 import { getNonPublishedDhtOps } from '../source-chain/utils';

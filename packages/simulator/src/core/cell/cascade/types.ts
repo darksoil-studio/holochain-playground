@@ -1,41 +1,41 @@
 import {
   Entry,
   EntryType,
-  SignedHeaderHashed,
+  SignedActionHashed,
   Create,
   Delete,
   Update,
   CreateLink,
   DeleteLink,
   EntryHash,
-} from '@holochain/conductor-api';
+} from '@holochain/client';
 import { ValidationStatus } from '../state';
 
 export interface GetEntryResponse {
   entry: Entry;
   entry_type: EntryType;
-  live_headers: SignedHeaderHashed<Create>[];
-  deletes: SignedHeaderHashed<Delete>[];
-  updates: SignedHeaderHashed<Update>[];
+  live_actions: SignedActionHashed<Create>[];
+  deletes: SignedActionHashed<Delete>[];
+  updates: SignedActionHashed<Update>[];
 }
 
-export interface GetElementResponse {
-  signed_header: SignedHeaderHashed;
-  /// If there is an entry associated with this header it will be here
+export interface GetRecordResponse {
+  signed_action: SignedActionHashed;
+  /// If there is an entry associated with this action it will be here
   maybe_entry: Entry | undefined;
-  /// The validation status of this element.
+  /// The validation status of this record.
   validation_status: ValidationStatus;
-  /// All deletes on this header
-  deletes: SignedHeaderHashed<Delete>[];
+  /// All deletes on this action
+  deletes: SignedActionHashed<Delete>[];
   /// Any updates on this entry.
-  updates: SignedHeaderHashed<Update>[];
+  updates: SignedActionHashed<Update>[];
 }
 
-export type GetResult = GetElementResponse | GetEntryResponse;
+export type GetResult = GetRecordResponse | GetEntryResponse;
 
 export interface GetLinksResponse {
-  link_adds: SignedHeaderHashed<CreateLink>[];
-  link_removes: SignedHeaderHashed<DeleteLink>[];
+  link_adds: SignedActionHashed<CreateLink>[];
+  link_removes: SignedActionHashed<DeleteLink>[];
 }
 
 export interface Link {

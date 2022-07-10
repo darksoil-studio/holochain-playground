@@ -1,4 +1,4 @@
-import { AgentPubKey } from '@holochain/conductor-api';
+import { AgentPubKey } from '@holochain/client';
 import { areEqual } from '../../processors/hash';
 
 

@@ -1,21 +1,20 @@
-import { Element } from '@holochain-open-dev/core-types';
 import {
-  AgentPubKey,
   DhtOp,
   Entry,
-  NewEntryHeader,
-  SignedHeaderHashed,
-} from '@holochain/conductor-api';
+  NewEntryAction,
+  SignedActionHashed,
+  Record,
+} from '@holochain/client';
 import { CellState } from './core/cell/state';
 import { P2pCellState } from './core/network/p2p-cell';
 
-export function selectSourceChain(cellState: CellState): Element[] {
-  const headerHashes = cellState.sourceChain;
+export function selectSourceChain(cellState: CellState): Record[] {
+  const actionHashes = cellState.sourceChain;
 
-  return headerHashes.map(hash => {
-    const signed_header: SignedHeaderHashed = { ...cellState.CAS.get(hash) };
+  return actionHashes.map(hash => {
+    const signed_action: SignedActionHashed = { ...cellState.CAS.get(hash) };
 
-    const entry_hash = (signed_header.header.content as NewEntryHeader)
+    const entry_hash = (signed_action.hashed.content as NewEntryAction)
       .entry_hash;
     let entry: Entry | undefined;
     if (entry_hash) {
@@ -23,8 +22,10 @@ export function selectSourceChain(cellState: CellState): Element[] {
     }
 
     return {
-      signed_header,
-      entry,
+      signed_action,
+      entry: {
+        Present: entry,
+      },
     };
   });
 }

@@ -3,7 +3,7 @@ import {
   Dictionary,
   DnaHashB64,
 } from '@holochain-open-dev/core-types';
-import { AgentPubKey, DnaHash } from '@holochain/conductor-api';
+import { AgentPubKey, DnaHash } from '@holochain/client';
 import { BootstrapService } from '../../bootstrap/bootstrap-service';
 import { CellMap } from '../../processors/holo-hash-map';
 import { Cell } from '../cell/cell';

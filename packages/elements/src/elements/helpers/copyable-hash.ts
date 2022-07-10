@@ -4,7 +4,7 @@ import { property, query } from 'lit/decorators.js';
 import { IconButton } from '@scoped-elements/material-web';
 import { Snackbar } from '@scoped-elements/material-web';
 import { sharedStyles } from '../utils/shared-styles';
-import { serializeHash } from '@holochain-open-dev/core-types';
+import { serializeHash } from '@holochain-open-dev/utils';
 
 export class CopyableHash extends ScopedElementsMixin(LitElement) {
   @property()

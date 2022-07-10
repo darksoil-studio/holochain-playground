@@ -1,7 +1,7 @@
 import { Hdk } from './context';
 
 export const ensure = (hdk: Hdk) => async (path: string): Promise<void> => {
-  const headerHash = await hdk.create_entry({
+  const actionHash = await hdk.create_entry({
     content: path,
     entry_def_id: 'path',
   });

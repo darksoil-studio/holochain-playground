@@ -1,69 +1,72 @@
 import {
   Create,
   Entry,
-  NewEntryHeader,
-  SignedHeaderHashed,
-} from '@holochain/conductor-api';
-import { Element, serializeHash } from '@holochain-open-dev/core-types';
-import { getEntryTypeString } from '@holochain-playground/simulator';
+  Record,
+  RecordEntry,
+  NewEntryAction,
+  SignedActionHashed,
+} from '@holochain/client';
+import { serializeHash } from '@holochain-open-dev/utils';
+import { getEntryTypeString, extractEntry } from '@holochain-playground/simulator';
 
 import { SimulatedCellStore } from '../../store/simulated-playground-store';
 import { CellStore } from '../../store/playground-store';
 
 export function sourceChainNodes(
   cellStore: CellStore<any>,
-  elements: Element[]
+  records: Record[]
 ) {
   const nodes = [];
 
-  for (const element of elements) {
-    const header: SignedHeaderHashed = element.signed_header;
-    const headerHash = serializeHash(header.header.hash);
+  for (const record of records) {
+    const action: SignedActionHashed = record.signed_action;
+    const actionHash = serializeHash(action.hashed.hash);
 
     nodes.push({
       data: {
-        id: headerHash,
-        data: header,
-        label: header.header.content.type,
+        id: actionHash,
+        data: action,
+        label: action.hashed.content.type,
       },
-      classes: ['header', header.header.content.type],
+      classes: ['action', action.hashed.content.type],
     });
 
-    if ((header.header.content as Create).prev_header) {
-      const previousHeaderHash = serializeHash(
-        (header.header.content as Create).prev_header
+    if ((action.hashed.content as Create).prev_action) {
+      const previousActionHash = serializeHash(
+        (action.hashed.content as Create).prev_action
       );
       nodes.push({
         data: {
-          id: `${headerHash}->${previousHeaderHash}`,
-          source: headerHash,
-          target: previousHeaderHash,
+          id: `${actionHash}->${previousActionHash}`,
+          source: actionHash,
+          target: previousActionHash,
         },
         classes: ['embedded-reference'],
       });
     }
   }
 
-  for (const element of elements) {
-    const header: SignedHeaderHashed = element.signed_header;
-    const headerHash = serializeHash(header.header.hash);
+  for (const record of records) {
+    const action: SignedActionHashed = record.signed_action;
+    const actionHash = serializeHash(action.hashed.hash);
 
-    if (element.entry) {
-      const newEntryHeader = header.header.content as NewEntryHeader;
-      const entryHash = serializeHash(newEntryHeader.entry_hash);
-      const entryNodeId = `${headerHash}:${entryHash}`;
+    if (record.entry) {
+      const newEntryAction = action.hashed.content as NewEntryAction;
+      const entryHash = serializeHash(newEntryAction.entry_hash);
+      const entryNodeId = `${actionHash}:${entryHash}`;
 
-      const entry: Entry = element.entry;
+      const entry: Entry = extractEntry(record);
+      console.log("+_+_+_+_+ extracted Entry: ", entry);
 
       let entryType: string | undefined;
 
       if (cellStore instanceof SimulatedCellStore) {
         entryType = getEntryTypeString(
           cellStore.dna,
-          newEntryHeader.entry_type
+          newEntryAction.entry_type
         );
       } else {
-        entryType = element.entry.entry_type;
+        entryType = newEntryAction.entry_type as string
       }
 
       nodes.push({
@@ -76,8 +79,8 @@ export function sourceChainNodes(
       });
       nodes.push({
         data: {
-          id: `${headerHash}->${entryNodeId}`,
-          source: headerHash,
+          id: `${actionHash}->${entryNodeId}`,
+          source: actionHash,
           target: entryNodeId,
         },
         classes: ['embedded-reference'],

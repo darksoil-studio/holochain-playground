@@ -1,5 +1,4 @@
-import { Element } from '@holochain-open-dev/core-types';
-import { CellMap, HashType, hash } from '@holochain-playground/simulator';
+import { CellMap, HashType, hash, Cell } from '@holochain-playground/simulator';
 import {
   AgentPubKey,
   AnyDhtHash,
@@ -8,19 +7,23 @@ import {
   DhtOpType,
   DnaHash,
   getDhtOpEntry,
-  getDhtOpHeader,
+  getDhtOpAction,
   getDhtOpType,
-  NewEntryHeader,
-} from '@holochain/conductor-api';
+  NewEntryAction,
+  Record,
+  SignedActionHashed,
+  ActionHashed,
+} from '@holochain/client';
 import isEqual from 'lodash-es/isEqual';
 import { derived, get, Readable, writable, Writable } from 'svelte/store';
 
 import { PlaygroundMode } from './mode';
+import { SimulatedCellStore } from './simulated-playground-store';
 import { unnest } from './unnest';
 import { mapDerive } from './utils';
 
 export abstract class CellStore<T extends PlaygroundMode> {
-  abstract sourceChain: Readable<Element[]>;
+  abstract sourceChain: Readable<Record[]>;
   abstract peers: Readable<AgentPubKey[]>;
   abstract dhtShard: Readable<Array<DhtOp>>;
   abstract cellId: CellId;
@@ -31,38 +34,38 @@ export abstract class CellStore<T extends PlaygroundMode> {
     return derived(
       [this.sourceChain, this.dhtShard],
       ([sourceChain, dhtShard]) => {
-        for (const element of sourceChain) {
-          const headerHashed = element.signed_header.header;
-          if (isEqual(headerHashed.hash, dhtHash)) {
-            return element.signed_header.header.content;
+        for (const record of sourceChain) {
+          const actionHashed: ActionHashed = record.signed_action.hashed;
+          if (isEqual(actionHashed.hash, dhtHash)) {
+            return actionHashed.content;
           }
           if (
-            (headerHashed.content as NewEntryHeader).entry_hash &&
+            (actionHashed.content as NewEntryAction).entry_hash &&
             isEqual(
-              (headerHashed.content as NewEntryHeader).entry_hash,
+              (actionHashed.content as NewEntryAction).entry_hash,
               dhtHash
             )
           ) {
-            return element.entry;
+            return record.entry;
           }
         }
 
         for (const op of dhtShard) {
-          const header = getDhtOpHeader(op);
-          const headerHash = hash(header, HashType.HEADER);
+          const action = getDhtOpAction(op);
+          const actionHash = hash(action, HashType.HEADER);
 
-          if (isEqual(headerHash, dhtHash)) {
-            return header;
+          if (isEqual(actionHash, dhtHash)) {
+            return action;
           }
 
           if (
-            (header as NewEntryHeader).entry_hash &&
-            isEqual((header as NewEntryHeader).entry_hash, dhtHash)
+            (action as NewEntryAction).entry_hash &&
+            isEqual((action as NewEntryAction).entry_hash, dhtHash)
           ) {
             const type = getDhtOpType(op);
             if (
               type === DhtOpType.StoreEntry ||
-              type === DhtOpType.StoreElement
+              type === DhtOpType.StoreRecord
             ) {
               return getDhtOpEntry(op);
             }
@@ -145,7 +148,7 @@ export abstract class PlaygroundStore<T extends PlaygroundMode> {
     const contentMap = unnest(
       derived(
         [this.cellsForActiveDna(), this.activeDhtHash],
-        ([cellMap, activeHash]) => mapDerive(cellMap, (c) => c.get(activeHash))
+        ([cellMap, activeHash]) => mapDerive(cellMap, (c) => (c as any).get(activeHash))
       ),
       (i) => i
     );
@@ -179,7 +182,7 @@ export abstract class PlaygroundStore<T extends PlaygroundMode> {
   dhtForActiveDna(): Readable<CellMap<DhtOp[]>> {
     return unnest(
       derived(this.cellsForActiveDna(), (cellMap) =>
-        mapDerive(cellMap, (cellStore) => cellStore.dhtShard)
+        mapDerive<CellStore<T>, DhtOp[]>(cellMap, (cellStore) => cellStore.dhtShard)
       ),
       (i) => i
     );
