@@ -22,20 +22,6 @@ export function getEntryContents(entry: Entry): any {
   let entryContent: any = entry.entry;
   if (entry.entry_type === 'App') {
     entryContent = decode(entry.entry);
-
-    if (
-      Array.isArray(entryContent) &&
-      entryContent.length > 0 &&
-      typeof entryContent[0] === 'object' &&
-      ArrayBuffer.isView(entryContent[0])
-    ) {
-      // Try convert from path
-      try {
-        entryContent = decodePath(entryContent);
-      } catch (e) {
-        // TODO: what do?
-      }
-    }
   }
 
   return shortenStrRec({
@@ -46,7 +32,7 @@ export function getEntryContents(entry: Entry): any {
 
 export function decodeComponent(component: Uint8Array): string {
   try {
-    const result = utf32Decode(component);
+    const result = utf32Decode(decode(component) as any);
     return result;
   } catch (e) {}
   try {
@@ -54,12 +40,13 @@ export function decodeComponent(component: Uint8Array): string {
     return result2;
   } catch (e) {}
 
-  return serializeHash(component);
+  return bin2String(component);
 }
 
 export function decodePath(path: Uint8Array[]): string {
   return path.map((c) => decodeComponent(c)).join('.');
 }
+
 export function getLinkTagStr(linkTag: Uint8Array): string {
   let tagStr = getLinkTagStrInner(linkTag);
 
@@ -69,23 +56,8 @@ export function getLinkTagStr(linkTag: Uint8Array): string {
 
 export function getLinkTagStrInner(linkTag: Uint8Array): string {
   // Check if this tag belongs to a Path
-  try {
-    if (linkTag.length > 8 && linkTag[0] === 0x68) {
-      const pathContent = linkTag.slice(8);
-      return decodePath(decode(pathContent) as Uint8Array[]);
-    } else if (linkTag.length > 1 && linkTag[0] === 0x0) {
-      const pathContent = linkTag.slice(1);
-      return decodePath(decode(pathContent) as Uint8Array[]);
-    }
-  } catch (e) {
-    // TODO: what do?
-  }
 
-  try {
-    return JSON.stringify(decode(linkTag));
-  } catch (e) {
-    return bin2String(linkTag);
-  }
+  return decodeComponent(linkTag);
 }
 
 function bin2String(array) {

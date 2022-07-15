@@ -10,19 +10,15 @@ node {
   height: 16px;
 }
 
-
 .not-held {
   height: 10px;
   width: 10px;
-  background-color: white;
+  background-color: grey;
+  opacity: 0.3;
 }
 
 .entry {
   background-color: grey;
-}
-
-.action {
-  opacity: 0.6;
 }
 
 node > node {

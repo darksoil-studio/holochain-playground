@@ -58,7 +58,8 @@ export const graphStyles = `
   .not-held {
     height: 10px;
     width: 10px;
-    background-color: white;
+    background-color: grey;
+    opacity: 0.3;
   }
 `;
 

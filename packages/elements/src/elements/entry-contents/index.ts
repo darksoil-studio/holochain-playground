@@ -18,6 +18,7 @@ export class EntryContents extends PlaygroundElement {
   _activeContent = new StoreSubscriber(this, () => this.store?.activeContent());
 
   render() {
+    console.log(this._activeContent.value);
     return html`
       <mwc-card style="width: auto; min-height: 200px;" class="fill">
         <div class="column fill" style="padding: 16px;">
@@ -43,7 +44,7 @@ export class EntryContents extends PlaygroundElement {
                       <div class="flex-scrollable-y" style="height: 100%;">
                         <json-viewer
                           .object=${shortenStrRec(
-                            this._activeContent.value.type === 'Entry'
+                            this._activeContent.value.entry
                               ? getEntryContents(this._activeContent.value)
                               : this._activeContent.value
                           )}

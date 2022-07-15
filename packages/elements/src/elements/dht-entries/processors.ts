@@ -27,7 +27,6 @@ export function allEntries(
   simulatedDna: SimulatedDna | undefined,
   showEntryContents: boolean,
   showDeleted: boolean,
-  hideActions: boolean,
   excludedEntryTypes: string[]
 ) {
   const summary = summarizeDht(dhtShards, simulatedDna);
@@ -66,7 +65,6 @@ export function allEntries(
       if (getAppEntryType((action as NewEntryAction).entry_type)) {
         const implicitLinks = getEmbeddedReferences(
           summary,
-          !hideActions,
           getEntryContents(entry)
         );
 
@@ -125,7 +123,6 @@ export function allEntries(
 
       const strBaseHash = serializeHash(baseAddress);
       for (const link of links) {
-
         let targetEntryHash;
         if (getHashType(link.target_address) === HashType.ENTRY) {
           targetEntryHash = link.target_address;
@@ -135,11 +132,10 @@ export function allEntries(
             targetEntryHash = (action as NewEntryAction).entry_hash;
           }
         }
-    
-        if (!targetEntryHash ||
-          !excludedEntryTypes.includes(
-            summary.entryTypes.get(targetEntryHash)
-          )
+
+        if (
+          !targetEntryHash ||
+          !excludedEntryTypes.includes(summary.entryTypes.get(targetEntryHash))
         ) {
           const linkTag = simulatedDna ? link.tag : getLinkTagStr(link.tag);
           const tag = JSON.stringify(linkTag);
@@ -162,129 +158,95 @@ export function allEntries(
 
   // Add action nodes and updates edges
 
-  if (!hideActions) {
-    for (const [entryHash, actionHashes] of summary.actionsByEntry.entries()) {
-      if (!excludedEntryTypes.includes(summary.entryTypes.get(entryHash))) {
-        const strEntryHash = serializeHash(entryHash);
+  for (const [entryHash, actionHashes] of summary.actionsByEntry.entries()) {
+    if (!excludedEntryTypes.includes(summary.entryTypes.get(entryHash))) {
+      const strEntryHash = serializeHash(entryHash);
 
-        for (const actionHash of actionHashes) {
-          const action = summary.actions.get(actionHash);
-          const strActionHash = serializeHash(actionHash);
+      for (const actionHash of actionHashes) {
+        const action = summary.actions.get(actionHash);
+        const strActionHash = serializeHash(actionHash);
 
-          nodes.push({
-            data: {
-              id: strActionHash,
-              data: action,
-              label: action.type,
-            },
-            classes: [action.type, 'action'],
-          });
-          nodesDrawn.put(actionHash, true);
+        nodes.push({
+          data: {
+            id: strActionHash,
+            data: action,
+            label: action.type,
+          },
+          classes: [action.type, 'action'],
+        });
+        nodesDrawn.put(actionHash, true);
+
+        edges.push({
+          data: {
+            id: `${strActionHash}->${strEntryHash}`,
+            source: strActionHash,
+            target: strEntryHash,
+            label: 'creates',
+            actionReference: true,
+          },
+          classes: ['embedded-reference', 'action-reference'],
+        });
+
+        depsNotHeld.put(entryHash, true);
+
+        for (const updateActionHash of summary.actionUpdates.get(actionHash) ||
+          []) {
+          const strUpdateActionHash = serializeHash(updateActionHash);
+          const updateAction = summary.actions.get(updateActionHash);
+
+          if (!nodesDrawn.get(updateActionHash)) {
+            nodes.push({
+              data: {
+                id: strUpdateActionHash,
+                data: updateAction,
+                label: updateAction.type,
+              },
+              classes: [updateAction.type, 'action'],
+            });
+            nodesDrawn.put(updateActionHash, true);
+          }
 
           edges.push({
             data: {
-              id: `${strActionHash}->${strEntryHash}`,
-              source: strActionHash,
-              target: strEntryHash,
-              label: 'creates',
+              id: `${strUpdateActionHash}-updates-${strActionHash}`,
+              source: strUpdateActionHash,
+              target: strActionHash,
+              label: 'updates',
               actionReference: true,
             },
             classes: ['embedded-reference', 'action-reference'],
           });
-
-          depsNotHeld.put(entryHash, true);
-
-          for (const updateActionHash of summary.actionUpdates.get(
-            actionHash
-          ) || []) {
-            const strUpdateActionHash = serializeHash(updateActionHash);
-            const updateAction = summary.actions.get(updateActionHash);
-
-            if (!nodesDrawn.get(updateActionHash)) {
-              nodes.push({
-                data: {
-                  id: strUpdateActionHash,
-                  data: updateAction,
-                  label: updateAction.type,
-                },
-                classes: [updateAction.type, 'action'],
-              });
-              nodesDrawn.put(updateActionHash, true);
-            }
-
-            edges.push({
-              data: {
-                id: `${strUpdateActionHash}-updates-${strActionHash}`,
-                source: strUpdateActionHash,
-                target: strActionHash,
-                label: 'updates',
-                actionReference: true,
-              },
-              classes: ['embedded-reference', 'action-reference'],
-            });
-            depsNotHeld.put(actionHash, true);
-          }
-
-          for (const deleteActionHash of summary.actionDeletes.get(
-            actionHash
-          ) || []) {
-            const strDeleteActionHash = serializeHash(deleteActionHash);
-            const deleteAction = summary.actions.get(deleteActionHash);
-
-            if (!nodesDrawn.get(deleteActionHash)) {
-              nodes.push({
-                data: {
-                  id: strDeleteActionHash,
-                  data: deleteAction,
-                  label: deleteAction.type,
-                },
-                classes: [deleteAction.type, 'action'],
-              });
-              nodesDrawn.put(deleteActionHash, true);
-            }
-
-            edges.push({
-              data: {
-                id: `${strDeleteActionHash}-deletes-${strActionHash}`,
-                source: strDeleteActionHash,
-                target: strActionHash,
-                label: 'deletes',
-                actionReference: true,
-              },
-              classes: ['embedded-reference', 'action-reference'],
-            });
-            depsNotHeld.put(actionHash, true);
-          }
+          depsNotHeld.put(actionHash, true);
         }
-      }
-    }
-  } else {
-    // Show only updates between entries
-    for (const [entryHash, actionHashes] of summary.actionsByEntry.entries()) {
-      if (!excludedEntryTypes.includes(summary.entryTypes.get(entryHash))) {
-        const strOriginalEntryHash = serializeHash(entryHash);
 
-        for (const actionHash of actionHashes) {
-          for (const updateActionHash of summary.actionUpdates.get(
-            actionHash
-          ) || []) {
-            const updateAction = summary.actions.get(updateActionHash);
+        for (const deleteActionHash of summary.actionDeletes.get(actionHash) ||
+          []) {
+          const strDeleteActionHash = serializeHash(deleteActionHash);
+          const deleteAction = summary.actions.get(deleteActionHash);
 
-            const strUpdateEntryHash = serializeHash(
-              (updateAction as NewEntryAction).entry_hash
-            );
-
-            edges.push({
+          if (!nodesDrawn.get(deleteActionHash)) {
+            nodes.push({
               data: {
-                id: `${strUpdateEntryHash}-updates-${strOriginalEntryHash}`,
-                source: strUpdateEntryHash,
-                target: strOriginalEntryHash,
-                label: 'updates',
+                id: strDeleteActionHash,
+                data: deleteAction,
+                label: deleteAction.type,
               },
-              classes: ['embedded-reference'],
+              classes: [deleteAction.type, 'action'],
             });
-            depsNotHeld.put(entryHash, true);
+            nodesDrawn.put(deleteActionHash, true);
           }
+
+          edges.push({
+            data: {
+              id: `${strDeleteActionHash}-deletes-${strActionHash}`,
+              source: strDeleteActionHash,
+              target: strActionHash,
+              label: 'deletes',
+              actionReference: true,
+            },
+            classes: ['embedded-reference', 'action-reference'],
+          });
+          depsNotHeld.put(actionHash, true);
         }
       }
     }
@@ -295,7 +257,7 @@ export function allEntries(
       nodes.push({
         data: {
           id: serializeHash(dep),
-          label: 'Not Held',
+          label: 'Unknown',
         },
         classes: ['not-held'],
       });
@@ -313,10 +275,9 @@ export function allEntries(
 
 function hasHash(
   summary: DhtSummary,
-  showActions: boolean,
   hash: HoloHash
 ): HoloHash | undefined {
-  if (getHashType(hash) === HashType.ACTION && showActions) {
+  if (getHashType(hash) === HashType.ACTION) {
     return summary.actions.has(hash) ? hash : undefined;
   } else {
     let hashToCheck = hash;
@@ -338,7 +299,6 @@ function convertToHash(value: any): HoloHash | undefined {
 
 export function getEmbeddedReferences(
   summary: DhtSummary,
-  showActions: boolean,
   value: any
 ): Array<{ label: string; target: EntryHashB64 }> {
   if (!value) return [];
@@ -346,7 +306,7 @@ export function getEmbeddedReferences(
   const hash = convertToHash(value);
 
   if (hash) {
-    const presentHash = hasHash(summary, showActions, hash);
+    const presentHash = hasHash(summary, hash);
     return presentHash
       ? [
           {
@@ -361,16 +321,16 @@ export function getEmbeddedReferences(
       .filter(
         (v) =>
           !!convertToHash(v) &&
-          !!hasHash(summary, showActions, convertToHash(v))
+          !!hasHash(summary, convertToHash(v))
       )
       .map((v) => ({
-        target: serializeHash(hasHash(summary, showActions, convertToHash(v))),
+        target: serializeHash(hasHash(summary, convertToHash(v))),
         label: undefined,
       }));
   }
   if (typeof value === 'object') {
     const values = Object.entries(value).map(([key, v]) => {
-      const implicitLinks = getEmbeddedReferences(summary, showActions, v);
+      const implicitLinks = getEmbeddedReferences(summary, v);
       for (const implicitLink of implicitLinks) {
         if (!implicitLink.label) {
           implicitLink.label = key;

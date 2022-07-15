@@ -15,7 +15,6 @@ import {
   DhtOpType,
   NewEntryAction,
   getDhtOpType,
-  getDhtOpAction,
   getDhtOpEntry,
   CreateLink,
   DeleteLink,
@@ -53,6 +52,35 @@ export interface DhtSummary {
   deletedAddLinks: HoloHashMap<ActionHash[]>;
   entryTypes: HoloHashMap<string>;
 }
+
+
+export function getDhtOpAction(op: DhtOp): Action {
+  const opType = getDhtOpType(op);
+  const action = Object.values(op)[0][1];
+
+  if (opType === DhtOpType.RegisterAddLink) {
+    return {
+      type: 'CreateLink',
+      ...action,
+    }
+  }
+  if (opType === DhtOpType.RegisterUpdatedContent || opType === DhtOpType.RegisterUpdatedRecord) {
+    return {
+      type: 'Update',
+      ...action,
+    }
+  }
+
+  if (action.author) return action;
+  else {
+    const actionType = Object.keys(action)[0];
+    return {
+      type: actionType,
+      ...action[actionType],
+    };
+  }
+}
+
 
 export function summarizeDht(
   dhtShards: CellMap<DhtOp[]>,
