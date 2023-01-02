@@ -10,7 +10,7 @@
     "test": "npm t -w @holochain-playground/simulator",
     "build": "npm run build -w @holochain-playground/simulator -w @holochain-playground/elements -w @holochain-playground/golden-layout -w @holochain-playground/cli-client -w @holochain-playground/cli",
     "playground": "holochain-playground",
-    "start:happ": " RUST_LOG=warn hc s -f=$ADMIN_PORT generate tests/happ/workdir/test_playground.happ --run=8888 network  mdns",
+    "start:happ": " echo \"pass\" | RUST_LOG=warn hc s --piped -f=$ADMIN_PORT generate tests/happ/workdir/forum.happ --run=8888 network  mdns",
     "build:happ": "cd tests/happ && npm run build:happ"
   },
   "devDependencies": {
