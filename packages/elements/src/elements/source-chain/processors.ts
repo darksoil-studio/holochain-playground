@@ -5,8 +5,8 @@ import {
   RecordEntry,
   NewEntryAction,
   SignedActionHashed,
+  encodeHashToBase64,
 } from '@holochain/client';
-import { serializeHash } from '@holochain-open-dev/utils';
 import {
   getEntryTypeString,
   extractEntry,
@@ -21,7 +21,7 @@ export function sourceChainNodes(cellStore: CellStore<any>, records: Record[]) {
 
   for (const record of records) {
     const action: SignedActionHashed = record.signed_action;
-    const actionHash = serializeHash(action.hashed.hash);
+    const actionHash = encodeHashToBase64(action.hashed.hash);
 
     nodes.push({
       data: {
@@ -33,7 +33,7 @@ export function sourceChainNodes(cellStore: CellStore<any>, records: Record[]) {
     });
 
     if ((action.hashed.content as Create).prev_action) {
-      const previousActionHash = serializeHash(
+      const previousActionHash = encodeHashToBase64(
         (action.hashed.content as Create).prev_action
       );
       nodes.push({
@@ -49,11 +49,11 @@ export function sourceChainNodes(cellStore: CellStore<any>, records: Record[]) {
 
   for (const record of records) {
     const action: SignedActionHashed = record.signed_action;
-    const actionHash = serializeHash(action.hashed.hash);
+    const actionHash = encodeHashToBase64(action.hashed.hash);
 
     if ((record.entry as any).Present) {
       const newEntryAction = action.hashed.content as NewEntryAction;
-      const entryHash = serializeHash(newEntryAction.entry_hash);
+      const entryHash = encodeHashToBase64(newEntryAction.entry_hash);
       const entryNodeId = `${actionHash}:${entryHash}`;
 
       const entry: Entry = (record.entry as any)?.Present;

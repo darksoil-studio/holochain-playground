@@ -15,13 +15,11 @@ import { Grid, GridColumn } from '@vaadin/grid';
 import { JsonViewer } from '@power-elements/json-viewer';
 import { StoreSubscriber } from 'lit-svelte-stores';
 import { derived } from 'svelte/store';
-import { serializeHash } from '@holochain-open-dev/utils';
 import isEqual from 'lodash-es/isEqual';
 
 import { sharedStyles } from '../utils/shared-styles';
 import { PlaygroundElement } from '../../base/playground-element';
 import { selectCell } from '../../base/selectors';
-import { CopyableHash } from '../helpers/copyable-hash';
 import { HelpButton } from '../helpers/help-button';
 import { adminApi } from './admin-api';
 import { CallFns } from '../helpers/call-functions';
@@ -32,6 +30,8 @@ import {
   SimulatedConductorStore,
   SimulatedPlaygroundStore,
 } from '../../store/simulated-playground-store';
+import { CopiableHash } from '@holochain-open-dev/elements';
+import { encodeHashToBase64 } from '@holochain/client';
 
 export class ConductorAdmin extends PlaygroundElement {
   _activeAgentPubKey = new StoreSubscriber(
@@ -74,7 +74,7 @@ export class ConductorAdmin extends PlaygroundElement {
         <span>
           You've selected the conductor with Agent ID
           ${this._activeAgentPubKey.value
-            ? serializeHash(this._activeAgentPubKey.value)
+            ? encodeHashToBase64(this._activeAgentPubKey.value)
             : undefined}.
           Here you can see all the cells that it's running, as well as execute
           admin functions for it.
@@ -98,7 +98,7 @@ export class ConductorAdmin extends PlaygroundElement {
       ) as GridColumn;
       dnaColumn.renderer = (root: any, column, model) => {
         const cell = model.item as any as CellStore<any>;
-        root.innerHTML = `<copyable-hash hash="${serializeHash(
+        root.innerHTML = `<copyable-hash hash="${encodeHashToBase64(
           cell.cellId[0]
         )}"></copyable-hash>`;
         root.item = model.item;
@@ -108,7 +108,7 @@ export class ConductorAdmin extends PlaygroundElement {
       ) as GridColumn;
       agentPubKeyColumn.renderer = (root: any, column, model) => {
         const cell = model.item as any as CellStore<any>;
-        root.innerHTML = `<copyable-hash hash="${serializeHash(
+        root.innerHTML = `<copyable-hash hash="${encodeHashToBase64(
           cell.cellId[1]
         )}"></copyable-hash>`;
         root.item = model.item;
@@ -312,7 +312,7 @@ export class ConductorAdmin extends PlaygroundElement {
 
   static get scopedElements() {
     return {
-      'copyable-hash': CopyableHash,
+      'copyable-hash': CopiableHash,
       'call-functions': CallFns,
       'mwc-tab': Tab,
       'vaadin-grid': Grid,

@@ -1,5 +1,10 @@
-import { serializeHash } from '@holochain-open-dev/utils';
-import { AgentPubKey, CellId, DnaHash, HoloHash } from '@holochain/client';
+import {
+  encodeHashToBase64,
+  AgentPubKey,
+  CellId,
+  DnaHash,
+  HoloHash,
+} from '@holochain/client';
 // @ts-ignore
 import blake from 'blakejs';
 import { encode } from '@msgpack/msgpack';
@@ -53,7 +58,7 @@ export function isHash(hash: string): boolean {
     DHTOP_PREFIX,
     DNA_PREFIX,
     ACTION_PREFIX,
-  ].find(prefix => hash.startsWith(`u${prefix}`));
+  ].find((prefix) => hash.startsWith(`u${prefix}`));
 }
 
 // From https://github.com/holochain/holochain/blob/dc0cb61d0603fa410ac5f024ed6ccfdfc29715b3/crates/holo_hash/src/encode.rs
@@ -134,7 +139,7 @@ export function wrap(uint: number): number {
 }
 
 export function getHashType(hash: HoloHash): HashType {
-  const hashExt = serializeHash(hash).slice(1, 5);
+  const hashExt = encodeHashToBase64(hash).slice(1, 5);
 
   if (isEqual(hashExt, AGENT_PREFIX)) return HashType.AGENT;
   if (isEqual(hashExt, DNA_PREFIX)) return HashType.DNA;

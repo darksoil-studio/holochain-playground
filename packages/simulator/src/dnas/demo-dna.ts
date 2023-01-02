@@ -13,7 +13,7 @@ export const demoEntriesZome: SimulatedZome = {
   entry_defs: [
     {
       id: 'demo_entry',
-      visibility: 'Public',
+      visibility: { Public: null },
     },
   ],
   zome_functions: {
@@ -74,7 +74,7 @@ export const demoEntriesZome: SimulatedZome = {
   },
   validation_functions: {
     validate_update_entry_demo_entry:
-      hdk =>
+      (hdk) =>
       async ({ record }) => {
         const update = record.signed_action.hashed.content as Update;
         const updateAuthor = update.author;
@@ -144,13 +144,13 @@ export const demoPathsZome: SimulatedZome = {
   entry_defs: [
     {
       id: 'path',
-      visibility: 'Public',
+      visibility: { Public: null },
     },
   ],
   zome_functions: {
     ensure_path: {
       call:
-        hdk =>
+        (hdk) =>
         ({ path }) => {
           return hdk.path.ensure(path);
         },

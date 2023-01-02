@@ -5,8 +5,12 @@ import { classMap } from 'lit/directives/class-map.js';
 
 import { NodeSingular } from 'cytoscape';
 
-import { deserializeHash, serializeHash } from '@holochain-open-dev/utils';
-import { DhtOp, getDhtOpType } from '@holochain/client';
+import {
+  decodeHashFromBase64,
+  DhtOp,
+  encodeHashToBase64,
+  getDhtOpType,
+} from '@holochain/client';
 import {
   sleep,
   NetworkRequestType,
@@ -43,7 +47,7 @@ import {
 } from './processors';
 import { cytoscapeOptions, layoutConfig } from './graph';
 import { PlaygroundElement } from '../../base/playground-element';
-import { CopyableHash } from '../helpers/copyable-hash';
+import { CopiableHash } from '@holochain-open-dev/elements';
 import { PlaygroundMode } from '../../store/mode';
 import {
   SimulatedCellStore,
@@ -128,13 +132,19 @@ export class DhtCells extends PlaygroundElement {
     this,
     () =>
       this._cellsForActiveDna.value &&
-      mapDerive<CellStore<any>, DhtOp[]>(this._cellsForActiveDna.value, (store) => store.dhtShard)
+      mapDerive<CellStore<any>, DhtOp[]>(
+        this._cellsForActiveDna.value,
+        (store) => store.dhtShard
+      )
   );
   _peers = new StoreSubscriber(
     this,
     () =>
       this._cellsForActiveDna.value &&
-      mapDerive<CellStore<any>, Uint8Array[]>(this._cellsForActiveDna.value, (store) => store.peers)
+      mapDerive<CellStore<any>, Uint8Array[]>(
+        this._cellsForActiveDna.value,
+        (store) => store.peers
+      )
   );
   _farPeers = new StoreSubscriber(
     this,
@@ -163,7 +173,7 @@ export class DhtCells extends PlaygroundElement {
 
     this._cellsForActiveDna.value?.cellIds().forEach(([_, agentPubKey]) => {
       this._graph.cy
-        .getElementById(serializeHash(agentPubKey))
+        .getElementById(encodeHashToBase64(agentPubKey))
         .removeClass('highlighted');
     });
 
@@ -176,7 +186,7 @@ export class DhtCells extends PlaygroundElement {
 
       for (const [_, agentPubKey] of holdingCells.cellIds()) {
         this._graph.cy
-          .getElementById(serializeHash(agentPubKey))
+          .getElementById(encodeHashToBase64(agentPubKey))
           .addClass('highlighted');
       }
     }
@@ -190,11 +200,11 @@ export class DhtCells extends PlaygroundElement {
     if (networkRequest.toAgent === networkRequest.fromAgent) return;
 
     const fromNode = this._graph.cy.getElementById(
-      serializeHash(networkRequest.fromAgent)
+      encodeHashToBase64(networkRequest.fromAgent)
     );
     if (!fromNode.position()) return;
     const toNode = this._graph.cy.getElementById(
-      serializeHash(networkRequest.toAgent)
+      encodeHashToBase64(networkRequest.toAgent)
     );
 
     const fromPosition = fromNode.position();
@@ -407,7 +417,7 @@ export class DhtCells extends PlaygroundElement {
       const agentPubKey = node.id();
       return this._cellsForActiveDna.value.has([
         this._activeDna.value,
-        deserializeHash(agentPubKey),
+        decodeHashFromBase64(agentPubKey),
       ]);
     });
     const cellsWithPosition = nodes.map((node) => {
@@ -415,7 +425,7 @@ export class DhtCells extends PlaygroundElement {
 
       const cellStore = this._cellsForActiveDna.value.get([
         this._activeDna.value,
-        deserializeHash(agentPubKey),
+        decodeHashFromBase64(agentPubKey),
       ]) as SimulatedCellStore;
 
       const cell = cellStore.cell;
@@ -547,7 +557,7 @@ export class DhtCells extends PlaygroundElement {
 
   get selectedNodesIds() {
     if (!this._activeAgentPubKey.value) return [];
-    return [serializeHash(this._activeAgentPubKey.value)];
+    return [encodeHashToBase64(this._activeAgentPubKey.value)];
   }
 
   render() {
@@ -577,8 +587,10 @@ export class DhtCells extends PlaygroundElement {
             .elements=${this.elements}
             .options=${cytoscapeOptions}
             .circleOptions=${layoutConfig}
-            @node-selected=${(e) =>
-              this.store.activeAgentPubKey.set(deserializeHash(e.detail.id()))}
+            @node-selected=${(e: CustomEvent) =>
+              this.store.activeAgentPubKey.set(
+                decodeHashFromBase64(e.detail.id())
+              )}
             .selectedNodesIds=${this.selectedNodesIds}
           ></cytoscape-circle>
           ${this.renderBottomToolbar()}
@@ -616,7 +628,7 @@ export class DhtCells extends PlaygroundElement {
       'mwc-switch': Switch,
       'mwc-formfield': Formfield,
       'mwc-icon-button': IconButton,
-      'copyable-hash': CopyableHash,
+      'copyable-hash': CopiableHash,
       'cytoscape-circle': CytoscapeCircle,
       'help-button': HelpButton,
       'cell-tasks': CellTasks,

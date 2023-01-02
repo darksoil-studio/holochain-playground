@@ -1,4 +1,3 @@
-import { serializeHash } from '@holochain-open-dev/utils';
 import { Entry } from '@holochain/client';
 import { decode } from '@msgpack/msgpack';
 

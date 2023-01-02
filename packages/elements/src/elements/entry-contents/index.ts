@@ -5,7 +5,7 @@ import { Card } from '@scoped-elements/material-web';
 
 import { sharedStyles } from '../utils/shared-styles';
 import { shortenStrRec } from '../utils/hash';
-import { CopyableHash } from '../helpers/copyable-hash';
+import { CopiableHash } from '@holochain-open-dev/elements';
 import { PlaygroundElement } from '../../base/playground-element';
 import { getEntryContents } from '../utils/utils';
 
@@ -69,7 +69,7 @@ export class EntryContents extends PlaygroundElement {
     return {
       'json-viewer': JsonViewer,
       'mwc-card': Card,
-      'copyable-hash': CopyableHash,
+      'copyable-hash': CopiableHash,
     };
   }
 

@@ -3,11 +3,10 @@ import {
   AgentPubKey,
   DnaHash,
   CapSecret,
+  decodeHashFromBase64,
+  encodeHashToBase64,
 } from '@holochain/client';
-import {
-  Dictionary,
-} from '@holochain-open-dev/core-types';
-import { deserializeHash, serializeHash } from '@holochain-open-dev/utils';
+import { Dictionary } from '@holochain-open-dev/core-types';
 
 import { Cell, getCellId } from '../core/cell';
 import { areEqual, hash, HashType, isHash } from '../processors/hash';
@@ -88,14 +87,14 @@ export class Conductor {
     this.signalCbs.push(signalCb);
     return {
       unsubscribe: () => {
-        const index = this.signalCbs.findIndex(s => s === signalCb);
+        const index = this.signalCbs.findIndex((s) => s === signalCb);
         this.signalCbs.splice(index, 1);
       },
     };
   }
 
   emit(signal: ConductorSignalType) {
-    this.signalCbs.forEach(cb => cb(signal));
+    this.signalCbs.forEach((cb) => cb(signal));
   }
 
   getState(): ConductorState {
@@ -279,9 +278,9 @@ export class Conductor {
     const agentPubKey = args.cellId[1];
     const cell = this.cells.get(args.cellId);
 
-    const deserializedPayload = cloneDeepWith(args.payload, value => {
+    const deserializedPayload = cloneDeepWith(args.payload, (value) => {
       if (typeof value === 'string' && isHash(value)) {
-        return deserializeHash(value);
+        return decodeHashFromBase64(value);
       }
     });
 
@@ -296,13 +295,13 @@ export class Conductor {
       provenance: agentPubKey,
     });
 
-    const serializedResult = cloneDeepWith(result, value => {
+    const serializedResult = cloneDeepWith(result, (value) => {
       if (
         typeof value === 'object' &&
         value.buffer &&
         ArrayBuffer.isView(value)
       ) {
-        return serializeHash(value as Uint8Array);
+        return encodeHashToBase64(value as Uint8Array);
       }
     });
 

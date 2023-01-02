@@ -1,4 +1,4 @@
-import { serializeHash } from '@holochain-open-dev/utils';
+import { encodeHashToBase64 } from '@holochain/client';
 
 export function shortenStrRec(object: any, shorten = false) {
   if (object === undefined || object === null) {
@@ -7,7 +7,7 @@ export function shortenStrRec(object: any, shorten = false) {
     return object.map((o) => shortenStrRec(o, shorten));
   } else if (typeof object === 'object') {
     if (object.buffer && ArrayBuffer.isView(object)) {
-      const hash = serializeHash(object as Uint8Array);
+      const hash = encodeHashToBase64(object as Uint8Array);
 
       return shorten ? `${hash.slice(0, 7)}...` : hash;
     }

@@ -1,8 +1,7 @@
 import { html, css } from 'lit';
 import { ListItem, Card, Select } from '@scoped-elements/material-web';
 import { StoreSubscriber } from 'lit-svelte-stores';
-import { serializeHash } from '@holochain-open-dev/utils';
-import { DnaHash } from '@holochain/client';
+import { DnaHash, encodeHashToBase64 } from '@holochain/client';
 import isEqual from 'lodash-es/isEqual';
 
 import { PlaygroundElement } from '../../base/playground-element';
@@ -17,7 +16,7 @@ export class SelectActiveDna extends PlaygroundElement {
   }
 
   renderDna(dna: DnaHash) {
-    const strDna = serializeHash(dna);
+    const strDna = encodeHashToBase64(dna);
 
     return html`
       <mwc-list-item

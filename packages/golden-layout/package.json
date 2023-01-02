@@ -16,7 +16,7 @@
   "dependencies": {
     "@holochain-playground/simulator": "0.0.1",
     "@holochain-playground/elements": "0.0.1",
-    "@open-wc/scoped-elements": "^2.0.1",
+    "@open-wc/scoped-elements": "^2.1.0",
     "@scoped-elements/golden-layout": "0.0.4",
     "@scoped-elements/material-web": "^0.0.16",
     "lit": "^2.0.2",

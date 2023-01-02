@@ -1,4 +1,3 @@
-import { deserializeHash, serializeHash } from '@holochain-open-dev/utils';
 import { EntryHashB64 } from '@holochain-open-dev/core-types';
 import {
   NewEntryAction,
@@ -6,6 +5,8 @@ import {
   EntryHash,
   HoloHash,
   Action,
+  encodeHashToBase64,
+  decodeHashFromBase64,
 } from '@holochain/client';
 import {
   getAppEntryType,
@@ -42,7 +43,7 @@ export function allEntries(
     const entryType = summary.entryTypes.get(entryHash);
 
     if (!excludedEntryTypes.includes(entryType)) {
-      const strEntryHash = serializeHash(entryHash);
+      const strEntryHash = encodeHashToBase64(entryHash);
 
       const classes = [entryType, 'entry'];
 
@@ -71,7 +72,7 @@ export function allEntries(
         for (const implicitLink of implicitLinks) {
           if (
             !excludedEntryTypes.includes(
-              summary.entryTypes.get(deserializeHash(implicitLink.target))
+              summary.entryTypes.get(decodeHashFromBase64(implicitLink.target))
             )
           ) {
             edges.push({
@@ -83,7 +84,7 @@ export function allEntries(
               },
               classes: ['embedded-reference'],
             });
-            depsNotHeld.put(deserializeHash(implicitLink.target), true);
+            depsNotHeld.put(decodeHashFromBase64(implicitLink.target), true);
           }
         }
       }
@@ -121,7 +122,7 @@ export function allEntries(
     ) {
       depsNotHeld.put(baseAddress, true);
 
-      const strBaseHash = serializeHash(baseAddress);
+      const strBaseHash = encodeHashToBase64(baseAddress);
       for (const link of links) {
         let targetEntryHash;
         if (getHashType(link.target_address) === HashType.ENTRY) {
@@ -139,7 +140,7 @@ export function allEntries(
         ) {
           const linkTag = simulatedDna ? link.tag : getLinkTagStr(link.tag);
           const tag = JSON.stringify(linkTag);
-          const target = serializeHash(link.target_address);
+          const target = encodeHashToBase64(link.target_address);
 
           edges.push({
             data: {
@@ -160,11 +161,11 @@ export function allEntries(
 
   for (const [entryHash, actionHashes] of summary.actionsByEntry.entries()) {
     if (!excludedEntryTypes.includes(summary.entryTypes.get(entryHash))) {
-      const strEntryHash = serializeHash(entryHash);
+      const strEntryHash = encodeHashToBase64(entryHash);
 
       for (const actionHash of actionHashes) {
         const action = summary.actions.get(actionHash);
-        const strActionHash = serializeHash(actionHash);
+        const strActionHash = encodeHashToBase64(actionHash);
 
         nodes.push({
           data: {
@@ -191,7 +192,7 @@ export function allEntries(
 
         for (const updateActionHash of summary.actionUpdates.get(actionHash) ||
           []) {
-          const strUpdateActionHash = serializeHash(updateActionHash);
+          const strUpdateActionHash = encodeHashToBase64(updateActionHash);
           const updateAction = summary.actions.get(updateActionHash);
 
           if (!nodesDrawn.get(updateActionHash)) {
@@ -221,7 +222,7 @@ export function allEntries(
 
         for (const deleteActionHash of summary.actionDeletes.get(actionHash) ||
           []) {
-          const strDeleteActionHash = serializeHash(deleteActionHash);
+          const strDeleteActionHash = encodeHashToBase64(deleteActionHash);
           const deleteAction = summary.actions.get(deleteActionHash);
 
           if (!nodesDrawn.get(deleteActionHash)) {
@@ -256,7 +257,7 @@ export function allEntries(
     if (!nodesDrawn.has(dep)) {
       nodes.push({
         data: {
-          id: serializeHash(dep),
+          id: encodeHashToBase64(dep),
           label: 'Unknown',
         },
         classes: ['not-held'],
@@ -273,10 +274,7 @@ export function allEntries(
   };
 }
 
-function hasHash(
-  summary: DhtSummary,
-  hash: HoloHash
-): HoloHash | undefined {
+function hasHash(summary: DhtSummary, hash: HoloHash): HoloHash | undefined {
   if (getHashType(hash) === HashType.ACTION) {
     return summary.actions.has(hash) ? hash : undefined;
   } else {
@@ -290,7 +288,7 @@ function hasHash(
 
 function convertToHash(value: any): HoloHash | undefined {
   if (typeof value === 'string' && value.length === 53) {
-    return deserializeHash(value);
+    return decodeHashFromBase64(value);
   } else if (typeof value === 'object' && ArrayBuffer.isView(value)) {
     return value as HoloHash;
   }
@@ -311,20 +309,16 @@ export function getEmbeddedReferences(
       ? [
           {
             label: undefined,
-            target: serializeHash(presentHash),
+            target: encodeHashToBase64(presentHash),
           },
         ]
       : [];
   }
   if (Array.isArray(value) && value.length > 0 && convertToHash(value[0])) {
     return value
-      .filter(
-        (v) =>
-          !!convertToHash(v) &&
-          !!hasHash(summary, convertToHash(v))
-      )
+      .filter((v) => !!convertToHash(v) && !!hasHash(summary, convertToHash(v)))
       .map((v) => ({
-        target: serializeHash(hasHash(summary, convertToHash(v))),
+        target: encodeHashToBase64(hasHash(summary, convertToHash(v))),
         label: undefined,
       }));
   }

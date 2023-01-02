@@ -19,7 +19,7 @@ import {
 } from '@scoped-elements/material-web';
 
 import { selectCell } from '../../base/selectors';
-import { CopyableHash } from '../helpers/copyable-hash';
+import { CopiableHash } from '@holochain-open-dev/elements';
 import { PlaygroundElement } from '../../base/playground-element';
 import {
   CallableFn,
@@ -335,7 +335,7 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
       'mwc-tab': Tab,
       'mwc-tab-bar': TabBar,
       'mwc-card': Card,
-      'copyable-hash': CopyableHash,
+      'copyable-hash': CopiableHash,
       'call-functions': CallFns,
       'json-viewer': JsonViewer,
       'expandable-line': ExpandableLine,

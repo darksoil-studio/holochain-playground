@@ -4,9 +4,13 @@ import { StoreSubscriber } from 'lit-svelte-stores';
 import { CytoscapeDagre } from '@scoped-elements/cytoscape';
 
 import { Card } from '@scoped-elements/material-web';
-import { deserializeHash, serializeHash } from '@holochain-open-dev/utils';
 import isEqual from 'lodash-es/isEqual';
-import { NewEntryAction } from '@holochain/client';
+import {
+  decodeHashFromBase64,
+  encodeHashToBase64,
+  NewEntryAction,
+} from '@holochain/client';
+import { CopiableHash } from '@holochain-open-dev/elements';
 
 import { sourceChainNodes } from './processors';
 import { sharedStyles } from '../utils/shared-styles';
@@ -14,7 +18,6 @@ import { sharedStyles } from '../utils/shared-styles';
 import { HelpButton } from '../helpers/help-button';
 import { PlaygroundElement } from '../../base/playground-element';
 import { graphStyles } from './graph';
-import { CopyableHash } from '../helpers/copyable-hash';
 
 /**
  * @element source-chain
@@ -26,11 +29,11 @@ export class SourceChain extends PlaygroundElement {
   );
 
   _activeHash = new StoreSubscriber(this, () => this.store?.activeDhtHash);
-  
+
   _activeCell = new StoreSubscriber(this, () =>
     this.store ? this.store.activeCell() : undefined
   );
-  
+
   _sourceChain = new StoreSubscriber(
     this,
     () => this._activeCell.value?.sourceChain
@@ -48,13 +51,18 @@ export class SourceChain extends PlaygroundElement {
       for (const element of this._sourceChain.value) {
         const action = element.signed_action.hashed;
         if (isEqual(action.hash, this._activeHash.value)) {
-          return [serializeHash(this._activeHash.value)];
+          return [encodeHashToBase64(this._activeHash.value)];
         }
 
         const entry_hash = (action.content as NewEntryAction).entry_hash;
-        if (entry_hash !== undefined && isEqual(entry_hash, this._activeHash.value)) {
+        if (
+          entry_hash !== undefined &&
+          isEqual(entry_hash, this._activeHash.value)
+        ) {
           nodesIds.push(
-            `${serializeHash(action.hash)}:${serializeHash(entry_hash)}`
+            `${encodeHashToBase64(action.hash)}:${encodeHashToBase64(
+              entry_hash
+            )}`
           );
         }
       }
@@ -125,7 +133,7 @@ export class SourceChain extends PlaygroundElement {
                 activeHash = activeHash.split(':')[1];
               }
 
-              this.store.activeDhtHash.set(deserializeHash(activeHash));
+              this.store.activeDhtHash.set(decodeHashFromBase64(activeHash));
             }}
             style=${styleMap({
               display: this._activeCell.value ? '' : 'none',
@@ -157,7 +165,7 @@ export class SourceChain extends PlaygroundElement {
   static get scopedElements() {
     return {
       'mwc-card': Card,
-      'copyable-hash': CopyableHash,
+      'copyable-hash': CopiableHash,
       'cytoscape-dagre': CytoscapeDagre,
       'help-button': HelpButton,
     };

@@ -1,4 +1,3 @@
-import { serializeHash } from '@holochain-open-dev/utils';
 import {
   BadAgent,
   Cell,
@@ -18,6 +17,7 @@ import {
   getDhtOpType,
   ActionHash,
   NewEntryAction,
+  encodeHashToBase64,
 } from '@holochain/client';
 import isEqual from 'lodash-es/isEqual';
 import { CellStore } from '../../store/playground-store';
@@ -39,11 +39,11 @@ export function dhtCellsNodes(
       ? `${(cellStore as SimulatedCellStore).conductorStore.name}${
           badAgents.has(cellId) ? '😈' : ''
         }`
-      : `${serializeHash(cellId[1]).slice(0, 7)}...`;
+      : `${encodeHashToBase64(cellId[1]).slice(0, 7)}...`;
 
     return {
       data: {
-        id: serializeHash(cellId[1]),
+        id: encodeHashToBase64(cellId[1]),
         label,
       },
       classes: ['cell'],
@@ -65,12 +65,12 @@ export function simulatedNeighbors(
   for (const [cellId, info] of farPeers.entries()) {
     for (const farPeer of info) {
       if (!doTheyHaveBeef(badAgents, cellId, farPeer)) {
-        const pubKey = serializeHash(cellId[1]);
+        const pubKey = encodeHashToBase64(cellId[1]);
         normalEdges.push({
           data: {
-            id: `${pubKey}->${serializeHash(farPeer)}`,
+            id: `${pubKey}->${encodeHashToBase64(farPeer)}`,
             source: pubKey,
-            target: serializeHash(farPeer),
+            target: encodeHashToBase64(farPeer),
           },
           classes: ['far-neighbor-edge'],
         });
@@ -105,11 +105,11 @@ export function allPeersEdges(
       ) {
         edges.push({
           data: {
-            id: `${serializeHash(cellAgentPubKey)}->${serializeHash(
+            id: `${encodeHashToBase64(cellAgentPubKey)}->${encodeHashToBase64(
               cellNeighbor
             )}`,
-            source: serializeHash(cellAgentPubKey),
-            target: serializeHash(cellNeighbor),
+            source: encodeHashToBase64(cellAgentPubKey),
+            target: encodeHashToBase64(cellNeighbor),
           },
           classes: ['neighbor-edge'],
         });
@@ -126,8 +126,11 @@ export function allPeersEdges(
   for (const [cellId, _] of neighborsNotConnected.entries()) {
     edges.push({
       data: {
-        id: serializeHash(cellId[1]),
-        label: `${serializeHash(cellId[1]).slice(0, 7)}... (Not Connected)`,
+        id: encodeHashToBase64(cellId[1]),
+        label: `${encodeHashToBase64(cellId[1]).slice(
+          0,
+          7
+        )}... (Not Connected)`,
       },
       classes: ['not-held'],
     });

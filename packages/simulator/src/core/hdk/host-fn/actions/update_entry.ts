@@ -1,4 +1,4 @@
-import { Entry, ActionHash } from '@holochain/client';
+import { Entry, ActionHash, EntryType } from '@holochain/client';
 
 import { HostFn, HostFnWorkspace } from '../../host-fn';
 import { common_update } from './common/update';
@@ -24,7 +24,7 @@ export const update_entry: HostFn<UpdateEntryFn> =
     const entry: Entry = { entry_type: 'App', entry: newEntry.content };
 
     const entryDefIndex = workspace.dna.zomes[zome_index].entry_defs.findIndex(
-      entry_def => entry_def.id === newEntry.entry_def_id
+      (entry_def) => entry_def.id === newEntry.entry_def_id
     );
     if (entryDefIndex < 0) {
       throw new Error(
@@ -32,10 +32,10 @@ export const update_entry: HostFn<UpdateEntryFn> =
       );
     }
 
-    const entry_type = {
+    const entry_type: EntryType = {
       App: {
-        id: entryDefIndex,
-        zome_id: zome_index,
+        entry_index: entryDefIndex,
+        zome_index,
         visibility:
           workspace.dna.zomes[zome_index].entry_defs[entryDefIndex].visibility,
       },

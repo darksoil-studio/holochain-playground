@@ -15,7 +15,7 @@
     "test:watch": "concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wtr --watch\""
   },
   "dependencies": {
-    "@holochain-open-dev/core-types": "^0.4.0",
+    "@holochain-open-dev/core-types": "^0.6.2",
     "@holochain/client": "^0.11.9",
     "@msgpack/msgpack": "^2.7.1",
     "blakejs": "^1.1.0",

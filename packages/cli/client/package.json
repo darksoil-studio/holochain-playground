@@ -13,12 +13,12 @@
     "gh-pages": "npm run build && gh-pages -d ./dist -b gh-pages"
   },
   "dependencies": {
-    "@holochain-open-dev/core-types": "^0.4.0",
+    "@holochain-open-dev/core-types": "^0.6.2",
     "@holochain-playground/elements": "0.0.1",
     "@holochain-playground/golden-layout": "0.0.1",
     "@holochain-playground/simulator": "0.0.1",
     "@open-wc/scoped-elements": "^2.1.2",
-    "@scoped-elements/golden-layout": "^0.0.2",
+    "@scoped-elements/golden-layout": "^0.0.4",
     "@scoped-elements/material-web": "^0.0.16",
     "@webcomponents/scoped-custom-element-registry": "^0.0.5",
     "golden-layout": "^2.4.0",
@@ -59,21 +59,14 @@
   },
   "eslintConfig": {
     "parser": "@typescript-eslint/parser",
-    "extends": [
-      "@open-wc",
-      "prettier"
-    ],
-    "plugins": [
-      "@typescript-eslint"
-    ],
+    "extends": ["@open-wc", "prettier"],
+    "plugins": ["@typescript-eslint"],
     "rules": {
       "no-use-before-define": "off",
       "no-await-in-loop": "off",
       "camelcase": "off",
       "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": [
-        "error"
-      ],
+      "@typescript-eslint/no-unused-vars": ["error"],
       "import/no-unresolved": "off",
       "import/extensions": "off"
     }
@@ -88,10 +81,7 @@
     }
   },
   "lint-staged": {
-    "*.ts": [
-      "eslint --fix",
-      "prettier --write"
-    ]
+    "*.ts": ["eslint --fix", "prettier --write"]
   },
   "customElements": "custom-elements.json"
 }

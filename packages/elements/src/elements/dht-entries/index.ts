@@ -15,9 +15,12 @@ import {
 } from '@scoped-elements/material-web';
 import { isEqual } from 'lodash-es';
 
-import { deserializeHash, serializeHash } from '@holochain-open-dev/utils';
 import { StoreSubscriber } from 'lit-svelte-stores';
-import { DhtOp } from '@holochain/client';
+import {
+  decodeHashFromBase64,
+  DhtOp,
+  encodeHashToBase64,
+} from '@holochain/client';
 import { CellMap } from '@holochain-playground/simulator';
 import { CytoscapeCoseBilkent } from '@scoped-elements/cytoscape';
 
@@ -27,7 +30,7 @@ import { HelpButton } from '../helpers/help-button';
 
 import { cytoscapeConfig } from './graph';
 import { PlaygroundElement } from '../../base/playground-element';
-import { CopyableHash } from '../helpers/copyable-hash';
+import { CopiableHash } from '@holochain-open-dev/elements';
 import { cytoscapeOptions } from '../dht-cells/graph';
 import {
   SimulatedCellStore,
@@ -112,7 +115,7 @@ export class DhtEntries extends PlaygroundElement {
 
   get selectedNodesIds() {
     return this._activeDhtHash.value
-      ? [serializeHash(this._activeDhtHash.value)]
+      ? [encodeHashToBase64(this._activeDhtHash.value)]
       : [];
   }
 
@@ -227,7 +230,9 @@ export class DhtEntries extends PlaygroundElement {
             class="fill"
             .options=${cytoscapeConfig}
             @node-selected=${(e) =>
-              this.store?.activeDhtHash.set(deserializeHash(e.detail.id()))}
+              this.store?.activeDhtHash.set(
+                decodeHashFromBase64(e.detail.id())
+              )}
           ></cytoscape-cose-bilkent>
 
           ${this.renderHelp()}
@@ -242,7 +247,7 @@ export class DhtEntries extends PlaygroundElement {
       'mwc-checkbox': Checkbox,
       'mwc-formfield': Formfield,
       'mwc-icon-button': IconButton,
-      'copyable-hash': CopyableHash,
+      'copyable-hash': CopiableHash,
       'mwc-card': Card,
       'mwc-menu': Menu,
       'mwc-icon': Icon,

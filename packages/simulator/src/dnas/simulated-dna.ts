@@ -1,13 +1,10 @@
-import {
-  AgentPubKeyB64,
-  Dictionary,
-  DnaHashB64,
-} from '@holochain-open-dev/core-types';
+import { Dictionary } from '@holochain-open-dev/core-types';
 import {
   EntryVisibility,
   CellId,
   DnaHash,
   AgentPubKey,
+  AgentPubKeyB64,
   HoloHash,
   Record,
 } from '@holochain/client';
@@ -84,7 +81,7 @@ export interface EntryDef {
 }
 
 export function hashDna(dna: SimulatedDna): HoloHash {
-  const freeOfFunctionsDna = deepMap(dna, f => {
+  const freeOfFunctionsDna = deepMap(dna, (f) => {
     if (typeof f !== 'function') return f;
     else return f.toString();
   });
