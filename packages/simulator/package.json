@@ -16,8 +16,7 @@
   },
   "dependencies": {
     "@holochain-open-dev/core-types": "^0.4.0",
-    "@holochain-open-dev/utils": "^0.1.0",
-    "@holochain/client": "^0.6.0",
+    "@holochain/client": "^0.11.9",
     "@msgpack/msgpack": "^2.7.1",
     "blakejs": "^1.1.0",
     "js-base64": "^3.7.2",
@@ -56,10 +55,6 @@
     "arrowParens": "avoid"
   },
   "lint-staged": {
-    "*.ts": [
-      "eslint --fix",
-      "prettier --write",
-      "git add"
-    ]
+    "*.ts": ["eslint --fix", "prettier --write", "git add"]
   }
 }

@@ -1,10 +1,19 @@
-[workspace]
-members = [
-  "zomes/*",
-]
-
 [profile.dev]
 opt-level = "z"
 
 [profile.release]
 opt-level = "z"
+
+[workspace]
+members = ["dnas/*/zomes/coordinator/*", "dnas/*/zomes/integrity/*"]
+
+[workspace.dependencies]
+hdi = "0.2.0-beta-rc.1"
+hdk = "0.1.0-beta-rc.1"
+serde = "1"
+
+[workspace.dependencies.posts]
+path = "dnas/forum/zomes/coordinator/posts"
+
+[workspace.dependencies.posts_integrity]
+path = "dnas/forum/zomes/integrity/posts"
