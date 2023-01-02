@@ -1,3 +1,5 @@
+import { DhtOpHash } from '@holochain-open-dev/core-types';
+import { HoloHashMap } from '@holochain-open-dev/utils';
 import {
   AgentPubKey,
   Dna,
@@ -14,10 +16,10 @@ import {
   DnaHash,
   ActionHash,
   Record,
+  GrantedFunctionsType,
 } from '@holochain/client';
 import { areEqual } from '../../../processors/hash';
 
-import { HoloHashMap } from '../../../processors/holo-hash-map';
 import { CellState } from '../state';
 import { getAllAuthoredActions } from './get';
 
@@ -67,8 +69,10 @@ export function getCellId(state: CellState): CellId {
   return [dna, author];
 }
 
-export function getNonPublishedDhtOps(state: CellState): HoloHashMap<DhtOp> {
-  const nonPublishedDhtOps: HoloHashMap<DhtOp> = new HoloHashMap();
+export function getNonPublishedDhtOps(
+  state: CellState
+): HoloHashMap<DhtOpHash, DhtOp> {
+  const nonPublishedDhtOps: HoloHashMap<DhtOpHash, DhtOp> = new HoloHashMap();
   for (const dhtOpHash of state.authoredDHTOps.keys()) {
     const authoredValue = state.authoredDHTOps.get(dhtOpHash);
     if (authoredValue.last_publish_time === undefined) {
@@ -88,8 +92,10 @@ export function valid_cap_grant(
 ): boolean {
   if (areEqual(provenance, getCellId(state)[1])) return true;
 
-  const aliveCapGrantsActions: HoloHashMap<SignedActionHashed<NewEntryAction>> =
-    new HoloHashMap();
+  const aliveCapGrantsActions: HoloHashMap<
+    ActionHash,
+    SignedActionHashed<NewEntryAction>
+  > = new HoloHashMap();
 
   const allActions = getAllAuthoredActions(state);
 
@@ -125,11 +131,12 @@ export function valid_cap_grant(
   const aliveCapGrants: Array<ZomeCallCapGrant> = aliveCapGrantsActions
     .values()
     .map(
-      actionHash =>
-        (state.CAS.get(actionHash.hashed.content.entry_hash) as Entry).entry as ZomeCallCapGrant
+      (actionHash) =>
+        (state.CAS.get(actionHash.hashed.content.entry_hash) as Entry)
+          .entry as ZomeCallCapGrant
     );
 
-  return !!aliveCapGrants.find(capGrant =>
+  return !!aliveCapGrants.find((capGrant) =>
     isCapGrantValid(capGrant, zome, fnName, provenance, secret)
   );
 }
@@ -141,7 +148,13 @@ function isCapGrantValid(
   check_agent: AgentPubKey,
   check_secret: CapSecret | undefined
 ): boolean {
-  if (!capGrant.functions.find(fn => fn.fn_name === fnName && fn.zome === zome))
+  if (GrantedFunctionsType.All in capGrant.functions) return true;
+
+  if (
+    !capGrant.functions[GrantedFunctionsType.Listed].find(
+      ([zome_name, fn_name]) => fn_name === fnName && zome_name === zome
+    )
+  )
     return false;
 
   if (capGrant.access === 'Unrestricted') return true;
@@ -159,7 +172,7 @@ function isCapGrantValid(
           assignees: AgentPubKey[];
         };
       }
-    ).Assigned.assignees.find(a => areEqual(a, check_agent));
+    ).Assigned.assignees.find((a) => areEqual(a, check_agent));
   } else {
     return (
       (

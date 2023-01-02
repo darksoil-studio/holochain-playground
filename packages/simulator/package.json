@@ -15,7 +15,8 @@
     "test:watch": "concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wtr --watch\""
   },
   "dependencies": {
-    "@holochain-open-dev/core-types": "^0.6.2",
+    "@holochain-open-dev/core-types": "^0.6.3",
+    "@holochain-open-dev/utils": "^0.8.0",
     "@holochain/client": "^0.11.9",
     "@msgpack/msgpack": "^2.7.1",
     "blakejs": "^1.1.0",
@@ -55,6 +56,10 @@
     "arrowParens": "avoid"
   },
   "lint-staged": {
-    "*.ts": ["eslint --fix", "prettier --write", "git add"]
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ]
   }
 }

@@ -1,6 +1,5 @@
 import {
   Cell,
-  CellMap,
   Conductor,
   createConductors,
   SimulatedHappBundle,
@@ -8,8 +7,9 @@ import {
   ConductorSignalType,
   selectDhtShard,
   BadAgent,
+  Dictionary,
 } from '@holochain-playground/simulator';
-import { Dictionary } from '@holochain-open-dev/core-types';
+import { CellMap } from '@holochain-open-dev/utils';
 import { AgentPubKey, DhtOp, Record } from '@holochain/client';
 import { readable, Readable, writable, Writable } from 'svelte/store';
 

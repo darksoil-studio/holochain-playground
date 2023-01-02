@@ -1,4 +1,3 @@
-import { Dictionary } from '@holochain-open-dev/core-types';
 import {
   EntryVisibility,
   CellId,
@@ -14,6 +13,7 @@ import {
   SimulatedZomeFunctionContext,
 } from '../core/hdk';
 import { hash, HashType } from '../processors/hash';
+import { Dictionary } from '../types';
 
 export interface SimulatedZomeFunctionArgument {
   name: string;

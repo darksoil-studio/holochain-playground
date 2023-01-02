@@ -1,6 +1,5 @@
+import { CellMap, HoloHashMap } from '@holochain-open-dev/utils';
 import {
-  HoloHashMap,
-  CellMap,
   SimulatedDna,
   getEntryTypeString,
   HashType,
@@ -21,10 +20,15 @@ import {
   Delete,
   Update,
   Entry,
-  AppEntryType,
+  AppEntryDef,
+  AnyDhtHash,
 } from '@holochain/client';
 
-function appendToArray<T>(map: HoloHashMap<T[]>, key: HoloHash, value: T) {
+function appendToArray<T>(
+  map: HoloHashMap<HoloHash, T[]>,
+  key: HoloHash,
+  value: T
+) {
   if (!map.has(key)) map.put(key, []);
 
   const previous_value = map.get(key);
@@ -32,16 +36,17 @@ function appendToArray<T>(map: HoloHashMap<T[]>, key: HoloHash, value: T) {
 }
 
 export interface DhtSummary {
-  actions: HoloHashMap<Action>;
+  actions: HoloHashMap<ActionHash, Action>;
   // Updated action -> action that updates
-  actionUpdates: HoloHashMap<ActionHash[]>;
+  actionUpdates: HoloHashMap<ActionHash, ActionHash[]>;
   // Deleted action -> action that deletes
-  actionDeletes: HoloHashMap<ActionHash[]>;
-  entries: HoloHashMap<any>;
+  actionDeletes: HoloHashMap<ActionHash, ActionHash[]>;
+  entries: HoloHashMap<EntryHash, any>;
   // Entry hash -> action that created that entry
-  actionsByEntry: HoloHashMap<ActionHash[]>;
+  actionsByEntry: HoloHashMap<EntryHash, ActionHash[]>;
 
   links: HoloHashMap<
+    AnyDhtHash,
     Array<{
       target_address: EntryHash;
       tag: any;
@@ -49,10 +54,9 @@ export interface DhtSummary {
     }>
   >;
   // Deleted add link -> action that deletes that
-  deletedAddLinks: HoloHashMap<ActionHash[]>;
-  entryTypes: HoloHashMap<string>;
+  deletedAddLinks: HoloHashMap<ActionHash, ActionHash[]>;
+  entryTypes: HoloHashMap<EntryHash, string>;
 }
-
 
 export function getDhtOpAction(op: DhtOp): Action {
   const opType = getDhtOpType(op);
@@ -62,13 +66,16 @@ export function getDhtOpAction(op: DhtOp): Action {
     return {
       type: 'CreateLink',
       ...action,
-    }
+    };
   }
-  if (opType === DhtOpType.RegisterUpdatedContent || opType === DhtOpType.RegisterUpdatedRecord) {
+  if (
+    opType === DhtOpType.RegisterUpdatedContent ||
+    opType === DhtOpType.RegisterUpdatedRecord
+  ) {
     return {
       type: 'Update',
       ...action,
-    }
+    };
   }
 
   if (action.author) return action;
@@ -81,23 +88,23 @@ export function getDhtOpAction(op: DhtOp): Action {
   }
 }
 
-
 export function summarizeDht(
   dhtShards: CellMap<DhtOp[]>,
   simulatedDna?: SimulatedDna
 ): DhtSummary {
   // For every action hash, the types of Op that have been visited already
-  const visited = new HoloHashMap<string[]>();
+  const visited = new HoloHashMap<ActionHash, string[]>();
 
-  const actions = new HoloHashMap<Action>();
+  const actions = new HoloHashMap<ActionHash, Action>();
   // Updated action -> action that updates
-  const actionUpdates = new HoloHashMap<ActionHash[]>();
+  const actionUpdates = new HoloHashMap<ActionHash, ActionHash[]>();
   // Deleted action -> action that deletes
-  const actionDeletes = new HoloHashMap<ActionHash[]>();
-  const entries = new HoloHashMap<any>();
+  const actionDeletes = new HoloHashMap<ActionHash, ActionHash[]>();
+  const entries = new HoloHashMap<EntryHash, any>();
   // Entry hash -> action that created that entry
-  const actionsByEntry = new HoloHashMap<ActionHash[]>();
+  const actionsByEntry = new HoloHashMap<EntryHash, ActionHash[]>();
   const entryLinks = new HoloHashMap<
+    AnyDhtHash,
     Array<{
       target_address: EntryHash;
       tag: any;
@@ -105,9 +112,9 @@ export function summarizeDht(
     }>
   >();
   // Deleted add link -> action that deletes that
-  const deletedAddLinks = new HoloHashMap<ActionHash[]>();
+  const deletedAddLinks = new HoloHashMap<ActionHash, ActionHash[]>();
 
-  const entryTypes = new HoloHashMap<string>();
+  const entryTypes = new HoloHashMap<EntryHash, string>();
   for (const shard of dhtShards.values()) {
     for (const dhtOp of shard) {
       const dhtOpType = getDhtOpType(dhtOp);
@@ -197,9 +204,9 @@ function getConnectedEntryType(action: NewEntryAction, entry: Entry): string {
   }
   const appEntryType = (
     action.entry_type as {
-      App: AppEntryType;
+      App: AppEntryDef;
     }
   ).App;
 
-  return `Zome:${appEntryType.zome_id},EntryId:${appEntryType.id}`;
+  return `Zome:${appEntryType.zome_index},EntryId:${appEntryType.entry_index}`;
 }

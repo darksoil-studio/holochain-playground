@@ -1,11 +1,6 @@
-import {
-  AgentPubKeyB64,
-  AnyDhtHashB64,
-  Dictionary,
-  DnaHashB64,
-} from '@holochain-open-dev/core-types';
+import { AnyDhtHashB64, DhtOpHash } from '@holochain-open-dev/core-types';
+import { HoloHashMap } from '@holochain-open-dev/utils';
 import { AgentPubKey, DnaHash, DhtOp } from '@holochain/client';
-import { HoloHashMap } from '../../processors/holo-hash-map';
 import { GetOptions } from '../../types';
 import { Cell } from '../cell/cell';
 
@@ -31,7 +26,7 @@ export interface NetworkRequestInfo<T extends NetworkRequestType, D> {
 export type PublishRequestInfo = NetworkRequestInfo<
   NetworkRequestType.PUBLISH_REQUEST,
   {
-    dhtOps: HoloHashMap<DhtOp>;
+    dhtOps: HoloHashMap<DhtOpHash, DhtOp>;
   }
 >;
 

@@ -1,10 +1,9 @@
+import { CellMap, HoloHashMap } from '@holochain-open-dev/utils';
 import {
   BadAgent,
   Cell,
-  CellMap,
   hash,
   HashType,
-  HoloHashMap,
   location,
 } from '@holochain-playground/simulator';
 import {
@@ -86,7 +85,10 @@ export function allPeersEdges(
   cellsNeighbors: CellMap<Array<AgentPubKey>>
 ) {
   // Segmented by originAgentPubKey/targetAgentPubKey
-  const visited: HoloHashMap<HoloHashMap<boolean>> = new HoloHashMap();
+  const visited: HoloHashMap<
+    AgentPubKey,
+    HoloHashMap<AgentPubKey, boolean>
+  > = new HoloHashMap();
   const edges: Array<any> = [];
 
   const neighborsNotConnected = new CellMap<boolean>();

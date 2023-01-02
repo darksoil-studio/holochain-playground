@@ -11,7 +11,7 @@ import { encode } from '@msgpack/msgpack';
 import { Base64 } from 'js-base64';
 import isEqual from 'lodash-es/isEqual';
 
-import { HoloHashMap } from './holo-hash-map';
+import { HoloHashMap } from '@holochain-open-dev/utils';
 
 export enum HashType {
   AGENT,
@@ -74,7 +74,7 @@ export function hash(content: any, type: HashType): HoloHash {
   return fullhash;
 }
 
-const hashLocationCache: HoloHashMap<Uint8Array> = new HoloHashMap();
+const hashLocationCache: HoloHashMap<HoloHash, Uint8Array> = new HoloHashMap();
 
 export function location(bytesHash: HoloHash): number {
   let bytes;

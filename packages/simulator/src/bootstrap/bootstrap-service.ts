@@ -1,9 +1,5 @@
-import {
-  AgentPubKey,
-  AnyDhtHash,
-  CellId,
-  DnaHash,
-} from '@holochain/client';
+import { CellMap } from '@holochain-open-dev/utils';
+import { AgentPubKey, AnyDhtHash, CellId, DnaHash } from '@holochain/client';
 
 import { Cell } from '../core/cell';
 import {
@@ -11,7 +7,6 @@ import {
   getFarthestNeighbors,
 } from '../core/network/utils';
 import { areEqual } from '../processors/hash';
-import { CellMap } from '../processors/holo-hash-map';
 
 export class BootstrapService {
   cells: CellMap<Cell> = new CellMap();
@@ -29,17 +24,17 @@ export class BootstrapService {
     const dnaCells = this.cells.valuesForDna(dnaHash);
 
     const cells = dnaCells.filter(
-      cell => !filteredAgents.find(fa => areEqual(fa, cell.agentPubKey))
+      (cell) => !filteredAgents.find((fa) => areEqual(fa, cell.agentPubKey))
     );
 
     const neighborsKeys = getClosestNeighbors(
-      cells.map(c => c.agentPubKey),
+      cells.map((c) => c.agentPubKey),
       basis_dht_hash,
       numNeighbors
     );
 
     return neighborsKeys.map(
-      pubKey => dnaCells.find(c => areEqual(pubKey, c.agentPubKey)) as Cell
+      (pubKey) => dnaCells.find((c) => areEqual(pubKey, c.agentPubKey)) as Cell
     );
   }
 
@@ -51,15 +46,15 @@ export class BootstrapService {
     const dnaAgents = this.cells.agentsForDna(dnaHash);
 
     const cells = dnaAgents.filter(
-      peerPubKey =>
+      (peerPubKey) =>
         !areEqual(peerPubKey, agentPubKey) &&
-        !filteredAgents.find(a => areEqual(peerPubKey, a))
+        !filteredAgents.find((a) => areEqual(peerPubKey, a))
     );
 
     const farthestKeys = getFarthestNeighbors(cells, agentPubKey);
 
     return farthestKeys.map(
-      pubKey => this.cells.get([dnaHash, pubKey]) as Cell
+      (pubKey) => this.cells.get([dnaHash, pubKey]) as Cell
     );
   }
 }

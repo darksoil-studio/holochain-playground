@@ -2,13 +2,14 @@ import { html, css } from 'lit';
 import { state, property } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
-import { Dictionary } from '@holochain-open-dev/core-types';
 import {
   SimulatedZome,
   Cell,
   SimulatedDna,
-  CellMap,
 } from '@holochain-playground/simulator';
+import { CopiableHash } from '@holochain-open-dev/elements';
+import { CellMap } from '@holochain-open-dev/utils';
+
 import { sharedStyles } from '../utils/shared-styles';
 import {
   CircularProgress,
@@ -19,7 +20,6 @@ import {
 } from '@scoped-elements/material-web';
 
 import { selectCell } from '../../base/selectors';
-import { CopiableHash } from '@holochain-open-dev/elements';
 import { PlaygroundElement } from '../../base/playground-element';
 import {
   CallableFn,
@@ -36,6 +36,8 @@ import { ZomeFunctionResult } from './types';
 import { JsonViewer } from '@power-elements/json-viewer';
 import { ExpandableLine } from '../helpers/expandable-line';
 import { shortenStrRec } from '../utils/hash';
+
+type Dictionary<T> = Record<string, T>;
 
 /**
  * @element call-zome-fns

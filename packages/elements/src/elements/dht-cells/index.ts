@@ -17,7 +17,6 @@ import {
   WorkflowType,
   PublishRequestInfo,
   NetworkRequestInfo,
-  HoloHashMap,
 } from '@holochain-playground/simulator';
 import { StoreSubscriber } from 'lit-svelte-stores';
 import {
@@ -56,6 +55,8 @@ import {
 import { mapDerive } from '../../store/utils';
 import { MiddlewareController } from '../../base/middleware-controller';
 import { CellStore } from '../../store/playground-store';
+import { HoloHashMap } from '@holochain-open-dev/utils';
+import { DhtOpHash } from '@holochain-open-dev/core-types';
 
 const MIN_ANIMATION_DELAY = 1;
 const MAX_ANIMATION_DELAY = 7;
@@ -212,8 +213,9 @@ export class DhtCells extends PlaygroundElement {
 
     let label = networkRequest.type;
     if (networkRequest.type === NetworkRequestType.PUBLISH_REQUEST) {
-      const dhtOps: HoloHashMap<DhtOp> = (networkRequest as PublishRequestInfo)
-        .details.dhtOps;
+      const dhtOps: HoloHashMap<DhtOpHash, DhtOp> = (
+        networkRequest as PublishRequestInfo
+      ).details.dhtOps;
 
       const types = dhtOps.values().map((dhtOp) => getDhtOpType(dhtOp));
 

@@ -20,17 +20,14 @@ import {
 } from '@holochain/client';
 import merge from 'lodash-es/merge';
 import isEqual from 'lodash-es/isEqual';
-import {
-  AGENT_PREFIX,
-  CellMap,
-  HoloHashMap,
-} from '@holochain-playground/simulator';
+import { AGENT_PREFIX } from '@holochain-playground/simulator';
 import { Base64 } from 'js-base64';
 
 import { CellStore, ConductorStore, PlaygroundStore } from './playground-store';
 import { pollingStore } from './polling-store';
 import { PlaygroundMode } from './mode';
 import { cellChanges } from './utils';
+import { CellMap } from '@holochain-open-dev/utils';
 
 export class ConnectedCellStore extends CellStore<PlaygroundMode.Connected> {
   _state: Readable<FullStateDump | undefined>;
@@ -175,10 +172,10 @@ export class ConnectedPlaygroundStore extends PlaygroundStore<PlaygroundMode.Con
     const normalizedUrls = urls.map((u) => normalizeUrl(u));
 
     const currentUrls = get(this.conductors).map((c) => c.url);
-    
+
     const toAdd = normalizedUrls.filter((u) => !currentUrls.includes(u));
     const toRemove = currentUrls.filter((u) => !normalizedUrls.includes(u));
-    
+
     const promises = toAdd.map(async (url) => {
       try {
         const ws = await AdminWebsocket.connect(url);

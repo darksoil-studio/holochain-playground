@@ -3,7 +3,7 @@ import { state, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 
 import { StoreSubscriber } from 'lit-svelte-stores';
-import { CellMap } from '@holochain-playground/simulator';
+import { CellMap } from '@holochain-open-dev/utils';
 import {
   ListItem,
   Card,

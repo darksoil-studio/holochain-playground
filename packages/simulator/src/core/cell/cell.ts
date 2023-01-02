@@ -1,8 +1,5 @@
 import { cloneDeep, uniqWith } from 'lodash-es';
-import {
-  Dictionary,
-  DhtOpHash,
-} from '@holochain-open-dev/core-types';
+import { DhtOpHash } from '@holochain-open-dev/core-types';
 import {
   AgentPubKey,
   AnyDhtHash,
@@ -14,7 +11,7 @@ import {
   CapSecret,
 } from '@holochain/client';
 
-import { GetLinksOptions, GetOptions } from '../../types';
+import { Dictionary, GetLinksOptions, GetOptions } from '../../types';
 import { Conductor } from '../conductor';
 import { genesis_task } from './workflows/genesis';
 import { call_zome_fn_workflow } from './workflows/call_zome_fn';
@@ -27,7 +24,6 @@ import { MiddlewareExecutor } from '../../executor/middleware-executor';
 import { GetLinksResponse, GetResult } from './cascade/types';
 import { Authority } from './cascade/authority';
 import { areEqual, getHashType, hash, HashType } from '../../processors/hash';
-import { HoloHashMap } from '../../processors/holo-hash-map';
 import { DhtArc } from '../network/dht_arc';
 import { getDhtOpBasis } from './utils';
 import { GossipData } from '../network/gossip/types';
@@ -39,6 +35,7 @@ import {
   run_agent_validation_callback,
 } from './workflows/app_validation';
 import { publish_dht_ops_task } from './workflows/publish_dht_ops';
+import { HoloHashMap } from '@holochain-open-dev/utils';
 
 export type CellSignal = 'after-workflow-executed' | 'before-workflow-executed';
 export type CellSignalListener = (payload: any) => void;
@@ -146,7 +143,7 @@ export class Cell {
   public handle_publish(
     from_agent: AgentPubKey,
     request_validation_receipt: boolean,
-    ops: HoloHashMap<DhtOp>
+    ops: HoloHashMap<DhtOpHash, DhtOp>
   ): Promise<void> {
     return this._runWorkflow(
       incoming_dht_ops_task(from_agent, request_validation_receipt, ops)
@@ -204,8 +201,8 @@ export class Cell {
 
   public handle_fetch_op_hash_data(
     op_hashes: Array<DhtOpHash>
-  ): HoloHashMap<DhtOp> {
-    const result: HoloHashMap<DhtOp> = new HoloHashMap();
+  ): HoloHashMap<DhtOpHash, DhtOp> {
+    const result: HoloHashMap<DhtOpHash, DhtOp> = new HoloHashMap();
     for (const opHash of op_hashes) {
       const value = this._state.integratedDHTOps.get(opHash);
       if (value) {
@@ -215,8 +212,10 @@ export class Cell {
     return result;
   }
 
-  public handle_gossip_ops(op_hashes: Array<DhtOpHash>): HoloHashMap<DhtOp> {
-    const result: HoloHashMap<DhtOp> = new HoloHashMap();
+  public handle_gossip_ops(
+    op_hashes: Array<DhtOpHash>
+  ): HoloHashMap<DhtOpHash, DhtOp> {
+    const result: HoloHashMap<DhtOpHash, DhtOp> = new HoloHashMap();
     for (const opHash of op_hashes) {
       const value = this._state.integratedDHTOps.get(opHash);
       if (value) {
@@ -227,7 +226,7 @@ export class Cell {
   }
 
   async handle_gossip(from_agent: AgentPubKey, gossip: GossipData) {
-    const dhtOpsToProcess: HoloHashMap<DhtOp> = new HoloHashMap();
+    const dhtOpsToProcess: HoloHashMap<DhtOpHash, DhtOp> = new HoloHashMap();
 
     for (const badAction of gossip.badActions) {
       const dhtOpHash = hash(badAction.op, HashType.DHTOP);
@@ -298,7 +297,7 @@ export class Cell {
 
     const workflowsToRun = pendingWorkflows.map(triggeredWorkflowFromType);
 
-    const promises = Object.values(workflowsToRun).map(async w => {
+    const promises = Object.values(workflowsToRun).map(async (w) => {
       this._triggers[w.type].triggered = false;
       this._triggers[w.type].running = true;
       await this._runWorkflow(w);
@@ -316,7 +315,7 @@ export class Cell {
       workflow
     );
 
-    result.triggers.forEach(triggeredWorkflow =>
+    result.triggers.forEach((triggeredWorkflow) =>
       this.triggerWorkflow(triggeredWorkflow)
     );
     return result.result;

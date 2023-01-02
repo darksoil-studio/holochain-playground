@@ -1,5 +1,7 @@
-import { Dictionary } from '@holochain-open-dev/core-types';
-import { SimulatedHappBundle } from '@holochain-playground/simulator';
+import {
+  Dictionary,
+  SimulatedHappBundle,
+} from '@holochain-playground/simulator';
 import { html } from 'lit';
 
 import { PlaygroundElement } from '../../base/playground-element';

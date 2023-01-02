@@ -1,7 +1,7 @@
 import {
   AgentPubKey,
   AgentValidationPkg,
-  AppEntryType,
+  AppEntryDef,
   CreateLink,
   DeleteLink,
   DhtOp,
@@ -117,7 +117,7 @@ export function app_validation_task(
   return {
     type: agent ? WorkflowType.AGENT_VALIDATION : WorkflowType.APP_VALIDATION,
     details: undefined,
-    task: worskpace => app_validation(worskpace),
+    task: (worskpace) => app_validation(worskpace),
   };
 }
 
@@ -266,14 +266,16 @@ async function get_associated_entry_def(
   if ((maybeAppEntryType as DepsMissing).depsHashes)
     return maybeAppEntryType as DepsMissing;
 
-  const appEntryType = maybeAppEntryType as AppEntryType;
-  return dna.zomes[appEntryType.zome_id].entry_defs[appEntryType.id];
+  const appEntryType = maybeAppEntryType as AppEntryDef;
+  return dna.zomes[appEntryType.zome_index].entry_defs[
+    appEntryType.entry_index
+  ];
 }
 
 async function get_app_entry_type(
   record: Record,
   cascade: Cascade
-): Promise<DepsMissing | AppEntryType | undefined> {
+): Promise<DepsMissing | AppEntryDef | undefined> {
   if (record.signed_action.hashed.content.type === ActionType.Delete)
     return get_app_entry_type_from_dep(record, cascade);
 
@@ -292,12 +294,11 @@ async function get_app_entry_type(
 async function get_app_entry_type_from_dep(
   record: Record,
   cascade: Cascade
-): Promise<DepsMissing | AppEntryType | undefined> {
+): Promise<DepsMissing | AppEntryDef | undefined> {
   if (record.signed_action.hashed.content.type !== ActionType.Delete)
     return undefined;
 
-  const deletedActionHash =
-    record.signed_action.hashed.content.deletes_address;
+  const deletedActionHash = record.signed_action.hashed.content.deletes_address;
   const action = await cascade.retrieve_action(deletedActionHash, {
     strategy: GetStrategy.Contents,
   });
@@ -327,7 +328,7 @@ async function get_zomes_to_invoke(
 
   if (maybeAppEntryType) {
     // It's a newEntryAction
-    return [workspace.dna.zomes[(maybeAppEntryType as AppEntryType).zome_id]];
+    return [workspace.dna.zomes[(maybeAppEntryType as AppEntryDef).zome_index]];
   } else {
     const action = record.signed_action.hashed.content;
     if (action.type === ActionType.CreateLink) {
@@ -358,10 +359,7 @@ async function run_validation_callback_inner(
   entry_def: EntryDef | undefined,
   workspace: Workspace
 ): Promise<ValidationOutcome> {
-  const fnsToCall = get_record_validate_functions_to_invoke(
-    record,
-    entry_def
-  );
+  const fnsToCall = get_record_validate_functions_to_invoke(record, entry_def);
 
   return invoke_validation_fns(
     zomes_to_invoke,
@@ -390,7 +388,7 @@ async function invoke_validation_fns(
       if (zome.validation_functions[validateFn]) {
         const context = buildValidationFunctionContext(
           hostFnWorkspace,
-          workspace.dna.zomes.findIndex(z => z === zome)
+          workspace.dna.zomes.findIndex((z) => z === zome)
         );
 
         const outcome: ValidationOutcome = await zome.validation_functions[
@@ -451,7 +449,7 @@ export async function run_create_link_validation_callback(
     };
     const context = buildValidationFunctionContext(
       hostFnWorkspace,
-      workspace.dna.zomes.findIndex(z => z === zome)
+      workspace.dna.zomes.findIndex((z) => z === zome)
     );
 
     const outcome: ValidationOutcome = await zome.validation_functions[
@@ -483,7 +481,7 @@ export async function run_delete_link_validation_callback(
     };
     const context = buildValidationFunctionContext(
       hostFnWorkspace,
-      workspace.dna.zomes.findIndex(z => z === zome)
+      workspace.dna.zomes.findIndex((z) => z === zome)
     );
 
     const outcome: ValidationOutcome = await zome.validation_functions[
@@ -514,7 +512,7 @@ function get_record_validate_functions_to_invoke(
   const entry_type = (action as NewEntryAction).entry_type;
   if (entry_type) {
     // if (entry_type === 'Agent') fnsComponents.push('agent');
-    if ((entry_type as { App: AppEntryType }).App) {
+    if ((entry_type as { App: AppEntryDef }).App) {
       fnsComponents.push('entry');
       if (maybeEntryDef) fnsComponents.push(maybeEntryDef.id);
     }

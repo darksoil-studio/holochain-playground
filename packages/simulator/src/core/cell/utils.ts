@@ -7,7 +7,7 @@ import {
   SignedActionHashed,
   Update,
   AnyDhtHash,
-  AppEntryType,
+  AppEntryDef,
   DhtOp,
   DhtOpType,
   Entry,
@@ -35,11 +35,9 @@ export function hashEntry(entry: Entry): EntryHash {
   return hash(entry.entry, HashType.ENTRY);
 }
 
-export function getAppEntryType(
-  entryType: EntryType
-): AppEntryType | undefined {
-  if ((entryType as { App: AppEntryType }).App)
-    return (entryType as { App: AppEntryType }).App;
+export function getAppEntryType(entryType: EntryType): AppEntryDef | undefined {
+  if ((entryType as { App: AppEntryDef }).App)
+    return (entryType as { App: AppEntryDef }).App;
   return undefined;
 }
 
@@ -50,7 +48,9 @@ export function getEntryTypeString(
   const appEntryType = getAppEntryType(entryType);
 
   if (appEntryType) {
-    return dna.zomes[appEntryType.zome_id].entry_defs[appEntryType.id].id;
+    return dna.zomes[appEntryType.zome_index].entry_defs[
+      appEntryType.entry_index
+    ].id;
   }
 
   return entryType as string;
@@ -186,7 +186,7 @@ export function recordToDhtOps(record: Record): DhtOp[] {
 
 export function sortDhtOps(dhtOps: DhtOp[]): DhtOp[] {
   const prio = (dhtOp: DhtOp) =>
-    DHT_SORT_PRIORITY.findIndex(type => type === getDhtOpType(dhtOp));
+    DHT_SORT_PRIORITY.findIndex((type) => type === getDhtOpType(dhtOp));
   return dhtOps.sort((dhtA: DhtOp, dhtB: DhtOp) => prio(dhtA) - prio(dhtB));
 }
 

@@ -1,4 +1,6 @@
 import { AgentPubKey, DhtOp } from '@holochain/client';
+import { HoloHashMap } from '@holochain-open-dev/utils';
+import { DhtOpHash } from '@holochain-open-dev/core-types';
 
 import { ValidationLimboValue, ValidationLimboStatus } from '../state';
 import { putValidationLimboValue } from '../dht/put';
@@ -6,12 +8,11 @@ import { sys_validation_task } from './sys_validation';
 import { Workflow, WorkflowReturn, WorkflowType, Workspace } from './workflows';
 import { getDhtOpBasis } from '../utils';
 import { hasDhtOpBeenProcessed } from '../dht/get';
-import { HoloHashMap } from '../../../processors/holo-hash-map';
 
 // From https://github.com/holochain/holochain/blob/develop/crates/holochain/src/core/workflow/incoming_dht_ops_workflow.rs
 export const incoming_dht_ops =
   (
-    dhtOps: HoloHashMap<DhtOp>,
+    dhtOps: HoloHashMap<DhtOpHash, DhtOp>,
     request_validation_receipt: boolean,
     from_agent: AgentPubKey | undefined
   ) =>
@@ -49,14 +50,14 @@ export const incoming_dht_ops =
   };
 
 export type IncomingDhtOpsWorkflow = Workflow<
-  { from_agent: AgentPubKey; ops: HoloHashMap<DhtOp> },
+  { from_agent: AgentPubKey; ops: HoloHashMap<DhtOpHash, DhtOp> },
   void
 >;
 
 export function incoming_dht_ops_task(
   from_agent: AgentPubKey,
   request_validation_receipt: boolean,
-  ops: HoloHashMap<DhtOp>
+  ops: HoloHashMap<DhtOpHash, DhtOp>
 ): IncomingDhtOpsWorkflow {
   return {
     type: WorkflowType.INCOMING_DHT_OPS,
@@ -64,7 +65,7 @@ export function incoming_dht_ops_task(
       from_agent,
       ops,
     },
-    task: worskpace =>
+    task: (worskpace) =>
       incoming_dht_ops(ops, request_validation_receipt, from_agent)(worskpace),
   };
 }

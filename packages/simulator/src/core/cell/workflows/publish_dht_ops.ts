@@ -1,5 +1,6 @@
-import { DhtOp } from '@holochain/client';
-import { HoloHashMap } from '../../../processors/holo-hash-map';
+import { DhtOpHash } from '@holochain-open-dev/core-types';
+import { HoloHashMap } from '@holochain-open-dev/utils';
+import { DhtOp, HoloHash } from '@holochain/client';
 
 import { getNonPublishedDhtOps } from '../source-chain/utils';
 import { getDhtOpBasis } from '../utils';
@@ -12,7 +13,10 @@ export const publish_dht_ops = async (
   let workCompleted = true;
   const dhtOps = getNonPublishedDhtOps(workspace.state);
 
-  const dhtOpsByBasis: HoloHashMap<HoloHashMap<DhtOp>> = new HoloHashMap();
+  const dhtOpsByBasis: HoloHashMap<
+    HoloHash,
+    HoloHashMap<DhtOpHash, DhtOp>
+  > = new HoloHashMap();
 
   for (const [dhtOpHash, dhtOp] of dhtOps.entries()) {
     const basis = getDhtOpBasis(dhtOp);
@@ -56,6 +60,6 @@ export function publish_dht_ops_task(): PublishDhtOpsWorkflow {
   return {
     type: WorkflowType.PUBLISH_DHT_OPS,
     details: undefined,
-    task: worskpace => publish_dht_ops(worskpace),
+    task: (worskpace) => publish_dht_ops(worskpace),
   };
 }

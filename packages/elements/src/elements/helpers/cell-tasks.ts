@@ -1,5 +1,5 @@
-import { Dictionary } from '@holochain-open-dev/core-types';
 import {
+  Dictionary,
   Cell,
   sleep,
   Workflow,
@@ -7,7 +7,6 @@ import {
   workflowPriority,
   CallZomeFnWorkflow,
   NetworkRequestInfo,
-  CellMap,
 } from '@holochain-playground/simulator';
 import { css, html } from 'lit';
 import { styleMap } from 'lit-html/directives/style-map.js';

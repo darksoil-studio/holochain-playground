@@ -1,9 +1,5 @@
-import {
-  DhtOpHash,
-  DhtOpHashB64,
-  Dictionary,
-  ValidationReceipt,
-} from '@holochain-open-dev/core-types';
+import { DhtOpHash, ValidationReceipt } from '@holochain-open-dev/core-types';
+import { HoloHashMap } from '@holochain-open-dev/utils';
 import {
   AgentPubKey,
   DhtOp,
@@ -12,7 +8,6 @@ import {
   HoloHash,
 } from '@holochain/client';
 import { location } from '../../processors/hash';
-import { HoloHashMap } from '../../processors/holo-hash-map';
 import { contains, DhtArc } from '../network/dht_arc';
 import { Metadata } from './state/metadata';
 
@@ -20,13 +15,16 @@ export interface CellState {
   dnaHash: DnaHash;
   agentPubKey: AgentPubKey;
   sourceChain: Array<ActionHash>;
-  CAS: HoloHashMap<any>;
+  CAS: HoloHashMap<HoloHash, any>;
   metadata: Metadata; // For the moment only DHT shard
-  integratedDHTOps: HoloHashMap<IntegratedDhtOpsValue>; // Key is the hash of the DHT op
-  authoredDHTOps: HoloHashMap<AuthoredDhtOpsValue>; // Key is the hash of the DHT op
-  integrationLimbo: HoloHashMap<IntegrationLimboValue>; // Key is the hash of the DHT op
-  validationLimbo: HoloHashMap<ValidationLimboValue>; // Key is the hash of the DHT op
-  validationReceipts: HoloHashMap<HoloHashMap<ValidationReceipt>>; // Segmented by dhtOpHash/authorOfReceipt
+  integratedDHTOps: HoloHashMap<DhtOpHash, IntegratedDhtOpsValue>; // Key is the hash of the DHT op
+  authoredDHTOps: HoloHashMap<DhtOpHash, AuthoredDhtOpsValue>; // Key is the hash of the DHT op
+  integrationLimbo: HoloHashMap<DhtOpHash, IntegrationLimboValue>; // Key is the hash of the DHT op
+  validationLimbo: HoloHashMap<DhtOpHash, ValidationLimboValue>; // Key is the hash of the DHT op
+  validationReceipts: HoloHashMap<
+    DhtOpHash,
+    HoloHashMap<AgentPubKey, ValidationReceipt>
+  >; // Segmented by dhtOpHash/authorOfReceipt
   badAgents: AgentPubKey[];
 }
 
@@ -79,7 +77,7 @@ export interface ValidationLimboValue {
 }
 
 export function query_dht_ops(
-  integratedDhtOps: HoloHashMap<IntegratedDhtOpsValue>,
+  integratedDhtOps: HoloHashMap<DhtOpHash, IntegratedDhtOpsValue>,
   from: number | undefined,
   to: number | undefined,
   dht_arc: DhtArc
@@ -94,5 +92,5 @@ export function query_dht_ops(
   };
 
   const ops = integratedDhtOps.entries().filter(isDhtOpsInFilter);
-  return ops.map(op => op[0]);
+  return ops.map((op) => op[0]);
 }

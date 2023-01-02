@@ -1,11 +1,6 @@
-import {
-  AgentPubKeyB64,
-  Dictionary,
-  DnaHashB64,
-} from '@holochain-open-dev/core-types';
+import { CellMap } from '@holochain-open-dev/utils';
 import { AgentPubKey, DnaHash } from '@holochain/client';
 import { BootstrapService } from '../../bootstrap/bootstrap-service';
-import { CellMap } from '../../processors/holo-hash-map';
 import { Cell } from '../cell/cell';
 import { Conductor } from '../conductor';
 import { P2pCell, P2pCellState } from '../network/p2p-cell';
@@ -20,7 +15,7 @@ export interface NetworkState {
 export class Network {
   // P2pCells contained in this conductor
   p2pCells: CellMap<P2pCell>;
-  
+
   kitsune: KitsuneP2p;
 
   constructor(

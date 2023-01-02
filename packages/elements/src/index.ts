@@ -15,7 +15,6 @@ export * from './elements/source-chain';
 export * from './elements/dht-entries';
 
 export * from './elements/helpers/call-functions';
-export * from './elements/helpers/copyable-hash';
 export * from './elements/helpers/cell-tasks';
 export * from './elements/helpers/help-button';
 export * from './elements/utils/shared-styles';

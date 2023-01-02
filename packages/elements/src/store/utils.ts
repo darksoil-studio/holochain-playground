@@ -1,4 +1,4 @@
-import { CellMap } from '@holochain-playground/simulator';
+import { CellMap } from '@holochain-open-dev/utils';
 import { CellId } from '@holochain/client';
 import isEqual from 'lodash-es/isEqual';
 import { Readable, derived } from 'svelte/store';

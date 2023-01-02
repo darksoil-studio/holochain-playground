@@ -9,3 +9,5 @@ export enum GetStrategy {
 }
 
 export interface QueryFilter {}
+
+export type Dictionary<T> = Record<string, T>;

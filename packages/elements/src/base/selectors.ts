@@ -13,9 +13,9 @@ import {
   isHoldingRecord,
   getHashType,
   HashType,
-  HoloHashMap,
 } from '@holochain-playground/simulator';
-import { cloneDeep } from 'lodash';
+import { HoloHashMap } from '@holochain-open-dev/utils';
+import { cloneDeep } from 'lodash-es';
 
 export function selectCells(dna: DnaHash, conductor: Conductor): Cell[] {
   return conductor.getCells(dna);
@@ -114,7 +114,7 @@ export function selectMedianHoldingDHTOps(cells: Cell[]): number {
 }
 
 export function selectAllDNAs(conductors: Conductor[]): DnaHash[] {
-  const dnas = new HoloHashMap<boolean>();
+  const dnas = new HoloHashMap<DnaHash, boolean>();
 
   for (const conductor of conductors) {
     for (const cell of conductor.getAllCells()) {

@@ -1,4 +1,3 @@
-import { Dictionary } from '@holochain-open-dev/core-types';
 import { property } from 'lit/decorators.js';
 import { ScopedElementsMixin } from '@open-wc/scoped-elements';
 import { css, LitElement, html, PropertyValues, TemplateResult } from 'lit';
@@ -11,6 +10,7 @@ import {
   Select,
   TextField,
 } from '@scoped-elements/material-web';
+import { Dictionary } from '@holochain-playground/simulator';
 
 import { sharedStyles } from '../utils/shared-styles';
 

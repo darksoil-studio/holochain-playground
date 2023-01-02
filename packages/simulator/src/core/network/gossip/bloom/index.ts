@@ -1,5 +1,6 @@
+import { DhtOpHash } from '@holochain-open-dev/core-types';
+import { HoloHashMap } from '@holochain-open-dev/utils';
 import { sleep } from '../../../../executor/delay-middleware';
-import { HoloHashMap } from '../../../../processors/holo-hash-map';
 import { getValidationReceipts } from '../../../cell';
 import { P2pCell } from '../../p2p-cell';
 import { getBadActions } from '../../utils';
@@ -35,7 +36,8 @@ export class SimpleBloomMod {
 
     const state = this.p2pCell.cell._state;
 
-    const dhtOpData: HoloHashMap<GossipDhtOpData> = new HoloHashMap();
+    const dhtOpData: HoloHashMap<DhtOpHash, GossipDhtOpData> =
+      new HoloHashMap();
 
     for (const dhtOpHash of localDhtOps.keys()) {
       const receipts = getValidationReceipts(dhtOpHash)(state);
@@ -66,7 +68,7 @@ export class SimpleBloomMod {
       const promises = [
         ...this.p2pCell.neighbors,
         ...this.p2pCell.farKnownPeers,
-      ].map(peer => this.p2pCell.outgoing_gossip(peer, gossips, warrant));
+      ].map((peer) => this.p2pCell.outgoing_gossip(peer, gossips, warrant));
 
       await Promise.all(promises);
     } else {

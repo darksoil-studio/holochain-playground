@@ -1,23 +1,21 @@
-import { EntryHashB64 } from '@holochain-open-dev/core-types';
 import {
   NewEntryAction,
   DhtOp,
-  EntryHash,
   HoloHash,
   Action,
   encodeHashToBase64,
   decodeHashFromBase64,
+  EntryHashB64,
 } from '@holochain/client';
 import {
   getAppEntryType,
-  CellMap,
   HashType,
   retype,
-  HoloHashMap,
   SimulatedDna,
   getHashType,
 } from '@holochain-playground/simulator';
 import uniq from 'lodash-es/uniq';
+import { HoloHashMap, CellMap } from '@holochain-open-dev/utils';
 
 import { shortenStrRec } from '../utils/hash';
 import { DhtSummary, isEntryDeleted, summarizeDht } from './dht';
@@ -34,8 +32,8 @@ export function allEntries(
   let nodes = [];
   const edges = [];
 
-  const depsNotHeld = new HoloHashMap<boolean>();
-  const nodesDrawn = new HoloHashMap<boolean>();
+  const depsNotHeld = new HoloHashMap<HoloHash, boolean>();
+  const nodesDrawn = new HoloHashMap<HoloHash, boolean>();
 
   // Add entry nodes
 

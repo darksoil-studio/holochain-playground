@@ -37,9 +37,9 @@ import {
 } from '../state';
 
 import { getActionsForEntry } from './get';
-import { HoloHashMap } from '../../../processors/holo-hash-map';
 import { getEntry } from '../utils';
 import { hash, HashType } from '../../../processors/hash';
+import { HoloHashMap } from '@holochain-open-dev/utils';
 
 export const putValidationLimboValue =
   (dhtOpHash: DhtOpHash, validationLimboValue: ValidationLimboValue) =>
@@ -174,7 +174,7 @@ function is_action_alive(state: CellState, actionHash: ActionHash): boolean {
   const dhtActions = state.metadata.system_meta.get(actionHash);
   if (dhtActions) {
     const isActionDeleted = !!dhtActions.find(
-      metaVal =>
+      (metaVal) =>
         (
           metaVal as {
             Delete: ActionHash;
@@ -190,7 +190,7 @@ const update_entry_dht_status =
   (entryHash: EntryHash) => (state: CellState) => {
     const actions = getActionsForEntry(state, entryHash);
 
-    const entryIsAlive = actions.some(action =>
+    const entryIsAlive = actions.some((action) =>
       is_action_alive(state, action.hashed.hash)
     );
 
@@ -223,7 +223,7 @@ export const putSystemMetadata =
       state.metadata.system_meta.put(basis, []);
     }
 
-    if (!state.metadata.system_meta.get(basis).find(v => isEqual(v, value))) {
+    if (!state.metadata.system_meta.get(basis).find((v) => isEqual(v, value))) {
       state.metadata.system_meta.get(basis).push(value);
     }
   };

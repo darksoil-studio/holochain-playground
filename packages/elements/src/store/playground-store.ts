@@ -1,4 +1,4 @@
-import { CellMap, HashType, hash, Cell } from '@holochain-playground/simulator';
+import { HashType, hash, Cell } from '@holochain-playground/simulator';
 import {
   AgentPubKey,
   AnyDhtHash,
@@ -16,6 +16,7 @@ import {
 } from '@holochain/client';
 import isEqual from 'lodash-es/isEqual';
 import { derived, get, Readable, writable, Writable } from 'svelte/store';
+import { CellMap } from '@holochain-open-dev/utils';
 
 import { PlaygroundMode } from './mode';
 import { SimulatedCellStore } from './simulated-playground-store';
@@ -26,9 +27,9 @@ export abstract class CellStore<T extends PlaygroundMode> {
   abstract sourceChain: Readable<Record[]>;
 
   abstract peers: Readable<AgentPubKey[]>;
-  
+
   abstract dhtShard: Readable<Array<DhtOp>>;
-  
+
   abstract cellId: CellId;
 
   constructor(public conductorStore: ConductorStore<T>) {}
@@ -88,13 +89,13 @@ export abstract class PlaygroundStore<T extends PlaygroundMode> {
   activeDna: Writable<DnaHash | undefined> = writable(undefined);
 
   activeAgentPubKey: Writable<AgentPubKey | undefined> = writable(undefined);
-  
+
   activeDhtHash: Writable<AnyDhtHash | undefined> = writable(undefined);
 
   abstract conductors: Readable<Array<ConductorStore<T>>>;
 
   constructor() {
-    let currentvalue ;
+    let currentvalue;
     this.activeDna.subscribe((v: DnaHash) => {
       if (!isEqual(v, currentvalue)) {
         currentvalue = v;
@@ -153,7 +154,8 @@ export abstract class PlaygroundStore<T extends PlaygroundMode> {
     const contentMap = unnest(
       derived(
         [this.cellsForActiveDna(), this.activeDhtHash],
-        ([cellMap, activeHash]) => mapDerive(cellMap, (c) => (c as any).get(activeHash))
+        ([cellMap, activeHash]) =>
+          mapDerive(cellMap, (c) => (c as any).get(activeHash))
       ),
       (i) => i
     );
@@ -187,7 +189,10 @@ export abstract class PlaygroundStore<T extends PlaygroundMode> {
   dhtForActiveDna(): Readable<CellMap<DhtOp[]>> {
     return unnest(
       derived(this.cellsForActiveDna(), (cellMap) =>
-        mapDerive<CellStore<T>, DhtOp[]>(cellMap, (cellStore) => cellStore.dhtShard)
+        mapDerive<CellStore<T>, DhtOp[]>(
+          cellMap,
+          (cellStore) => cellStore.dhtShard
+        )
       ),
       (i) => i
     );

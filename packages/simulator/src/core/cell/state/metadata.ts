@@ -1,19 +1,19 @@
-import { EntryDhtStatus, Dictionary } from '@holochain-open-dev/core-types';
+import { EntryDhtStatus } from '@holochain-open-dev/core-types';
+import { HoloHashMap } from '@holochain-open-dev/utils';
 import {
   NewEntryAction,
   Timestamp,
   EntryHash,
   ActionHash,
 } from '@holochain/client';
-import { HoloHashMap } from '../../../processors/holo-hash-map';
 
 // From https://github.com/holochain/holochain/blob/develop/crates/holochain/src/core/state/metadata.rs
 
 export interface Metadata {
   // Stores an array of actions indexed by entry hash
-  system_meta: HoloHashMap<SysMetaVal[]>;
+  system_meta: HoloHashMap<EntryHash, SysMetaVal[]>;
   link_meta: Array<{ key: LinkMetaKey; value: LinkMetaVal }>;
-  misc_meta: HoloHashMap<MiscMetaVal>;
+  misc_meta: HoloHashMap<ActionHash, MiscMetaVal>;
 }
 
 export type SysMetaVal =

@@ -1,4 +1,4 @@
-import { Dictionary } from '@holochain-open-dev/core-types';
+import { Dictionary } from '../types';
 import { Task } from './task';
 
 export type Middleware<P> = (payload: P) => Promise<void>;
@@ -80,7 +80,7 @@ export class MiddlewareExecutor<P> {
     return {
       unsubscribe: () => {
         const index = middlewareList[priorityLevel].findIndex(
-          c => c === callback
+          (c) => c === callback
         );
         middlewareList[priorityLevel].splice(index, 1);
       },

@@ -1,6 +1,6 @@
 import {
   AgentPubKey,
-  AppEntryType,
+  AppEntryDef,
   Create,
   Entry,
   EntryHash,
@@ -12,7 +12,6 @@ import {
   Timestamp,
   Update,
 } from '@holochain/client';
-
 
 import { EntryDef, SimulatedDna } from '../../../dnas/simulated-dna';
 import { areEqual } from '../../../processors/hash';
@@ -96,17 +95,17 @@ export function check_entry_type(entry_type: EntryType, entry: Entry): void {
   if (entry_type === 'Agent' && entry.entry_type === 'Agent') return;
   if (entry_type === 'CapClaim' && entry.entry_type === 'CapClaim') return;
   if (entry_type === 'CapGrant' && entry.entry_type === 'CapGrant') return;
-  if ((entry_type as { App: AppEntryType }).App && entry.entry_type === 'App')
+  if ((entry_type as { App: AppEntryDef }).App && entry.entry_type === 'App')
     return;
   throw new Error(`Entry types don't match`);
 }
 
 export function check_app_entry_type(
-  entry_type: AppEntryType,
+  entry_type: AppEntryDef,
   simulated_dna: SimulatedDna
 ): EntryDef {
-  const zome_index = entry_type.zome_id;
-  const entry_index = entry_type.id;
+  const zome_index = entry_type.zome_index;
+  const entry_index = entry_type.entry_index;
 
   const zome = simulated_dna.zomes[zome_index];
   if (!zome)
@@ -126,7 +125,7 @@ export function check_app_entry_type(
 }
 
 export function check_not_private(entry_def: EntryDef): void {
-  if (entry_def.visibility === 'Private')
+  if ('Private' in entry_def.visibility)
     throw new Error(`Trying to validate as public a private entry type`);
 }
 

@@ -1,5 +1,5 @@
 import {
-  AppEntryType,
+  AppEntryDef,
   Create,
   Entry,
   Action,
@@ -65,7 +65,7 @@ export function sys_validation_task(): SysValidationWorkflow {
   return {
     type: WorkflowType.SYS_VALIDATION,
     details: undefined,
-    task: worskpace => sys_validation(worskpace),
+    task: (worskpace) => sys_validation(worskpace),
   };
 }
 
@@ -101,14 +101,15 @@ export async function sys_validate_record(
     record.entry &&
     (
       entry_type as {
-        App: AppEntryType;
+        App: AppEntryDef;
       }
     ).App &&
-    (
-      entry_type as {
-        App: AppEntryType;
-      }
-    ).App.visibility === 'Public'
+    'Public' in
+      (
+        entry_type as {
+          App: AppEntryDef;
+        }
+      ).App.visibility
   ) {
     maybeDepsMissing = await store_entry(
       record.signed_action.hashed.content as NewEntryAction,
@@ -171,7 +172,7 @@ export async function store_entry(
   network: P2pCell
 ): Promise<void | DepsMissing> {
   check_entry_type(action.entry_type, entry);
-  const appEntryType = (action.entry_type as { App: AppEntryType }).App;
+  const appEntryType = (action.entry_type as { App: AppEntryDef }).App;
   if (appEntryType) {
     const entry_def = check_app_entry_type(appEntryType, workspace.dna);
     check_not_private(entry_def);

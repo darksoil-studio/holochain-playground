@@ -1,13 +1,10 @@
 import {
-  Dictionary,
-  DhtOpHashB64,
   EntryDhtStatus,
   EntryDetails,
   ValidationReceipt,
-  EntryHashB64,
-  ActionHashB64,
   DhtOpHash,
 } from '@holochain-open-dev/core-types';
+import { HoloHashMap } from '@holochain-open-dev/utils';
 import {
   NewEntryAction,
   SignedActionHashed,
@@ -18,7 +15,6 @@ import {
   DeleteLink,
   ActionType,
   Create,
-  DhtOp,
   EntryHash,
   ActionHash,
   getDhtOpType,
@@ -27,7 +23,6 @@ import {
 
 import { uniqWith } from 'lodash-es';
 import { areEqual, hash, HashType } from '../../../processors/hash';
-import { HoloHashMap } from '../../../processors/holo-hash-map';
 
 import { GetLinksResponse, Link } from '../cascade/types';
 import {
@@ -36,15 +31,15 @@ import {
   ValidationLimboValue,
   IntegrationLimboValue,
   IntegratedDhtOpsValue,
-  ValidationStatus,
 } from '../state';
 import { getSysMetaValActionHash, LinkMetaVal } from '../state/metadata';
 
 export function getValidationLimboDhtOps(
   state: CellState,
   statuses: ValidationLimboStatus[]
-): HoloHashMap<ValidationLimboValue> {
-  const pendingDhtOps: HoloHashMap<ValidationLimboValue> = new HoloHashMap();
+): HoloHashMap<DhtOpHash, ValidationLimboValue> {
+  const pendingDhtOps: HoloHashMap<DhtOpHash, ValidationLimboValue> =
+    new HoloHashMap();
 
   for (const [dhtOpHash, limboValue] of state.validationLimbo.entries()) {
     if (statuses.includes(limboValue.status)) {
@@ -65,7 +60,7 @@ export const getValidationReceipts =
 
 export function pullAllIntegrationLimboDhtOps(
   state: CellState
-): HoloHashMap<IntegrationLimboValue> {
+): HoloHashMap<DhtOpHash, IntegrationLimboValue> {
   const dhtOps = state.integrationLimbo;
 
   state.integrationLimbo = new HoloHashMap();
@@ -81,14 +76,14 @@ export function getActionsForEntry(
   if (!entryMetadata) return [];
 
   return entryMetadata
-    .map(h => {
+    .map((h) => {
       const hash = getSysMetaValActionHash(h);
       if (hash) {
         return state.CAS.get(hash);
       }
       return undefined;
     })
-    .filter(action => !!action);
+    .filter((action) => !!action);
 }
 
 export function getEntryDhtStatus(
@@ -114,10 +109,18 @@ export function getEntryDetails(
   const allActions = getActionsForEntry(state, entry_hash);
   const dhtStatus = getEntryDhtStatus(state, entry_hash);
 
-  const live_actions: HoloHashMap<SignedActionHashed<Create>> =
-    new HoloHashMap();
-  const updates: HoloHashMap<SignedActionHashed<Update>> = new HoloHashMap();
-  const deletes: HoloHashMap<SignedActionHashed<Delete>> = new HoloHashMap();
+  const live_actions: HoloHashMap<
+    ActionHash,
+    SignedActionHashed<Create>
+  > = new HoloHashMap();
+  const updates: HoloHashMap<
+    ActionHash,
+    SignedActionHashed<Update>
+  > = new HoloHashMap();
+  const deletes: HoloHashMap<
+    ActionHash,
+    SignedActionHashed<Delete>
+  > = new HoloHashMap();
 
   for (const action of allActions) {
     const actionContent = (action as SignedActionHashed).hashed.content;
@@ -167,11 +170,11 @@ export function getActionModifiers(
     };
 
   const updates = allModifiers
-    .filter(m => (m as { Update: ActionHash }).Update)
-    .map(m => state.CAS.get((m as { Update: ActionHash }).Update));
+    .filter((m) => (m as { Update: ActionHash }).Update)
+    .map((m) => state.CAS.get((m as { Update: ActionHash }).Update));
   const deletes = allModifiers
-    .filter(m => (m as { Delete: ActionHash }).Delete)
-    .map(m => state.CAS.get((m as { Delete: ActionHash }).Delete));
+    .filter((m) => (m as { Delete: ActionHash }).Delete)
+    .map((m) => state.CAS.get((m as { Delete: ActionHash }).Delete));
 
   return {
     updates,
@@ -182,11 +185,13 @@ export function getActionModifiers(
 export function getAllHeldEntries(state: CellState): EntryHash[] {
   const newEntryActions = state.integratedDHTOps
     .values()
-    .filter(dhtOpValue => getDhtOpType(dhtOpValue.op) === DhtOpType.StoreEntry)
-    .map(dhtOpValue => getDhtOpAction(dhtOpValue.op));
+    .filter(
+      (dhtOpValue) => getDhtOpType(dhtOpValue.op) === DhtOpType.StoreEntry
+    )
+    .map((dhtOpValue) => getDhtOpAction(dhtOpValue.op));
 
   const allEntryHashes = newEntryActions.map(
-    h => (h as NewEntryAction).entry_hash
+    (h) => (h as NewEntryAction).entry_hash
   );
 
   return uniqWith(allEntryHashes, areEqual);
@@ -196,11 +201,11 @@ export function getAllHeldActions(state: CellState): ActionHash[] {
   const actions = state.integratedDHTOps
     .values()
     .filter(
-      dhtOpValue => getDhtOpType(dhtOpValue.op) === DhtOpType.StoreRecord
+      (dhtOpValue) => getDhtOpType(dhtOpValue.op) === DhtOpType.StoreRecord
     )
-    .map(dhtOpValue => getDhtOpAction(dhtOpValue.op));
+    .map((dhtOpValue) => getDhtOpAction(dhtOpValue.op));
 
-  const allActionHashes = actions.map(h => hash(h, HashType.ACTION));
+  const allActionHashes = actions.map((h) => hash(h, HashType.ACTION));
 
   return uniqWith(allActionHashes, areEqual);
 }
@@ -208,13 +213,13 @@ export function getAllHeldActions(state: CellState): ActionHash[] {
 export function getAllAuthoredEntries(state: CellState): EntryHash[] {
   const allActions = state.authoredDHTOps
     .values()
-    .map(dhtOpValue => getDhtOpAction(dhtOpValue.op));
+    .map((dhtOpValue) => getDhtOpAction(dhtOpValue.op));
 
   const newEntryActions: NewEntryAction[] = allActions.filter(
-    h => (h as NewEntryAction).entry_hash
+    (h) => (h as NewEntryAction).entry_hash
   ) as NewEntryAction[];
 
-  return newEntryActions.map(h => h.entry_hash);
+  return newEntryActions.map((h) => h.entry_hash);
 }
 
 export function isHoldingEntry(
@@ -243,10 +248,12 @@ export interface EntryDHTInfo {
   links: LinkMetaVal[];
 }
 
-export function getDhtShard(state: CellState): HoloHashMap<EntryDHTInfo> {
+export function getDhtShard(
+  state: CellState
+): HoloHashMap<EntryHash, EntryDHTInfo> {
   const heldEntries = getAllHeldEntries(state);
 
-  const dhtShard: HoloHashMap<EntryDHTInfo> = new HoloHashMap();
+  const dhtShard: HoloHashMap<EntryHash, EntryDHTInfo> = new HoloHashMap();
 
   for (const entryHash of heldEntries) {
     dhtShard.put(entryHash, {
@@ -318,7 +325,8 @@ export function getLiveLinks(
   getLinksResponses: Array<GetLinksResponse>
 ): Array<Link> {
   // Map and flatten adds
-  const linkAdds: HoloHashMap<CreateLink | undefined> = new HoloHashMap();
+  const linkAdds: HoloHashMap<ActionHash, CreateLink | undefined> =
+    new HoloHashMap();
   for (const responses of getLinksResponses) {
     for (const linkAdd of responses.link_adds) {
       linkAdds.put(linkAdd.hashed.hash, linkAdd.hashed.content);
@@ -351,7 +359,7 @@ export function computeDhtStatus(allActionsForEntry: SignedActionHashed[]): {
   entry_dht_status: EntryDhtStatus;
   rejected_actions: SignedActionHashed[];
 } {
-  const aliveActions: HoloHashMap<SignedActionHashed | undefined> =
+  const aliveActions: HoloHashMap<ActionHash, SignedActionHashed | undefined> =
     new HoloHashMap();
   const rejected_actions: SignedActionHashed[] = [];
 
@@ -376,7 +384,7 @@ export function computeDhtStatus(allActionsForEntry: SignedActionHashed[]): {
 
   const isSomeActionAlive = aliveActions
     .values()
-    .some(action => action !== undefined);
+    .some((action) => action !== undefined);
 
   // TODO: add more cases
   const entry_dht_status = isSomeActionAlive
@@ -402,8 +410,9 @@ export function hasDhtOpBeenProcessed(
 
 export function getIntegratedDhtOpsWithoutReceipt(
   state: CellState
-): HoloHashMap<IntegratedDhtOpsValue> {
-  const needReceipt: HoloHashMap<IntegratedDhtOpsValue> = new HoloHashMap();
+): HoloHashMap<DhtOpHash, IntegratedDhtOpsValue> {
+  const needReceipt: HoloHashMap<DhtOpHash, IntegratedDhtOpsValue> =
+    new HoloHashMap();
 
   for (const [dhtOpHash, integratedValue] of state.integratedDHTOps.entries()) {
     if (integratedValue.send_receipt) {

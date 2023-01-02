@@ -13,7 +13,7 @@
     "gh-pages": "npm run build && gh-pages -d ./dist -b gh-pages"
   },
   "dependencies": {
-    "@holochain-open-dev/core-types": "^0.6.2",
+    "@holochain-open-dev/core-types": "^0.6.3",
     "@holochain-playground/elements": "0.0.1",
     "@holochain-playground/golden-layout": "0.0.1",
     "@holochain-playground/simulator": "0.0.1",
@@ -25,12 +25,13 @@
     "lit": "^2.0.2",
     "lodash-es": "^4.17.21",
     "socket.io-client": "^4.4.0",
-    "svelte": "^3.44.2"
+    "svelte": "^3.44.2",
+    "webpack": "5.75.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.15.8",
     "@custom-elements-manifest/analyzer": "^0.4.17",
-    "@open-wc/building-rollup": "^1.10.0",
+    "@open-wc/building-rollup": "^2.2.1",
     "@open-wc/eslint-config": "^4.3.0",
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-commonjs": "^21.0.1",
@@ -59,14 +60,21 @@
   },
   "eslintConfig": {
     "parser": "@typescript-eslint/parser",
-    "extends": ["@open-wc", "prettier"],
-    "plugins": ["@typescript-eslint"],
+    "extends": [
+      "@open-wc",
+      "prettier"
+    ],
+    "plugins": [
+      "@typescript-eslint"
+    ],
     "rules": {
       "no-use-before-define": "off",
       "no-await-in-loop": "off",
       "camelcase": "off",
       "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": ["error"],
+      "@typescript-eslint/no-unused-vars": [
+        "error"
+      ],
       "import/no-unresolved": "off",
       "import/extensions": "off"
     }
@@ -81,7 +89,10 @@
     }
   },
   "lint-staged": {
-    "*.ts": ["eslint --fix", "prettier --write"]
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   },
   "customElements": "custom-elements.json"
 }

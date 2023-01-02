@@ -6,11 +6,11 @@ import {
   decodeHashFromBase64,
   encodeHashToBase64,
 } from '@holochain/client';
-import { Dictionary } from '@holochain-open-dev/core-types';
+import cloneDeepWith from 'lodash-es/cloneDeepWith';
+import { CellMap, HoloHashMap } from '@holochain-open-dev/utils';
 
 import { Cell, getCellId } from '../core/cell';
 import { areEqual, hash, HashType, isHash } from '../processors/hash';
-import { CellMap, HoloHashMap } from '../processors/holo-hash-map';
 import { Network, NetworkState } from './network/network';
 
 import {
@@ -22,13 +22,13 @@ import {
 import { CellState } from './cell/state';
 import { BootstrapService } from '../bootstrap/bootstrap-service';
 import { BadAgent, BadAgentConfig } from './bad-agent';
-import cloneDeepWith from 'lodash-es/cloneDeepWith';
+import { Dictionary } from '../types';
 
 export interface ConductorState {
   // DnaHash / AgentPubKey
   cellsState: CellMap<CellState>;
   networkState: NetworkState;
-  registeredDnas: HoloHashMap<SimulatedDna>;
+  registeredDnas: HoloHashMap<DnaHash, SimulatedDna>;
   installedHapps: Dictionary<InstalledHapps>;
   name: string;
   badAgent: BadAgent | undefined;
@@ -42,7 +42,7 @@ export type SignalCb = (type: ConductorSignalType) => void;
 
 export class Conductor {
   readonly cells: CellMap<Cell>;
-  registeredDnas!: HoloHashMap<SimulatedDna>;
+  registeredDnas!: HoloHashMap<DnaHash, SimulatedDna>;
   installedHapps!: Dictionary<InstalledHapps>;
 
   signalCbs: Array<SignalCb> = [];

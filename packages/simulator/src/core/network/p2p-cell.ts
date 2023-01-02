@@ -1,3 +1,5 @@
+import { DhtOpHash } from '@holochain-open-dev/core-types';
+import { HoloHashMap } from '@holochain-open-dev/utils';
 import {
   AgentPubKey,
   AnyDhtHash,
@@ -10,7 +12,6 @@ import { isEqual } from 'lodash-es';
 
 import { MiddlewareExecutor } from '../../executor/middleware-executor';
 import { areEqual, location } from '../../processors/hash';
-import { HoloHashMap } from '../../processors/holo-hash-map';
 import { GetLinksOptions, GetOptions } from '../../types';
 import { Cell, getSourceChainRecords } from '../cell';
 import {
@@ -53,7 +54,8 @@ export class P2pCell {
     NetworkRequestInfo<any, any>
   >();
 
-  neighborConnections: HoloHashMap<Connection | undefined> = new HoloHashMap();
+  neighborConnections: HoloHashMap<AgentPubKey, Connection | undefined> =
+    new HoloHashMap();
 
   constructor(
     state: P2pCellState,
@@ -107,7 +109,10 @@ export class P2pCell {
 
   async leave(): Promise<void> {}
 
-  async publish(dht_hash: AnyDhtHash, ops: HoloHashMap<DhtOp>): Promise<void> {
+  async publish(
+    dht_hash: AnyDhtHash,
+    ops: HoloHashMap<DhtOpHash, DhtOp>
+  ): Promise<void> {
     await this.network.kitsune.rpc_multi(
       this.cellId[0],
       this.cellId[1],
@@ -143,7 +148,7 @@ export class P2pCell {
         )
     );
 
-    return gets.find(get => !!get);
+    return gets.find((get) => !!get);
   }
 
   async get_links(
@@ -207,7 +212,9 @@ export class P2pCell {
     try {
       await this.cell.handle_check_agent(peerFirst3Records);
     } catch (e) {
-      if (!this.cell._state.badAgents.find(a => areEqual(a, peer.agentPubKey)))
+      if (
+        !this.cell._state.badAgents.find((a) => areEqual(a, peer.agentPubKey))
+      )
         this.cell._state.badAgents.push(peer.agentPubKey);
 
       throw new Error('Invalid agent');
@@ -274,23 +281,23 @@ export class P2pCell {
 
     this.farKnownPeers = this.network.bootstrapService
       .getFarKnownPeers(dnaHash, agentPubKey, badAgents)
-      .map(p => p.agentPubKey);
+      .map((p) => p.agentPubKey);
 
     const neighbors = this.network.bootstrapService
       .getNeighborhood(dnaHash, agentPubKey, this.neighborNumber, badAgents)
-      .filter(cell => isEqual(cell.agentPubKey, agentPubKey));
+      .filter((cell) => isEqual(cell.agentPubKey, agentPubKey));
 
     const newNeighbors = neighbors.filter(
-      cell => !this.neighbors.find(a => areEqual(a, cell.agentPubKey))
+      (cell) => !this.neighbors.find((a) => areEqual(a, cell.agentPubKey))
     );
 
     const neighborsToForget = this.neighbors.filter(
-      n => !neighbors.find(c => areEqual(c.agentPubKey, n))
+      (n) => !neighbors.find((c) => areEqual(c.agentPubKey, n))
     );
 
-    neighborsToForget.forEach(n => this.closeNeighborConnection(n));
+    neighborsToForget.forEach((n) => this.closeNeighborConnection(n));
 
-    const promises = newNeighbors.map(async neighbor => {
+    const promises = newNeighbors.map(async (neighbor) => {
       try {
         await this.openNeighborConnection(neighbor);
       } catch (e) {
@@ -314,7 +321,7 @@ export class P2pCell {
       this.badAgents
     );
 
-    const index = neighbors.findIndex(cell =>
+    const index = neighbors.findIndex((cell) =>
       areEqual(cell.agentPubKey, this.cellId[1])
     );
 

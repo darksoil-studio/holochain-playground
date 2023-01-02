@@ -1,6 +1,6 @@
+import { CellMap } from '@holochain-open-dev/utils';
 import {
   Cell,
-  CellMap,
   ErrorMiddleware,
   Middleware,
   MiddlewareSubscription,

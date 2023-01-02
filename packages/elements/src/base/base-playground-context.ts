@@ -4,11 +4,11 @@ import {
   CircularProgress,
 } from '@scoped-elements/material-web';
 
-import { LitElement, html, css, PropertyValues } from 'lit';
+import { LitElement, html, css } from 'lit';
 import { property, query } from 'lit/decorators.js';
 
 import { ScopedElementsMixin } from '@open-wc/scoped-elements';
-import { contextProvider, ContextProvider } from '@lit-labs/context';
+import { provide } from '@lit-labs/context';
 
 import { playgroundContext } from './context';
 import { PlaygroundStore } from '../store/playground-store';
@@ -28,7 +28,7 @@ export abstract class BasePlaygroundContext<
   /** Context variables */
   abstract buildStore(): Promise<S>;
 
-  @contextProvider({ context: playgroundContext })
+  @provide({ context: playgroundContext })
   store!: PlaygroundStore<any>;
 
   async firstUpdated() {

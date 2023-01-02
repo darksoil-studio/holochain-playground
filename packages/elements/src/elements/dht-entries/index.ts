@@ -21,7 +21,7 @@ import {
   DhtOp,
   encodeHashToBase64,
 } from '@holochain/client';
-import { CellMap } from '@holochain-playground/simulator';
+import { CellMap } from '@holochain-open-dev/utils';
 import { CytoscapeCoseBilkent } from '@scoped-elements/cytoscape';
 
 import { allEntries } from './processors';
@@ -31,11 +31,7 @@ import { HelpButton } from '../helpers/help-button';
 import { cytoscapeConfig } from './graph';
 import { PlaygroundElement } from '../../base/playground-element';
 import { CopiableHash } from '@holochain-open-dev/elements';
-import { cytoscapeOptions } from '../dht-cells/graph';
-import {
-  SimulatedCellStore,
-  SimulatedPlaygroundStore,
-} from '../../store/simulated-playground-store';
+import { SimulatedCellStore } from '../../store/simulated-playground-store';
 
 /**
  * @element dht-entries
