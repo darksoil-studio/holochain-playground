@@ -22,8 +22,7 @@
     "body-parser": "1.11.0",
     "express": "3.4.4",
     "lit": "^2.0.2",
-    "lit-svelte-stores": "^0.1.4",
-    "webpack": "5.75.0"
+    "lit-svelte-stores": "^0.1.4"
   },
   "devDependencies": {
     "@babel/core": "^7.13.8",
