@@ -25,8 +25,7 @@
     "lit": "^2.0.2",
     "lodash-es": "^4.17.21",
     "socket.io-client": "^4.4.0",
-    "svelte": "^3.44.2",
-    "webpack": "5.75.0"
+    "svelte": "^3.44.2"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.15.8",
@@ -60,21 +59,14 @@
   },
   "eslintConfig": {
     "parser": "@typescript-eslint/parser",
-    "extends": [
-      "@open-wc",
-      "prettier"
-    ],
-    "plugins": [
-      "@typescript-eslint"
-    ],
+    "extends": ["@open-wc", "prettier"],
+    "plugins": ["@typescript-eslint"],
     "rules": {
       "no-use-before-define": "off",
       "no-await-in-loop": "off",
       "camelcase": "off",
       "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": [
-        "error"
-      ],
+      "@typescript-eslint/no-unused-vars": ["error"],
       "import/no-unresolved": "off",
       "import/extensions": "off"
     }
@@ -89,10 +81,7 @@
     }
   },
   "lint-staged": {
-    "*.ts": [
-      "eslint --fix",
-      "prettier --write"
-    ]
+    "*.ts": ["eslint --fix", "prettier --write"]
   },
   "customElements": "custom-elements.json"
 }
