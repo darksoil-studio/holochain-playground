@@ -18,7 +18,6 @@ export class EntryContents extends PlaygroundElement {
   _activeContent = new StoreSubscriber(this, () => this.store?.activeContent());
 
   render() {
-    console.log(this._activeContent.value);
     return html`
       <mwc-card style="width: auto; min-height: 200px;" class="fill">
         <div class="column fill" style="padding: 16px;">
