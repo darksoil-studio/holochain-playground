@@ -1,14 +1,19 @@
 {
   "name": "@holochain-playground/dev",
   "private": true,
-  "workspaces": ["packages/*", "packages/cli/*"],
+  "workspaces": [
+    "packages/simulator",
+    "packages/elements",
+    "packages/golden-layout",
+    "packages/cli/client",
+    "packages/cli/server"
+  ],
   "scripts": {
     "start": "concurrently -k \"npm run build:watch -w @holochain-playground/simulator\" \"npm start -w @holochain-playground/elements\"",
     "start:golden-layout": "concurrently -k \"npm run build:watch -w @holochain-playground/simulator\" \"npm run build:watch -w @holochain-playground/elements\" \"npm start -w @holochain-playground/golden-layout\"",
     "start:cli": "npm run build:happ && npm run build && cross-env ADMIN_PORT=$(port) concurrently -k \"npm run start:happ\" \"npm run dev:cli\"",
     "dev:cli": "concurrently -k \"npm run build:watch -w @holochain-playground/cli-client\" \"npm start -w @holochain-playground/cli ws://localhost:${ADMIN_PORT}\"",
     "test": "npm t -w @holochain-playground/simulator",
-    "build": "npm run build -w @holochain-playground/simulator -w @holochain-playground/elements -w @holochain-playground/golden-layout -w @holochain-playground/cli-client -w @holochain-playground/cli",
     "playground": "holochain-playground",
     "start:happ": " echo \"pass\" | RUST_LOG=warn hc s --piped -f=$ADMIN_PORT generate tests/happ/workdir/forum.happ --run=8888 network  mdns",
     "build:happ": "cd tests/happ && npm run build:happ"

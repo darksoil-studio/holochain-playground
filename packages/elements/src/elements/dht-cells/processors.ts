@@ -96,7 +96,7 @@ export function allPeersEdges(
   for (const [cellId, neighbors] of cellsNeighbors.entries()) {
     const cellAgentPubKey = cellId[1];
 
-    visited.put(cellAgentPubKey, new HoloHashMap());
+    visited.set(cellAgentPubKey, new HoloHashMap());
 
     for (const cellNeighbor of neighbors) {
       if (
@@ -117,11 +117,11 @@ export function allPeersEdges(
         });
 
         if (!cells.has([cellId[0], cellNeighbor])) {
-          neighborsNotConnected.put([cellId[0], cellNeighbor], true);
+          neighborsNotConnected.set([cellId[0], cellNeighbor], true);
         }
       }
 
-      visited.get(cellAgentPubKey).put(cellNeighbor, true);
+      visited.get(cellAgentPubKey).set(cellNeighbor, true);
     }
   }
 

@@ -21,24 +21,26 @@ export const publish_dht_ops = async (
   for (const [dhtOpHash, dhtOp] of dhtOps.entries()) {
     const basis = getDhtOpBasis(dhtOp);
 
-    if (!dhtOpsByBasis.has(basis)) dhtOpsByBasis.put(basis, new HoloHashMap());
+    if (!dhtOpsByBasis.has(basis)) dhtOpsByBasis.set(basis, new HoloHashMap());
 
-    dhtOpsByBasis.get(basis).put(dhtOpHash, dhtOp);
+    dhtOpsByBasis.get(basis).set(dhtOpHash, dhtOp);
   }
 
-  const promises = dhtOpsByBasis.entries().map(async ([basis, dhtOps]) => {
-    try {
-      // Publish the operations
-      await workspace.p2p.publish(basis, dhtOps);
+  const promises = Array.from(dhtOpsByBasis.entries()).map(
+    async ([basis, dhtOps]) => {
+      try {
+        // Publish the operations
+        await workspace.p2p.publish(basis, dhtOps);
 
-      for (const dhtOpHash of dhtOps.keys()) {
-        workspace.state.authoredDHTOps.get(dhtOpHash).last_publish_time =
-          Date.now() * 1000;
+        for (const dhtOpHash of dhtOps.keys()) {
+          workspace.state.authoredDHTOps.get(dhtOpHash).last_publish_time =
+            Date.now() * 1000;
+        }
+      } catch (e) {
+        workCompleted = false;
       }
-    } catch (e) {
-      workCompleted = false;
     }
-  });
+  );
 
   await Promise.all(promises);
 

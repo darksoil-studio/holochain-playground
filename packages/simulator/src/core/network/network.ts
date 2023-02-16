@@ -25,7 +25,7 @@ export class Network {
   ) {
     this.p2pCells = new CellMap();
     for (const [cellId, p2pState] of state.p2pCellsState.entries()) {
-      this.p2pCells.put(
+      this.p2pCells.set(
         cellId,
         new P2pCell(p2pState, conductor.getCell(cellId) as Cell, this)
       );
@@ -38,7 +38,7 @@ export class Network {
     const p2pCellsState: CellMap<P2pCellState> = new CellMap();
 
     for (const [cellId, p2pCell] of this.p2pCells.entries()) {
-      p2pCellsState.put(cellId, p2pCell.getState());
+      p2pCellsState.set(cellId, p2pCell.getState());
     }
 
     return {
@@ -64,7 +64,7 @@ export class Network {
 
     const p2pCell = new P2pCell(state, cell, this);
 
-    this.p2pCells.put(cellId, p2pCell);
+    this.p2pCells.set(cellId, p2pCell);
 
     return p2pCell;
   }

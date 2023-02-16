@@ -17,6 +17,9 @@ import {
   ActionHash,
   Record,
   GrantedFunctionsType,
+  RecordEntry,
+  AppEntryDef,
+  EntryType,
 } from '@holochain/client';
 import { areEqual } from '../../../processors/hash';
 
@@ -49,16 +52,37 @@ export function getActionAt(
 export function getNextActionSeq(cellState: CellState): number {
   return cellState.sourceChain.length;
 }
+export function isPublic(entry_type: EntryType): boolean {
+  return (
+    entry_type === 'Agent' ||
+    (typeof entry_type === 'object' &&
+      'App' in (entry_type as any) &&
+      'Public' in ((entry_type as any).App as AppEntryDef).visibility)
+  );
+}
 
 export function getRecord(state: CellState, actionHash: ActionHash): Record {
   const signed_action: SignedActionHashed = state.CAS.get(actionHash);
 
-  let entry;
+  let entry: RecordEntry;
   if (
     signed_action.hashed.content.type == ActionType.Create ||
     signed_action.hashed.content.type == ActionType.Update
   ) {
-    entry = state.CAS.get(signed_action.hashed.content.entry_hash);
+    const entry_type = signed_action.hashed.content.entry_type;
+    if (isPublic(entry_type)) {
+      entry = {
+        Present: state.CAS.get(signed_action.hashed.content.entry_hash),
+      };
+    } else {
+      entry = {
+        Hidden: null,
+      };
+    }
+  } else {
+    entry = {
+      NotApplicable: null,
+    };
   }
   return { signed_action, entry };
 }
@@ -76,7 +100,7 @@ export function getNonPublishedDhtOps(
   for (const dhtOpHash of state.authoredDHTOps.keys()) {
     const authoredValue = state.authoredDHTOps.get(dhtOpHash);
     if (authoredValue.last_publish_time === undefined) {
-      nonPublishedDhtOps.put(dhtOpHash, authoredValue.op);
+      nonPublishedDhtOps.set(dhtOpHash, authoredValue.op);
     }
   }
 
@@ -101,7 +125,7 @@ export function valid_cap_grant(
 
   for (const action of allActions) {
     if (isCapGrant(action)) {
-      aliveCapGrantsActions.put(
+      aliveCapGrantsActions.set(
         action.hashed.hash,
         action as SignedActionHashed<NewEntryAction>
       );
@@ -128,13 +152,13 @@ export function valid_cap_grant(
     }
   }
 
-  const aliveCapGrants: Array<ZomeCallCapGrant> = aliveCapGrantsActions
-    .values()
-    .map(
-      (actionHash) =>
-        (state.CAS.get(actionHash.hashed.content.entry_hash) as Entry)
-          .entry as ZomeCallCapGrant
-    );
+  const aliveCapGrants: Array<ZomeCallCapGrant> = Array.from(
+    aliveCapGrantsActions.values()
+  ).map(
+    (sah) =>
+      (state.CAS.get(sah.hashed.content.entry_hash) as Entry)
+        .entry as ZomeCallCapGrant
+  );
 
   return !!aliveCapGrants.find((capGrant) =>
     isCapGrantValid(capGrant, zome, fnName, provenance, secret)

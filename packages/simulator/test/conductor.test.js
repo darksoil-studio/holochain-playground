@@ -1,11 +1,9 @@
 import { createConductors, demoHapp } from '../dist';
-import { expect } from '@esm-bundle/chai';
+import { assert, describe, expect, it } from 'vitest';
 import { sleep } from './utils';
 
 describe('Conductor', () => {
   it('create conductors and call zome fn', async function () {
-    this.timeout(0);
-
     const conductors = await createConductors(10, [], demoHapp());
     await sleep(10000);
 
@@ -21,7 +19,9 @@ describe('Conductor', () => {
 
     expect(hash).to.be.ok;
     await sleep(5000);
-    expect(cell.getState().integratedDHTOps.keys().length).to.be.greaterThan(6);
+    expect(
+      Array.from(cell.getState().integratedDHTOps.keys()).length
+    ).to.be.greaterThan(6);
 
     let getresult = await conductors[0].callZomeFn({
       cellId: cell.cellId,

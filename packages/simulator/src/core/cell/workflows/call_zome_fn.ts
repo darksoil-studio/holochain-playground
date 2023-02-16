@@ -4,6 +4,7 @@ import {
   NewEntryAction,
   SignedActionHashed,
   Record,
+  encodeHashToBase64,
 } from '@holochain/client';
 import { cloneDeep } from 'lodash-es';
 
@@ -48,7 +49,7 @@ export const callZomeFn =
     const chain_head_start_len = workspace.state.sourceChain.length;
 
     const zomeIndex = workspace.dna.zomes.findIndex(
-      zome => zome.name === zomeName
+      (zome) => zome.name === zomeName
     );
     if (zomeIndex < 0)
       throw new Error(`There is no zome with the name ${zomeName} in this DNA`);
@@ -88,7 +89,9 @@ export const callZomeFn =
           .entry_hash;
 
         const record: Record = {
-          entry: entry_hash ? contextState.CAS.get(entry_hash) : undefined,
+          entry: entry_hash
+            ? { Present: contextState.CAS.get(entry_hash) }
+            : { NotApplicable: null },
           signed_action,
         };
 
@@ -153,7 +156,7 @@ export function call_zome_fn_workflow(
       payload,
       zome,
     },
-    task: worskpace =>
+    task: (worskpace) =>
       callZomeFn(
         zome,
         fnName,

@@ -9,6 +9,7 @@ import {
   Update,
   AnyDhtHash,
   Record,
+  EntryType,
 } from '@holochain/client';
 
 import { ValidationLimboStatus } from '../state';
@@ -33,7 +34,8 @@ import {
 } from '../sys_validate';
 import { GetStrategy } from '../../../types';
 import { Cascade } from '../cascade/cascade';
-import { extractEntry } from '../utils';
+import { extractEntry, getAppEntryType } from '../utils';
+import { isPublic } from '../source-chain/utils';
 
 // From https://github.com/holochain/holochain/blob/develop/crates/holochain/src/core/workflow/sys_validation_workflow.rs
 export const sys_validation = async (
@@ -97,20 +99,7 @@ export async function sys_validate_record(
   const entry_type = (record.signed_action.hashed.content as NewEntryAction)
     .entry_type;
 
-  if (
-    record.entry &&
-    (
-      entry_type as {
-        App: AppEntryDef;
-      }
-    ).App &&
-    'Public' in
-      (
-        entry_type as {
-          App: AppEntryDef;
-        }
-      ).App.visibility
-  ) {
+  if (isPublic(entry_type)) {
     maybeDepsMissing = await store_entry(
       record.signed_action.hashed.content as NewEntryAction,
       extractEntry(record),
@@ -172,7 +161,7 @@ export async function store_entry(
   network: P2pCell
 ): Promise<void | DepsMissing> {
   check_entry_type(action.entry_type, entry);
-  const appEntryType = (action.entry_type as { App: AppEntryDef }).App;
+  const appEntryType = getAppEntryType(action.entry_type);
   if (appEntryType) {
     const entry_def = check_app_entry_type(appEntryType, workspace.dna);
     check_not_private(entry_def);

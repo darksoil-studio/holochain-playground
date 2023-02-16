@@ -1,11 +1,9 @@
-import { createConductors, demoHapp } from '../dist';
-import { expect } from '@esm-bundle/chai';
+import { describe, expect, it } from 'vitest';
 import { sleep } from './utils';
+import { createConductors, demoHapp } from '../dist';
 
-describe('CRUD', () => {
+describe.only('CRUD', () => {
   it('create, update and delete an entry', async function () {
-    this.timeout(0);
-
     const conductors = await createConductors(3, [], demoHapp());
     await sleep(10000);
 

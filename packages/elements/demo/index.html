@@ -96,9 +96,11 @@
         store.conductors.subscribe((c) => {
           c &&
             c[0].cells.subscribe((cells) => {
-              if (cells.entries().length > 0) {
-                store.activeAgentPubKey.set(cells.entries()[0][0][1]);
-                store.activeDna.set(cells.entries()[0][0][0]);
+              if (Array.from(cells.entries()).length > 0) {
+                store.activeAgentPubKey.set(
+                  Array.from(cells.entries())[0][0][1]
+                );
+                store.activeDna.set(Array.from(cells.entries())[0][0][0]);
               }
             });
         });

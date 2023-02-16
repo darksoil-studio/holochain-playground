@@ -12,6 +12,7 @@ import {
   getDhtOpSignature,
   Record,
 } from '@holochain/client';
+import { hash, HashType } from '@holochain-open-dev/utils';
 
 import {
   ValidationLimboStatus,
@@ -49,7 +50,7 @@ import { buildValidationFunctionContext } from '../../hdk/context';
 import { BadAgentConfig } from '../../bad-agent';
 import { Cascade } from '../cascade/cascade';
 import { getEntry } from '../utils';
-import { areEqual, hash, HashType } from '../../../processors/hash';
+import { isEqual } from 'lodash-es';
 
 // From https://github.com/holochain/holochain/blob/develop/crates/holochain/src/core/workflow/app_validation_workflow.rs
 export const app_validation = async (
@@ -127,7 +128,7 @@ function shouldValidate(
   badAgentConfig?: BadAgentConfig
 ): boolean {
   if (!badAgentConfig) return true;
-  return !areEqual(getDhtOpAction(dhtOp).author, agentPubKey);
+  return !isEqual(getDhtOpAction(dhtOp).author, agentPubKey);
 }
 
 export async function validate_op(

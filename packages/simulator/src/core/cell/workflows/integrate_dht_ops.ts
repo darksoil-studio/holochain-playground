@@ -13,7 +13,7 @@ export const integrate_dht_ops = async (
   worskpace: Workspace
 ): Promise<WorkflowReturn<void>> => {
   const opsToIntegrate = pullAllIntegrationLimboDhtOps(worskpace.state);
-  let workComplete = opsToIntegrate.keys().length === 0;
+  let workComplete = Array.from(opsToIntegrate.keys()).length === 0;
 
   for (const [dhtOpHash, integrationLimboValue] of opsToIntegrate.entries()) {
     const dhtOp = integrationLimboValue.op;
@@ -55,6 +55,6 @@ export function integrate_dht_ops_task(): IntegrateDhtOpsWorkflow {
   return {
     type: WorkflowType.INTEGRATE_DHT_OPS,
     details: undefined,
-    task: worskpace => integrate_dht_ops(worskpace),
+    task: (worskpace) => integrate_dht_ops(worskpace),
   };
 }

@@ -7,12 +7,12 @@ import {
   HoloHash,
   Record,
 } from '@holochain/client';
+import { hash, HashType } from '@holochain-open-dev/utils';
 import { ValidationOutcome } from '../core/cell/sys_validate/types';
 import {
   SimulatedValidateFunctionContext,
   SimulatedZomeFunctionContext,
 } from '../core/hdk';
-import { hash, HashType } from '../processors/hash';
 import { Dictionary } from '../types';
 
 export interface SimulatedZomeFunctionArgument {

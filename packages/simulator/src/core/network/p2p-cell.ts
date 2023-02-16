@@ -196,7 +196,7 @@ export class P2pCell {
   /** Neighbor handling */
 
   public get neighbors(): Array<AgentPubKey> {
-    return this.neighborConnections.keys();
+    return Array.from(this.neighborConnections.keys());
   }
 
   async connectWith(peer: Cell): Promise<Connection> {
@@ -222,7 +222,7 @@ export class P2pCell {
   }
 
   handleOpenNeighborConnection(from: Cell, connection: Connection) {
-    this.neighborConnections.put(from.agentPubKey, connection);
+    this.neighborConnections.set(from.agentPubKey, connection);
   }
 
   handleCloseNeighborConnection(from: Cell) {
@@ -247,7 +247,7 @@ export class P2pCell {
       );
  */
       const connection = await this.connectWith(withPeer);
-      this.neighborConnections.put(withPeer.agentPubKey, connection);
+      this.neighborConnections.set(withPeer.agentPubKey, connection);
 
       withPeer.p2p.handleOpenNeighborConnection(this.cell, connection);
     }
@@ -307,7 +307,9 @@ export class P2pCell {
 
     await Promise.all(promises);
 
-    if (this.neighborConnections.keys().length < this.neighborNumber) {
+    if (
+      Array.from(this.neighborConnections.keys()).length < this.neighborNumber
+    ) {
       setTimeout(() => this.syncNeighbors(), 400);
     }
   }

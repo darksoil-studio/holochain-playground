@@ -22,7 +22,9 @@ import {
 } from '@holochain/client';
 
 import { uniqWith } from 'lodash-es';
-import { areEqual, hash, HashType } from '../../../processors/hash';
+import { hash, HashType } from '@holochain-open-dev/utils';
+
+import { areEqual } from '../../../processors/hash';
 
 import { GetLinksResponse, Link } from '../cascade/types';
 import {
@@ -43,7 +45,7 @@ export function getValidationLimboDhtOps(
 
   for (const [dhtOpHash, limboValue] of state.validationLimbo.entries()) {
     if (statuses.includes(limboValue.status)) {
-      pendingDhtOps.put(dhtOpHash, limboValue);
+      pendingDhtOps.set(dhtOpHash, limboValue);
     }
   }
 
@@ -54,7 +56,7 @@ export const getValidationReceipts =
   (dhtOpHash: DhtOpHash) =>
   (state: CellState): ValidationReceipt[] => {
     return state.validationReceipts.has(dhtOpHash)
-      ? state.validationReceipts.get(dhtOpHash).values()
+      ? Array.from(state.validationReceipts.get(dhtOpHash).values())
       : [];
   };
 
@@ -129,19 +131,19 @@ export function getEntryDetails(
       (actionContent as Update).original_entry_address &&
       areEqual((actionContent as Update).original_entry_address, entry_hash)
     ) {
-      updates.put(action.hashed.hash, action as SignedActionHashed<Update>);
+      updates.set(action.hashed.hash, action as SignedActionHashed<Update>);
     } else if (
       (actionContent as Create).entry_hash &&
       areEqual((actionContent as Create).entry_hash, entry_hash)
     ) {
-      live_actions.put(
+      live_actions.set(
         action.hashed.hash,
         action as SignedActionHashed<Create>
       );
     } else if (
       areEqual((actionContent as Delete).deletes_entry_address, entry_hash)
     ) {
-      deletes.put(action.hashed.hash, action as SignedActionHashed<Delete>);
+      deletes.set(action.hashed.hash, action as SignedActionHashed<Delete>);
     }
   }
 
@@ -149,8 +151,8 @@ export function getEntryDetails(
     entry,
     actions: allActions,
     entry_dht_status: dhtStatus as EntryDhtStatus,
-    updates: updates.values(),
-    deletes: deletes.values(),
+    updates: Array.from(updates.values()),
+    deletes: Array.from(deletes.values()),
     rejected_actions: [], // TODO: after validation is implemented
   };
 }
@@ -183,8 +185,7 @@ export function getActionModifiers(
 }
 
 export function getAllHeldEntries(state: CellState): EntryHash[] {
-  const newEntryActions = state.integratedDHTOps
-    .values()
+  const newEntryActions = Array.from(state.integratedDHTOps.values())
     .filter(
       (dhtOpValue) => getDhtOpType(dhtOpValue.op) === DhtOpType.StoreEntry
     )
@@ -198,8 +199,7 @@ export function getAllHeldEntries(state: CellState): EntryHash[] {
 }
 
 export function getAllHeldActions(state: CellState): ActionHash[] {
-  const actions = state.integratedDHTOps
-    .values()
+  const actions = Array.from(state.integratedDHTOps.values())
     .filter(
       (dhtOpValue) => getDhtOpType(dhtOpValue.op) === DhtOpType.StoreRecord
     )
@@ -211,9 +211,9 @@ export function getAllHeldActions(state: CellState): ActionHash[] {
 }
 
 export function getAllAuthoredEntries(state: CellState): EntryHash[] {
-  const allActions = state.authoredDHTOps
-    .values()
-    .map((dhtOpValue) => getDhtOpAction(dhtOpValue.op));
+  const allActions = Array.from(state.authoredDHTOps.values()).map(
+    (dhtOpValue) => getDhtOpAction(dhtOpValue.op)
+  );
 
   const newEntryActions: NewEntryAction[] = allActions.filter(
     (h) => (h as NewEntryAction).entry_hash
@@ -256,7 +256,7 @@ export function getDhtShard(
   const dhtShard: HoloHashMap<EntryHash, EntryDHTInfo> = new HoloHashMap();
 
   for (const entryHash of heldEntries) {
-    dhtShard.put(entryHash, {
+    dhtShard.set(entryHash, {
       details: getEntryDetails(state, entryHash),
       links: getCreateLinksForEntry(state, entryHash),
     });
@@ -329,7 +329,7 @@ export function getLiveLinks(
     new HoloHashMap();
   for (const responses of getLinksResponses) {
     for (const linkAdd of responses.link_adds) {
-      linkAdds.put(linkAdd.hashed.hash, linkAdd.hashed.content);
+      linkAdds.set(linkAdd.hashed.hash, linkAdd.hashed.content);
     }
   }
 
@@ -365,7 +365,7 @@ export function computeDhtStatus(allActionsForEntry: SignedActionHashed[]): {
 
   for (const action of allActionsForEntry) {
     if (action.hashed.content.type === ActionType.Create) {
-      aliveActions.put(action.hashed.hash, action);
+      aliveActions.set(action.hashed.hash, action);
     }
   }
 
@@ -382,9 +382,9 @@ export function computeDhtStatus(allActionsForEntry: SignedActionHashed[]): {
     }
   }
 
-  const isSomeActionAlive = aliveActions
-    .values()
-    .some((action) => action !== undefined);
+  const isSomeActionAlive = Array.from(aliveActions.values()).some(
+    (action) => action !== undefined
+  );
 
   // TODO: add more cases
   const entry_dht_status = isSomeActionAlive
@@ -416,7 +416,7 @@ export function getIntegratedDhtOpsWithoutReceipt(
 
   for (const [dhtOpHash, integratedValue] of state.integratedDHTOps.entries()) {
     if (integratedValue.send_receipt) {
-      needReceipt.put(dhtOpHash, integratedValue);
+      needReceipt.set(dhtOpHash, integratedValue);
     }
   }
   return needReceipt;

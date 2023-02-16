@@ -72,7 +72,7 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
     const zome = this.activeZome;
 
     const cellId = this._activeCell.value.cellId;
-    if (!this._results.get(cellId)) this._results.put(cellId, []);
+    if (!this._results.get(cellId)) this._results.set(cellId, []);
     const zomeFnResult: ZomeFunctionResult = {
       cellId,
       zome: zome.name,

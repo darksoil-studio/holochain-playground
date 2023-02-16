@@ -20,12 +20,12 @@ export const genesis =
   (agentId: AgentPubKey, dnaHash: DnaHash, membrane_proof: any) =>
   async (worskpace: Workspace): Promise<WorkflowReturn<void>> => {
     const dna = buildDna(dnaHash, agentId);
-    putRecord({ signed_action: buildShh(dna), entry: undefined })(
+    putRecord({ signed_action: buildShh(dna), entry: { NotApplicable: null } })(
       worskpace.state
     );
 
     const pkg = buildAgentValidationPkg(worskpace.state, membrane_proof);
-    putRecord({ signed_action: buildShh(pkg), entry: undefined })(
+    putRecord({ signed_action: buildShh(pkg), entry: { NotApplicable: null } })(
       worskpace.state
     );
 
@@ -41,7 +41,7 @@ export const genesis =
     putRecord({
       signed_action: buildShh(create_agent_pub_key_entry),
       entry: {
-        Present: entry
+        Present: entry,
       },
     })(worskpace.state);
 
@@ -81,6 +81,7 @@ export function genesis_task(
       cellId,
       membrane_proof,
     },
-    task: worskpace => genesis(cellId[1], cellId[0], membrane_proof)(worskpace),
+    task: (worskpace) =>
+      genesis(cellId[1], cellId[0], membrane_proof)(worskpace),
   };
 }

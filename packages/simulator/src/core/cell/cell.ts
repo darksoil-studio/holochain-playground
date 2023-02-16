@@ -1,4 +1,4 @@
-import { cloneDeep, uniqWith } from 'lodash-es';
+import { cloneDeep, isEqual, uniqWith } from 'lodash-es';
 import { DhtOpHash } from '@holochain-open-dev/core-types';
 import {
   AgentPubKey,
@@ -10,6 +10,7 @@ import {
   Record,
   CapSecret,
 } from '@holochain/client';
+import { getHashType, hash, HashType } from '@holochain-open-dev/utils';
 
 import { Dictionary, GetLinksOptions, GetOptions } from '../../types';
 import { Conductor } from '../conductor';
@@ -23,7 +24,6 @@ import { triggeredWorkflowFromType } from './workflows/trigger';
 import { MiddlewareExecutor } from '../../executor/middleware-executor';
 import { GetLinksResponse, GetResult } from './cascade/types';
 import { Authority } from './cascade/authority';
-import { areEqual, getHashType, hash, HashType } from '../../processors/hash';
 import { DhtArc } from '../network/dht_arc';
 import { getDhtOpBasis } from './utils';
 import { GossipData } from '../network/gossip/types';
@@ -206,7 +206,7 @@ export class Cell {
     for (const opHash of op_hashes) {
       const value = this._state.integratedDHTOps.get(opHash);
       if (value) {
-        result.put(opHash, value.op);
+        result.set(opHash, value.op);
       }
     }
     return result;
@@ -219,7 +219,7 @@ export class Cell {
     for (const opHash of op_hashes) {
       const value = this._state.integratedDHTOps.get(opHash);
       if (value) {
-        result.put(opHash, value.op);
+        result.set(opHash, value.op);
       }
     }
     return result;
@@ -231,7 +231,7 @@ export class Cell {
     for (const badAction of gossip.badActions) {
       const dhtOpHash = hash(badAction.op, HashType.DHTOP);
       if (!hasDhtOpBeenProcessed(this._state, dhtOpHash)) {
-        dhtOpsToProcess.put(dhtOpHash, badAction.op);
+        dhtOpsToProcess.set(dhtOpHash, badAction.op);
       }
 
       for (const receipt of badAction.receipts) {
@@ -249,11 +249,11 @@ export class Cell {
         !hasDhtOpBeenProcessed(this._state, dhtOpHash) &&
         this.p2p.shouldWeHold(getDhtOpBasis(validatedOp.op))
       ) {
-        dhtOpsToProcess.put(dhtOpHash, validatedOp.op);
+        dhtOpsToProcess.set(dhtOpHash, validatedOp.op);
       }
     }
 
-    if (dhtOpsToProcess.keys().length > 0) {
+    if (Array.from(dhtOpsToProcess.keys()).length > 0) {
       await this.handle_publish(from_agent, false, dhtOpsToProcess);
     }
 
@@ -262,7 +262,7 @@ export class Cell {
     const badAgents = getBadAgents(this._state);
     this._state.badAgents = uniqWith(
       [...this._state.badAgents, ...badAgents],
-      areEqual
+      isEqual
     );
 
     if (this._state.badAgents.length > previousCount) {

@@ -10,7 +10,7 @@ import { CellState } from './core/cell/state';
 export function selectSourceChain(cellState: CellState): Record[] {
   const actionHashes = cellState.sourceChain;
 
-  return actionHashes.map(hash => {
+  return actionHashes.map((hash) => {
     const signed_action: SignedActionHashed = { ...cellState.CAS.get(hash) };
 
     const { entry_hash } = signed_action.hashed.content as NewEntryAction;
@@ -29,5 +29,5 @@ export function selectSourceChain(cellState: CellState): Record[] {
 }
 
 export function selectDhtShard(cellState: CellState): DhtOp[] {
-  return cellState.integratedDHTOps.values().map(v => v.op);
+  return Array.from(cellState.integratedDHTOps.values()).map((v) => v.op);
 }

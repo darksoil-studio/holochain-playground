@@ -29,10 +29,10 @@ function appendToArray<T>(
   key: HoloHash,
   value: T
 ) {
-  if (!map.has(key)) map.put(key, []);
+  if (!map.has(key)) map.set(key, []);
 
   const previous_value = map.get(key);
-  map.put(key, [...previous_value, value]);
+  map.set(key, [...previous_value, value]);
 }
 
 export interface DhtSummary {
@@ -124,17 +124,17 @@ export function summarizeDht(
       const actionHash = hash(action, HashType.ACTION);
 
       if (!visited.has(actionHash)) {
-        visited.put(actionHash, []);
+        visited.set(actionHash, []);
       }
       if (!visited.get(actionHash).includes(dhtOpType)) {
-        visited.put(actionHash, [...visited.get(actionHash), dhtOpType]);
+        visited.set(actionHash, [...visited.get(actionHash), dhtOpType]);
 
-        actions.put(actionHash, action);
+        actions.set(actionHash, action);
 
         if (dhtOpType === DhtOpType.StoreEntry) {
           const entry_hash = (action as NewEntryAction).entry_hash;
           const entry = getDhtOpEntry(dhtOp);
-          entries.put(entry_hash, entry);
+          entries.set(entry_hash, entry);
           appendToArray(actionsByEntry, entry_hash, actionHash);
 
           const entryType = simulatedDna
@@ -143,7 +143,7 @@ export function summarizeDht(
                 (action as NewEntryAction).entry_type
               )
             : getConnectedEntryType(action as NewEntryAction, entry);
-          entryTypes.put(entry_hash, entryType);
+          entryTypes.set(entry_hash, entryType);
         } else if (dhtOpType === DhtOpType.RegisterAddLink) {
           const base_address = (action as CreateLink).base_address;
           const target_address = (action as CreateLink).target_address;

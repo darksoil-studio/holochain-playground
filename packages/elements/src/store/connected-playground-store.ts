@@ -132,7 +132,7 @@ export class ConnectedConductorStore extends ConductorStore<PlaygroundMode.Conne
         );
 
         for (const cellId of cellsToAdd) {
-          currentCells.put(
+          currentCells.set(
             cellId,
             new ConnectedCellStore(this, cellId, adminWs)
           );

@@ -93,7 +93,7 @@ export class MiddlewareController implements ReactiveController {
         subscriptions.push(s);
       }
 
-      this._cellSubscriptions.put(cellId, subscriptions);
+      this._cellSubscriptions.set(cellId, subscriptions);
     }
 
     for (const cellId of cellsToRemove) {

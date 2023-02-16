@@ -13,8 +13,9 @@ import {
   SignedActionHashed,
   Record,
 } from '@holochain/client';
+import { getHashType, HashType } from '@holochain-open-dev/utils';
 
-import { areEqual, getHashType, HashType } from '../../../processors/hash';
+import { areEqual } from '../../../processors/hash';
 import { GetLinksOptions, GetOptions, GetStrategy } from '../../../types';
 import { P2pCell } from '../../network/p2p-cell';
 import { computeDhtStatus, getLiveLinks } from '../dht/get';
@@ -90,8 +91,8 @@ export class Cascade {
 
       if (hashType === HashType.ENTRY) {
         const entry = this.state.CAS.get(hash);
-        const signed_action = this.state.CAS.values().find(
-          action =>
+        const signed_action = Array.from(this.state.CAS.values()).find(
+          (action) =>
             (action as SignedActionHashed).hashed &&
             areEqual(
               (action as SignedActionHashed<NewEntryAction>).hashed.content

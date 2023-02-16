@@ -8,12 +8,12 @@ export const putRecord =
   (state: CellState): void => {
     // Put action in CAS
     const actionHash = record.signed_action.hashed.hash;
-    state.CAS.put(actionHash, record.signed_action);
+    state.CAS.set(actionHash, record.signed_action);
 
     // Put entry in CAS if it exist
-    if (record.entry) {
+    if ('Present' in record.entry) {
       const entryHash = hashEntry(extractEntry(record));
-      state.CAS.put(entryHash, extractEntry(record));
+      state.CAS.set(entryHash, extractEntry(record));
     }
 
     state.sourceChain.push(actionHash);

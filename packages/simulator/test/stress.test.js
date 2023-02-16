@@ -1,11 +1,9 @@
 import { createConductors, demoHapp } from '../dist';
-import { expect } from '@esm-bundle/chai';
+import { assert, describe, expect, it } from 'vitest';
 import { sleep } from './utils';
 
 describe('Stress tests links', () => {
   it('create multiple links', async function () {
-    this.timeout(0);
-
     const start = Date.now();
 
     for (let i = 0; i < 2; i++) {

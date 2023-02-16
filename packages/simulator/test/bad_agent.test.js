@@ -1,13 +1,11 @@
 import { createConductors, demoHapp } from '../dist';
-import { expect } from '@esm-bundle/chai';
+import { assert, describe, expect, it } from 'vitest';
 import isEqual from 'lodash-es/isEqual';
 
 import { sleep } from './utils';
 
 describe('Bad Agent', () => {
   it(`bad agent cheats and gets booted out of the network`, async function () {
-    this.timeout(0);
-
     for (let i = 0; i < 2; i++) {
       const conductors = await createConductors(10, [], demoHapp());
 
@@ -69,16 +67,16 @@ describe('Bad Agent', () => {
       await sleep(15000);
 
       const honestCells = conductors
-        .map(c => c.getAllCells()[0])
+        .map((c) => c.getAllCells()[0])
         .filter(
-          cell =>
+          (cell) =>
             !isEqual(cell.agentPubKey, badAgentAddress) &&
             !isEqual(cell.agentPubKey, badAgent2Address)
         );
       const honestCellsWithBadAgentAsNeighbor = honestCells.filter(
-        cell =>
-          cell.p2p.neighbors.find(n => isEqual(n, badAgentAddress)) ||
-          cell.p2p.neighbors.find(n => isEqual(n, badAgent2Address))
+        (cell) =>
+          cell.p2p.neighbors.find((n) => isEqual(n, badAgentAddress)) ||
+          cell.p2p.neighbors.find((n) => isEqual(n, badAgent2Address))
       );
 
       expect(honestCellsWithBadAgentAsNeighbor.length).to.equal(0);

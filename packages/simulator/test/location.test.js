@@ -1,5 +1,5 @@
 import { shortest_arc_distance } from '../dist';
-import { expect } from '@esm-bundle/chai';
+import { assert, describe, expect, it } from 'vitest';
 
 describe('DHT Location', () => {
   it('location distance', async () => {

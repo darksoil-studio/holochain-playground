@@ -95,7 +95,11 @@ export function check_entry_type(entry_type: EntryType, entry: Entry): void {
   if (entry_type === 'Agent' && entry.entry_type === 'Agent') return;
   if (entry_type === 'CapClaim' && entry.entry_type === 'CapClaim') return;
   if (entry_type === 'CapGrant' && entry.entry_type === 'CapGrant') return;
-  if ((entry_type as { App: AppEntryDef }).App && entry.entry_type === 'App')
+  if (
+    typeof entry_type === 'object' &&
+    (entry_type as { App: AppEntryDef }).App &&
+    entry.entry_type === 'App'
+  )
     return;
   throw new Error(`Entry types don't match`);
 }

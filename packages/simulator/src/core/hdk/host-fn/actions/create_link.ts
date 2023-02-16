@@ -26,7 +26,7 @@ export const create_link: HostFn<CreateLinkFn> =
 
     const element: Record = {
       signed_action: buildShh(createLink),
-      entry: undefined,
+      entry: { NotApplicable: null },
     };
     putRecord(element)(worskpace.state);
 

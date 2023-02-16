@@ -5,7 +5,9 @@ import {
   SignedActionHashed,
   Record,
 } from '@holochain/client';
-import { areEqual, hash, HashType } from '../../../processors/hash';
+import { hash, HashType } from '@holochain-open-dev/utils';
+
+import { areEqual } from '../../../processors/hash';
 
 import { CellState } from '../state';
 
@@ -13,20 +15,20 @@ import { CellState } from '../state';
  * Returns the action hashes which don't have their DHTOps in the authoredDHTOps DB
  */
 export function getNewActions(state: CellState): Array<ActionHash> {
-  const dhtOps = state.authoredDHTOps.values();
-  const actionHashesAlreadyPublished = dhtOps.map(dhtOp =>
+  const dhtOps = Array.from(state.authoredDHTOps.values());
+  const actionHashesAlreadyPublished = dhtOps.map((dhtOp) =>
     hash(getDhtOpAction(dhtOp.op), HashType.ACTION)
   );
   return state.sourceChain.filter(
-    actionHash =>
-      !actionHashesAlreadyPublished.find(h => areEqual(h, actionHash))
+    (actionHash) =>
+      !actionHashesAlreadyPublished.find((h) => areEqual(h, actionHash))
   );
 }
 
 export function getAllAuthoredActions(
   state: CellState
 ): Array<SignedActionHashed> {
-  return state.sourceChain.map(actionHash => state.CAS.get(actionHash));
+  return state.sourceChain.map((actionHash) => state.CAS.get(actionHash));
 }
 
 export function getSourceChainRecords(

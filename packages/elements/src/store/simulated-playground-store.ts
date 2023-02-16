@@ -91,7 +91,7 @@ export class SimulatedConductorStore extends ConductorStore<PlaygroundMode.Simul
     );
 
     for (const cellId of cellsToAdd) {
-      currentCells.put(
+      currentCells.set(
         cellId,
         new SimulatedCellStore(this, conductor.getCell(cellId))
       );

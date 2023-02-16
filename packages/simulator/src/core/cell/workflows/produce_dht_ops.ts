@@ -1,4 +1,4 @@
-import { hash, HashType } from '../../../processors/hash';
+import { hash, HashType } from '@holochain-open-dev/utils';
 import { getNewActions } from '../source-chain/get';
 import { getRecord } from '../source-chain/utils';
 import { recordToDhtOps } from '../utils';
@@ -23,7 +23,7 @@ export const produce_dht_ops = async (
         receipt_count: 0,
       };
 
-      worskpace.state.authoredDHTOps.put(dhtOpHash, dhtOpValue);
+      worskpace.state.authoredDHTOps.set(dhtOpHash, dhtOpValue);
     }
   }
 
@@ -39,6 +39,6 @@ export function produce_dht_ops_task(): ProduceDhtOpsWorkflow {
   return {
     type: WorkflowType.PRODUCE_DHT_OPS,
     details: undefined,
-    task: worskpace => produce_dht_ops(worskpace),
+    task: (worskpace) => produce_dht_ops(worskpace),
   };
 }

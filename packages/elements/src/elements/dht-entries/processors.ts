@@ -57,7 +57,7 @@ export function allEntries(
         },
         classes,
       });
-      nodesDrawn.put(entryHash, true);
+      nodesDrawn.set(entryHash, true);
 
       const actions = summary.actionsByEntry.get(entryHash);
       const action = summary.actions.get(actions[0]);
@@ -82,7 +82,7 @@ export function allEntries(
               },
               classes: ['embedded-reference'],
             });
-            depsNotHeld.put(decodeHashFromBase64(implicitLink.target), true);
+            depsNotHeld.set(decodeHashFromBase64(implicitLink.target), true);
           }
         }
       }
@@ -118,7 +118,7 @@ export function allEntries(
       !entryHash ||
       !excludedEntryTypes.includes(summary.entryTypes.get(entryHash))
     ) {
-      depsNotHeld.put(baseAddress, true);
+      depsNotHeld.set(baseAddress, true);
 
       const strBaseHash = encodeHashToBase64(baseAddress);
       for (const link of links) {
@@ -149,7 +149,7 @@ export function allEntries(
             },
             classes: ['explicit-link'],
           });
-          depsNotHeld.put(link.target_address, true);
+          depsNotHeld.set(link.target_address, true);
         }
       }
     }
@@ -173,7 +173,7 @@ export function allEntries(
           },
           classes: [action.type, 'action'],
         });
-        nodesDrawn.put(actionHash, true);
+        nodesDrawn.set(actionHash, true);
 
         edges.push({
           data: {
@@ -186,7 +186,7 @@ export function allEntries(
           classes: ['embedded-reference', 'action-reference'],
         });
 
-        depsNotHeld.put(entryHash, true);
+        depsNotHeld.set(entryHash, true);
 
         for (const updateActionHash of summary.actionUpdates.get(actionHash) ||
           []) {
@@ -202,7 +202,7 @@ export function allEntries(
               },
               classes: [updateAction.type, 'action'],
             });
-            nodesDrawn.put(updateActionHash, true);
+            nodesDrawn.set(updateActionHash, true);
           }
 
           edges.push({
@@ -215,7 +215,7 @@ export function allEntries(
             },
             classes: ['embedded-reference', 'action-reference'],
           });
-          depsNotHeld.put(actionHash, true);
+          depsNotHeld.set(actionHash, true);
         }
 
         for (const deleteActionHash of summary.actionDeletes.get(actionHash) ||
@@ -232,7 +232,7 @@ export function allEntries(
               },
               classes: [deleteAction.type, 'action'],
             });
-            nodesDrawn.put(deleteActionHash, true);
+            nodesDrawn.set(deleteActionHash, true);
           }
 
           edges.push({
@@ -245,7 +245,7 @@ export function allEntries(
             },
             classes: ['embedded-reference', 'action-reference'],
           });
-          depsNotHeld.put(actionHash, true);
+          depsNotHeld.set(actionHash, true);
         }
       }
     }

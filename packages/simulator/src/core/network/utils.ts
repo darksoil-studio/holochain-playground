@@ -44,7 +44,7 @@ export function getFarthestNeighbors(
     sortedPeers[index35],
     sortedPeers[index50],
     sortedPeers[index65],
-  ].filter(n => !!n);
+  ].filter((n) => !!n);
 
   return uniq(neighbors);
 }
@@ -64,7 +64,7 @@ export function getBadActions(state: CellState): Array<BadAction> {
       const badAction: BadAction = {
         badAgents: [],
         op: dhtOp,
-        receipts: receipts.values(),
+        receipts: Array.from(receipts.values()),
       };
 
       if (myReceipt.validation_status === ValidationStatus.Rejected) {

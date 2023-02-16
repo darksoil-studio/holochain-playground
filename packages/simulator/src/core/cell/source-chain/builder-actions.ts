@@ -16,8 +16,8 @@ import {
   EntryHash,
   ActionHash,
 } from '@holochain/client';
+import { hash, HashType } from '@holochain-open-dev/utils';
 
-import { hash, HashType } from '../../../processors/hash';
 import { CellState } from '../state';
 import { hashEntry } from '../utils';
 import { getAuthor, getNextActionSeq, getTipOfChain } from './utils';

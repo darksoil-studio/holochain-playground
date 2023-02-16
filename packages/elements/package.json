@@ -15,9 +15,10 @@
     "publish-to-branch": "npm run build && rm -rf node_modules && gh-pages -d . -b build && npm i"
   },
   "dependencies": {
-    "@holochain-open-dev/core-types": "^0.6.3",
-    "@holochain-open-dev/elements": "^0.1.4",
-    "@holochain-open-dev/utils": "^0.9.0",
+    "@holochain-open-dev/core-types": "^0.6.6",
+    "@holochain-open-dev/elements": "^0.2.3",
+    "@holochain-open-dev/stores": "^0.3.0",
+    "@holochain-open-dev/utils": "^0.11.2",
     "@holochain-playground/simulator": "0.0.1",
     "@holochain/client": "^0.12.2",
     "@lit-labs/context": "^0.2.0",
@@ -25,16 +26,14 @@
     "@open-wc/scoped-elements": "^2.0.1",
     "@power-elements/json-viewer": "^2.1.1",
     "@scoped-elements/cytoscape": "^0.1.0",
-    "@scoped-elements/material-web": "^0.0.16",
+    "@scoped-elements/material-web": "^0.1.0",
     "@vaadin/grid": "^23.3.2",
     "body-parser": "1.11.0",
     "cytoscape": "^3.17.0",
     "express": "3.4.4",
     "js-base64": "^3.7.2",
     "lit": "^2.2.2",
-    "lit-svelte-stores": "^0.1.4",
-    "lodash-es": "^4.17.21",
-    "svelte": "^3.44.1"
+    "lodash-es": "^4.17.21"
   },
   "devDependencies": {
     "@babel/core": "^7.13.8",

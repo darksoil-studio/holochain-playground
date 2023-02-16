@@ -1,12 +1,12 @@
 import { ActionHash, CreateLink, Record } from '@holochain/client';
 
-import { GetStrategy } from '../../../../types';
+import { GetStrategy } from '../../../../types.js';
 import {
   buildDeleteLink,
   buildShh,
-} from '../../../cell/source-chain/builder-actions';
-import { putRecord } from '../../../cell/source-chain/put';
-import { HostFn, HostFnWorkspace } from '../../host-fn';
+} from '../../../cell/source-chain/builder-actions.js';
+import { putRecord } from '../../../cell/source-chain/put.js';
+import { HostFn, HostFnWorkspace } from '../../host-fn.js';
 
 export type DeleteLinkFn = (deletes_address: ActionHash) => Promise<ActionHash>;
 
@@ -36,7 +36,7 @@ export const delete_link: HostFn<DeleteLinkFn> =
 
     const element: Record = {
       signed_action: buildShh(deleteAction),
-      entry: undefined,
+      entry: { NotApplicable: null },
     };
     putRecord(element)(worskpace.state);
 

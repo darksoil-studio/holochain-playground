@@ -91,6 +91,6 @@ export function query_dht_ops(
     if (dht_arc && !contains(dht_arc, location(dhtOpHash))) return false;
   };
 
-  const ops = integratedDhtOps.entries().filter(isDhtOpsInFilter);
+  const ops = Array.from(integratedDhtOps.entries()).filter(isDhtOpsInFilter);
   return ops.map((op) => op[0]);
 }

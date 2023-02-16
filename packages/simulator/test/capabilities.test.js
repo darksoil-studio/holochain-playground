@@ -1,5 +1,5 @@
 import { createConductors } from '../dist';
-import { expect } from '@esm-bundle/chai';
+import { assert, describe, expect, it } from 'vitest';
 import { sleep } from './utils';
 
 const dna = {

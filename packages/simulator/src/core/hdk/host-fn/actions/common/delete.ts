@@ -32,7 +32,7 @@ export async function common_delete(
 
   const record: Record = {
     signed_action: buildShh(deleteAction),
-    entry: undefined,
+    entry: { NotApplicable: null },
   };
   putRecord(record)(worskpace.state);
 

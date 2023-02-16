@@ -118,7 +118,7 @@ export function selectAllDNAs(conductors: Conductor[]): DnaHash[] {
 
   for (const conductor of conductors) {
     for (const cell of conductor.getAllCells()) {
-      dnas.put(cell.dnaHash, true);
+      dnas.set(cell.dnaHash, true);
     }
   }
   return dnas.keys();

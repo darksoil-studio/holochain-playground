@@ -142,7 +142,7 @@ export abstract class PlaygroundStore<T extends PlaygroundMode> {
         (cellMaps) =>
           cellMaps.reduce((acc, next) => {
             for (const [cellId, store] of next.entries()) {
-              acc.put(cellId, store);
+              acc.set(cellId, store);
             }
             return acc;
           }, new CellMap())
@@ -178,7 +178,7 @@ export abstract class PlaygroundStore<T extends PlaygroundMode> {
 
         for (const [cellId, value] of allCells.entries()) {
           if (isEqual(activeDna, cellId[0])) {
-            map.put(cellId, value);
+            map.set(cellId, value);
           }
         }
         return map;

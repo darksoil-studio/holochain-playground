@@ -22,6 +22,8 @@ import {
   DeleteLink,
   getDhtOpSignature,
 } from '@holochain/client';
+import { hash, HashType, HoloHashMap } from '@holochain-open-dev/utils';
+
 import {
   ChainStatus,
   LinkMetaKey,
@@ -38,25 +40,23 @@ import {
 
 import { getActionsForEntry } from './get';
 import { getEntry } from '../utils';
-import { hash, HashType } from '../../../processors/hash';
-import { HoloHashMap } from '@holochain-open-dev/utils';
 
 export const putValidationLimboValue =
   (dhtOpHash: DhtOpHash, validationLimboValue: ValidationLimboValue) =>
   (state: CellState) => {
-    state.validationLimbo.put(dhtOpHash, validationLimboValue);
+    state.validationLimbo.set(dhtOpHash, validationLimboValue);
   };
 
 export const putValidationReceipt =
   (dhtOpHash: DhtOpHash, validationReceipt: ValidationReceipt) =>
   (state: CellState) => {
     if (!state.validationReceipts.has(dhtOpHash)) {
-      state.validationReceipts.put(dhtOpHash, new HoloHashMap());
+      state.validationReceipts.set(dhtOpHash, new HoloHashMap());
     }
 
     state.validationReceipts
       .get(dhtOpHash)
-      .put(validationReceipt.validator, validationReceipt);
+      .set(validationReceipt.validator, validationReceipt);
   };
 
 export const deleteValidationLimboValue =
@@ -67,7 +67,7 @@ export const deleteValidationLimboValue =
 export const putIntegrationLimboValue =
   (dhtOpHash: DhtOpHash, integrationLimboValue: IntegrationLimboValue) =>
   (state: CellState) => {
-    state.integrationLimbo.put(dhtOpHash, integrationLimboValue);
+    state.integrationLimbo.set(dhtOpHash, integrationLimboValue);
   };
 
 export const putDhtOpData = (dhtOp: DhtOp) => (state: CellState) => {
@@ -81,12 +81,12 @@ export const putDhtOpData = (dhtOp: DhtOp) => (state: CellState) => {
     },
     signature: getDhtOpSignature(dhtOp),
   };
-  state.CAS.put(actionHash, ssh);
+  state.CAS.set(actionHash, ssh);
 
   const entry = getEntry(dhtOp);
 
   if (entry) {
-    state.CAS.put((action as NewEntryAction).entry_hash, entry);
+    state.CAS.set((action as NewEntryAction).entry_hash, entry);
   }
 };
 
@@ -96,7 +96,7 @@ export const putDhtOpMetadata = (dhtOp: DhtOp) => (state: CellState) => {
   const actionHash = hash(action, HashType.ACTION);
 
   if (type === DhtOpType.StoreRecord) {
-    state.metadata.misc_meta.put(actionHash, 'StoreRecord');
+    state.metadata.misc_meta.set(actionHash, 'StoreRecord');
   } else if (type === DhtOpType.StoreEntry) {
     const entryHash = (action as NewEntryAction).entry_hash;
 
@@ -108,11 +108,11 @@ export const putDhtOpMetadata = (dhtOp: DhtOp) => (state: CellState) => {
     register_action_on_basis(entryHash, action, actionHash)(state);
     update_entry_dht_status(entryHash)(state);
   } else if (type === DhtOpType.RegisterAgentActivity) {
-    state.metadata.misc_meta.put(actionHash, {
+    state.metadata.misc_meta.set(actionHash, {
       ChainItem: action.timestamp,
     });
 
-    state.metadata.misc_meta.put(action.author, {
+    state.metadata.misc_meta.set(action.author, {
       ChainStatus: ChainStatus.Valid,
     });
   } else if (
@@ -194,7 +194,7 @@ const update_entry_dht_status =
       is_action_alive(state, action.hashed.hash)
     );
 
-    state.metadata.misc_meta.put(entryHash, {
+    state.metadata.misc_meta.set(entryHash, {
       EntryStatus: entryIsAlive ? EntryDhtStatus.Live : EntryDhtStatus.Dead,
     });
   };
@@ -220,7 +220,7 @@ export const register_action_on_basis =
 export const putSystemMetadata =
   (basis: AnyDhtHash, value: SysMetaVal) => (state: CellState) => {
     if (!state.metadata.system_meta.has(basis)) {
-      state.metadata.system_meta.put(basis, []);
+      state.metadata.system_meta.set(basis, []);
     }
 
     if (!state.metadata.system_meta.get(basis).find((v) => isEqual(v, value))) {
@@ -231,5 +231,5 @@ export const putSystemMetadata =
 export const putDhtOpToIntegrated =
   (dhtOpHash: DhtOpHash, integratedValue: IntegratedDhtOpsValue) =>
   (state: CellState) => {
-    state.integratedDHTOps.put(dhtOpHash, integratedValue);
+    state.integratedDHTOps.set(dhtOpHash, integratedValue);
   };

@@ -4,7 +4,6 @@ import {
   Delete,
   DeleteLink,
   ActionType,
-  SignedActionHashed,
   Update,
   AnyDhtHash,
   AppEntryDef,
@@ -17,17 +16,14 @@ import {
   getDhtOpEntry,
   getDhtOpAction,
   Record,
-  NewEntryAction,
-  EntryContent,
-  RecordEntry,
 } from '@holochain/client';
-import { decode } from '@msgpack/msgpack';
+import { hash, HashType } from '@holochain-open-dev/utils';
 
-import { hash, HashType } from '../../processors/hash';
 import { SimulatedDna } from '../../dnas/simulated-dna';
+import { isPublic } from './source-chain/utils';
 
 export function extractEntry(record: Record): Entry | undefined {
-  return (record.entry as any).Present?.entry;
+  return 'Present' in record.entry ? record.entry.Present : undefined;
 }
 
 export function hashEntry(entry: Entry): EntryHash {
@@ -35,10 +31,12 @@ export function hashEntry(entry: Entry): EntryHash {
   return hash(entry.entry, HashType.ENTRY);
 }
 
-export function getAppEntryType(entryType: EntryType): AppEntryDef | undefined {
-  if ((entryType as { App: AppEntryDef }).App)
-    return (entryType as { App: AppEntryDef }).App;
-  return undefined;
+export function getAppEntryType(
+  entry_type: EntryType
+): AppEntryDef | undefined {
+  return typeof entry_type === 'object' && 'App' in entry_type
+    ? entry_type.App
+    : undefined;
 }
 
 export function getEntryTypeString(
@@ -101,7 +99,6 @@ export function recordToDhtOps(record: Record): DhtOp[] {
   const allDhtOps: DhtOp[] = [];
 
   // All hdk commands have these two DHT Ops
-
   allDhtOps.push({
     [DhtOpType.RegisterAgentActivity]: [
       record.signed_action.signature,
@@ -133,21 +130,25 @@ export function recordToDhtOps(record: Record): DhtOp[] {
         extractEntry(record),
       ],
     });
-    allDhtOps.push({
-      [DhtOpType.StoreEntry]: [
-        record.signed_action.signature,
-        record.signed_action.hashed.content,
-        extractEntry(record),
-      ],
-    });
+    if (isPublic(record.signed_action.hashed.content.entry_type)) {
+      allDhtOps.push({
+        [DhtOpType.StoreEntry]: [
+          record.signed_action.signature,
+          record.signed_action.hashed.content,
+          extractEntry(record),
+        ],
+      });
+    }
   } else if (record.signed_action.hashed.content.type === ActionType.Create) {
-    allDhtOps.push({
-      [DhtOpType.StoreEntry]: [
-        record.signed_action.signature,
-        record.signed_action.hashed.content,
-        extractEntry(record),
-      ],
-    });
+    if (isPublic(record.signed_action.hashed.content.entry_type)) {
+      allDhtOps.push({
+        [DhtOpType.StoreEntry]: [
+          record.signed_action.signature,
+          record.signed_action.hashed.content,
+          extractEntry(record),
+        ],
+      });
+    }
   } else if (record.signed_action.hashed.content.type === ActionType.Delete) {
     allDhtOps.push({
       [DhtOpType.RegisterDeletedBy]: [

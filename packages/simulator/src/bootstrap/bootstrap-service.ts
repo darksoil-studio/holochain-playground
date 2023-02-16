@@ -12,7 +12,7 @@ export class BootstrapService {
   cells: CellMap<Cell> = new CellMap();
 
   announceCell(cellId: CellId, cell: Cell) {
-    this.cells.put(cellId, cell);
+    this.cells.set(cellId, cell);
   }
 
   getNeighborhood(

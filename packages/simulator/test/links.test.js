@@ -1,11 +1,9 @@
 import { createConductors, demoHapp } from '../dist';
-import { expect } from '@esm-bundle/chai';
+import { assert, describe, expect, it } from 'vitest';
 import { sleep } from './utils';
 
 describe('Links', () => {
   it('create entry and link, get_links, delete_links', async function () {
-    this.timeout(0);
-
     const conductors = await createConductors(10, [], demoHapp());
     await sleep(10000);
 

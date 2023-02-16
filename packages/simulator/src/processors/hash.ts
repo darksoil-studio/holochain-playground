@@ -1,88 +1,18 @@
-import {
-  encodeHashToBase64,
-  AgentPubKey,
-  CellId,
-  DnaHash,
-  HoloHash,
-} from '@holochain/client';
+import { HoloHash } from '@holochain/client';
 // @ts-ignore
 import blake from 'blakejs';
-import { encode } from '@msgpack/msgpack';
-import { Base64 } from 'js-base64';
-import isEqual from 'lodash-es/isEqual';
 
 import { HoloHashMap } from '@holochain-open-dev/utils';
-
-export enum HashType {
-  AGENT,
-  ENTRY,
-  DHTOP,
-  ACTION,
-  DNA,
-}
-
-export const AGENT_PREFIX = 'hCAk';
-export const ENTRY_PREFIX = 'hCEk';
-export const DHTOP_PREFIX = 'hCQk';
-export const DNA_PREFIX = 'hC0k';
-export const ACTION_PREFIX = 'hCkk';
-
-function getPrefix(type: HashType) {
-  switch (type) {
-    case HashType.AGENT:
-      return AGENT_PREFIX;
-    case HashType.ENTRY:
-      return ENTRY_PREFIX;
-    case HashType.DHTOP:
-      return DHTOP_PREFIX;
-    case HashType.ACTION:
-      return ACTION_PREFIX;
-    case HashType.DNA:
-      return DNA_PREFIX;
-    default:
-      return '';
-  }
-}
-
-export function retype(hash: HoloHash, type: HashType): HoloHash {
-  return new Uint8Array([
-    ...Base64.toUint8Array(getPrefix(type)),
-    ...hash.slice(3),
-  ]);
-}
-
-export function isHash(hash: string): boolean {
-  return !![
-    AGENT_PREFIX,
-    ENTRY_PREFIX,
-    DHTOP_PREFIX,
-    DNA_PREFIX,
-    ACTION_PREFIX,
-  ].find((prefix) => hash.startsWith(`u${prefix}`));
-}
-
-// From https://github.com/holochain/holochain/blob/dc0cb61d0603fa410ac5f024ed6ccfdfc29715b3/crates/holo_hash/src/encode.rs
-export function hash(content: any, type: HashType): HoloHash {
-  const bytesHash: Uint8Array = blake.blake2b(encode(content), null, 32);
-
-  const fullhash = new Uint8Array([
-    ...Base64.toUint8Array(getPrefix(type)),
-    ...bytesHash,
-    ...locationBytes(bytesHash),
-  ]);
-
-  return fullhash;
-}
 
 const hashLocationCache: HoloHashMap<HoloHash, Uint8Array> = new HoloHashMap();
 
 export function location(bytesHash: HoloHash): number {
-  let bytes;
+  let bytes: Uint8Array;
   if (hashLocationCache.has(bytesHash)) {
     bytes = hashLocationCache.get(bytesHash);
   } else {
     bytes = locationBytes(bytesHash);
-    hashLocationCache.put(bytesHash, bytes);
+    hashLocationCache.set(bytesHash, bytes);
   }
   const view = new DataView(bytes.buffer, 0);
   const location = wrap(view.getUint32(0, false));
@@ -136,16 +66,4 @@ export function wrap(uint: number): number {
   if (uint < 0) return 1 + MAX_UINT + uint;
   if (uint > MAX_UINT) return uint - MAX_UINT;
   return uint;
-}
-
-export function getHashType(hash: HoloHash): HashType {
-  const hashExt = encodeHashToBase64(hash).slice(1, 5);
-
-  if (isEqual(hashExt, AGENT_PREFIX)) return HashType.AGENT;
-  if (isEqual(hashExt, DNA_PREFIX)) return HashType.DNA;
-  if (isEqual(hashExt, DHTOP_PREFIX)) return HashType.DHTOP;
-  if (isEqual(hashExt, ACTION_PREFIX)) return HashType.ACTION;
-  if (isEqual(hashExt, ENTRY_PREFIX)) return HashType.ENTRY;
-
-  return HashType.ENTRY;
 }

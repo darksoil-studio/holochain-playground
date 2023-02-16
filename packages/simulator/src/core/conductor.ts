@@ -7,10 +7,16 @@ import {
   encodeHashToBase64,
 } from '@holochain/client';
 import cloneDeepWith from 'lodash-es/cloneDeepWith';
-import { CellMap, HoloHashMap } from '@holochain-open-dev/utils';
+import isEqual from 'lodash-es/isEqual';
+import {
+  hash,
+  isHash,
+  HashType,
+  CellMap,
+  HoloHashMap,
+} from '@holochain-open-dev/utils';
 
 import { Cell, getCellId } from '../core/cell';
-import { areEqual, hash, HashType, isHash } from '../processors/hash';
 import { Network, NetworkState } from './network/network';
 
 import {
@@ -61,7 +67,7 @@ export class Conductor {
     this.cells = new CellMap();
 
     for (const [cellId, cellState] of state.cellsState.entries()) {
-      this.cells.put(cellId, new Cell(cellState, this));
+      this.cells.set(cellId, new Cell(cellState, this));
     }
   }
 
@@ -101,7 +107,7 @@ export class Conductor {
     const cellsState: CellMap<CellState> = new CellMap();
 
     for (const [cellId, cell] of this.cells.entries()) {
-      cellsState.put(cellId, cell.getState());
+      cellsState.set(cellId, cell.getState());
     }
 
     return {
@@ -140,7 +146,7 @@ export class Conductor {
   setCounterfeitDna(cellId: CellId, dna: SimulatedDna) {
     if (!this.badAgent) throw new Error('This is not a bad agent');
 
-    this.badAgent.counterfeitDnas.put(cellId, dna);
+    this.badAgent.counterfeitDnas.set(cellId, dna);
   }
 
   /** Admin API */
@@ -184,11 +190,11 @@ export class Conductor {
 
     const newDnaHash = hashDna(dna);
 
-    if (areEqual(newDnaHash, hashOfDnaToClone))
+    if (isEqual(newDnaHash, hashOfDnaToClone))
       throw new Error(
         `Trying to clone a dna would create exactly the same DNA`
       );
-    this.registeredDnas.put(newDnaHash, dna);
+    this.registeredDnas.set(newDnaHash, dna);
 
     const cell = await this.createCell(
       dna,
@@ -225,7 +231,7 @@ export class Conductor {
           );
       } else if (typeof dna.dna === 'object') {
         dnaHash = hashDna(dna.dna);
-        this.registeredDnas.put(dnaHash, dna.dna);
+        this.registeredDnas.set(dnaHash, dna.dna);
       } else {
         throw new Error(
           'Bad DNA Slot: you must pass in the hash of the dna or the simulated Dna object'
@@ -258,7 +264,7 @@ export class Conductor {
     const cellId: CellId = [newDnaHash, agentPubKey];
     const cell = await Cell.create(this, cellId, membraneProof);
 
-    this.cells.put(cellId, cell);
+    this.cells.set(cellId, cell);
 
     this.emit(ConductorSignalType.CellsChanged);
 
@@ -298,6 +304,7 @@ export class Conductor {
     const serializedResult = cloneDeepWith(result, (value) => {
       if (
         typeof value === 'object' &&
+        value &&
         value.buffer &&
         ArrayBuffer.isView(value)
       ) {

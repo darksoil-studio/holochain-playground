@@ -13,19 +13,19 @@
     "gh-pages": "npm run build && gh-pages -d ./dist -b gh-pages"
   },
   "dependencies": {
-    "@holochain-open-dev/core-types": "^0.6.3",
+    "@holochain-open-dev/core-types": "^0.6.6",
+    "@holochain-open-dev/stores": "^0.3.0",
     "@holochain-playground/elements": "0.0.1",
     "@holochain-playground/golden-layout": "0.0.1",
     "@holochain-playground/simulator": "0.0.1",
     "@open-wc/scoped-elements": "^2.1.2",
     "@scoped-elements/golden-layout": "^0.0.4",
-    "@scoped-elements/material-web": "^0.0.16",
+    "@scoped-elements/material-web": "^0.1.0",
     "@webcomponents/scoped-custom-element-registry": "^0.0.5",
     "golden-layout": "^2.4.0",
     "lit": "^2.0.2",
     "lodash-es": "^4.17.21",
-    "socket.io-client": "^4.4.0",
-    "svelte": "^3.44.2"
+    "socket.io-client": "^4.4.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.15.8",
