@@ -51,7 +51,7 @@ export function sourceChainNodes(cellStore: CellStore<any>, records: Record[]) {
     const action: SignedActionHashed = record.signed_action;
     const actionHash = encodeHashToBase64(action.hashed.hash);
 
-    if ((record.entry as any).Present) {
+    if (extractEntry(record)) {
       const newEntryAction = action.hashed.content as NewEntryAction;
       const entryHash = encodeHashToBase64(newEntryAction.entry_hash);
       const entryNodeId = `${actionHash}:${entryHash}`;
