@@ -24,7 +24,7 @@
   "devDependencies": {
     "@babel/core": "^7.15.5",
     "@babel/preset-env": "^7.15.6",
-    "@holochain-playground/cli-client": "0.0.1",
+    "@holochain-playground/cli-client": "0.1.0",
     "@mdi/font": "5.9.55",
     "@types/body-parser": "^1.19.0",
     "@types/dotenv": "^8.2.0",
