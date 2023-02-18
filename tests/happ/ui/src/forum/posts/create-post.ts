@@ -8,8 +8,8 @@ import { Snackbar } from '@material/mwc-snackbar';
 
 import '@material/mwc-textfield';
 import '@material/mwc-textarea';
-import { clientContext } from '../../contexts';
-import { Post } from './types';
+import { clientContext } from '../../contexts.js';
+import { Post } from './types.js';
 
 @customElement('create-post')
 export class CreatePost extends LitElement {

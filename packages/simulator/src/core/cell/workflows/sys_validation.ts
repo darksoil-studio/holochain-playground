@@ -12,12 +12,17 @@ import {
   EntryType,
 } from '@holochain/client';
 
-import { ValidationLimboStatus } from '../state';
-import { getValidationLimboDhtOps } from '../dht/get';
-import { putValidationLimboValue } from '../dht/put';
-import { app_validation_task } from './app_validation';
-import { Workflow, WorkflowReturn, WorkflowType, Workspace } from './workflows';
-import { P2pCell } from '../../network/p2p-cell';
+import { ValidationLimboStatus } from '../state.js';
+import { getValidationLimboDhtOps } from '../dht/get.js';
+import { putValidationLimboValue } from '../dht/put.js';
+import { app_validation_task } from './app_validation.js';
+import {
+  Workflow,
+  WorkflowReturn,
+  WorkflowType,
+  Workspace,
+} from './workflows.js';
+import { P2pCell } from '../../network/p2p-cell.js';
 import {
   author_key_is_valid,
   check_app_entry_type,
@@ -31,11 +36,11 @@ import {
   check_prev_timestamp,
   check_update_reference,
   verify_action_signature,
-} from '../sys_validate';
-import { GetStrategy } from '../../../types';
-import { Cascade } from '../cascade/cascade';
-import { extractEntry, getAppEntryType } from '../utils';
-import { isPublic } from '../source-chain/utils';
+} from '../sys_validate/index.js';
+import { GetStrategy } from '../../../types.js';
+import { Cascade } from '../cascade/cascade.js';
+import { extractEntry, getAppEntryType } from '../utils.js';
+import { isPublic } from '../source-chain/utils.js';
 
 // From https://github.com/holochain/holochain/blob/develop/crates/holochain/src/core/workflow/sys_validation_workflow.rs
 export const sys_validation = async (

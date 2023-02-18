@@ -3,7 +3,7 @@ import { html, LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
 import { IconButton } from '@scoped-elements/material-web';
 
-import { sharedStyles } from '../utils/shared-styles';
+import { sharedStyles } from '../utils/shared-styles.js';
 
 export class ExpandableLine extends ScopedElementsMixin(LitElement) {
   @property({ type: Boolean })

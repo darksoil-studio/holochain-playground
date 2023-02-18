@@ -12,7 +12,7 @@ import {
   Record,
   ActionHashed,
 } from '@holochain/client';
-import isEqual from 'lodash-es/isEqual';
+import isEqual from 'lodash-es/isEqual.js';
 import {
   deriveStore,
   derived,
@@ -23,8 +23,8 @@ import {
 } from '@holochain-open-dev/stores';
 import { HashType, hash, CellMap } from '@holochain-open-dev/utils';
 
-import { PlaygroundMode } from './mode';
-import { mapDerive } from './utils';
+import { PlaygroundMode } from './mode.js';
+import { mapDerive } from './utils.js';
 
 export abstract class CellStore<T extends PlaygroundMode> {
   abstract sourceChain: Readable<Record[]>;

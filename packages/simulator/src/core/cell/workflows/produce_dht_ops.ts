@@ -1,9 +1,9 @@
 import { hash, HashType } from '@holochain-open-dev/utils';
-import { getNewActions } from '../source-chain/get';
-import { getRecord } from '../source-chain/utils';
-import { recordToDhtOps } from '../utils';
-import { publish_dht_ops_task } from './publish_dht_ops';
-import { Workflow, WorkflowReturn, WorkflowType, Workspace } from './workflows';
+import { getNewActions } from '../source-chain/get.js';
+import { getRecord } from '../source-chain/utils.js';
+import { recordToDhtOps } from '../utils.js';
+import { publish_dht_ops_task } from './publish_dht_ops.js';
+import { Workflow, WorkflowReturn, WorkflowType, Workspace } from './workflows.js';
 
 // From https://github.com/holochain/holochain/blob/develop/crates/holochain/src/core/workflow/produce_dht_ops_workflow.rs
 export const produce_dht_ops = async (

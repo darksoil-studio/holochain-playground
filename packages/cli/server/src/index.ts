@@ -1,7 +1,7 @@
 //@ts-ignore
 import semver from 'semver';
 import chalk from 'chalk';
-import { launchApp } from './app';
+import { launchApp } from './app.js';
 
 const pkg = require('../package.json');
 

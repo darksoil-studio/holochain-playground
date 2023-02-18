@@ -1,9 +1,8 @@
 import { AgentPubKey } from '@holochain/client';
-import { areEqual } from '../../processors/hash';
+import { areEqual } from '../../processors/hash.js';
 
-
-import { Cell } from '../cell';
-import { NetworkRequest } from './network-request';
+import { Cell } from '../cell/cell.js';
+import { NetworkRequest } from './network-request.js';
 
 export class Connection {
   private _closed = false;
@@ -18,8 +17,8 @@ export class Connection {
 
   constructor(public opener: Cell, public receiver: Cell) {
     if (
-      opener.p2p.badAgents.find(a => areEqual(a, receiver.agentPubKey)) ||
-      receiver.p2p.badAgents.find(a => areEqual(a, opener.agentPubKey))
+      opener.p2p.badAgents.find((a) => areEqual(a, receiver.agentPubKey)) ||
+      receiver.p2p.badAgents.find((a) => areEqual(a, opener.agentPubKey))
     ) {
       throw new Error('Connection closed!');
     }

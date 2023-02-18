@@ -9,7 +9,7 @@ import {
 import { CellId } from '@holochain/client';
 import { ReactiveController, ReactiveElement } from 'lit';
 
-import { cellChanges } from '../store/utils';
+import { cellChanges } from '../store/utils.js';
 
 export interface MiddlewareTypes {
   before?: Middleware<any>;

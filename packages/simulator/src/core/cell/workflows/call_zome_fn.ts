@@ -8,24 +8,24 @@ import {
 } from '@holochain/client';
 import { cloneDeep } from 'lodash-es';
 
-import { SimulatedZome } from '../../../dnas/simulated-dna';
-import { areEqual } from '../../../processors/hash';
-import { GetStrategy } from '../../../types';
-import { BadAgentConfig } from '../../bad-agent';
-import { buildZomeFunctionContext } from '../../hdk/context';
-import { HostFnWorkspace } from '../../hdk/host-fn';
-import { Cascade } from '../cascade/cascade';
-import { getTipOfChain, valid_cap_grant } from '../source-chain/utils';
-import { CellState } from '../state';
-import { ValidationOutcome } from '../sys_validate/types';
+import { SimulatedZome } from '../../../dnas/simulated-dna.js';
+import { areEqual } from '../../../processors/hash.js';
+import { GetStrategy } from '../../../types.js';
+import { BadAgentConfig } from '../../bad-agent.js';
+import { buildZomeFunctionContext } from '../../hdk/context.js';
+import { HostFnWorkspace } from '../../hdk/host-fn.js';
+import { Cascade } from '../cascade/cascade.js';
+import { getTipOfChain, valid_cap_grant } from '../source-chain/utils.js';
+import { CellState } from '../state.js';
+import { ValidationOutcome } from '../sys_validate/types.js';
 import {
   run_create_link_validation_callback,
   run_delete_link_validation_callback,
   run_validation_callback_direct,
-} from './app_validation';
-import { produce_dht_ops_task } from './produce_dht_ops';
-import { sys_validate_record } from './sys_validation';
-import { Workflow, WorkflowType, Workspace } from './workflows';
+} from './app_validation.js';
+import { produce_dht_ops_task } from './produce_dht_ops.js';
+import { sys_validate_record } from './sys_validation.js';
+import { Workflow, WorkflowType, Workspace } from './workflows.js';
 
 /**
  * Calls the zome function of the cell DNA

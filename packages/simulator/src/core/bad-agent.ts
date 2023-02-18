@@ -1,5 +1,5 @@
 import { CellMap } from '@holochain-open-dev/utils';
-import { SimulatedDna } from '../dnas/simulated-dna';
+import { SimulatedDna } from '../dnas/simulated-dna.js';
 
 export interface BadAgentConfig {
   disable_validation_before_publish: boolean;

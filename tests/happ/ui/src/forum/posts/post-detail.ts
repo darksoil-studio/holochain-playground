@@ -9,10 +9,10 @@ import '@material/mwc-icon-button';
 import '@material/mwc-snackbar';
 import { Snackbar } from '@material/mwc-snackbar';
 
-import './edit-post';
+import './edit-post.js';
 
-import { clientContext } from '../../contexts';
-import { Post } from './types';
+import { clientContext } from '../../contexts.js';
+import { Post } from './types.js';
 
 @customElement('post-detail')
 export class PostDetail extends LitElement {

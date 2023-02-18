@@ -1,6 +1,6 @@
 import { createContext } from '@lit-labs/context';
-import { PlaygroundStore } from '../store/playground-store';
-import { PlaygroundMode } from '../store/mode';
+import { PlaygroundStore } from '../store/playground-store.js';
+import { PlaygroundMode } from '../store/mode.js';
 
 
 export const playgroundContext = createContext<PlaygroundStore<any>>(

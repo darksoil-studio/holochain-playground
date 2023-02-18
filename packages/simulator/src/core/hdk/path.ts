@@ -1,4 +1,4 @@
-import { Hdk } from './context';
+import { Hdk } from './context.js';
 
 export const ensure =
   (hdk: Hdk) =>

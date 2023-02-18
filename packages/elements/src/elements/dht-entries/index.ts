@@ -24,14 +24,14 @@ import {
 import { CellMap } from '@holochain-open-dev/utils';
 import { CytoscapeCoseBilkent } from '@scoped-elements/cytoscape';
 
-import { allEntries } from './processors';
-import { sharedStyles } from '../utils/shared-styles';
-import { HelpButton } from '../helpers/help-button';
+import { allEntries } from './processors.js';
+import { sharedStyles } from '../utils/shared-styles.js';
+import { HelpButton } from '../helpers/help-button.js';
 
-import { cytoscapeConfig } from './graph';
-import { PlaygroundElement } from '../../base/playground-element';
+import { cytoscapeConfig } from './graph.js';
+import { PlaygroundElement } from '../../base/playground-element.js';
 import { CopiableHash } from '@holochain-open-dev/elements';
-import { SimulatedCellStore } from '../../store/simulated-playground-store';
+import { SimulatedCellStore } from '../../store/simulated-playground-store.js';
 
 /**
  * @element dht-entries

@@ -1,6 +1,6 @@
 import { CellMap } from '@holochain-open-dev/utils';
 import { CellId } from '@holochain/client';
-import isEqual from 'lodash-es/isEqual';
+import isEqual from 'lodash-es/isEqual.js';
 import { Readable, derived } from '@holochain-open-dev/stores';
 
 export function cellChanges(

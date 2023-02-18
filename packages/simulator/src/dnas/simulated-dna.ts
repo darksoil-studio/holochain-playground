@@ -8,12 +8,12 @@ import {
   Record,
 } from '@holochain/client';
 import { hash, HashType } from '@holochain-open-dev/utils';
-import { ValidationOutcome } from '../core/cell/sys_validate/types';
+import { ValidationOutcome } from '../core/cell/sys_validate/types.js';
 import {
   SimulatedValidateFunctionContext,
   SimulatedZomeFunctionContext,
-} from '../core/hdk';
-import { Dictionary } from '../types';
+} from '../core/hdk/index.js';
+import { Dictionary } from '../types.js';
 
 export interface SimulatedZomeFunctionArgument {
   name: string;

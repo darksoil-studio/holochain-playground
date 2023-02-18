@@ -3,10 +3,10 @@ import { state, customElement, property } from 'lit/decorators.js';
 import { AppAgentClient, AgentPubKey, EntryHash, ActionHash, Record } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import { Task } from '@lit-labs/task';
-import { clientContext } from '../../contexts';
+import { clientContext } from '../../contexts.js';
 import '@material/mwc-circular-progress';
 
-import './post-detail';
+import './post-detail.js';
 
 @customElement('all-posts')
 export class AllPosts extends LitElement {

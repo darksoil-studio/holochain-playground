@@ -14,14 +14,14 @@ import {
   Record,
   FullIntegrationStateDump,
 } from '@holochain/client';
-import isEqual from 'lodash-es/isEqual';
+import isEqual from 'lodash-es/isEqual.js';
 import { AGENT_PREFIX, CellMap } from '@holochain-open-dev/utils';
 import { Base64 } from 'js-base64';
 
-import { CellStore, ConductorStore, PlaygroundStore } from './playground-store';
-import { pollingStore } from './polling-store';
-import { PlaygroundMode } from './mode';
-import { cellChanges } from './utils';
+import { CellStore, ConductorStore, PlaygroundStore } from './playground-store.js';
+import { pollingStore } from './polling-store.js';
+import { PlaygroundMode } from './mode.js';
+import { cellChanges } from './utils.js';
 
 export class ConnectedCellStore extends CellStore<PlaygroundMode.Connected> {
   _state: Readable<FullStateDump | undefined>;

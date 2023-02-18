@@ -1,5 +1,5 @@
-/* import { Conductor } from '../core/conductor';
-import { hookUpConductors } from './message';
+/* import { Conductor } from '../core/conductor.js';
+import { hookUpConductors } from './message.js';
 
 export function downloadFile(name: string, blob: Blob) {
   const url = window.URL.createObjectURL(blob);

@@ -1,12 +1,12 @@
 import { CellMap } from '@holochain-open-dev/utils';
 import { AgentPubKey, AnyDhtHash, CellId, DnaHash } from '@holochain/client';
 
-import { Cell } from '../core/cell';
+import { Cell } from '../core/cell/cell.js';
 import {
   getClosestNeighbors,
   getFarthestNeighbors,
-} from '../core/network/utils';
-import { areEqual } from '../processors/hash';
+} from '../core/network/utils.js';
+import { areEqual } from '../processors/hash.js';
 
 export class BootstrapService {
   cells: CellMap<Cell> = new CellMap();

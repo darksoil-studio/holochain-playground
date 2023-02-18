@@ -15,21 +15,21 @@ import { Grid, GridColumn } from '@vaadin/grid';
 import { JsonViewer } from '@power-elements/json-viewer';
 import { StoreSubscriber } from 'lit-svelte-stores';
 import { derived } from 'svelte/store';
-import isEqual from 'lodash-es/isEqual';
+import isEqual from 'lodash-es/isEqual.js';
 
-import { sharedStyles } from '../utils/shared-styles';
-import { PlaygroundElement } from '../../base/playground-element';
-import { selectCell } from '../../base/selectors';
-import { HelpButton } from '../helpers/help-button';
-import { adminApi } from './admin-api';
-import { CallFns } from '../helpers/call-functions';
-import { CellStore, ConductorStore } from '../../store/playground-store';
-import { ConnectedConductorStore } from '../../store/connected-playground-store';
+import { sharedStyles } from '../utils/shared-styles.js';
+import { PlaygroundElement } from '../../base/playground-element.js';
+import { selectCell } from '../../base/selectors.js';
+import { HelpButton } from '../helpers/help-button.js';
+import { adminApi } from './admin-api.js';
+import { CallFns } from '../helpers/call-functions.js';
+import { CellStore, ConductorStore } from '../../store/playground-store.js';
+import { ConnectedConductorStore } from '../../store/connected-playground-store.js';
 import {
   SimulatedCellStore,
   SimulatedConductorStore,
   SimulatedPlaygroundStore,
-} from '../../store/simulated-playground-store';
+} from '../../store/simulated-playground-store.js';
 import { CopiableHash } from '@holochain-open-dev/elements';
 import { encodeHashToBase64 } from '@holochain/client';
 

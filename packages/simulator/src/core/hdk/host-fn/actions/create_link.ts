@@ -8,9 +8,9 @@ import {
 import {
   buildCreateLink,
   buildShh,
-} from '../../../cell/source-chain/builder-actions';
-import { putRecord } from '../../../cell/source-chain/put';
-import { HostFn, HostFnWorkspace } from '../../host-fn';
+} from '../../../cell/source-chain/builder-actions.js';
+import { putRecord } from '../../../cell/source-chain/put.js';
+import { HostFn, HostFnWorkspace } from '../../host-fn.js';
 
 export type CreateLinkFn = (args: {
   base: AnyDhtHash;

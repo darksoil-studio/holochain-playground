@@ -1,12 +1,12 @@
-import { IntegratedDhtOpsValue, ValidationStatus } from '../state';
-import { pullAllIntegrationLimboDhtOps } from '../dht/get';
+import { IntegratedDhtOpsValue, ValidationStatus } from '../state.js';
+import { pullAllIntegrationLimboDhtOps } from '../dht/get.js';
 import {
   putDhtOpData,
   putDhtOpMetadata,
   putDhtOpToIntegrated,
-} from '../dht/put';
-import { Workflow, WorkflowReturn, WorkflowType, Workspace } from './workflows';
-import { validation_receipt_task } from './validation_receipt';
+} from '../dht/put.js';
+import { Workflow, WorkflowReturn, WorkflowType, Workspace } from './workflows.js';
+import { validation_receipt_task } from './validation_receipt.js';
 
 // From https://github.com/holochain/holochain/blob/develop/crates/holochain/src/core/workflow/integrate_dht_ops_workflow.rs
 export const integrate_dht_ops = async (

@@ -10,8 +10,8 @@ import '@material/mwc-snackbar';
 import { Snackbar } from '@material/mwc-snackbar';
 
 
-import { clientContext } from '../../contexts';
-import { Comment } from './types';
+import { clientContext } from '../../contexts.js';
+import { Comment } from './types.js';
 
 @customElement('comment-detail')
 export class CommentDetail extends LitElement {

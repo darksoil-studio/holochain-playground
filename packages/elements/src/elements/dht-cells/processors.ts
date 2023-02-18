@@ -17,9 +17,9 @@ import {
   NewEntryAction,
   encodeHashToBase64,
 } from '@holochain/client';
-import isEqual from 'lodash-es/isEqual';
-import { CellStore } from '../../store/playground-store';
-import { SimulatedCellStore } from '../../store/simulated-playground-store';
+import isEqual from 'lodash-es/isEqual.js';
+import { CellStore } from '../../store/playground-store.js';
+import { SimulatedCellStore } from '../../store/simulated-playground-store.js';
 
 export function dhtCellsNodes(
   cells: CellMap<CellStore<any>>,

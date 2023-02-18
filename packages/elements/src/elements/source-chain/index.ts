@@ -4,7 +4,7 @@ import { StoreSubscriber } from 'lit-svelte-stores';
 import { CytoscapeDagre } from '@scoped-elements/cytoscape';
 
 import { Card } from '@scoped-elements/material-web';
-import isEqual from 'lodash-es/isEqual';
+import isEqual from 'lodash-es/isEqual.js';
 import {
   decodeHashFromBase64,
   encodeHashToBase64,
@@ -12,12 +12,12 @@ import {
 } from '@holochain/client';
 import { CopiableHash } from '@holochain-open-dev/elements';
 
-import { sourceChainNodes } from './processors';
-import { sharedStyles } from '../utils/shared-styles';
+import { sourceChainNodes } from './processors.js';
+import { sharedStyles } from '../utils/shared-styles.js';
 
-import { HelpButton } from '../helpers/help-button';
-import { PlaygroundElement } from '../../base/playground-element';
-import { graphStyles } from './graph';
+import { HelpButton } from '../helpers/help-button.js';
+import { PlaygroundElement } from '../../base/playground-element.js';
+import { graphStyles } from './graph.js';
 
 /**
  * @element source-chain

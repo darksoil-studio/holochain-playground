@@ -17,9 +17,9 @@ import {
   CellMap,
 } from '@holochain-open-dev/utils';
 
-import { shortenStrRec } from '../utils/hash';
-import { DhtSummary, isEntryDeleted, summarizeDht } from './dht';
-import { getEntryContents, getLinkTagStr } from '../utils/utils';
+import { shortenStrRec } from '../utils/hash.js';
+import { DhtSummary, isEntryDeleted, summarizeDht } from './dht.js';
+import { getEntryContents, getLinkTagStr } from '../utils/utils.js';
 
 export function allEntries(
   dhtShards: CellMap<DhtOp[]>,

@@ -7,8 +7,8 @@ import '@material/mwc-snackbar';
 import { Snackbar } from '@material/mwc-snackbar';
 
 import '@material/mwc-textarea';
-import { clientContext } from '../../contexts';
-import { Comment } from './types';
+import { clientContext } from '../../contexts.js';
+import { Comment } from './types.js';
 
 @customElement('create-comment')
 export class CreateComment extends LitElement {

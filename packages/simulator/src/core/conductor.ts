@@ -1,34 +1,25 @@
-import {
-  CellId,
-  AgentPubKey,
-  DnaHash,
-  CapSecret,
-  decodeHashFromBase64,
-  encodeHashToBase64,
-} from '@holochain/client';
-import cloneDeepWith from 'lodash-es/cloneDeepWith';
-import isEqual from 'lodash-es/isEqual';
+import { CellId, AgentPubKey, DnaHash, CapSecret } from '@holochain/client';
+import isEqual from 'lodash-es/isEqual.js';
 import {
   hash,
-  isHash,
   HashType,
   CellMap,
   HoloHashMap,
 } from '@holochain-open-dev/utils';
 
-import { Cell, getCellId } from '../core/cell';
-import { Network, NetworkState } from './network/network';
+import { Cell, getCellId } from '../core/cell/index.js';
+import { Network, NetworkState } from './network/network.js';
 
 import {
   hashDna,
   InstalledHapps,
   SimulatedDna,
   SimulatedHappBundle,
-} from '../dnas/simulated-dna';
-import { CellState } from './cell/state';
-import { BootstrapService } from '../bootstrap/bootstrap-service';
-import { BadAgent, BadAgentConfig } from './bad-agent';
-import { Dictionary } from '../types';
+} from '../dnas/simulated-dna.js';
+import { CellState } from './cell/state.js';
+import { BootstrapService } from '../bootstrap/bootstrap-service.js';
+import { BadAgent, BadAgentConfig } from './bad-agent.js';
+import { Dictionary } from '../types.js';
 
 export interface ConductorState {
   // DnaHash / AgentPubKey

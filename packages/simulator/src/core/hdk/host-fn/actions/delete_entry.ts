@@ -1,6 +1,6 @@
 import { ActionHash } from '@holochain/client';
-import { HostFn, HostFnWorkspace } from '../../host-fn';
-import { common_delete } from './common/delete';
+import { HostFn, HostFnWorkspace } from '../../host-fn.js';
+import { common_delete } from './common/delete.js';
 
 export type DeleteEntryFn = (
   deletes_address: ActionHash

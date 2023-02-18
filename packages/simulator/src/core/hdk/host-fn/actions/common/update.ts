@@ -6,14 +6,14 @@ import {
   Record,
 } from '@holochain/client';
 
-import { GetStrategy } from '../../../../../types';
+import { GetStrategy } from '../../../../../types.js';
 import {
   buildDelete,
   buildShh,
   buildUpdate,
-} from '../../../../cell/source-chain/builder-actions';
-import { putRecord } from '../../../../cell/source-chain/put';
-import { HostFnWorkspace } from '../../../host-fn';
+} from '../../../../cell/source-chain/builder-actions.js';
+import { putRecord } from '../../../../cell/source-chain/put.js';
+import { HostFnWorkspace } from '../../../host-fn.js';
 
 export async function common_update(
   worskpace: HostFnWorkspace,

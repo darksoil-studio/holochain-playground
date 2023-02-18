@@ -10,25 +10,26 @@ import {
 } from '@holochain/client';
 import { isEqual } from 'lodash-es';
 
-import { MiddlewareExecutor } from '../../executor/middleware-executor';
-import { areEqual, location } from '../../processors/hash';
-import { GetLinksOptions, GetOptions } from '../../types';
-import { Cell, getSourceChainRecords } from '../cell';
+import { MiddlewareExecutor } from '../../executor/middleware-executor.js';
+import { areEqual, location } from '../../processors/hash.js';
+import { GetLinksOptions, GetOptions } from '../../types.js';
 import {
   GetRecordResponse,
   GetEntryResponse,
   GetLinksResponse,
-} from '../cell/cascade/types';
-import { Connection } from './connection';
-import { DhtArc } from './dht_arc';
-import { SimpleBloomMod } from './gossip/bloom';
-import { GossipData } from './gossip/types';
-import { Network } from './network';
+} from '../cell/cascade/types.js';
+import { Connection } from './connection.js';
+import { DhtArc } from './dht_arc.js';
+import { SimpleBloomMod } from './gossip/bloom/index.js';
+import { GossipData } from './gossip/types.js';
+import { Network } from './network.js';
 import {
   NetworkRequestInfo,
   NetworkRequest,
   NetworkRequestType,
-} from './network-request';
+} from './network-request.js';
+import { Cell } from '../cell/cell.js';
+import { getSourceChainRecords } from '../cell/index.js';
 
 export type P2pCellState = {
   neighbors: AgentPubKey[];

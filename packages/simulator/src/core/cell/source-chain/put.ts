@@ -1,7 +1,7 @@
 import { Record } from '@holochain/client';
 
-import { CellState } from '../state';
-import { extractEntry, hashEntry } from '../utils';
+import { CellState } from '../state.js';
+import { extractEntry, hashEntry } from '../utils.js';
 
 export const putRecord =
   (record: Record) =>

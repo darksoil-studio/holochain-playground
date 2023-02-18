@@ -2,7 +2,7 @@ import { DhtOpHash, ValidationReceipt } from '@holochain-open-dev/core-types';
 import { HoloHashMap } from '@holochain-open-dev/utils';
 import { AgentPubKey, DhtOp } from '@holochain/client';
 
-import { BadAction } from '../utils';
+import { BadAction } from '../utils.js';
 
 // From https://github.com/holochain/holochain/blob/develop/crates/kitsune_p2p/kitsune_p2p/src/types/gossip.rs
 

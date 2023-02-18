@@ -10,10 +10,10 @@ import { property, query } from 'lit/decorators.js';
 import { ScopedElementsMixin } from '@open-wc/scoped-elements';
 import { provide } from '@lit-labs/context';
 
-import { playgroundContext } from './context';
-import { PlaygroundStore } from '../store/playground-store';
-import { PlaygroundMode } from '../store/mode';
-import { sharedStyles } from '../elements/utils/shared-styles';
+import { playgroundContext } from './context.js';
+import { PlaygroundStore } from '../store/playground-store.js';
+import { PlaygroundMode } from '../store/mode.js';
+import { sharedStyles } from '../elements/utils/shared-styles.js';
 
 export abstract class BasePlaygroundContext<
   T extends PlaygroundMode,

@@ -9,8 +9,8 @@ import {
   getDhtOpAction,
 } from '@holochain/client';
 import { uniq } from 'lodash-es';
-import { distance, location, wrap } from '../../processors/hash';
-import { CellState } from '../cell';
+import { distance, location, wrap } from '../../processors/hash.js';
+import { CellState } from '../cell/state.js';
 
 export function getClosestNeighbors(
   peers: AgentPubKey[],

@@ -6,8 +6,8 @@ import { consume } from '@lit-labs/context';
 import '@material/mwc-circular-progress';
 import { Task } from '@lit-labs/task';
 
-import { clientContext } from '../../contexts';
-import './comment-detail';
+import { clientContext } from '../../contexts.js';
+import './comment-detail.js';
 
 @customElement('comments-for-post')
 export class CommentsForPost extends LitElement {

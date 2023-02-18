@@ -13,10 +13,10 @@ import {
   Update,
 } from '@holochain/client';
 
-import { EntryDef, SimulatedDna } from '../../../dnas/simulated-dna';
-import { areEqual } from '../../../processors/hash';
-import { Metadata } from '../state/metadata';
-import { hashEntry } from '../utils';
+import { EntryDef, SimulatedDna } from '../../../dnas/simulated-dna.js';
+import { areEqual } from '../../../processors/hash.js';
+import { Metadata } from '../state/metadata.js';
+import { hashEntry } from '../utils.js';
 
 // From https://github.com/holochain/holochain/blob/develop/crates/holochain/src/core/sys_validate.rs
 
@@ -148,7 +148,7 @@ export function check_new_entry_action(action: Action): void {
 export const MAX_ENTRY_SIZE = 16 * 1000 * 1000;
 
 export function check_entry_size(entry: Entry): void {
-  if (JSON.stringify(entry.entry).length > MAX_ENTRY_SIZE)
+  if ((entry.entry as Uint8Array).length > MAX_ENTRY_SIZE)
     throw new Error(`Entry size exceeds the MAX_ENTRY_SIZE`);
 }
 

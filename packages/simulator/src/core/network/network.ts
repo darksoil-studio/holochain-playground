@@ -1,11 +1,11 @@
 import { CellMap } from '@holochain-open-dev/utils';
 import { AgentPubKey, DnaHash } from '@holochain/client';
-import { BootstrapService } from '../../bootstrap/bootstrap-service';
-import { Cell } from '../cell/cell';
-import { Conductor } from '../conductor';
-import { P2pCell, P2pCellState } from '../network/p2p-cell';
-import { KitsuneP2p } from './kitsune_p2p';
-import { NetworkRequest } from './network-request';
+import { BootstrapService } from '../../bootstrap/bootstrap-service.js';
+import { Cell } from '../cell/cell.js';
+import { Conductor } from '../conductor.js';
+import { P2pCell, P2pCellState } from '../network/p2p-cell.js';
+import { KitsuneP2p } from './kitsune_p2p.js';
+import { NetworkRequest } from './network-request.js';
 
 export interface NetworkState {
   // P2pCellState by dna hash / agentPubKey

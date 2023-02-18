@@ -5,7 +5,7 @@ import { List, ListItem } from '@scoped-elements/material-web';
 import { GoldenLayoutDragSource } from '@scoped-elements/golden-layout';
 import { sharedStyles } from '@holochain-playground/elements';
 
-import { GOLDEN_LAYOUT_COMPONENTS } from './components';
+import { GOLDEN_LAYOUT_COMPONENTS } from './components.js';
 
 export class SimulatedPlaygroundGoldenLayoutMenu extends ScopedElementsMixin(
   LitElement

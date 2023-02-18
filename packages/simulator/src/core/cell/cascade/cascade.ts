@@ -15,12 +15,12 @@ import {
 } from '@holochain/client';
 import { getHashType, HashType } from '@holochain-open-dev/utils';
 
-import { areEqual } from '../../../processors/hash';
-import { GetLinksOptions, GetOptions, GetStrategy } from '../../../types';
-import { P2pCell } from '../../network/p2p-cell';
-import { computeDhtStatus, getLiveLinks } from '../dht/get';
-import { CellState } from '../state';
-import { GetRecordResponse, GetEntryResponse, Link } from './types';
+import { areEqual } from '../../../processors/hash.js';
+import { GetLinksOptions, GetOptions, GetStrategy } from '../../../types.js';
+import { P2pCell } from '../../network/p2p-cell.js';
+import { computeDhtStatus, getLiveLinks } from '../dht/get.js';
+import { CellState } from '../state.js';
+import { GetRecordResponse, GetEntryResponse, Link } from './types.js';
 
 // From https://github.com/holochain/holochain/blob/develop/crates/holochain_cascade/src/lib.rs#L1523
 

@@ -3,7 +3,7 @@ import { html, LitElement } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { ref } from 'lit/directives/ref.js';
 import { IconButton } from '@scoped-elements/material-web';
-import { sharedStyles } from '../utils/shared-styles';
+import { sharedStyles } from '../utils/shared-styles.js';
 
 export class EditableField extends ScopedElementsMixin(LitElement) {
   @property()

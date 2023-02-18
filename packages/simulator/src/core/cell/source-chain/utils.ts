@@ -21,10 +21,10 @@ import {
   AppEntryDef,
   EntryType,
 } from '@holochain/client';
-import { areEqual } from '../../../processors/hash';
+import { areEqual } from '../../../processors/hash.js';
 
-import { CellState } from '../state';
-import { getAllAuthoredActions } from './get';
+import { CellState } from '../state.js';
+import { getAllAuthoredActions } from './get.js';
 
 export function getTipOfChain(cellState: CellState): ActionHash {
   return cellState.sourceChain[cellState.sourceChain.length - 1];

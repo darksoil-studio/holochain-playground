@@ -1,4 +1,4 @@
-import isEqual from 'lodash-es/isEqual';
+import isEqual from 'lodash-es/isEqual.js';
 import {
   ValidationReceipt,
   EntryDhtStatus,
@@ -30,17 +30,17 @@ import {
   LinkMetaKey,
   LinkMetaVal,
   SysMetaVal,
-} from '../state/metadata';
+} from '../state/metadata.js';
 
 import {
   ValidationLimboValue,
   CellState,
   IntegrationLimboValue,
   IntegratedDhtOpsValue,
-} from '../state';
+} from '../state.js';
 
-import { getActionsForEntry } from './get';
-import { getEntry } from '../utils';
+import { getActionsForEntry } from './get.js';
+import { getEntry } from '../utils.js';
 
 export const putValidationLimboValue =
   (dhtOpHash: DhtOpHash, validationLimboValue: ValidationLimboValue) =>

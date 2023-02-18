@@ -1,4 +1,4 @@
-import { Middleware } from './middleware-executor';
+import { Middleware } from './middleware-executor.js';
 
 export const sleep = (ms: number) =>
   new Promise<void>(resolve => setTimeout(() => resolve(), ms));

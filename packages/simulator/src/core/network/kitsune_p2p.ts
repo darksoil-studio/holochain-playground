@@ -1,7 +1,7 @@
 import { AgentPubKey, AnyDhtHash, DnaHash } from '@holochain/client';
-import { Cell } from '../cell/cell';
-import { Network } from './network';
-import { NetworkRequest } from './network-request';
+import { Cell } from '../cell/cell.js';
+import { Network } from './network.js';
+import { NetworkRequest } from './network-request.js';
 
 export class KitsuneP2p {
   discover: Discover;

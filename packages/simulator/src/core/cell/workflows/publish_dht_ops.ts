@@ -2,9 +2,9 @@ import { DhtOpHash } from '@holochain-open-dev/core-types';
 import { HoloHashMap } from '@holochain-open-dev/utils';
 import { DhtOp, HoloHash } from '@holochain/client';
 
-import { getNonPublishedDhtOps } from '../source-chain/utils';
-import { getDhtOpBasis } from '../utils';
-import { Workflow, WorkflowReturn, WorkflowType, Workspace } from './workflows';
+import { getNonPublishedDhtOps } from '../source-chain/utils.js';
+import { getDhtOpBasis } from '../utils.js';
+import { Workflow, WorkflowReturn, WorkflowType, Workspace } from './workflows.js';
 
 // From https://github.com/holochain/holochain/blob/develop/crates/holochain/src/core/workflow/publish_dht_ops_workflow.rs
 export const publish_dht_ops = async (

@@ -1,6 +1,6 @@
 import { AgentPubKey } from '@holochain/client';
-import { getCellId } from '../../cell/source-chain/utils';
-import { HostFn, HostFnWorkspace } from '../host-fn';
+import { getCellId } from '../../cell/source-chain/utils.js';
+import { HostFn, HostFnWorkspace } from '../host-fn.js';
 
 export interface AgentInfo {
   agent_initial_pubkey: AgentPubKey;

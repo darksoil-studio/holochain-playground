@@ -5,7 +5,7 @@ import {
   SignedActionHashed,
   Record,
 } from '@holochain/client';
-import { CellState } from './core/cell/state';
+import { CellState } from './core/cell/state.js';
 
 export function selectSourceChain(cellState: CellState): Record[] {
   const actionHashes = cellState.sourceChain;

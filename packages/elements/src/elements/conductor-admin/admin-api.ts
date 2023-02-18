@@ -4,9 +4,9 @@ import {
 } from '@holochain-playground/simulator';
 import { html } from 'lit';
 
-import { PlaygroundElement } from '../../base/playground-element';
-import { SimulatedConductorStore } from '../../store/simulated-playground-store';
-import { CallableFn } from '../helpers/call-functions';
+import { PlaygroundElement } from '../../base/playground-element.js';
+import { SimulatedConductorStore } from '../../store/simulated-playground-store.js';
+import { CallableFn } from '../helpers/call-functions.js';
 
 export function adminApi(
   element: PlaygroundElement,

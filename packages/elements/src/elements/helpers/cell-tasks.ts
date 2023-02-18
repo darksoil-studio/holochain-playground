@@ -22,13 +22,13 @@ import {
   ListItem,
 } from '@scoped-elements/material-web';
 
-import { PlaygroundElement } from '../../base/playground-element';
-import { sharedStyles } from '../utils/shared-styles';
+import { PlaygroundElement } from '../../base/playground-element.js';
+import { sharedStyles } from '../utils/shared-styles.js';
 import {
   SimulatedCellStore,
   SimulatedPlaygroundStore,
-} from '../../store/simulated-playground-store';
-import { MiddlewareController } from '../../base/middleware-controller';
+} from '../../store/simulated-playground-store.js';
+import { MiddlewareController } from '../../base/middleware-controller.js';
 
 export class CellTasks extends PlaygroundElement<SimulatedPlaygroundStore> {
   /** Public properties */

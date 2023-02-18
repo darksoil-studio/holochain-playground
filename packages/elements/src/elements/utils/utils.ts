@@ -1,7 +1,7 @@
 import { Entry } from '@holochain/client';
 import { decode } from '@msgpack/msgpack';
 
-import { shortenStrRec } from './hash';
+import { shortenStrRec } from './hash.js';
 
 export const sleep = (ms: number) =>
   new Promise<void>((r) => setTimeout(() => r(), ms));

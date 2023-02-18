@@ -18,9 +18,9 @@ import {
 } from '@holochain/client';
 import { hash, HashType } from '@holochain-open-dev/utils';
 
-import { CellState } from '../state';
-import { hashEntry } from '../utils';
-import { getAuthor, getNextActionSeq, getTipOfChain } from './utils';
+import { CellState } from '../state.js';
+import { hashEntry } from '../utils.js';
+import { getAuthor, getNextActionSeq, getTipOfChain } from './utils.js';
 
 export function buildShh(action: Action): SignedActionHashed {
   return {
@@ -61,7 +61,6 @@ export function buildCreate(
   entry_type: EntryType
 ): Create {
   const entry_hash = hashEntry(entry);
-
   const create: Create = {
     ...buildCommon(state),
     entry_hash,

@@ -18,9 +18,9 @@ import {
   Writable,
 } from '@holochain-open-dev/stores';
 
-import { PlaygroundMode } from './mode';
-import { CellStore, ConductorStore, PlaygroundStore } from './playground-store';
-import { cellChanges } from './utils';
+import { PlaygroundMode } from './mode.js';
+import { CellStore, ConductorStore, PlaygroundStore } from './playground-store.js';
+import { cellChanges } from './utils.js';
 
 export class SimulatedCellStore extends CellStore<PlaygroundMode.Simulated> {
   sourceChain: Writable<Record[]> = writable([]);

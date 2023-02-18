@@ -1,8 +1,8 @@
 import { encodeHashToBase64, EntryHash } from '@holochain/client';
 
-import { GetLinksOptions, GetStrategy } from '../../../types';
-import { Link } from '../../cell/cascade/types';
-import { HostFn, HostFnWorkspace } from '../host-fn';
+import { GetLinksOptions, GetStrategy } from '../../../types.js';
+import { Link } from '../../cell/cascade/types.js';
+import { HostFn, HostFnWorkspace } from '../host-fn.js';
 
 export type GetLinksFn = (
   base_address: EntryHash,

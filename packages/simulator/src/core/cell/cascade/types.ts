@@ -9,7 +9,7 @@ import {
   DeleteLink,
   EntryHash,
 } from '@holochain/client';
-import { ValidationStatus } from '../state';
+import { ValidationStatus } from '../state.js';
 
 export interface GetEntryResponse {
   entry: Entry;

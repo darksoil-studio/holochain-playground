@@ -1,10 +1,10 @@
 import { PropertyValues } from 'lit';
 import { property } from 'lit/decorators.js';
-import { ConnectedPlaygroundStore } from '../store/connected-playground-store';
-import { PlaygroundMode } from '../store/mode';
-import { PlaygroundStore } from '../store/playground-store';
+import { ConnectedPlaygroundStore } from '../store/connected-playground-store.js';
+import { PlaygroundMode } from '../store/mode.js';
+import { PlaygroundStore } from '../store/playground-store.js';
 
-import { BasePlaygroundContext } from './base-playground-context';
+import { BasePlaygroundContext } from './base-playground-context.js';
 
 export class ConnectedPlaygroundContext extends BasePlaygroundContext<
   PlaygroundMode.Connected,

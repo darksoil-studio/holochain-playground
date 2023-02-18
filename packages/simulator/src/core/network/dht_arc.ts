@@ -1,4 +1,4 @@
-import { shortest_arc_distance } from '../../processors/hash';
+import { shortest_arc_distance } from '../../processors/hash.js';
 
 export interface DhtArc {
   center_loc: number;

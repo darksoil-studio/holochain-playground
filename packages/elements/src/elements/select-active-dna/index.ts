@@ -2,10 +2,10 @@ import { html, css } from 'lit';
 import { ListItem, Card, Select } from '@scoped-elements/material-web';
 import { StoreSubscriber } from 'lit-svelte-stores';
 import { DnaHash, encodeHashToBase64 } from '@holochain/client';
-import isEqual from 'lodash-es/isEqual';
+import isEqual from 'lodash-es/isEqual.js';
 
-import { PlaygroundElement } from '../../base/playground-element';
-import { sharedStyles } from '../utils/shared-styles';
+import { PlaygroundElement } from '../../base/playground-element.js';
+import { sharedStyles } from '../utils/shared-styles.js';
 
 export class SelectActiveDna extends PlaygroundElement {
   _allDnas = new StoreSubscriber(this, () => this.store?.allDnas());

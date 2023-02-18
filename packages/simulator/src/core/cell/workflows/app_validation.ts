@@ -20,36 +20,36 @@ import {
   ValidationStatus,
   CellState,
   ValidationLimboValue,
-} from '../state';
-import { getValidationLimboDhtOps } from '../dht/get';
+} from '../state.js';
+import { getValidationLimboDhtOps } from '../dht/get.js';
 import {
   deleteValidationLimboValue,
   putIntegrationLimboValue,
   putValidationLimboValue,
   putValidationReceipt,
-} from '../dht/put';
-import { integrate_dht_ops_task } from './integrate_dht_ops';
+} from '../dht/put.js';
+import { integrate_dht_ops_task } from './integrate_dht_ops.js';
 import {
   Workflow,
   workflowPriority,
   WorkflowReturn,
   WorkflowType,
   Workspace,
-} from './workflows';
+} from './workflows.js';
 import {
   EntryDef,
   SimulatedDna,
   SimulatedZome,
-} from '../../../dnas/simulated-dna';
+} from '../../../dnas/simulated-dna.js';
 
-import { ValidationOutcome } from '../sys_validate/types';
-import { GetStrategy } from '../../../types';
-import { DepsMissing } from './sys_validation';
-import { HostFnWorkspace } from '../../hdk/host-fn';
-import { buildValidationFunctionContext } from '../../hdk/context';
-import { BadAgentConfig } from '../../bad-agent';
-import { Cascade } from '../cascade/cascade';
-import { getEntry } from '../utils';
+import { ValidationOutcome } from '../sys_validate/types.js';
+import { GetStrategy } from '../../../types.js';
+import { DepsMissing } from './sys_validation.js';
+import { HostFnWorkspace } from '../../hdk/host-fn.js';
+import { buildValidationFunctionContext } from '../../hdk/context.js';
+import { BadAgentConfig } from '../../bad-agent.js';
+import { Cascade } from '../cascade/cascade.js';
+import { getEntry } from '../utils.js';
 import { isEqual } from 'lodash-es';
 
 // From https://github.com/holochain/holochain/blob/develop/crates/holochain/src/core/workflow/app_validation_workflow.rs

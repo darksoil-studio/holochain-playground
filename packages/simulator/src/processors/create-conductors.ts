@@ -1,6 +1,6 @@
-import { BootstrapService } from '../bootstrap/bootstrap-service';
-import { Conductor } from '../core/conductor';
-import { SimulatedHappBundle } from '../dnas/simulated-dna';
+import { BootstrapService } from '../bootstrap/bootstrap-service.js';
+import { Conductor } from '../core/conductor.js';
+import { SimulatedHappBundle } from '../dnas/simulated-dna.js';
 import { uniqueNamesGenerator, Config, names } from 'unique-names-generator';
 
 const config: Config = {

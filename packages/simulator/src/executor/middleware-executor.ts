@@ -1,5 +1,5 @@
-import { Dictionary } from '../types';
-import { Task } from './task';
+import { Dictionary } from '../types.js';
+import { Task } from './task.js';
 
 export type Middleware<P> = (payload: P) => Promise<void>;
 export type SuccessMiddleware<P> = (payload: P, result: any) => Promise<void>;

@@ -1,5 +1,5 @@
 import { AgentPubKey, CapSecret } from '@holochain/client';
-import { HostFn, HostFnWorkspace } from '../host-fn';
+import { HostFn, HostFnWorkspace } from '../host-fn.js';
 
 export type CallRemoteFn = (args: {
   agent: AgentPubKey;

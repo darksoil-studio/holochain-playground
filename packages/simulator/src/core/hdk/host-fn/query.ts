@@ -1,8 +1,8 @@
 import { NewEntryAction, Record } from '@holochain/client';
 
-import { QueryFilter } from '../../../types';
-import { getAllAuthoredActions } from '../../cell/source-chain/get';
-import { HostFn, HostFnWorkspace } from '../host-fn';
+import { QueryFilter } from '../../../types.js';
+import { getAllAuthoredActions } from '../../cell/source-chain/get.js';
+import { HostFn, HostFnWorkspace } from '../host-fn.js';
 
 export type QueryFn = (filter: QueryFilter) => Promise<Array<Record>>;
 

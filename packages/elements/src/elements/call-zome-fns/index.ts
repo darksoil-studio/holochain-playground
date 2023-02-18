@@ -10,7 +10,7 @@ import {
 import { CopiableHash } from '@holochain-open-dev/elements';
 import { CellMap, isHash } from '@holochain-open-dev/utils';
 
-import { sharedStyles } from '../utils/shared-styles';
+import { sharedStyles } from '../utils/shared-styles.js';
 import {
   CircularProgress,
   Icon,
@@ -19,23 +19,23 @@ import {
   Card,
 } from '@scoped-elements/material-web';
 
-import { selectCell } from '../../base/selectors';
-import { PlaygroundElement } from '../../base/playground-element';
+import { selectCell } from '../../base/selectors.js';
+import { PlaygroundElement } from '../../base/playground-element.js';
 import {
   CallableFn,
   CallableFnArgument,
   CallFns,
-} from '../helpers/call-functions';
+} from '../helpers/call-functions.js';
 import {
   SimulatedCellStore,
   SimulatedConductorStore,
   SimulatedPlaygroundStore,
-} from '../../store/simulated-playground-store';
+} from '../../store/simulated-playground-store.js';
 import { StoreSubscriber } from 'lit-svelte-stores';
-import { ZomeFunctionResult } from './types';
+import { ZomeFunctionResult } from './types.js';
 import { JsonViewer } from '@power-elements/json-viewer';
-import { ExpandableLine } from '../helpers/expandable-line';
-import { shortenStrRec } from '../utils/hash';
+import { ExpandableLine } from '../helpers/expandable-line.js';
+import { shortenStrRec } from '../utils/hash.js';
 import { decodeHashFromBase64, encodeHashToBase64 } from '@holochain/client';
 import { cloneDeepWith } from 'lodash-es';
 

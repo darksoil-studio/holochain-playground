@@ -1,7 +1,7 @@
-import { SimulatedDna } from '../../../dnas/simulated-dna';
-import { BadAgentConfig } from '../../bad-agent';
-import { P2pCell } from '../../network/p2p-cell';
-import { CellState } from '../state';
+import { SimulatedDna } from '../../../dnas/simulated-dna.js';
+import { BadAgentConfig } from '../../bad-agent.js';
+import { P2pCell } from '../../network/p2p-cell.js';
+import { CellState } from '../state.js';
 
 export interface Workspace {
   state: CellState;

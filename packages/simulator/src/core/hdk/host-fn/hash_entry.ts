@@ -1,4 +1,5 @@
-import { Entry, EntryHash } from '@holochain/client';
+import { encodeHashToBase64, Entry, EntryHash } from '@holochain/client';
+import { encode } from '@msgpack/msgpack';
 import { hashEntry } from '../../cell/utils.js';
 import { HostFn, HostFnWorkspace } from '../host-fn.js';
 
@@ -8,6 +9,6 @@ export type HashEntryFn = (args: any) => Promise<EntryHash>;
 export const hash_entry: HostFn<HashEntryFn> =
   (worskpace: HostFnWorkspace): HashEntryFn =>
   async (args): Promise<EntryHash> => {
-    const entry: Entry = { entry_type: 'App', entry: args };
+    const entry: Entry = { entry_type: 'App', entry: encode(args) };
     return hashEntry(entry);
   };

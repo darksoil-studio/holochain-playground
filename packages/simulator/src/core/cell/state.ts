@@ -7,9 +7,9 @@ import {
   ActionHash,
   HoloHash,
 } from '@holochain/client';
-import { location } from '../../processors/hash';
-import { contains, DhtArc } from '../network/dht_arc';
-import { Metadata } from './state/metadata';
+import { location } from '../../processors/hash.js';
+import { contains, DhtArc } from '../network/dht_arc.js';
+import { Metadata } from './state/metadata.js';
 
 export interface CellState {
   dnaHash: DnaHash;

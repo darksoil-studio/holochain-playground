@@ -1,10 +1,10 @@
 import { DhtOpHash } from '@holochain-open-dev/core-types';
 import { HoloHashMap } from '@holochain-open-dev/utils';
-import { sleep } from '../../../../executor/delay-middleware';
-import { getValidationReceipts } from '../../../cell';
-import { P2pCell } from '../../p2p-cell';
-import { getBadActions } from '../../utils';
-import { GossipData, GossipDhtOpData } from '../types';
+import { sleep } from '../../../../executor/delay-middleware.js';
+import { getValidationReceipts } from '../../../cell/index.js';
+import { P2pCell } from '../../p2p-cell.js';
+import { getBadActions } from '../../utils.js';
+import { GossipData, GossipDhtOpData } from '../types.js';
 
 export const GOSSIP_INTERVAL_MS = 500;
 

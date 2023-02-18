@@ -1,12 +1,12 @@
 import { Update } from '@holochain/client';
-import { areEqual } from '../processors/hash';
+import { areEqual } from '../processors/hash.js';
 
-import { GetStrategy } from '../types';
+import { GetStrategy } from '../types.js';
 import {
   SimulatedDna,
   SimulatedHappBundle,
   SimulatedZome,
-} from './simulated-dna';
+} from './simulated-dna.js';
 
 export const demoEntriesZome: SimulatedZome = {
   name: 'demo_entries',

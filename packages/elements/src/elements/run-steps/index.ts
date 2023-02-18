@@ -12,12 +12,12 @@ import {
   CircularProgress,
 } from '@scoped-elements/material-web';
 
-import { sharedStyles } from '../utils/shared-styles';
-import { PlaygroundElement } from '../../base/playground-element';
+import { sharedStyles } from '../utils/shared-styles.js';
+import { PlaygroundElement } from '../../base/playground-element.js';
 import {
   SimulatedCellStore,
   SimulatedPlaygroundStore,
-} from '../../store/simulated-playground-store';
+} from '../../store/simulated-playground-store.js';
 
 export interface Step {
   title: (context: PlaygroundElement) => string;

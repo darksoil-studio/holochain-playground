@@ -25,17 +25,17 @@ import {
 import { uniqWith } from 'lodash-es';
 import { hash, HashType } from '@holochain-open-dev/utils';
 
-import { areEqual } from '../../../processors/hash';
+import { areEqual } from '../../../processors/hash.js';
 
-import { GetLinksResponse, Link } from '../cascade/types';
+import { GetLinksResponse, Link } from '../cascade/types.js';
 import {
   CellState,
   ValidationLimboStatus,
   ValidationLimboValue,
   IntegrationLimboValue,
   IntegratedDhtOpsValue,
-} from '../state';
-import { getSysMetaValActionHash, LinkMetaVal } from '../state/metadata';
+} from '../state.js';
+import { getSysMetaValActionHash, LinkMetaVal } from '../state/metadata.js';
 
 export function getValidationLimboDhtOps(
   state: CellState,

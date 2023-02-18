@@ -1,7 +1,7 @@
 import { property } from 'lit/decorators.js';
 import { ScopedElementsMixin } from '@open-wc/scoped-elements';
 import { css, LitElement, html, PropertyValues, TemplateResult } from 'lit';
-import isEqual from 'lodash-es/isEqual';
+import isEqual from 'lodash-es/isEqual.js';
 import {
   Button,
   Drawer,
@@ -12,7 +12,7 @@ import {
 } from '@scoped-elements/material-web';
 import { Dictionary } from '@holochain-playground/simulator';
 
-import { sharedStyles } from '../utils/shared-styles';
+import { sharedStyles } from '../utils/shared-styles.js';
 
 export type CallableFnArgument = { name: string; required?: boolean } & (
   | {

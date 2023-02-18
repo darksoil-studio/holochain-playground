@@ -1,4 +1,4 @@
-import { DepsMissing } from '../workflows/sys_validation';
+import { DepsMissing } from '../workflows/sys_validation.js';
 
 export type ValidationOutcome =
   | {

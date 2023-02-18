@@ -1,8 +1,8 @@
 import { Details } from '@holochain-open-dev/core-types';
 import { AnyDhtHash } from '@holochain/client';
 
-import { GetOptions, GetStrategy } from '../../../types';
-import { HostFn, HostFnWorkspace } from '../host-fn';
+import { GetOptions, GetStrategy } from '../../../types.js';
+import { HostFn, HostFnWorkspace } from '../host-fn.js';
 
 export type GetDetailsFn = (
   args: AnyDhtHash,

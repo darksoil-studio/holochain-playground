@@ -2,12 +2,12 @@ import { AgentPubKey, DhtOp } from '@holochain/client';
 import { HoloHashMap } from '@holochain-open-dev/utils';
 import { DhtOpHash } from '@holochain-open-dev/core-types';
 
-import { ValidationLimboValue, ValidationLimboStatus } from '../state';
-import { putValidationLimboValue } from '../dht/put';
-import { sys_validation_task } from './sys_validation';
-import { Workflow, WorkflowReturn, WorkflowType, Workspace } from './workflows';
-import { getDhtOpBasis } from '../utils';
-import { hasDhtOpBeenProcessed } from '../dht/get';
+import { ValidationLimboValue, ValidationLimboStatus } from '../state.js';
+import { putValidationLimboValue } from '../dht/put.js';
+import { sys_validation_task } from './sys_validation.js';
+import { Workflow, WorkflowReturn, WorkflowType, Workspace } from './workflows.js';
+import { getDhtOpBasis } from '../utils.js';
+import { hasDhtOpBeenProcessed } from '../dht/get.js';
 
 // From https://github.com/holochain/holochain/blob/develop/crates/holochain/src/core/workflow/incoming_dht_ops_workflow.rs
 export const incoming_dht_ops =

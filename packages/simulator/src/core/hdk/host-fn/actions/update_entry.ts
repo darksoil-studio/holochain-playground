@@ -1,7 +1,8 @@
 import { Entry, ActionHash, EntryType } from '@holochain/client';
+import { encode } from '@msgpack/msgpack';
 
-import { HostFn, HostFnWorkspace } from '../../host-fn';
-import { common_update } from './common/update';
+import { HostFn, HostFnWorkspace } from '../../host-fn.js';
+import { common_update } from './common/update.js';
 
 export type UpdateEntryFn = (
   original_action_address: ActionHash,
@@ -21,7 +22,7 @@ export const update_entry: HostFn<UpdateEntryFn> =
       entry_def_id: string;
     }
   ): Promise<ActionHash> => {
-    const entry: Entry = { entry_type: 'App', entry: newEntry.content };
+    const entry: Entry = { entry_type: 'App', entry: encode(newEntry.content) };
 
     const entryDefIndex = workspace.dna.zomes[zome_index].entry_defs.findIndex(
       (entry_def) => entry_def.id === newEntry.entry_def_id

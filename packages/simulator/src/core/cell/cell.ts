@@ -12,29 +12,29 @@ import {
 } from '@holochain/client';
 import { getHashType, hash, HashType } from '@holochain-open-dev/utils';
 
-import { Dictionary, GetLinksOptions, GetOptions } from '../../types';
-import { Conductor } from '../conductor';
-import { genesis_task } from './workflows/genesis';
-import { call_zome_fn_workflow } from './workflows/call_zome_fn';
-import { P2pCell } from '../network/p2p-cell';
-import { incoming_dht_ops_task } from './workflows/incoming_dht_ops';
-import { CellState, query_dht_ops } from './state';
-import { Workflow, WorkflowType, Workspace } from './workflows/workflows';
-import { triggeredWorkflowFromType } from './workflows/trigger';
-import { MiddlewareExecutor } from '../../executor/middleware-executor';
-import { GetLinksResponse, GetResult } from './cascade/types';
-import { Authority } from './cascade/authority';
-import { DhtArc } from '../network/dht_arc';
-import { getDhtOpBasis } from './utils';
-import { GossipData } from '../network/gossip/types';
-import { hasDhtOpBeenProcessed } from './dht/get';
-import { putValidationReceipt } from './dht/put';
-import { getBadAgents } from '../network/utils';
+import { Dictionary, GetLinksOptions, GetOptions } from '../../types.js';
+import { Conductor } from '../conductor.js';
+import { genesis_task } from './workflows/genesis.js';
+import { call_zome_fn_workflow } from './workflows/call_zome_fn.js';
+import { P2pCell } from '../network/p2p-cell.js';
+import { incoming_dht_ops_task } from './workflows/incoming_dht_ops.js';
+import { CellState, query_dht_ops } from './state.js';
+import { Workflow, WorkflowType, Workspace } from './workflows/workflows.js';
+import { triggeredWorkflowFromType } from './workflows/trigger.js';
+import { MiddlewareExecutor } from '../../executor/middleware-executor.js';
+import { GetLinksResponse, GetResult } from './cascade/types.js';
+import { Authority } from './cascade/authority.js';
+import { DhtArc } from '../network/dht_arc.js';
+import { getDhtOpBasis } from './utils.js';
+import { GossipData } from '../network/gossip/types.js';
+import { hasDhtOpBeenProcessed } from './dht/get.js';
+import { putValidationReceipt } from './dht/put.js';
+import { getBadAgents } from '../network/utils.js';
 import {
   app_validation_task,
   run_agent_validation_callback,
-} from './workflows/app_validation';
-import { publish_dht_ops_task } from './workflows/publish_dht_ops';
+} from './workflows/app_validation.js';
+import { publish_dht_ops_task } from './workflows/publish_dht_ops.js';
 import { HoloHashMap } from '@holochain-open-dev/utils';
 
 export type CellSignal = 'after-workflow-executed' | 'before-workflow-executed';

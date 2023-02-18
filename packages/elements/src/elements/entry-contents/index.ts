@@ -3,11 +3,11 @@ import { html } from 'lit';
 import { JsonViewer } from '@power-elements/json-viewer';
 import { Card } from '@scoped-elements/material-web';
 
-import { sharedStyles } from '../utils/shared-styles';
-import { shortenStrRec } from '../utils/hash';
+import { sharedStyles } from '../utils/shared-styles.js';
+import { shortenStrRec } from '../utils/hash.js';
 import { CopiableHash } from '@holochain-open-dev/elements';
-import { PlaygroundElement } from '../../base/playground-element';
-import { getEntryContents } from '../utils/utils';
+import { PlaygroundElement } from '../../base/playground-element.js';
+import { getEntryContents } from '../utils/utils.js';
 
 /**
  * @element entry-contents

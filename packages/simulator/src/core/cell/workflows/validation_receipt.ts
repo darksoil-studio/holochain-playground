@@ -1,9 +1,9 @@
-import { ValidationStatus } from '../state';
-import { getIntegratedDhtOpsWithoutReceipt } from '../dht/get';
-import { putDhtOpToIntegrated, putValidationReceipt } from '../dht/put';
-import { Workflow, WorkflowReturn, WorkflowType, Workspace } from './workflows';
+import { ValidationStatus } from '../state.js';
+import { getIntegratedDhtOpsWithoutReceipt } from '../dht/get.js';
+import { putDhtOpToIntegrated, putValidationReceipt } from '../dht/put.js';
+import { Workflow, WorkflowReturn, WorkflowType, Workspace } from './workflows.js';
 import { ValidationReceipt } from '@holochain-open-dev/core-types';
-import { getBadAgents } from '../../network/utils';
+import { getBadAgents } from '../../network/utils.js';
 import { uniq } from 'lodash-es';
 
 // From https://github.com/holochain/holochain/blob/develop/crates/holochain/src/core/workflow/integrate_dht_ops_workflow.rs

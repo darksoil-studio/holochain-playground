@@ -19,8 +19,8 @@ import {
 } from '@holochain/client';
 import { hash, HashType } from '@holochain-open-dev/utils';
 
-import { SimulatedDna } from '../../dnas/simulated-dna';
-import { isPublic } from './source-chain/utils';
+import { SimulatedDna } from '../../dnas/simulated-dna.js';
+import { isPublic } from './source-chain/utils.js';
 
 export function extractEntry(record: Record): Entry | undefined {
   return 'Present' in record.entry ? record.entry.Present : undefined;
@@ -28,7 +28,7 @@ export function extractEntry(record: Record): Entry | undefined {
 
 export function hashEntry(entry: Entry): EntryHash {
   if (entry.entry_type === 'Agent') return entry.entry;
-  return hash(entry.entry, HashType.ENTRY);
+  return hash(entry, HashType.ENTRY);
 }
 
 export function getAppEntryType(

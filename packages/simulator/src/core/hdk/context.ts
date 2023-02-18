@@ -1,25 +1,25 @@
-import { HostFnWorkspace } from './host-fn';
+import { HostFnWorkspace } from './host-fn.js';
 import {
   CreateCapGrantFn,
   create_cap_grant,
-} from './host-fn/actions/create_cap_grant';
-import { CreateEntryFn, create_entry } from './host-fn/actions/create_entry';
-import { CreateLinkFn, create_link } from './host-fn/actions/create_link';
+} from './host-fn/actions/create_cap_grant.js';
+import { CreateEntryFn, create_entry } from './host-fn/actions/create_entry.js';
+import { CreateLinkFn, create_link } from './host-fn/actions/create_link.js';
 import {
   DeleteCapGrantFn,
   delete_cap_grant,
-} from './host-fn/actions/delete_cap_grant';
-import { DeleteEntryFn, delete_entry } from './host-fn/actions/delete_entry';
-import { DeleteLinkFn, delete_link } from './host-fn/actions/delete_link';
-import { UpdateEntryFn, update_entry } from './host-fn/actions/update_entry';
-import { AgentInfoFn, agent_info } from './host-fn/agent_info';
-import { CallRemoteFn, call_remote } from './host-fn/call_remote';
-import { get, GetFn } from './host-fn/get';
-import { GetDetailsFn, get_details } from './host-fn/get_details';
-import { GetLinksFn, get_links } from './host-fn/get_links';
-import { HashEntryFn, hash_entry } from './host-fn/hash_entry';
-import { query, QueryFn } from './host-fn/query';
-import { ensure, Path } from './path';
+} from './host-fn/actions/delete_cap_grant.js';
+import { DeleteEntryFn, delete_entry } from './host-fn/actions/delete_entry.js';
+import { DeleteLinkFn, delete_link } from './host-fn/actions/delete_link.js';
+import { UpdateEntryFn, update_entry } from './host-fn/actions/update_entry.js';
+import { AgentInfoFn, agent_info } from './host-fn/agent_info.js';
+import { CallRemoteFn, call_remote } from './host-fn/call_remote.js';
+import { get, GetFn } from './host-fn/get.js';
+import { GetDetailsFn, get_details } from './host-fn/get_details.js';
+import { GetLinksFn, get_links } from './host-fn/get_links.js';
+import { HashEntryFn, hash_entry } from './host-fn/hash_entry.js';
+import { query, QueryFn } from './host-fn/query.js';
+import { ensure, Path } from './path.js';
 
 export interface SimulatedValidateFunctionContext {
   get: GetFn;

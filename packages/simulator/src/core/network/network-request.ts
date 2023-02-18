@@ -1,8 +1,8 @@
 import { AnyDhtHashB64, DhtOpHash } from '@holochain-open-dev/core-types';
 import { HoloHashMap } from '@holochain-open-dev/utils';
 import { AgentPubKey, DnaHash, DhtOp } from '@holochain/client';
-import { GetOptions } from '../../types';
-import { Cell } from '../cell/cell';
+import { GetOptions } from '../../types.js';
+import { Cell } from '../cell/cell.js';
 
 export enum NetworkRequestType {
   CALL_REMOTE = 'Call Remote',

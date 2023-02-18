@@ -8,19 +8,22 @@ import {
   Update,
   EntryHash,
   ActionHash,
-  encodeHashToBase64,
 } from '@holochain/client';
 
-import { P2pCell } from '../../..';
-import { GetLinksOptions, GetOptions } from '../../../types';
+import { GetLinksOptions, GetOptions } from '../../../types.js';
+import { P2pCell } from '../../network/p2p-cell.js';
 import {
   getLinksForHash,
   getActionModifiers,
   getActionsForEntry,
   getEntryDetails,
-} from '../dht/get';
-import { CellState, ValidationStatus } from '../state';
-import { GetEntryResponse, GetRecordResponse, GetLinksResponse } from './types';
+} from '../dht/get.js';
+import { CellState, ValidationStatus } from '../state.js';
+import {
+  GetEntryResponse,
+  GetRecordResponse,
+  GetLinksResponse,
+} from './types.js';
 
 // From https://github.com/holochain/holochain/blob/develop/crates/holochain_cascade/src/authority.rs
 export class Authority {

@@ -4,11 +4,11 @@ import { AppAgentClient, AppWebsocket, AppAgentWebsocket } from '@holochain/clie
 import { provide } from '@lit-labs/context';
 import '@material/mwc-circular-progress';
 
-import { clientContext } from './contexts';
+import { clientContext } from './contexts.js';
 
-import './forum/posts/all-posts';
-import { AllPosts } from './forum/posts/all-posts';
-import './forum/posts/create-post';
+import './forum/posts/all-posts.js';
+import { AllPosts } from './forum/posts/all-posts.js';
+import './forum/posts/create-post.js';
 
 @customElement('holochain-app')
 export class HolochainApp extends LitElement {

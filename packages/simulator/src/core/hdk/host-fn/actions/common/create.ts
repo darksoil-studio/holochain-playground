@@ -3,9 +3,9 @@ import { ActionHash, Entry, EntryType, Record } from '@holochain/client';
 import {
   buildCreate,
   buildShh,
-} from '../../../../cell/source-chain/builder-actions';
-import { putRecord } from '../../../../cell/source-chain/put';
-import { HostFnWorkspace } from '../../../host-fn';
+} from '../../../../cell/source-chain/builder-actions.js';
+import { putRecord } from '../../../../cell/source-chain/put.js';
+import { HostFnWorkspace } from '../../../host-fn.js';
 
 export function common_create(
   worskpace: HostFnWorkspace,

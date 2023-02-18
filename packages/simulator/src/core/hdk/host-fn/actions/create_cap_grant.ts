@@ -5,8 +5,8 @@ import {
   AgentPubKey,
   ActionHash,
 } from '@holochain/client';
-import { HostFn, HostFnWorkspace } from '../../host-fn';
-import { common_create } from './common/create';
+import { HostFn, HostFnWorkspace } from '../../host-fn.js';
+import { common_create } from './common/create.js';
 
 export type CreateCapGrantFn = (
   cap_grant: ZomeCallCapGrant
@@ -24,12 +24,15 @@ export const create_cap_grant: HostFn<CreateCapGrantFn> =
             assignees: AgentPubKey[];
           };
         }
-      ).Assigned.assignees.find(a => !!a && !ArrayBuffer.isView(a))
+      ).Assigned.assignees.find((a) => !!a && !ArrayBuffer.isView(a))
     ) {
       throw new Error('Tried to assign a capability to an invalid agent');
     }
 
-    const entry: Entry = { entry_type: 'CapGrant', entry: cap_grant };
+    const entry: Entry = {
+      entry_type: 'CapGrant',
+      entry: cap_grant,
+    } as unknown as Entry;
 
     return common_create(worskpace, entry, 'CapGrant');
   };

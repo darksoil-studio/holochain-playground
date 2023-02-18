@@ -1,6 +1,6 @@
 import { AnyDhtHash, encodeHashToBase64, Record } from '@holochain/client';
-import { GetOptions, GetStrategy } from '../../../types';
-import { HostFn, HostFnWorkspace } from '../host-fn';
+import { GetOptions, GetStrategy } from '../../../types.js';
+import { HostFn, HostFnWorkspace } from '../host-fn.js';
 
 export type GetFn = (
   args: AnyDhtHash,

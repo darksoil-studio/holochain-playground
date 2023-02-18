@@ -13,8 +13,8 @@ import {
 } from '@holochain-playground/simulator';
 import { decode } from '@msgpack/msgpack';
 
-import { SimulatedCellStore } from '../../store/simulated-playground-store';
-import { CellStore } from '../../store/playground-store';
+import { SimulatedCellStore } from '../../store/simulated-playground-store.js';
+import { CellStore } from '../../store/playground-store.js';
 
 export function sourceChainNodes(cellStore: CellStore<any>, records: Record[]) {
   const nodes = [];

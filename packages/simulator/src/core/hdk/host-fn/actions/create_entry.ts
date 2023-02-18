@@ -1,6 +1,7 @@
 import { Entry, ActionHash, EntryType } from '@holochain/client';
-import { HostFn, HostFnWorkspace } from '../../host-fn';
-import { common_create } from './common/create';
+import { encode } from '@msgpack/msgpack';
+import { HostFn, HostFnWorkspace } from '../../host-fn.js';
+import { common_create } from './common/create.js';
 
 export type CreateEntryFn = (args: {
   content: any;
@@ -11,7 +12,7 @@ export type CreateEntryFn = (args: {
 export const create_entry: HostFn<CreateEntryFn> =
   (workspace: HostFnWorkspace, zome_index: number): CreateEntryFn =>
   async (args: { content: any; entry_def_id: string }): Promise<ActionHash> => {
-    const entry: Entry = { entry_type: 'App', entry: args.content };
+    const entry: Entry = { entry_type: 'App', entry: encode(args.content) };
 
     const entryDefIndex = workspace.dna.zomes[zome_index].entry_defs.findIndex(
       (entry_def) => entry_def.id === args.entry_def_id

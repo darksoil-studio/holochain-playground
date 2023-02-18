@@ -34,26 +34,26 @@ import {
 import { CytoscapeCircle } from '@scoped-elements/cytoscape';
 import { uniq } from 'lodash-es';
 
-import { CellTasks } from '../helpers/cell-tasks';
-import { HelpButton } from '../helpers/help-button';
-import { sharedStyles } from '../utils/shared-styles';
+import { CellTasks } from '../helpers/cell-tasks.js';
+import { HelpButton } from '../helpers/help-button.js';
+import { sharedStyles } from '../utils/shared-styles.js';
 import {
   dhtCellsNodes,
   allPeersEdges,
   simulatedNeighbors,
   isHoldingElement,
   isHoldingEntry,
-} from './processors';
-import { cytoscapeOptions, layoutConfig } from './graph';
-import { PlaygroundElement } from '../../base/playground-element';
+} from './processors.js';
+import { cytoscapeOptions, layoutConfig } from './graph.js';
+import { PlaygroundElement } from '../../base/playground-element.js';
 import { CopiableHash } from '@holochain-open-dev/elements';
 import {
   SimulatedCellStore,
   SimulatedPlaygroundStore,
-} from '../../store/simulated-playground-store';
-import { mapDerive } from '../../store/utils';
-import { MiddlewareController } from '../../base/middleware-controller';
-import { CellStore } from '../../store/playground-store';
+} from '../../store/simulated-playground-store.js';
+import { mapDerive } from '../../store/utils.js';
+import { MiddlewareController } from '../../base/middleware-controller.js';
+import { CellStore } from '../../store/playground-store.js';
 import { HoloHashMap } from '@holochain-open-dev/utils';
 import { DhtOpHash } from '@holochain-open-dev/core-types';
 

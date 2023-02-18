@@ -5,16 +5,16 @@ import {
   buildCreate,
   buildDna,
   buildShh,
-} from '../source-chain/builder-actions';
+} from '../source-chain/builder-actions.js';
 import {
   getSourceChainRecord,
   getSourceChainRecords,
-} from '../source-chain/get';
-import { putRecord } from '../source-chain/put';
-import { CellState } from '../state';
-import { run_agent_validation_callback } from './app_validation';
-import { produce_dht_ops_task } from './produce_dht_ops';
-import { Workflow, WorkflowReturn, WorkflowType, Workspace } from './workflows';
+} from '../source-chain/get.js';
+import { putRecord } from '../source-chain/put.js';
+import { CellState } from '../state.js';
+import { run_agent_validation_callback } from './app_validation.js';
+import { produce_dht_ops_task } from './produce_dht_ops.js';
+import { Workflow, WorkflowReturn, WorkflowType, Workspace } from './workflows.js';
 
 export const genesis =
   (agentId: AgentPubKey, dnaHash: DnaHash, membrane_proof: any) =>

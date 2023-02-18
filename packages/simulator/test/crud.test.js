@@ -35,7 +35,7 @@ describe('CRUD', () => {
       cap: null,
       fnName: 'hash_entry',
       payload: {
-        entry: content.entry.Present.entry,
+        entry: 'hi',
       },
       zome: 'demo_entries',
     });

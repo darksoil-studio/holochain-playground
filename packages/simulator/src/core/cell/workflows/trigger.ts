@@ -1,10 +1,10 @@
-import { app_validation_task } from './app_validation';
-import { integrate_dht_ops_task } from './integrate_dht_ops';
-import { produce_dht_ops_task } from './produce_dht_ops';
-import { publish_dht_ops_task } from './publish_dht_ops';
-import { sys_validation_task } from './sys_validation';
-import { validation_receipt_task } from './validation_receipt';
-import { Workflow, WorkflowType } from './workflows';
+import { app_validation_task } from './app_validation.js';
+import { integrate_dht_ops_task } from './integrate_dht_ops.js';
+import { produce_dht_ops_task } from './produce_dht_ops.js';
+import { publish_dht_ops_task } from './publish_dht_ops.js';
+import { sys_validation_task } from './sys_validation.js';
+import { validation_receipt_task } from './validation_receipt.js';
+import { Workflow, WorkflowType } from './workflows.js';
 
 export function triggeredWorkflowFromType(
   type: WorkflowType

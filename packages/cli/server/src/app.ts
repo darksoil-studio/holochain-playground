@@ -7,7 +7,7 @@ import http from 'http';
 import { Server } from 'socket.io';
 import { getPort } from 'get-port-please';
 
-import { getUrls } from './urls';
+import { getUrls } from './urls.js';
 
 export async function launchApp() {
   dotenv.config();

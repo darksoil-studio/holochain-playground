@@ -7,9 +7,9 @@ import {
 } from '@holochain/client';
 import { hash, HashType } from '@holochain-open-dev/utils';
 
-import { areEqual } from '../../../processors/hash';
+import { areEqual } from '../../../processors/hash.js';
 
-import { CellState } from '../state';
+import { CellState } from '../state.js';
 
 /**
  * Returns the action hashes which don't have their DHTOps in the authoredDHTOps DB
