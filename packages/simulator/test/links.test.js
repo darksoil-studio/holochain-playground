@@ -5,7 +5,7 @@ import { sleep } from './utils';
 describe('Links', () => {
   it('create entry and link, get_links, delete_links', async function () {
     const conductors = await createConductors(10, [], demoHapp());
-    await sleep(200);
+    await sleep(300);
 
     const cell = conductors[0].getAllCells()[0];
 
@@ -18,7 +18,7 @@ describe('Links', () => {
     });
 
     expect(baseHash).to.be.ok;
-    await sleep(200);
+    await sleep(300);
 
     const create_link_hash = await conductors[0].callZomeFn({
       cellId: cell.cellId,
@@ -30,7 +30,7 @@ describe('Links', () => {
 
     expect(create_link_hash).to.be.ok;
 
-    await sleep(200);
+    await sleep(300);
 
     let links = await conductors[0].callZomeFn({
       cellId: cell.cellId,
@@ -43,7 +43,7 @@ describe('Links', () => {
     });
     expect(links.length).to.equal(1);
 
-    await sleep(200);
+    await sleep(300);
 
     await conductors[0].callZomeFn({
       cellId: cell.cellId,
@@ -54,7 +54,7 @@ describe('Links', () => {
       },
       zome: 'demo_links',
     });
-    await sleep(200);
+    await sleep(300);
 
     links = await conductors[0].callZomeFn({
       cellId: cell.cellId,

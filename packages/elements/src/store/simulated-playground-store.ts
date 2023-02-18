@@ -11,7 +11,12 @@ import {
 } from '@holochain-playground/simulator';
 import { CellMap } from '@holochain-open-dev/utils';
 import { AgentPubKey, DhtOp, Record } from '@holochain/client';
-import { readable, Readable, writable, Writable } from 'svelte/store';
+import {
+  readable,
+  Readable,
+  writable,
+  Writable,
+} from '@holochain-open-dev/stores';
 
 import { PlaygroundMode } from './mode';
 import { CellStore, ConductorStore, PlaygroundStore } from './playground-store';

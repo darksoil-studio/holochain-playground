@@ -47,7 +47,6 @@ import {
 import { cytoscapeOptions, layoutConfig } from './graph';
 import { PlaygroundElement } from '../../base/playground-element';
 import { CopiableHash } from '@holochain-open-dev/elements';
-import { PlaygroundMode } from '../../store/mode';
 import {
   SimulatedCellStore,
   SimulatedPlaygroundStore,
@@ -195,10 +194,14 @@ export class DhtCells extends PlaygroundElement {
 
   async beforeNetworkRequest(networkRequest: NetworkRequestInfo<any, any>) {
     const store = this.store as SimulatedPlaygroundStore;
-    this.requestUpdate();
 
     if (!this.networkRequestsToDisplay.includes(networkRequest.type)) return;
-    if (networkRequest.toAgent === networkRequest.fromAgent) return;
+    if (
+      networkRequest.toAgent.toString() === networkRequest.fromAgent.toString()
+    )
+      return;
+
+    if (!this._graph.cy) return;
 
     const fromNode = this._graph.cy.getElementById(
       encodeHashToBase64(networkRequest.fromAgent)
@@ -217,7 +220,9 @@ export class DhtCells extends PlaygroundElement {
         networkRequest as PublishRequestInfo
       ).details.dhtOps;
 
-      const types = dhtOps.values().map((dhtOp) => getDhtOpType(dhtOp));
+      const types = Array.from(dhtOps.values()).map((dhtOp) =>
+        getDhtOpType(dhtOp)
+      );
 
       label = `Publish: ${uniq(types).join(', ')}`;
     }
@@ -369,10 +374,10 @@ export class DhtCells extends PlaygroundElement {
           <mwc-switch
             id="step-by-step-switch"
             .checked=${this.stepByStep}
-            @change="${(e) => {
+            @change=${(e) => {
               this.stepByStep = e.target.checked;
               if (this._paused.value) store.paused.resume();
-            }}}"
+            }}
           ></mwc-switch>
         </mwc-formfield>
       </div>
@@ -409,7 +414,11 @@ export class DhtCells extends PlaygroundElement {
   }
 
   renderTasksTooltips() {
-    if (!(this.store instanceof SimulatedPlaygroundStore) || !this._graph)
+    if (
+      !(this.store instanceof SimulatedPlaygroundStore) ||
+      !this._graph ||
+      !this._graph.cy
+    )
       return html``;
 
     // Get the nodes but filter out the temporal network request ones

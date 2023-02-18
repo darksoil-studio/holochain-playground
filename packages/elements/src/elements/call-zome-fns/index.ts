@@ -8,7 +8,7 @@ import {
   SimulatedDna,
 } from '@holochain-playground/simulator';
 import { CopiableHash } from '@holochain-open-dev/elements';
-import { CellMap } from '@holochain-open-dev/utils';
+import { CellMap, isHash } from '@holochain-open-dev/utils';
 
 import { sharedStyles } from '../utils/shared-styles';
 import {
@@ -36,6 +36,8 @@ import { ZomeFunctionResult } from './types';
 import { JsonViewer } from '@power-elements/json-viewer';
 import { ExpandableLine } from '../helpers/expandable-line';
 import { shortenStrRec } from '../utils/hash';
+import { decodeHashFromBase64, encodeHashToBase64 } from '@holochain/client';
+import { cloneDeepWith } from 'lodash-es';
 
 type Dictionary<T> = Record<string, T>;
 
@@ -89,13 +91,31 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
     ).conductor;
 
     try {
-      const result = await conductor.callZomeFn({
+      const deserializedPayload = cloneDeepWith(args, (value) => {
+        if (typeof value === 'string' && isHash(value)) {
+          return decodeHashFromBase64(value);
+        }
+      });
+
+      let result = await conductor.callZomeFn({
         cellId: this._activeCell.value.cellId,
         zome: zome.name,
-        payload: args,
+        payload: deserializedPayload,
         fnName,
         cap: null,
       });
+
+      result = cloneDeepWith(result, (value) => {
+        if (
+          typeof value === 'object' &&
+          value &&
+          value.buffer &&
+          ArrayBuffer.isView(value)
+        ) {
+          return encodeHashToBase64(value as Uint8Array);
+        }
+      });
+
       const index = this._results
         .get(cellId)
         .findIndex((r) => r === zomeFnResult);

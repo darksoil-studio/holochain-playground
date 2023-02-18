@@ -269,7 +269,7 @@ export class P2pCell {
 
   async syncNeighbors() {
     const dnaHash = this.cellId[0];
-    const agentPubKey = this.cellId[1];
+    const myPubKey = this.cellId[1];
 
     const badAgents = this.badAgents;
 
@@ -280,12 +280,12 @@ export class P2pCell {
     }
 
     this.farKnownPeers = this.network.bootstrapService
-      .getFarKnownPeers(dnaHash, agentPubKey, badAgents)
+      .getFarKnownPeers(dnaHash, myPubKey, badAgents)
       .map((p) => p.agentPubKey);
 
     const neighbors = this.network.bootstrapService
-      .getNeighborhood(dnaHash, agentPubKey, this.neighborNumber, badAgents)
-      .filter((cell) => isEqual(cell.agentPubKey, agentPubKey));
+      .getNeighborhood(dnaHash, myPubKey, this.neighborNumber, badAgents)
+      .filter((cell) => !isEqual(cell.agentPubKey, myPubKey));
 
     const newNeighbors = neighbors.filter(
       (cell) => !this.neighbors.find((a) => areEqual(a, cell.agentPubKey))

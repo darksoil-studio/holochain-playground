@@ -1,9 +1,12 @@
-import { CellMap, HoloHashMap } from '@holochain-open-dev/utils';
+import {
+  hash,
+  HashType,
+  CellMap,
+  HoloHashMap,
+} from '@holochain-open-dev/utils';
 import {
   SimulatedDna,
   getEntryTypeString,
-  HashType,
-  hash,
 } from '@holochain-playground/simulator';
 import {
   HoloHash,

@@ -9,7 +9,7 @@
     "packages/cli/server"
   ],
   "scripts": {
-    "start": "concurrently -k \"npm run build:watch -w @holochain-playground/simulator\" \"npm start -w @holochain-playground/elements\"",
+    "start": "concurrently -k \"npm start -w @holochain-playground/elements\"",
     "start:golden-layout": "concurrently -k \"npm run build:watch -w @holochain-playground/simulator\" \"npm run build:watch -w @holochain-playground/elements\" \"npm start -w @holochain-playground/golden-layout\"",
     "start:cli": "npm run build:happ && npm run build && cross-env ADMIN_PORT=$(port) concurrently -k \"npm run start:happ\" \"npm run dev:cli\"",
     "dev:cli": "concurrently -k \"npm run build:watch -w @holochain-playground/cli-client\" \"npm start -w @holochain-playground/cli ws://localhost:${ADMIN_PORT}\"",

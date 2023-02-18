@@ -1,11 +1,10 @@
-import { CellMap, HoloHashMap } from '@holochain-open-dev/utils';
 import {
-  BadAgent,
-  Cell,
   hash,
   HashType,
-  location,
-} from '@holochain-playground/simulator';
+  CellMap,
+  HoloHashMap,
+} from '@holochain-open-dev/utils';
+import { BadAgent, Cell, location } from '@holochain-playground/simulator';
 import {
   AgentPubKey,
   CellId,

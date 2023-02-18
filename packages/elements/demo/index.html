@@ -21,13 +21,15 @@
     />
   </head>
   <body>
-    <simulated-playground-context id="context" style="flex: 1">
-      <entry-contents style="flex: 1"></entry-contents>
-      <dht-entries style="flex: 1"></dht-entries>
-      <source-chain style="flex: 1"></source-chain>
+    <simulated-playground-context id="context" style="flex: 1; display: flex">
+      <div style="display: flex; flex-direction: column; flex: 1">
+        <dht-cells style="flex: 1"></dht-cells>
+      </div>
+      <div style="display: flex; flex-direction: column; flex: 1"></div>
     </simulated-playground-context>
 
     <script type="module">
+      import '@webcomponents/scoped-custom-element-registry';
       import { html, render } from 'lit';
       import { get } from 'svelte/store';
       import {
@@ -47,7 +49,7 @@
         RunSteps,
         HappsManager,
         conductorStore */
-      } from '../dist';
+      } from '../src';
       import {
         GetStrategy,
         WorkflowType,
@@ -59,8 +61,6 @@
         GoldenLayoutColumn,
         GoldenLayoutComponent,
       } from '@scoped-elements/golden-layout'; */
-
-      customElements.define('dht-cells', DhtCells);
       customElements.define(
         'simulated-playground-context',
         SimulatedPlaygroundContext
@@ -82,6 +82,8 @@
       customElements.define('zome-fns-results', ZomeFnsResults);
       customElements.define('happs-manager', HappsManager);
       */
+
+      customElements.define('dht-cells', DhtCells);
       customElements.define('call-zome-fns', CallZomeFns);
       customElements.define('conductor-admin', ConductorAdmin);
       customElements.define('dht-entries', DhtEntries);
@@ -90,7 +92,7 @@
 
       const context = document.getElementById('context');
 
-      context.urls = ['ws://localhost:38023'];
+      // context.urls = ['ws://localhost:38023'];
       context.addEventListener('playground-ready', (e) => {
         const store = e.detail.store;
         store.conductors.subscribe((c) => {

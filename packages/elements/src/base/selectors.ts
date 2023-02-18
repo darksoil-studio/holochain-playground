@@ -6,15 +6,13 @@ import {
   AgentPubKey,
   ActionHash,
 } from '@holochain/client';
+import { HoloHashMap, getHashType, HashType } from '@holochain-open-dev/utils';
 import {
   Conductor,
   Cell,
   isHoldingEntry,
   isHoldingRecord,
-  getHashType,
-  HashType,
 } from '@holochain-playground/simulator';
-import { HoloHashMap } from '@holochain-open-dev/utils';
 import { cloneDeep } from 'lodash-es';
 
 export function selectCells(dna: DnaHash, conductor: Conductor): Cell[] {
@@ -47,7 +45,9 @@ export function selectConductorByAgent(
   conductors: Conductor[]
 ): Conductor | undefined {
   return conductors.find((conductor) =>
-    conductor.getAllCells().find((cell) => cell.agentPubKey === agentPubKey)
+    conductor
+      .getAllCells()
+      .find((cell) => cell.agentPubKey.toString() === agentPubKey.toString())
   );
 }
 
@@ -58,7 +58,10 @@ export function selectCell(
 ): Cell | undefined {
   for (const conductor of conductors) {
     for (const cell of conductor.getAllCells()) {
-      if (cell.agentPubKey === agentPubKey && cell.dnaHash === dnaHash) {
+      if (
+        cell.agentPubKey.toString() === agentPubKey.toString() &&
+        cell.dnaHash.toString() === dnaHash.toString()
+      ) {
         return cell;
       }
     }
@@ -121,7 +124,7 @@ export function selectAllDNAs(conductors: Conductor[]): DnaHash[] {
       dnas.set(cell.dnaHash, true);
     }
   }
-  return dnas.keys();
+  return Array.from(dnas.keys());
 }
 
 export function selectRedundancyFactor(cell: Cell): number {

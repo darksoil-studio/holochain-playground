@@ -1,24 +1,20 @@
 {
   "name": "@holochain-playground/elements",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Holochain playground elements for visual introspection and simulator interaction",
   "author": "guillem.cordoba@gmail.com",
   "license": "MIT",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "scripts": {
-    "start": "npm run build && concurrently -k \"npm:build:watch\" \"wds -c web-dev-server.config.mjs\"",
-    "build": "rimraf dist && rollup -c rollup.config.js",
-    "build:watch": "rollup -w -c rollup.config.js",
-    "test": "karma start --coverage",
-    "test:watch": "concurrently --kill-others --names tsc,karma \"npm run tsc:watch\" \"karma start --auto-watch=true --single-run=false\"",
-    "publish-to-branch": "npm run build && rm -rf node_modules && gh-pages -d . -b build && npm i"
+    "start": "vite --clearScreen false --open",
+    "build": "vite build"
   },
   "dependencies": {
     "@holochain-open-dev/core-types": "^0.6.6",
     "@holochain-open-dev/elements": "^0.2.3",
     "@holochain-open-dev/stores": "^0.3.0",
-    "@holochain-open-dev/utils": "^0.11.2",
+    "@holochain-open-dev/utils": "^0.11.4",
     "@holochain-playground/simulator": "0.0.1",
     "@holochain/client": "^0.12.2",
     "@lit-labs/context": "^0.2.0",
@@ -26,7 +22,7 @@
     "@open-wc/scoped-elements": "^2.0.1",
     "@power-elements/json-viewer": "^2.1.1",
     "@scoped-elements/cytoscape": "^0.1.0",
-    "@scoped-elements/material-web": "^0.1.0",
+    "@scoped-elements/material-web": "^0.0.19",
     "@vaadin/grid": "^23.3.2",
     "body-parser": "1.11.0",
     "cytoscape": "^3.17.0",
@@ -51,12 +47,15 @@
     "@web/dev-server": "^0.1.4",
     "@web/dev-server-rollup": "^0.3.2",
     "@web/test-runner": "^0.1.0",
+    "@webcomponents/scoped-custom-element-registry": "^0.0.8",
     "babel-loader": "^8.2.2",
     "concurrently": "^5.3.0",
     "gh-pages": "^3.1.0",
     "rimraf": "^2.7.1",
     "rollup": "^2.36.2",
     "typescript": "^4.3.5",
+    "vite": "^4.1.2",
+    "vite-plugin-checker": "^0.5.6",
     "web-component-analyzer": "^1.1.6"
   }
 }

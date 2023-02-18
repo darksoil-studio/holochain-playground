@@ -7,15 +7,15 @@ import {
   decodeHashFromBase64,
   EntryHashB64,
 } from '@holochain/client';
+import { getAppEntryType, SimulatedDna } from '@holochain-playground/simulator';
+import uniq from 'lodash-es/uniq';
 import {
-  getAppEntryType,
   HashType,
   retype,
-  SimulatedDna,
   getHashType,
-} from '@holochain-playground/simulator';
-import uniq from 'lodash-es/uniq';
-import { HoloHashMap, CellMap } from '@holochain-open-dev/utils';
+  HoloHashMap,
+  CellMap,
+} from '@holochain-open-dev/utils';
 
 import { shortenStrRec } from '../utils/hash';
 import { DhtSummary, isEntryDeleted, summarizeDht } from './dht';
@@ -263,7 +263,7 @@ export function allEntries(
     }
   }
 
-  const allEntryTypes = uniq(summary.entryTypes.values());
+  const allEntryTypes = uniq(Array.from(summary.entryTypes.values()));
 
   return {
     nodes,
