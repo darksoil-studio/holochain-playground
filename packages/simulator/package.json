@@ -28,9 +28,6 @@
     "@esm-bundle/chai": "^4.1.5",
     "@open-wc/eslint-config": "^4.2.0",
     "@open-wc/testing": "^2.0.0",
-    "@rollup/plugin-commonjs": "^17.0.0",
-    "@rollup/plugin-node-resolve": "^11.1.0",
-    "@rollup/plugin-typescript": "^8.1.0",
     "@types/lodash-es": "^4.17.4",
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
@@ -43,7 +40,6 @@
     "lint-staged": "^10.0.0",
     "prettier": "^2.0.4",
     "rimraf": "^2.6.3",
-    "rollup": "^2.3.4",
     "tslib": "^2.0.3",
     "typescript": "^4.9.0",
     "vite": "^4.1.1",
@@ -56,5 +52,8 @@
   "lint-staged": {
     "*.ts": ["eslint --fix", "prettier --write", "git add"]
   },
-  "type": "module"
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  }
 }
