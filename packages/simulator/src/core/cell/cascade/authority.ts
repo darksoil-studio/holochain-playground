@@ -8,22 +8,19 @@ import {
   Update,
   EntryHash,
   ActionHash,
+  encodeHashToBase64,
 } from '@holochain/client';
 
 import { P2pCell } from '../../..';
 import { GetLinksOptions, GetOptions } from '../../../types';
 import {
-  getLinksForEntry,
+  getLinksForHash,
   getActionModifiers,
   getActionsForEntry,
   getEntryDetails,
 } from '../dht/get';
 import { CellState, ValidationStatus } from '../state';
-import {
-  GetEntryResponse,
-  GetRecordResponse,
-  GetLinksResponse,
-} from './types';
+import { GetEntryResponse, GetRecordResponse, GetLinksResponse } from './types';
 
 // From https://github.com/holochain/holochain/blob/develop/crates/holochain_cascade/src/authority.rs
 export class Authority {
@@ -41,7 +38,7 @@ export class Authority {
     const entryDetails = getEntryDetails(this.state, entry_hash);
 
     const createAction = allActions.find(
-      action => (action.hashed.content as Create).entry_type
+      (action) => (action.hashed.content as Create).entry_type
     );
     let entry_type: EntryType | undefined = undefined;
     if (createAction)
@@ -95,6 +92,6 @@ export class Authority {
     base_address: EntryHash,
     options: GetLinksOptions
   ): Promise<GetLinksResponse> {
-    return getLinksForEntry(this.state, base_address);
+    return getLinksForHash(this.state, base_address);
   }
 }

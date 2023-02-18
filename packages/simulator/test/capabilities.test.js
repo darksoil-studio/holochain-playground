@@ -1,6 +1,7 @@
 import { createConductors } from '../dist';
 import { assert, describe, expect, it } from 'vitest';
 import { sleep } from './utils';
+import { GrantedFunctionsType } from '@holochain/client';
 
 const dna = {
   zomes: [
@@ -10,18 +11,24 @@ const dna = {
       validation_functions: {},
       zome_functions: {
         create_cap: {
-          call: ({ create_cap_grant }) => agentPubKeyToGrant => {
-            return create_cap_grant({
-              tag: '',
-              access: {
-                Assigned: {
-                  secret: '',
-                  assignees: [agentPubKeyToGrant],
+          call:
+            ({ create_cap_grant }) =>
+            (agentPubKeyToGrant) => {
+              return create_cap_grant({
+                tag: '',
+                access: {
+                  Assigned: {
+                    secret: '',
+                    assignees: [agentPubKeyToGrant],
+                  },
                 },
-              },
-              functions: [{ zome: 'demo_entries', fn_name: 'sample_fn' }],
-            });
-          },
+                functions: {
+                  [GrantedFunctionsType.Listed]: [
+                    ['demo_entries', 'sample_fn'],
+                  ],
+                },
+              });
+            },
           arguments: [],
         },
         sample_fn: {
@@ -31,21 +38,25 @@ const dna = {
           arguments: [],
         },
         revoke_cap: {
-          call: ({ delete_cap_grant }) => cap_grant_to_revoke => {
-            return delete_cap_grant(cap_grant_to_revoke);
-          },
+          call:
+            ({ delete_cap_grant }) =>
+            (cap_grant_to_revoke) => {
+              return delete_cap_grant(cap_grant_to_revoke);
+            },
           arguments: [],
         },
         call_remote: {
-          call: ({ call_remote }) => agentToCall => {
-            return call_remote({
-              agent: agentToCall,
-              zome: 'demo_entries',
-              fn_name: 'sample_fn',
-              cap: null,
-              payload: null,
-            });
-          },
+          call:
+            ({ call_remote }) =>
+            (agentToCall) => {
+              return call_remote({
+                agent: agentToCall,
+                zome: 'demo_entries',
+                fn_name: 'sample_fn',
+                cap: null,
+                payload: null,
+              });
+            },
           arguments: [],
         },
       },

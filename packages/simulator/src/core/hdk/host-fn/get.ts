@@ -1,4 +1,4 @@
-import { AnyDhtHash, Record } from '@holochain/client';
+import { AnyDhtHash, encodeHashToBase64, Record } from '@holochain/client';
 import { GetOptions, GetStrategy } from '../../../types';
 import { HostFn, HostFnWorkspace } from '../host-fn';
 
@@ -14,6 +14,5 @@ export const get: HostFn<GetFn> =
     if (!hash) throw new Error(`Cannot get with undefined hash`);
 
     options = options || { strategy: GetStrategy.Contents };
-
     return workspace.cascade.dht_get(hash, options);
   };

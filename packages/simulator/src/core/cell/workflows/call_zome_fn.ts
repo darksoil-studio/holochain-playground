@@ -111,12 +111,7 @@ export const callZomeFn =
 
       if (shouldValidateBeforePublishing(workspace.badAgentConfig)) {
         for (const record of recordsToAppValidate) {
-          const outcome = await run_app_validation(
-            zome,
-            record,
-            contextState,
-            workspace
-          );
+          const outcome = await run_app_validation(zome, record, workspace);
           if (!outcome.resolved)
             throw new Error(
               'Error creating a new record: missing dependencies'
@@ -177,37 +172,11 @@ function shouldValidateBeforePublishing(
 async function run_app_validation(
   zome: SimulatedZome,
   record: Record,
-  contextState: CellState,
   workspace: Workspace
 ): Promise<ValidationOutcome> {
   const action = record.signed_action.hashed.content;
   if (action.type === ActionType.CreateLink) {
-    const cascade = new Cascade(contextState, workspace.p2p);
-    const baseEntry = await cascade.retrieve_entry(action.base_address, {
-      strategy: GetStrategy.Contents,
-    });
-    if (!baseEntry) {
-      return {
-        resolved: false,
-        depsHashes: [action.base_address],
-      };
-    }
-    const targetEntry = await cascade.retrieve_entry(action.target_address, {
-      strategy: GetStrategy.Contents,
-    });
-    if (!targetEntry) {
-      return {
-        resolved: false,
-        depsHashes: [action.target_address],
-      };
-    }
-    return run_create_link_validation_callback(
-      zome,
-      action,
-      baseEntry,
-      targetEntry,
-      workspace
-    );
+    return run_create_link_validation_callback(zome, action, workspace);
   } else if (action.type === ActionType.DeleteLink) {
     return run_delete_link_validation_callback(zome, action, workspace);
   } else if (

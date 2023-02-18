@@ -15,10 +15,11 @@ import {
   DeleteLink,
   ActionType,
   Create,
-  EntryHash,
+  EntryHash as AnyDhtHash,
   ActionHash,
   getDhtOpType,
   getDhtOpAction,
+  encodeHashToBase64,
 } from '@holochain/client';
 
 import { uniqWith } from 'lodash-es';
@@ -72,7 +73,7 @@ export function pullAllIntegrationLimboDhtOps(
 
 export function getActionsForEntry(
   state: CellState,
-  entryHash: EntryHash
+  entryHash: AnyDhtHash
 ): SignedActionHashed[] {
   const entryMetadata = state.metadata.system_meta.get(entryHash);
   if (!entryMetadata) return [];
@@ -90,7 +91,7 @@ export function getActionsForEntry(
 
 export function getEntryDhtStatus(
   state: CellState,
-  entryHash: EntryHash
+  entryHash: AnyDhtHash
 ): EntryDhtStatus | undefined {
   const meta = state.metadata.misc_meta.get(entryHash);
 
@@ -105,7 +106,7 @@ export function getEntryDhtStatus(
 
 export function getEntryDetails(
   state: CellState,
-  entry_hash: EntryHash
+  entry_hash: AnyDhtHash
 ): EntryDetails {
   const entry = state.CAS.get(entry_hash);
   const allActions = getActionsForEntry(state, entry_hash);
@@ -184,7 +185,7 @@ export function getActionModifiers(
   };
 }
 
-export function getAllHeldEntries(state: CellState): EntryHash[] {
+export function getAllHeldEntries(state: CellState): AnyDhtHash[] {
   const newEntryActions = Array.from(state.integratedDHTOps.values())
     .filter(
       (dhtOpValue) => getDhtOpType(dhtOpValue.op) === DhtOpType.StoreEntry
@@ -210,7 +211,7 @@ export function getAllHeldActions(state: CellState): ActionHash[] {
   return uniqWith(allActionHashes, areEqual);
 }
 
-export function getAllAuthoredEntries(state: CellState): EntryHash[] {
+export function getAllAuthoredEntries(state: CellState): AnyDhtHash[] {
   const allActions = Array.from(state.authoredDHTOps.values()).map(
     (dhtOpValue) => getDhtOpAction(dhtOpValue.op)
   );
@@ -224,7 +225,7 @@ export function getAllAuthoredEntries(state: CellState): EntryHash[] {
 
 export function isHoldingEntry(
   state: CellState,
-  entryHash: EntryHash
+  entryHash: AnyDhtHash
 ): boolean {
   return state.metadata.system_meta.get(entryHash) !== undefined;
 }
@@ -250,26 +251,26 @@ export interface EntryDHTInfo {
 
 export function getDhtShard(
   state: CellState
-): HoloHashMap<EntryHash, EntryDHTInfo> {
+): HoloHashMap<AnyDhtHash, EntryDHTInfo> {
   const heldEntries = getAllHeldEntries(state);
 
-  const dhtShard: HoloHashMap<EntryHash, EntryDHTInfo> = new HoloHashMap();
+  const dhtShard: HoloHashMap<AnyDhtHash, EntryDHTInfo> = new HoloHashMap();
 
   for (const entryHash of heldEntries) {
     dhtShard.set(entryHash, {
       details: getEntryDetails(state, entryHash),
-      links: getCreateLinksForEntry(state, entryHash),
+      links: getCreateLinksForHash(state, entryHash),
     });
   }
 
   return dhtShard;
 }
 
-export function getLinksForEntry(
+export function getLinksForHash(
   state: CellState,
-  entryHash: EntryHash
+  baseHash: AnyDhtHash
 ): GetLinksResponse {
-  const linkMetaVals = getCreateLinksForEntry(state, entryHash);
+  const linkMetaVals = getCreateLinksForHash(state, baseHash);
 
   const link_adds: SignedActionHashed<CreateLink>[] = [];
   const link_removes: SignedActionHashed<DeleteLink>[] = [];
@@ -282,7 +283,6 @@ export function getLinksForEntry(
     }
 
     const removes = getRemovesOnLinkAdd(state, value.link_add_hash);
-
     for (const remove of removes) {
       const removeAction = state.CAS.get(remove);
       link_removes.push(removeAction);
@@ -295,12 +295,12 @@ export function getLinksForEntry(
   };
 }
 
-export function getCreateLinksForEntry(
+export function getCreateLinksForHash(
   state: CellState,
-  entryHash: EntryHash
+  hash: AnyDhtHash
 ): LinkMetaVal[] {
   return state.metadata.link_meta
-    .filter(({ key, value }) => areEqual(key.base, entryHash))
+    .filter(({ key, value }) => areEqual(key.base, hash))
     .map(({ key, value }) => value);
 }
 
@@ -309,7 +309,6 @@ export function getRemovesOnLinkAdd(
   link_add_hash: ActionHash
 ): ActionHash[] {
   const metadata = state.metadata.system_meta.get(link_add_hash);
-
   if (!metadata) return [];
 
   const removes: ActionHash[] = [];

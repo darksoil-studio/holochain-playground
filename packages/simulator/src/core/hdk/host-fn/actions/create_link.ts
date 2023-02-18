@@ -1,4 +1,10 @@
-import { EntryHash, ActionHash, Record } from '@holochain/client';
+import {
+  EntryHash,
+  ActionHash,
+  Record,
+  AnyDhtHash,
+  encodeHashToBase64,
+} from '@holochain/client';
 import {
   buildCreateLink,
   buildShh,
@@ -7,8 +13,8 @@ import { putRecord } from '../../../cell/source-chain/put';
 import { HostFn, HostFnWorkspace } from '../../host-fn';
 
 export type CreateLinkFn = (args: {
-  base: EntryHash;
-  target: EntryHash;
+  base: AnyDhtHash;
+  target: AnyDhtHash;
   tag: any;
 }) => Promise<ActionHash>;
 
@@ -29,6 +35,5 @@ export const create_link: HostFn<CreateLinkFn> =
       entry: { NotApplicable: null },
     };
     putRecord(element)(worskpace.state);
-
     return element.signed_action.hashed.hash;
   };

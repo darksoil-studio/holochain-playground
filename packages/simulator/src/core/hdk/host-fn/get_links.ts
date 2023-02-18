@@ -1,4 +1,4 @@
-import { EntryHash } from '@holochain/client';
+import { encodeHashToBase64, EntryHash } from '@holochain/client';
 
 import { GetLinksOptions, GetStrategy } from '../../../types';
 import { Link } from '../../cell/cascade/types';
@@ -16,6 +16,5 @@ export const get_links: HostFn<GetLinksFn> =
     if (!base_address) throw new Error(`Cannot get with undefined hash`);
 
     options = options || { strategy: GetStrategy.Contents };
-
     return workspace.cascade.dht_get_links(base_address, options);
   };

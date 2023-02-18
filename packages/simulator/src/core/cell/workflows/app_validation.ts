@@ -173,34 +173,7 @@ export async function validate_op(
   if (action.type === ActionType.DeleteLink) {
     return run_delete_link_validation_callback(zomes[0], action, workspace);
   } else if (action.type === ActionType.CreateLink) {
-    const cascade = new Cascade(workspace.state, workspace.p2p);
-
-    const maybeBaseEntry = await cascade.retrieve_entry(action.base_address, {
-      strategy: GetStrategy.Contents,
-    });
-    if (!maybeBaseEntry)
-      return {
-        resolved: false,
-        depsHashes: [action.base_address],
-      };
-
-    const maybeTargetEntry = await cascade.retrieve_entry(
-      action.target_address,
-      { strategy: GetStrategy.Contents }
-    );
-    if (!maybeTargetEntry)
-      return {
-        resolved: false,
-        depsHashes: [action.target_address],
-      };
-
-    return run_create_link_validation_callback(
-      zomes[0],
-      action,
-      maybeBaseEntry,
-      maybeTargetEntry,
-      workspace
-    );
+    return run_create_link_validation_callback(zomes[0], action, workspace);
   } else {
     return run_validation_callback_inner(
       zomes,
@@ -434,9 +407,7 @@ export async function run_agent_validation_callback(
 
 export async function run_create_link_validation_callback(
   zome: SimulatedZome,
-  link_add: CreateLink,
-  base: Entry,
-  target: Entry,
+  create_link: CreateLink,
   workspace: Workspace
 ): Promise<ValidationOutcome> {
   const validateCreateLink = 'validate_create_link';
@@ -455,7 +426,7 @@ export async function run_create_link_validation_callback(
 
     const outcome: ValidationOutcome = await zome.validation_functions[
       validateCreateLink
-    ](context)({ link_add, base, target });
+    ](context)({ create_link });
 
     return outcome;
   }

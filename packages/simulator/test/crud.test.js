@@ -2,10 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { sleep } from './utils';
 import { createConductors, demoHapp } from '../dist';
 
-describe.only('CRUD', () => {
+describe('CRUD', () => {
   it('create, update and delete an entry', async function () {
     const conductors = await createConductors(3, [], demoHapp());
-    await sleep(10000);
+    await sleep(200);
 
     const cell = conductors[0].getAllCells()[0];
 
@@ -18,7 +18,7 @@ describe.only('CRUD', () => {
     });
 
     expect(actionHash).to.be.ok;
-    await sleep(4000);
+    await sleep(200);
 
     const content = await conductors[0].callZomeFn({
       cellId: cell.cellId,
@@ -35,12 +35,22 @@ describe.only('CRUD', () => {
       cap: null,
       fnName: 'hash_entry',
       payload: {
-        entry: content.entry,
+        entry: content.entry.Present.entry,
       },
       zome: 'demo_entries',
     });
 
     expect(entryHash).to.be.ok;
+
+    const getByEntryHashResult = await conductors[0].callZomeFn({
+      cellId: cell.cellId,
+      cap: null,
+      fnName: 'get',
+      payload: { hash: entryHash },
+      zome: 'demo_entries',
+    });
+
+    expect(getByEntryHashResult).to.be.ok;
 
     try {
       await conductors[0].callZomeFn({
@@ -83,7 +93,7 @@ describe.only('CRUD', () => {
 
     expect(deletehash).to.be.ok;
 
-    await sleep(3000);
+    await sleep(200);
 
     let getresult = await conductors[0].callZomeFn({
       cellId: cell.cellId,

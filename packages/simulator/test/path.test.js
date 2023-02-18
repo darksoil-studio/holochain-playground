@@ -5,17 +5,34 @@ import { sleep } from './utils';
 describe('Paths', () => {
   it('ensure a path', async function () {
     const conductors = await createConductors(10, [], demoHapp());
-    await sleep(1000);
+    await sleep(200);
 
     const cell = conductors[0].getAllCells()[0];
 
-    const hash = await conductors[0].callZomeFn({
+    await conductors[0].callZomeFn({
       cellId: cell.cellId,
       cap: null,
       fnName: 'ensure_path',
       payload: { path: 'a.sample.path' },
       zome: 'demo_paths',
     });
-    expect(hash).to.be.ok;
+    const entryHash = await conductors[0].callZomeFn({
+      cellId: cell.cellId,
+      cap: null,
+      fnName: 'hash_entry',
+      payload: { entry: 'a' },
+      zome: 'demo_entries',
+    });
+
+    await sleep(200);
+
+    const links = await conductors[0].callZomeFn({
+      cellId: cell.cellId,
+      cap: null,
+      fnName: 'get_links',
+      payload: { base: entryHash },
+      zome: 'demo_links',
+    });
+    expect(links.length).to.equal(1);
   });
 });

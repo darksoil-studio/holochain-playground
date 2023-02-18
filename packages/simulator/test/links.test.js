@@ -5,11 +5,11 @@ import { sleep } from './utils';
 describe('Links', () => {
   it('create entry and link, get_links, delete_links', async function () {
     const conductors = await createConductors(10, [], demoHapp());
-    await sleep(10000);
+    await sleep(200);
 
     const cell = conductors[0].getAllCells()[0];
 
-    await conductors[0].callZomeFn({
+    let baseHash = await conductors[0].callZomeFn({
       cellId: cell.cellId,
       cap: null,
       fnName: 'create_entry',
@@ -17,18 +17,10 @@ describe('Links', () => {
       zome: 'demo_entries',
     });
 
-    let baseHash = await conductors[0].callZomeFn({
-      cellId: cell.cellId,
-      cap: null,
-      fnName: 'hash_entry',
-      payload: { entry: { content: 'hi', entry_def_id: 'demo_entry' } },
-      zome: 'demo_entries',
-    });
-
     expect(baseHash).to.be.ok;
-    await sleep(4000);
+    await sleep(200);
 
-    const add_link_hash = await conductors[0].callZomeFn({
+    const create_link_hash = await conductors[0].callZomeFn({
       cellId: cell.cellId,
       cap: null,
       fnName: 'create_link',
@@ -36,9 +28,9 @@ describe('Links', () => {
       zome: 'demo_links',
     });
 
-    expect(add_link_hash).to.be.ok;
+    expect(create_link_hash).to.be.ok;
 
-    await sleep(2000);
+    await sleep(200);
 
     let links = await conductors[0].callZomeFn({
       cellId: cell.cellId,
@@ -50,18 +42,19 @@ describe('Links', () => {
       zome: 'demo_links',
     });
     expect(links.length).to.equal(1);
-    await sleep(3000);
+
+    await sleep(200);
 
     await conductors[0].callZomeFn({
       cellId: cell.cellId,
       cap: null,
       fnName: 'delete_link',
       payload: {
-        add_link_action: add_link_hash,
+        create_link_hash,
       },
       zome: 'demo_links',
     });
-    await sleep(5000);
+    await sleep(200);
 
     links = await conductors[0].callZomeFn({
       cellId: cell.cellId,

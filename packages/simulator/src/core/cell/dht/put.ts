@@ -21,6 +21,7 @@ import {
   CreateLink,
   DeleteLink,
   getDhtOpSignature,
+  encodeHashToBase64,
 } from '@holochain/client';
 import { hash, HashType, HoloHashMap } from '@holochain-open-dev/utils';
 
@@ -84,7 +85,6 @@ export const putDhtOpData = (dhtOp: DhtOp) => (state: CellState) => {
   state.CAS.set(actionHash, ssh);
 
   const entry = getEntry(dhtOp);
-
   if (entry) {
     state.CAS.set((action as NewEntryAction).entry_hash, entry);
   }
@@ -160,12 +160,12 @@ export const putDhtOpMetadata = (dhtOp: DhtOp) => (state: CellState) => {
       timestamp: (action as CreateLink).timestamp,
       zome_id: (action as CreateLink).zome_id,
     };
+
     state.metadata.link_meta.push({ key, value });
   } else if (type === DhtOpType.RegisterRemoveLink) {
     const val: SysMetaVal = {
       DeleteLink: actionHash,
     };
-
     putSystemMetadata((action as DeleteLink).link_add_address, val)(state);
   }
 };

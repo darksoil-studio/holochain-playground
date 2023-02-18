@@ -12,7 +12,7 @@ describe('Stress tests links', () => {
 
     async function oneRound() {
       const conductors = await createConductors(10, [], demoHapp());
-      await sleep(1000);
+      await sleep(200);
 
       const cell = conductors[0].getAllCells()[0];
 
@@ -33,7 +33,7 @@ describe('Stress tests links', () => {
       });
 
       expect(baseHash).to.be.ok;
-      await sleep(1000);
+      await sleep(200);
 
       const add_link_hash = await conductors[0].callZomeFn({
         cellId: cell.cellId,
@@ -45,7 +45,7 @@ describe('Stress tests links', () => {
 
       expect(add_link_hash).to.be.ok;
 
-      await sleep(6000);
+      await sleep(1000);
 
       let links = await conductors[0].callZomeFn({
         cellId: cell.cellId,

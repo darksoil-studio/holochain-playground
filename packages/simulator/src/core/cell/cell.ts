@@ -9,6 +9,7 @@ import {
   EntryHash,
   Record,
   CapSecret,
+  encodeHashToBase64,
 } from '@holochain/client';
 import { getHashType, hash, HashType } from '@holochain-open-dev/utils';
 

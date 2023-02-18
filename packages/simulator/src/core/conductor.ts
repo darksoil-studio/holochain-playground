@@ -284,34 +284,15 @@ export class Conductor {
     const agentPubKey = args.cellId[1];
     const cell = this.cells.get(args.cellId);
 
-    const deserializedPayload = cloneDeepWith(args.payload, (value) => {
-      if (typeof value === 'string' && isHash(value)) {
-        return decodeHashFromBase64(value);
-      }
-    });
-
     if (!cell)
       throw new Error(`No cells existst with cellId ${dnaHash}:${agentPubKey}`);
 
-    const result = await cell.callZomeFn({
+    return cell.callZomeFn({
       zome: args.zome,
       cap: args.cap,
       fnName: args.fnName,
-      payload: deserializedPayload,
+      payload: args.payload,
       provenance: agentPubKey,
     });
-
-    const serializedResult = cloneDeepWith(result, (value) => {
-      if (
-        typeof value === 'object' &&
-        value &&
-        value.buffer &&
-        ArrayBuffer.isView(value)
-      ) {
-        return encodeHashToBase64(value as Uint8Array);
-      }
-    });
-
-    return serializedResult;
   }
 }

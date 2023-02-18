@@ -115,8 +115,8 @@ export const demoLinksZome: SimulatedZome = {
           return create_link({ base, target, tag });
         },
       arguments: [
-        { name: 'base', type: 'EntryHash' },
-        { name: 'target', type: 'EntryHash' },
+        { name: 'base', type: 'AnyDhtHash' },
+        { name: 'target', type: 'AnyDhtHash' },
         { name: 'tag', type: 'any' },
       ],
     },
@@ -126,13 +126,13 @@ export const demoLinksZome: SimulatedZome = {
         ({ base }) => {
           return get_links(base);
         },
-      arguments: [{ name: 'base', type: 'EntryHash' }],
+      arguments: [{ name: 'base', type: 'AnyDhtHash' }],
     },
     delete_link: {
       call:
         ({ delete_link }) =>
-        ({ add_link_action }) => {
-          return delete_link(add_link_action);
+        ({ create_link_hash }) => {
+          return delete_link(create_link_hash);
         },
       arguments: [{ name: 'add_link_action', type: 'ActionHash' }],
     },
@@ -151,7 +151,12 @@ export const demoPathsZome: SimulatedZome = {
     ensure_path: {
       call:
         (hdk) =>
-        ({ path }) => {
+        async ({ path }) => {
+          const actionHash = await hdk.create_entry({
+            content: path,
+            entry_def_id: 'path',
+          });
+
           return hdk.path.ensure(path);
         },
       arguments: [{ name: 'path', type: 'String' }],
