@@ -19,8 +19,8 @@
     "@holochain-playground/golden-layout": "0.1.0",
     "@holochain-playground/simulator": "0.1.0",
     "@open-wc/scoped-elements": "^2.1.2",
-    "@scoped-elements/golden-layout": "^0.0.4",
-    "@scoped-elements/material-web": "^0.1.0",
+    "@scoped-elements/golden-layout": "^0.1.0",
+    "@scoped-elements/material-web": "^0.0.19",
     "@webcomponents/scoped-custom-element-registry": "^0.0.5",
     "golden-layout": "^2.4.0",
     "lit": "^2.0.2",
@@ -35,6 +35,7 @@
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-node-resolve": "^13.0.5",
+    "@rollup/plugin-typescript": "^11.0.0",
     "@types/lodash-es": "^4.17.5",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
@@ -59,14 +60,21 @@
   },
   "eslintConfig": {
     "parser": "@typescript-eslint/parser",
-    "extends": ["@open-wc", "prettier"],
-    "plugins": ["@typescript-eslint"],
+    "extends": [
+      "@open-wc",
+      "prettier"
+    ],
+    "plugins": [
+      "@typescript-eslint"
+    ],
     "rules": {
       "no-use-before-define": "off",
       "no-await-in-loop": "off",
       "camelcase": "off",
       "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": ["error"],
+      "@typescript-eslint/no-unused-vars": [
+        "error"
+      ],
       "import/no-unresolved": "off",
       "import/extensions": "off"
     }
@@ -81,7 +89,10 @@
     }
   },
   "lint-staged": {
-    "*.ts": ["eslint --fix", "prettier --write"]
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   },
   "customElements": "custom-elements.json"
 }
