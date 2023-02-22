@@ -6,7 +6,8 @@
     "packages/elements",
     "packages/golden-layout",
     "packages/cli/client",
-    "packages/cli/server"
+    "packages/cli/server",
+    "packages/demo"
   ],
   "scripts": {
     "start": "npm run build -w @holochain-playground/simulator && npm start -w @holochain-playground/elements",
@@ -16,7 +17,9 @@
     "test": "npm t -w @holochain-playground/simulator",
     "playground": "holochain-playground",
     "start:happ": " echo \"pass\" | RUST_LOG=warn hc s --piped -f=$ADMIN_PORT generate tests/happ/workdir/forum.happ --run=8888 network  mdns",
-    "build:happ": "cd tests/happ && npm run build:happ"
+    "build:happ": "cd tests/happ && npm run build:happ",
+    "demo:start": "npm run build -w @holochain-playground/simulator -w @holochain-playground/elements -w @holochain-playground/golden-layout && npm start -w @holochain-playground/demo",
+    "demo:publish": "npm run build -ws && npm run publish -w @holochain-playground/demo"
   },
   "devDependencies": {
     "concurrently": "^6.4.0",
