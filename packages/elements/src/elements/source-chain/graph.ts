@@ -1,4 +1,4 @@
-import { commonGraphStyles } from "../utils/common-graph-styles";
+import { commonGraphStyles } from '../utils/common-graph-styles.js';
 
 export const graphStyles = `
 ${commonGraphStyles}

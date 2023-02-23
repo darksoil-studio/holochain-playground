@@ -139,7 +139,7 @@ export abstract class PlaygroundStore<T extends PlaygroundMode> {
   }
 
   allCells(): Readable<CellMap<CellStore<T>>> {
-    return deriveStore([this.conductors], ([conductors]) =>
+    return deriveStore(this.conductors, (conductors) =>
       derived(
         conductors.map((c) => c.cells),
         (cellMaps) =>
@@ -155,14 +155,12 @@ export abstract class PlaygroundStore<T extends PlaygroundMode> {
 
   activeContent(): Readable<any | undefined> {
     const contentMap = deriveStore(
-      [
-        derived(
-          [this.cellsForActiveDna(), this.activeDhtHash],
-          ([cellMap, activeHash]) =>
-            mapDerive(cellMap, (c) => (c as any).get(activeHash))
-        ),
-      ],
-      ([i]) => i
+      derived(
+        [this.cellsForActiveDna(), this.activeDhtHash],
+        ([cellMap, activeHash]) =>
+          mapDerive(cellMap, (c) => (c as any).get(activeHash))
+      ),
+      (i) => i
     );
 
     return derived(contentMap, (map) => {
@@ -193,15 +191,13 @@ export abstract class PlaygroundStore<T extends PlaygroundMode> {
 
   dhtForActiveDna(): Readable<CellMap<DhtOp[]>> {
     return deriveStore(
-      [
-        derived(this.cellsForActiveDna(), (cellMap) =>
-          mapDerive<CellStore<T>, DhtOp[]>(
-            cellMap,
-            (cellStore) => cellStore.dhtShard
-          )
-        ),
-      ],
-      ([i]) => i
+      derived(this.cellsForActiveDna(), (cellMap) =>
+        mapDerive<CellStore<T>, DhtOp[]>(
+          cellMap,
+          (cellStore) => cellStore.dhtShard
+        )
+      ),
+      (i) => i
     );
   }
 }
