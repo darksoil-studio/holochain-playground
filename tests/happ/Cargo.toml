@@ -9,9 +9,9 @@ resolver = "2"
 members = ["dnas/*/zomes/coordinator/*", "dnas/*/zomes/integrity/*"]
 
 [workspace.dependencies]
-hdi = "=0.3.6"
-hdk = "=0.2.6"
-serde = "=1.0.166"
+hdi = "0.4.0-beta-dev.27"
+hdk = "0.3.0-beta-dev.31"
+serde = "1.0.193"
 
 [workspace.dependencies.posts]
 path = "dnas/forum/zomes/coordinator/posts"

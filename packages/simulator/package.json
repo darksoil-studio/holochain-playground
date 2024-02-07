@@ -17,7 +17,7 @@
   "dependencies": {
     "@holochain-open-dev/core-types": "^0.7.0",
     "@holochain-open-dev/utils": "^0.16.5",
-    "@holochain/client": "^0.16.9",
+    "@holochain/client": "^0.17.0-dev.5",
     "@msgpack/msgpack": "^2.7.1",
     "blakejs": "^1.1.0",
     "js-base64": "^3.7.2",
