@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@holochain-open-dev/core-types": "^0.7.0",
-    "@holochain-open-dev/elements": "^0.3.0",
+    "@holochain-open-dev/elements": "^0.8.0",
     "@holochain-open-dev/stores": "^0.8.11",
     "@holochain-open-dev/utils": "^0.16.5",
     "@holochain-playground/simulator": "^0.1.1",

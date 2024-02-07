@@ -2,10 +2,10 @@ import { StoreSubscriber } from 'lit-svelte-stores';
 import { html } from 'lit';
 import { JsonViewer } from '@power-elements/json-viewer';
 import { Card } from '@scoped-elements/material-web';
+import '@holochain-open-dev/elements/dist/elements/holo-identicon.js';
 
 import { sharedStyles } from '../utils/shared-styles.js';
 import { shortenStrRec } from '../utils/hash.js';
-import { CopiableHash } from '@holochain-open-dev/elements';
 import { PlaygroundElement } from '../../base/playground-element.js';
 import { getEntryContents } from '../utils/utils.js';
 
@@ -28,10 +28,10 @@ export class EntryContents extends PlaygroundElement {
             Contents${this._activeDhtHash.value
               ? html`<span class="row placeholder">
                   , with hash
-                  <copyable-hash
+                  <holo-identicon
                     .hash=${this._activeDhtHash.value}
                     style="margin-left: 8px;"
-                  ></copyable-hash
+                  ></holo-identicon
                 ></span>`
               : html``}</span
           >
@@ -68,7 +68,6 @@ export class EntryContents extends PlaygroundElement {
     return {
       'json-viewer': JsonViewer,
       'mwc-card': Card,
-      'copyable-hash': CopiableHash,
     };
   }
 

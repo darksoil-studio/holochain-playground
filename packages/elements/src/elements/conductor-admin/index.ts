@@ -16,6 +16,7 @@ import { JsonViewer } from '@power-elements/json-viewer';
 import { StoreSubscriber } from 'lit-svelte-stores';
 import { derived } from 'svelte/store';
 import isEqual from 'lodash-es/isEqual.js';
+import '@holochain-open-dev/elements/dist/elements/holo-identicon.js';
 
 import { sharedStyles } from '../utils/shared-styles.js';
 import { PlaygroundElement } from '../../base/playground-element.js';
@@ -30,7 +31,6 @@ import {
   SimulatedConductorStore,
   SimulatedPlaygroundStore,
 } from '../../store/simulated-playground-store.js';
-import { CopiableHash } from '@holochain-open-dev/elements';
 import { encodeHashToBase64 } from '@holochain/client';
 
 export class ConductorAdmin extends PlaygroundElement {
@@ -98,9 +98,9 @@ export class ConductorAdmin extends PlaygroundElement {
       ) as GridColumn;
       dnaColumn.renderer = (root: any, column, model) => {
         const cell = model.item as any as CellStore<any>;
-        root.innerHTML = `<copyable-hash hash="${encodeHashToBase64(
+        root.innerHTML = `<holo-identicon hash="${encodeHashToBase64(
           cell.cellId[0]
-        )}"></copyable-hash>`;
+        )}"></holo-identicon>`;
         root.item = model.item;
       };
       const agentPubKeyColumn = this.shadowRoot.querySelector(
@@ -108,9 +108,9 @@ export class ConductorAdmin extends PlaygroundElement {
       ) as GridColumn;
       agentPubKeyColumn.renderer = (root: any, column, model) => {
         const cell = model.item as any as CellStore<any>;
-        root.innerHTML = `<copyable-hash hash="${encodeHashToBase64(
+        root.innerHTML = `<holo-identicon hash="${encodeHashToBase64(
           cell.cellId[1]
-        )}"></copyable-hash>`;
+        )}"></holo-identicon>`;
         root.item = model.item;
       };
 
@@ -312,7 +312,6 @@ export class ConductorAdmin extends PlaygroundElement {
 
   static get scopedElements() {
     return {
-      'copyable-hash': CopiableHash,
       'call-functions': CallFns,
       'mwc-tab': Tab,
       'vaadin-grid': Grid,

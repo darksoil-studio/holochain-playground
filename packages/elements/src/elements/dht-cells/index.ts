@@ -32,7 +32,10 @@ import {
   ListItem,
 } from '@scoped-elements/material-web';
 import { CytoscapeCircle } from '@scoped-elements/cytoscape';
-import { uniq } from 'lodash-es';
+import uniq from 'lodash-es/uniq.js';
+import '@holochain-open-dev/elements/dist/elements/holo-identicon.js';
+import { HoloHashMap } from '@holochain-open-dev/utils';
+import { DhtOpHash } from '@holochain-open-dev/core-types';
 
 import { CellTasks } from '../helpers/cell-tasks.js';
 import { HelpButton } from '../helpers/help-button.js';
@@ -46,7 +49,7 @@ import {
 } from './processors.js';
 import { cytoscapeOptions, layoutConfig } from './graph.js';
 import { PlaygroundElement } from '../../base/playground-element.js';
-import { CopiableHash } from '@holochain-open-dev/elements';
+
 import {
   SimulatedCellStore,
   SimulatedPlaygroundStore,
@@ -54,8 +57,6 @@ import {
 import { mapDerive } from '../../store/utils.js';
 import { MiddlewareController } from '../../base/middleware-controller.js';
 import { CellStore } from '../../store/playground-store.js';
-import { HoloHashMap } from '@holochain-open-dev/utils';
-import { DhtOpHash } from '@holochain-open-dev/core-types';
 
 const MIN_ANIMATION_DELAY = 1;
 const MAX_ANIMATION_DELAY = 7;
@@ -582,10 +583,10 @@ export class DhtCells extends PlaygroundElement {
               ? html`
                   <span class="placeholder row">
                     , for Dna
-                    <copyable-hash
+                    <holo-identicon
                       .hash=${this._activeDna.value}
                       style="margin-left: 8px;"
-                    ></copyable-hash>
+                    ></holo-identicon>
                   </span>
                 `
               : html``}
@@ -639,7 +640,6 @@ export class DhtCells extends PlaygroundElement {
       'mwc-switch': Switch,
       'mwc-formfield': Formfield,
       'mwc-icon-button': IconButton,
-      'copyable-hash': CopiableHash,
       'cytoscape-circle': CytoscapeCircle,
       'help-button': HelpButton,
       'cell-tasks': CellTasks,

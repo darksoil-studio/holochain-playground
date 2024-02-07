@@ -7,7 +7,7 @@ import {
   Cell,
   SimulatedDna,
 } from '@holochain-playground/simulator';
-import { CopiableHash } from '@holochain-open-dev/elements';
+import '@holochain-open-dev/elements/dist/elements/holo-identicon.js';
 import { CellMap, isHash } from '@holochain-open-dev/utils';
 
 import { sharedStyles } from '../utils/shared-styles.js';
@@ -291,10 +291,10 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
                     ? html``
                     : html`<span class="placeholder row"
                         >, for agent
-                        <copyable-hash
+                        <holo-identicon
                           .hash=${this._activeCell.value.cellId[1]}
                           style="margin-left: 8px;"
-                        ></copyable-hash
+                        ></holo-identicon
                       ></span> `}</span
                 >
                 <span
@@ -357,7 +357,6 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
       'mwc-tab': Tab,
       'mwc-tab-bar': TabBar,
       'mwc-card': Card,
-      'copyable-hash': CopiableHash,
       'call-functions': CallFns,
       'json-viewer': JsonViewer,
       'expandable-line': ExpandableLine,

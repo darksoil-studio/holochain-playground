@@ -10,7 +10,7 @@ import {
   encodeHashToBase64,
   NewEntryAction,
 } from '@holochain/client';
-import { CopiableHash } from '@holochain-open-dev/elements';
+import '@holochain-open-dev/elements/dist/elements/holo-identicon.js';
 
 import { sourceChainNodes } from './processors.js';
 import { sharedStyles } from '../utils/shared-styles.js';
@@ -105,10 +105,10 @@ export class SourceChain extends PlaygroundElement {
               ? html`
                   <span class="placeholder row">
                     , for Agent
-                    <copyable-hash
+                    <holo-identicon
                       .hash=${this._activeAgentPubKey.value}
                       style="margin-left: 8px;"
-                    ></copyable-hash>
+                    ></holo-identicon>
                   </span>
                 `
               : html``}</span
@@ -165,7 +165,6 @@ export class SourceChain extends PlaygroundElement {
   static get scopedElements() {
     return {
       'mwc-card': Card,
-      'copyable-hash': CopiableHash,
       'cytoscape-dagre': CytoscapeDagre,
       'help-button': HelpButton,
     };

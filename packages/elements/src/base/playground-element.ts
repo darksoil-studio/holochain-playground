@@ -11,7 +11,11 @@ export class PlaygroundElement<
 > extends ScopedElementsMixin(LitElement) {
   @consume({ context: playgroundContext, subscribe: true })
   @state()
-  store: T;
+  _store: PlaygroundStore<any>;
+
+  get store(): T {
+    return this._store as T;
+  }
 
   showMessage(message: string) {
     this.dispatchEvent(

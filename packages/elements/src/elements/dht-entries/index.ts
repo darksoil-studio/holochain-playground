@@ -23,6 +23,7 @@ import {
 } from '@holochain/client';
 import { CellMap } from '@holochain-open-dev/utils';
 import { CytoscapeCoseBilkent } from '@scoped-elements/cytoscape';
+import '@holochain-open-dev/elements/dist/elements/holo-identicon.js';
 
 import { allEntries } from './processors.js';
 import { sharedStyles } from '../utils/shared-styles.js';
@@ -30,7 +31,6 @@ import { HelpButton } from '../helpers/help-button.js';
 
 import { cytoscapeConfig } from './graph.js';
 import { PlaygroundElement } from '../../base/playground-element.js';
-import { CopiableHash } from '@holochain-open-dev/elements';
 import { SimulatedCellStore } from '../../store/simulated-playground-store.js';
 
 /**
@@ -211,10 +211,10 @@ export class DhtEntries extends PlaygroundElement {
               ? html`
                   <span class="placeholder row">
                     , for Dna
-                    <copyable-hash
+                    <holo-identicon
                       .hash=${this._activeDna.value}
                       style="margin-left: 8px;"
-                    ></copyable-hash>
+                    ></holo-identicon>
                   </span>
                 `
               : html``}</span
@@ -243,7 +243,6 @@ export class DhtEntries extends PlaygroundElement {
       'mwc-checkbox': Checkbox,
       'mwc-formfield': Formfield,
       'mwc-icon-button': IconButton,
-      'copyable-hash': CopiableHash,
       'mwc-card': Card,
       'mwc-menu': Menu,
       'mwc-icon': Icon,
