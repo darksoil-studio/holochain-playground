@@ -8,7 +8,7 @@ import { LitElement, html, css } from 'lit';
 import { property, query } from 'lit/decorators.js';
 
 import { ScopedElementsMixin } from '@open-wc/scoped-elements';
-import { provide } from '@lit-labs/context';
+import { provide } from '@lit/context';
 
 import { playgroundContext } from './context.js';
 import { PlaygroundStore } from '../store/playground-store.js';

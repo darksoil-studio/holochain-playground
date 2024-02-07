@@ -2,7 +2,7 @@ import { playgroundContext } from './context.js';
 import { ScopedElementsMixin } from '@open-wc/scoped-elements';
 import { LitElement } from 'lit';
 import { state } from 'lit/decorators.js';
-import { consume } from '@lit-labs/context';
+import { consume } from '@lit/context';
 
 import { PlaygroundStore } from '../store/playground-store.js';
 
