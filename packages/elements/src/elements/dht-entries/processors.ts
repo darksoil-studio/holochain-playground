@@ -8,7 +8,7 @@ import {
   EntryHashB64,
 } from '@holochain/client';
 import { getAppEntryType, SimulatedDna } from '@holochain-playground/simulator';
-import uniq from 'lodash-es/uniq';
+import uniq from 'lodash-es/uniq.js';
 import {
   HashType,
   retype,
