@@ -9,6 +9,7 @@ import {
   EntryHash,
   Record,
   CapSecret,
+  LinkType,
 } from '@holochain/client';
 import { getHashType, hash, HashType } from '@holochain-open-dev/utils';
 
@@ -167,10 +168,11 @@ export class Cell {
 
   public async handle_get_links(
     base_address: EntryHash,
+    link_type: LinkType,
     options: GetLinksOptions
   ): Promise<GetLinksResponse> {
     const authority = new Authority(this._state, this.p2p);
-    return authority.handle_get_links(base_address, options);
+    return authority.handle_get_links(base_address, link_type, options);
   }
 
   public async handle_call_remote(

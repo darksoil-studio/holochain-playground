@@ -1,18 +1,22 @@
 import { LitElement, html } from 'lit';
 import { state, customElement, property } from 'lit/decorators.js';
-import { AppAgentClient, AgentPubKey, EntryHash, ActionHash, Record } from '@holochain/client';
+import { AppAgentClient, AgentPubKey, Link, EntryHash, ActionHash, Record, NewEntryAction } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import { Task } from '@lit-labs/task';
-import { clientContext } from '../../contexts.js';
 import '@material/mwc-circular-progress';
 
-import './post-detail.js';
+import { clientContext } from '../../contexts';
+import { PostsSignal } from './types';
+
+import './post-detail';
 
 @customElement('all-posts')
 export class AllPosts extends LitElement {
   @consume({ context: clientContext })
   client!: AppAgentClient;
   
+  @state()
+  signaledHashes: Array<ActionHash> = [];
   
   _fetchPosts = new Task(this, ([]) => this.client.callZome({
       cap_secret: null,
@@ -20,7 +24,17 @@ export class AllPosts extends LitElement {
       zome_name: 'posts',
       fn_name: 'get_all_posts',
       payload: null,
-  }) as Promise<Array<ActionHash>>, () => []);
+  }) as Promise<Array<Link>>, () => []);
+
+  firstUpdated() {
+    this.client.on('signal', signal => {
+      if (signal.zome_name !== 'posts') return; 
+      const payload = signal.payload as PostsSignal;
+      if (payload.type !== 'EntryCreated') return;
+      if (payload.app_entry.type !== 'Post') return;
+      this.signaledHashes = [payload.action.hashed.hash, ...this.signaledHashes];
+    });
+  }
   
   renderList(hashes: Array<ActionHash>) {
     if (hashes.length === 0) return html`<span>No posts found.</span>`;
@@ -28,7 +42,7 @@ export class AllPosts extends LitElement {
     return html`
       <div style="display: flex; flex-direction: column">
         ${hashes.map(hash => 
-          html`<post-detail .postHash=${hash} style="margin-bottom: 16px;" @post-deleted=${() => this._fetchPosts.run()}></post-detail>`
+          html`<post-detail .postHash=${hash} style="margin-bottom: 16px;" @post-deleted=${() => { this._fetchPosts.run(); this.signaledHashes = []; } }></post-detail>`
         )}
       </div>
     `;
@@ -39,7 +53,7 @@ export class AllPosts extends LitElement {
       pending: () => html`<div style="display: flex; flex: 1; align-items: center; justify-content: center">
         <mwc-circular-progress indeterminate></mwc-circular-progress>
       </div>`,
-      complete: (hashes) => this.renderList(hashes),
+      complete: (links) => this.renderList([...this.signaledHashes, ...links.map(l => l.target)]),
       error: (e: any) => html`<span>Error fetching the posts: ${e.data.data}.</span>`
     });
   }

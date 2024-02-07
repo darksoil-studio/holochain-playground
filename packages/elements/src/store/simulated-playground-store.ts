@@ -10,7 +10,7 @@ import {
   Dictionary,
 } from '@holochain-playground/simulator';
 import { CellMap } from '@holochain-open-dev/utils';
-import { AgentPubKey, DhtOp, Record } from '@holochain/client';
+import { AgentPubKey, CellId, DhtOp, Record } from '@holochain/client';
 import {
   readable,
   Readable,
@@ -19,7 +19,11 @@ import {
 } from '@holochain-open-dev/stores';
 
 import { PlaygroundMode } from './mode.js';
-import { CellStore, ConductorStore, PlaygroundStore } from './playground-store.js';
+import {
+  CellStore,
+  ConductorStore,
+  PlaygroundStore,
+} from './playground-store.js';
 import { cellChanges } from './utils.js';
 
 export class SimulatedCellStore extends CellStore<PlaygroundMode.Simulated> {
@@ -45,7 +49,7 @@ export class SimulatedCellStore extends CellStore<PlaygroundMode.Simulated> {
     return this.cell.getSimulatedDna();
   }
 
-  get cellId() {
+  get cellId(): CellId {
     return this.cell.cellId;
   }
 

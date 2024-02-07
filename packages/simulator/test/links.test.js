@@ -24,7 +24,12 @@ describe('Links', () => {
       cellId: cell.cellId,
       cap: null,
       fnName: 'create_link',
-      payload: { base: baseHash, target: cell.cellId[1], tag: 'hello' },
+      payload: {
+        base: baseHash,
+        target: cell.cellId[1],
+        link_type: 0,
+        tag: 'hello',
+      },
       zome: 'demo_links',
     });
 
@@ -38,6 +43,7 @@ describe('Links', () => {
       fnName: 'get_links',
       payload: {
         base: baseHash,
+        link_type: 0,
       },
       zome: 'demo_links',
     });
@@ -62,6 +68,7 @@ describe('Links', () => {
       fnName: 'get_links',
       payload: {
         base: baseHash,
+        link_type: 0,
       },
       zome: 'demo_links',
     });

@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit';
 import { state, customElement, property } from 'lit/decorators.js';
-import { InstalledCell, ActionHash, Record, AgentPubKey, EntryHash, AppAgentClient } from '@holochain/client';
+import { InstalledCell, ActionHash, Record, AgentPubKey, EntryHash, AppAgentClient, DnaHash } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import '@material/mwc-button';
 import '@material/mwc-snackbar';
@@ -8,8 +8,8 @@ import { Snackbar } from '@material/mwc-snackbar';
 
 import '@material/mwc-textfield';
 import '@material/mwc-textarea';
-import { clientContext } from '../../contexts.js';
-import { Post } from './types.js';
+import { clientContext } from '../../contexts';
+import { Post } from './types';
 
 @customElement('create-post')
 export class CreatePost extends LitElement {
@@ -18,20 +18,23 @@ export class CreatePost extends LitElement {
 
 
   @state()
-  _title: string | undefined;
+  _title: string = '';
 
   @state()
-  _content: string | undefined;
+  _content: string = '';
 
+  
+  firstUpdated() {
+  }
 
   isPostValid() {
-    return true && this._title !== undefined && this._content !== undefined;
+    return true && this._title !== '' && this._content !== '';
   }
 
   async createPost() {
     const post: Post = { 
-        title: this._title!,
-        content: this._content!,
+        title: this._title,
+        content: this._content,
     };
 
     try {
@@ -66,11 +69,11 @@ export class CreatePost extends LitElement {
         <span style="font-size: 18px">Create Post</span>
 
           <div style="margin-bottom: 16px">
-            <mwc-textfield outlined label="Title"  @input=${(e: CustomEvent) => { this._title = (e.target as any).value; } } required></mwc-textfield>          
+            <mwc-textfield outlined label="Title" .value=${ this._title } @input=${(e: CustomEvent) => { this._title = (e.target as any).value; } } required></mwc-textfield>          
           </div>
             
           <div style="margin-bottom: 16px">
-            <mwc-textarea outlined label="Content"  @input=${(e: CustomEvent) => { this._content = (e.target as any).value;} } required></mwc-textarea>          
+            <mwc-textarea outlined label="Content" .value=${ this._content } @input=${(e: CustomEvent) => { this._content = (e.target as any).value;} } required></mwc-textarea>          
           </div>
             
 

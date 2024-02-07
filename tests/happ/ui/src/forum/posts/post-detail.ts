@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit';
 import { state, customElement, property } from 'lit/decorators.js';
-import { EntryHash, Record, ActionHash, AppAgentClient } from '@holochain/client';
+import { EntryHash, Record, ActionHash, AppAgentClient, DnaHash } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import { Task } from '@lit-labs/task';
 import { decode } from '@msgpack/msgpack';
@@ -9,10 +9,10 @@ import '@material/mwc-icon-button';
 import '@material/mwc-snackbar';
 import { Snackbar } from '@material/mwc-snackbar';
 
-import './edit-post.js';
+import './edit-post';
 
-import { clientContext } from '../../contexts.js';
-import { Post } from './types.js';
+import { clientContext } from '../../contexts';
+import { Post } from './types';
 
 @customElement('post-detail')
 export class PostDetail extends LitElement {
@@ -28,12 +28,18 @@ export class PostDetail extends LitElement {
       cap_secret: null,
       role_name: 'forum',
       zome_name: 'posts',
-      fn_name: 'get_post',
+      fn_name: 'get_latest_post',
       payload: postHash,
   }) as Promise<Record | undefined>, () => [this.postHash]);
 
   @state()
   _editing = false;
+  
+  firstUpdated() {
+    if (this.postHash === undefined) {
+      throw new Error(`The postHash property is required for the post-detail element`);
+    }
+  }
 
   async deletePost() {
     try {
@@ -68,19 +74,19 @@ export class PostDetail extends LitElement {
 
       <div style="display: flex; flex-direction: column">
       	<div style="display: flex; flex-direction: row">
-          <span style="font-size: 18px; flex: 1;">Post</span>
-
+      	  <span style="flex: 1"></span>
+      	
           <mwc-icon-button style="margin-left: 8px" icon="edit" @click=${() => { this._editing = true; } }></mwc-icon-button>
           <mwc-icon-button style="margin-left: 8px" icon="delete" @click=${() => this.deletePost()}></mwc-icon-button>
         </div>
 
         <div style="display: flex; flex-direction: row; margin-bottom: 16px">
-	  <span><strong>Title</strong></span>
+	  <span style="margin-right: 4px"><strong>Title: </strong></span>
  	  <span style="white-space: pre-line">${ post.title }</span>
         </div>
 
         <div style="display: flex; flex-direction: row; margin-bottom: 16px">
-	  <span><strong>Content</strong></span>
+	  <span style="margin-right: 4px"><strong>Content: </strong></span>
  	  <span style="white-space: pre-line">${ post.content }</span>
         </div>
 

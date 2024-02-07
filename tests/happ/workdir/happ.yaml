@@ -14,5 +14,5 @@ roles:
         properties: ~
         origin_time: ~
         quantum_time: ~
-      version: ~
+      installed_hash: ~
       clone_limit: 0

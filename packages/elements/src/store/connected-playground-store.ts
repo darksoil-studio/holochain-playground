@@ -18,7 +18,11 @@ import isEqual from 'lodash-es/isEqual.js';
 import { AGENT_PREFIX, CellMap } from '@holochain-open-dev/utils';
 import { Base64 } from 'js-base64';
 
-import { CellStore, ConductorStore, PlaygroundStore } from './playground-store.js';
+import {
+  CellStore,
+  ConductorStore,
+  PlaygroundStore,
+} from './playground-store.js';
 import { pollingStore } from './polling-store.js';
 import { PlaygroundMode } from './mode.js';
 import { cellChanges } from './utils.js';
@@ -172,7 +176,7 @@ export class ConnectedPlaygroundStore extends PlaygroundStore<PlaygroundMode.Con
 
     const promises = toAdd.map(async (url) => {
       try {
-        const ws = await AdminWebsocket.connect(url);
+        const ws = await AdminWebsocket.connect(new URL(url));
         return ws;
       } catch (e) {
         console.log('COULD NOT CONNECT TO ADMINWEBSOCKET AT URL ', url);

@@ -15,6 +15,8 @@ import {
   DnaHash,
   EntryHash,
   ActionHash,
+  AnyLinkableHash,
+  LinkType,
 } from '@holochain/client';
 import { hash, HashType } from '@holochain-open-dev/utils';
 
@@ -72,9 +74,10 @@ export function buildCreate(
 
 export function buildCreateLink(
   state: CellState,
-  zome_id: number,
-  base: EntryHash,
-  target: EntryHash,
+  zome_index: number,
+  base: AnyLinkableHash,
+  target: AnyLinkableHash,
+  link_type: LinkType,
   tag: any
 ): CreateLink {
   const create_link: CreateLink = {
@@ -82,8 +85,13 @@ export function buildCreateLink(
     base_address: base,
     target_address: target,
     tag,
-    zome_id,
+    zome_index,
+    link_type,
     type: ActionType.CreateLink,
+    weight: {
+      bucket_id: 0,
+      units: 0,
+    },
   };
   return create_link;
 }

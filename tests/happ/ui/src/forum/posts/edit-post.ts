@@ -1,16 +1,16 @@
 import { LitElement, html } from 'lit';
 import { state, customElement, property } from 'lit/decorators.js';
-import { ActionHash, EntryHash, AgentPubKey, Record, AppAgentClient } from '@holochain/client';
+import { ActionHash, EntryHash, AgentPubKey, Record, AppAgentClient, DnaHash } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import { decode } from '@msgpack/msgpack';
 import '@material/mwc-button';
 import '@material/mwc-snackbar';
 import { Snackbar } from '@material/mwc-snackbar';
-import '@material/mwc-textarea';
-
 import '@material/mwc-textfield';
-import { clientContext } from '../../contexts.js';
-import { Post } from './types.js';
+
+import '@material/mwc-textarea';
+import { clientContext } from '../../contexts';
+import { Post } from './types';
 
 @customElement('edit-post')
 export class EditPost extends LitElement {
@@ -39,11 +39,19 @@ export class EditPost extends LitElement {
 
 
   isPostValid() {
-    return true && this._title !== undefined && this._content !== undefined;
+    return true && this._title !== '' && this._content !== '';
   }
   
   connectedCallback() {
     super.connectedCallback();
+    if (this.currentRecord === undefined) {
+      throw new Error(`The currentRecord property is required for the edit-post element`);
+    }
+
+    if (this.originalPostHash === undefined) {
+      throw new Error(`The originalPostHash property is required for the edit-post element`);
+    }
+    
     this._title = this.currentPost.title;
     this._content = this.currentPost.content;
   }

@@ -5,6 +5,7 @@ import {
   Timestamp,
   EntryHash,
   ActionHash,
+  LinkType,
 } from '@holochain/client';
 
 // From https://github.com/holochain/holochain/blob/develop/crates/holochain/src/core/state/metadata.rs
@@ -52,8 +53,9 @@ export function getSysMetaValActionHash(
 
 export interface LinkMetaKey {
   base: EntryHash;
-  zome_id: number;
+  zome_index: number;
   tag: any;
+  link_type: LinkType;
   action_hash: ActionHash;
 }
 
@@ -61,7 +63,8 @@ export interface LinkMetaVal {
   link_add_hash: ActionHash;
   target: EntryHash;
   timestamp: Timestamp;
-  zome_id: number;
+  zome_index: number;
+  link_type: LinkType;
   tag: any;
 }
 

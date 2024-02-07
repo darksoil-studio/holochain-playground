@@ -1,45 +1,79 @@
 use hdi::prelude::*;
 #[hdk_entry_helper]
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub struct Post {
     pub title: String,
     pub content: String,
 }
 pub fn validate_create_post(
-    action: EntryCreationAction,
-    post: Post,
+    _action: EntryCreationAction,
+    _post: Post,
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(ValidateCallbackResult::Valid)
 }
 pub fn validate_update_post(
-    action: Update,
-    post: Post,
-    original_action: EntryCreationAction,
-    original_post: Post,
+    _action: Update,
+    _post: Post,
+    _original_action: EntryCreationAction,
+    _original_post: Post,
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(ValidateCallbackResult::Valid)
 }
 pub fn validate_delete_post(
-    action: Delete,
-    original_action: EntryCreationAction,
-    original_post: Post,
+    _action: Delete,
+    _original_action: EntryCreationAction,
+    _original_post: Post,
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(ValidateCallbackResult::Valid)
 }
 pub fn validate_create_link_post_updates(
-    action: CreateLink,
+    _action: CreateLink,
     base_address: AnyLinkableHash,
     target_address: AnyLinkableHash,
-    tag: LinkTag,
+    _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
+    let action_hash = base_address
+        .into_action_hash()
+        .ok_or(
+            wasm_error!(
+                WasmErrorInner::Guest(String::from("No action hash associated with link"))
+            ),
+        )?;
+    let record = must_get_valid_record(action_hash)?;
+    let _post: crate::Post = record
+        .entry()
+        .to_app_option()
+        .map_err(|e| wasm_error!(e))?
+        .ok_or(
+            wasm_error!(
+                WasmErrorInner::Guest(String::from("Linked action must reference an entry"))
+            ),
+        )?;
+    let action_hash = target_address
+        .into_action_hash()
+        .ok_or(
+            wasm_error!(
+                WasmErrorInner::Guest(String::from("No action hash associated with link"))
+            ),
+        )?;
+    let record = must_get_valid_record(action_hash)?;
+    let _post: crate::Post = record
+        .entry()
+        .to_app_option()
+        .map_err(|e| wasm_error!(e))?
+        .ok_or(
+            wasm_error!(
+                WasmErrorInner::Guest(String::from("Linked action must reference an entry"))
+            ),
+        )?;
     Ok(ValidateCallbackResult::Valid)
 }
 pub fn validate_delete_link_post_updates(
-    action: DeleteLink,
-    original_action: CreateLink,
-    base: AnyLinkableHash,
-    target: AnyLinkableHash,
-    tag: LinkTag,
+    _action: DeleteLink,
+    _original_action: CreateLink,
+    _base: AnyLinkableHash,
+    _target: AnyLinkableHash,
+    _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(
         ValidateCallbackResult::Invalid(
@@ -48,19 +82,39 @@ pub fn validate_delete_link_post_updates(
     )
 }
 pub fn validate_create_link_all_posts(
-    action: CreateLink,
-    base_address: AnyLinkableHash,
+    _action: CreateLink,
+    _base_address: AnyLinkableHash,
     target_address: AnyLinkableHash,
-    tag: LinkTag,
+    _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
+    // Check the entry type for the given action hash
+    let action_hash = target_address
+        .into_action_hash()
+        .ok_or(
+            wasm_error!(
+                WasmErrorInner::Guest(String::from("No action hash associated with link"))
+            ),
+        )?;
+    let record = must_get_valid_record(action_hash)?;
+    let _post: crate::Post = record
+        .entry()
+        .to_app_option()
+        .map_err(|e| wasm_error!(e))?
+        .ok_or(
+            wasm_error!(
+                WasmErrorInner::Guest(String::from("Linked action must reference an entry"))
+            ),
+        )?;
+    // TODO: add the appropriate validation rules
     Ok(ValidateCallbackResult::Valid)
 }
 pub fn validate_delete_link_all_posts(
-    action: DeleteLink,
-    original_action: CreateLink,
-    base: AnyLinkableHash,
-    target: AnyLinkableHash,
-    tag: LinkTag,
+    _action: DeleteLink,
+    _original_action: CreateLink,
+    _base: AnyLinkableHash,
+    _target: AnyLinkableHash,
+    _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
-    Ok(ValidateCallbackResult::Invalid(String::from("AllPosts links cannot be deleted")))
+    // TODO: add the appropriate validation rules
+    Ok(ValidateCallbackResult::Valid)
 }

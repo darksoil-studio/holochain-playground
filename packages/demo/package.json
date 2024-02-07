@@ -10,7 +10,7 @@
     "publish": "npm run build && gh-pages -d ./dist -b gh-pages"
   },
   "dependencies": {
-    "@holochain-open-dev/core-types": "^0.6.0",
+    "@holochain-open-dev/core-types": "^0.7.0",
     "@holochain-playground/golden-layout": "^0.1.1",
     "@holochain-playground/simulator": "^0.1.1",
     "@open-wc/scoped-elements": "^2.0.0",
@@ -18,7 +18,7 @@
     "@scoped-elements/material-web": "^0.0.19",
     "@webcomponents/scoped-custom-element-registry": "^0.0.8",
     "golden-layout": "^2.4.0",
-    "lit": "^2.0.2",
+    "lit": "^3.0.0",
     "lodash-es": "^4.17.21"
   },
   "devDependencies": {

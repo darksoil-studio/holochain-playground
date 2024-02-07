@@ -1,4 +1,4 @@
-import { get, readable, Readable, writable } from 'svelte/store';
+import { readable, Readable } from 'svelte/store';
 
 export function pollingStore<T>(
   startValue: T,

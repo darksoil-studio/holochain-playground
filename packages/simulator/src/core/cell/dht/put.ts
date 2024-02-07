@@ -151,14 +151,16 @@ export const putDhtOpMetadata = (dhtOp: DhtOp) => (state: CellState) => {
       base: (action as CreateLink).base_address,
       action_hash: actionHash,
       tag: (action as CreateLink).tag,
-      zome_id: (action as CreateLink).zome_id,
+      link_type: (action as CreateLink).link_type,
+      zome_index: (action as CreateLink).zome_index,
     };
     const value: LinkMetaVal = {
       link_add_hash: actionHash,
       tag: (action as CreateLink).tag,
+      link_type: (action as CreateLink).link_type,
       target: (action as CreateLink).target_address,
       timestamp: (action as CreateLink).timestamp,
-      zome_id: (action as CreateLink).zome_id,
+      zome_index: (action as CreateLink).zome_index,
     };
 
     state.metadata.link_meta.push({ key, value });

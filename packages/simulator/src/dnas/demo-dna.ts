@@ -111,22 +111,26 @@ export const demoLinksZome: SimulatedZome = {
     create_link: {
       call:
         ({ create_link }) =>
-        ({ base, target, tag }) => {
-          return create_link({ base, target, tag });
+        ({ base, target, link_type, tag }) => {
+          return create_link({ base, target, link_type, tag });
         },
       arguments: [
-        { name: 'base', type: 'AnyDhtHash' },
-        { name: 'target', type: 'AnyDhtHash' },
+        { name: 'base', type: 'AnyLinkableHash' },
+        { name: 'target', type: 'AnyLinkableHash' },
+        { name: 'link_type', type: 'number' },
         { name: 'tag', type: 'any' },
       ],
     },
     get_links: {
       call:
         ({ get_links }) =>
-        ({ base }) => {
-          return get_links(base);
+        ({ base, link_type }) => {
+          return get_links(base, link_type);
         },
-      arguments: [{ name: 'base', type: 'AnyDhtHash' }],
+      arguments: [
+        { name: 'base', type: 'AnyDhtHash' },
+        { name: 'link_type', type: 'number' },
+      ],
     },
     delete_link: {
       call:
@@ -151,15 +155,18 @@ export const demoPathsZome: SimulatedZome = {
     ensure_path: {
       call:
         (hdk) =>
-        async ({ path }) => {
+        async ({ path, link_type }) => {
           const actionHash = await hdk.create_entry({
             content: path,
             entry_def_id: 'path',
           });
 
-          return hdk.path.ensure(path);
+          return hdk.path.ensure(path, link_type);
         },
-      arguments: [{ name: 'path', type: 'String' }],
+      arguments: [
+        { name: 'path', type: 'String' },
+        { name: 'link_type', type: 'number' },
+      ],
     },
   },
   validation_functions: {},

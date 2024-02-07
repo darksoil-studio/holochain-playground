@@ -306,7 +306,7 @@ async function get_zomes_to_invoke(
   } else {
     const action = record.signed_action.hashed.content;
     if (action.type === ActionType.CreateLink) {
-      return [workspace.dna.zomes[action.zome_id]];
+      return [workspace.dna.zomes[action.zome_index]];
     } else if (action.type === ActionType.DeleteLink) {
       const maybeAction = await cascade.retrieve_action(
         action.link_add_address,
@@ -319,7 +319,9 @@ async function get_zomes_to_invoke(
         };
 
       return [
-        workspace.dna.zomes[(maybeAction.hashed.content as CreateLink).zome_id],
+        workspace.dna.zomes[
+          (maybeAction.hashed.content as CreateLink).zome_index
+        ],
       ];
     }
 

@@ -5,12 +5,13 @@ opt-level = "z"
 opt-level = "z"
 
 [workspace]
+resolver = "2"
 members = ["dnas/*/zomes/coordinator/*", "dnas/*/zomes/integrity/*"]
 
 [workspace.dependencies]
-hdi = "0.2.0-beta-rc.1"
-hdk = "0.1.0-beta-rc.1"
-serde = "1"
+hdi = "=0.3.6"
+hdk = "=0.2.6"
+serde = "=1.0.166"
 
 [workspace.dependencies.posts]
 path = "dnas/forum/zomes/coordinator/posts"

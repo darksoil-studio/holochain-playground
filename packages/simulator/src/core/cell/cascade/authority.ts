@@ -8,6 +8,7 @@ import {
   Update,
   EntryHash,
   ActionHash,
+  LinkType,
 } from '@holochain/client';
 
 import { GetLinksOptions, GetOptions } from '../../../types.js';
@@ -93,8 +94,9 @@ export class Authority {
 
   public async handle_get_links(
     base_address: EntryHash,
+    link_type: LinkType,
     options: GetLinksOptions
   ): Promise<GetLinksResponse> {
-    return getLinksForHash(this.state, base_address);
+    return getLinksForHash(this.state, base_address, link_type);
   }
 }

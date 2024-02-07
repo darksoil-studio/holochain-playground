@@ -1,18 +1,16 @@
+import { assert, test } from "vitest";
 
-import test from 'node:test';
-import assert from 'node:assert';
-
-import { runScenario, pause } from '@holochain/tryorama';
-import { NewEntryAction, ActionHash, Record, AppBundleSource } from '@holochain/client';
+import { runScenario, dhtSync, CallableCell } from '@holochain/tryorama';
+import { NewEntryAction, ActionHash, Record, AppBundleSource, fakeDnaHash, fakeActionHash, fakeAgentPubKey, fakeEntryHash } from '@holochain/client';
 import { decode } from '@msgpack/msgpack';
 
+import { createPost, samplePost } from './common.js';
 
-test('create post', { concurrency: 1 }, async t => {
+test('create Post', async () => {
   await runScenario(async scenario => {
-
     // Construct proper paths for your app.
     // This assumes app bundle created by the `hc app pack` command.
-    const testAppPath = process.cwd() + '/' + "../workdir/forum.happ";
+    const testAppPath = process.cwd() + '/../workdir/forum.happ';
 
     // Set up the app to be installed 
     const appSource = { appBundleSource: { path: testAppPath } };
@@ -25,30 +23,17 @@ test('create post', { concurrency: 1 }, async t => {
     // conductor of the scenario.
     await scenario.shareAllAgents();
 
-
-    const createInput = {
-  title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec eros quis enim hendrerit aliquet.',
-  content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec eros quis enim hendrerit aliquet.'
-};
-
-    // Alice creates a post
-    const record: Record = await alice.cells[0].callZome({
-      zome_name: "posts",
-      fn_name: "create_post",
-      payload: createInput,
-    });
+    // Alice creates a Post
+    const record: Record = await createPost(alice.cells[0]);
     assert.ok(record);
-
   });
 });
 
-
-test('create and read post', { concurrency: 1 }, async t => {
+test('create and read Post', async () => {
   await runScenario(async scenario => {
-
     // Construct proper paths for your app.
     // This assumes app bundle created by the `hc app pack` command.
-    const testAppPath = process.cwd() + '/' + "../workdir/forum.happ";
+    const testAppPath = process.cwd() + '/../workdir/forum.happ';
 
     // Set up the app to be installed 
     const appSource = { appBundleSource: { path: testAppPath } };
@@ -61,38 +46,31 @@ test('create and read post', { concurrency: 1 }, async t => {
     // conductor of the scenario.
     await scenario.shareAllAgents();
 
-    const createInput: any = {
-  title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec eros quis enim hendrerit aliquet.',
-  content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec eros quis enim hendrerit aliquet.'
-};
+    const sample = await samplePost(alice.cells[0]);
 
-    // Alice creates a post
-    const record: Record = await alice.cells[0].callZome({
-      zome_name: "posts",
-      fn_name: "create_post",
-      payload: createInput,
-    });
+    // Alice creates a Post
+    const record: Record = await createPost(alice.cells[0], sample);
     assert.ok(record);
-    
-    // Wait for the created entry to be propagated to the other node.
-    await pause(800);
 
-    // Bob gets the created post
+    // Wait for the created entry to be propagated to the other node.
+    await dhtSync([alice, bob], alice.cells[0].cell_id[0]);
+
+    // Bob gets the created Post
     const createReadOutput: Record = await bob.cells[0].callZome({
       zome_name: "posts",
-      fn_name: "get_post",
+      fn_name: "get_original_post",
       payload: record.signed_action.hashed.hash,
     });
-    assert.deepEqual(createInput, decode((createReadOutput.entry as any).Present.entry) as any);
+    assert.deepEqual(sample, decode((createReadOutput.entry as any).Present.entry) as any);
+
   });
 });
 
-test('create and update post', { concurrency: 1 }, async t => {
+test('create and update Post', async () => {
   await runScenario(async scenario => {
-
     // Construct proper paths for your app.
     // This assumes app bundle created by the `hc app pack` command.
-    const testAppPath = process.cwd() + '/' + "../workdir/forum.happ";
+    const testAppPath = process.cwd() + '/../workdir/forum.happ';
 
     // Set up the app to be installed 
     const appSource = { appBundleSource: { path: testAppPath } };
@@ -105,27 +83,15 @@ test('create and update post', { concurrency: 1 }, async t => {
     // conductor of the scenario.
     await scenario.shareAllAgents();
 
-    const createInput = {
-  title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec eros quis enim hendrerit aliquet.',
-  content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec eros quis enim hendrerit aliquet.'
-};
-
-    // Alice creates a post
-    const record: Record = await alice.cells[0].callZome({
-      zome_name: "posts",
-      fn_name: "create_post",
-      payload: createInput,
-    });
+    // Alice creates a Post
+    const record: Record = await createPost(alice.cells[0]);
     assert.ok(record);
         
     const originalActionHash = record.signed_action.hashed.hash;
  
-    // Alice updates the post
-    let contentUpdate: any = {
-  title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec eros quis enim hendrerit aliquet.',
-  content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec eros quis enim hendrerit aliquet.'
-};
-    let updateInput = { 
+    // Alice updates the Post
+    let contentUpdate: any = await samplePost(alice.cells[0]);
+    let updateInput = {
       original_post_hash: originalActionHash,
       previous_post_hash: originalActionHash,
       updated_post: contentUpdate,
@@ -138,24 +104,19 @@ test('create and update post', { concurrency: 1 }, async t => {
     });
     assert.ok(updatedRecord);
 
-
     // Wait for the updated entry to be propagated to the other node.
-    await pause(800);
+    await dhtSync([alice, bob], alice.cells[0].cell_id[0]);
         
-    // Bob gets the updated post
+    // Bob gets the updated Post
     const readUpdatedOutput0: Record = await bob.cells[0].callZome({
       zome_name: "posts",
-      fn_name: "get_post",
+      fn_name: "get_latest_post",
       payload: updatedRecord.signed_action.hashed.hash,
     });
     assert.deepEqual(contentUpdate, decode((readUpdatedOutput0.entry as any).Present.entry) as any);
 
-
-    // Alice updates the post again
-    contentUpdate = {
-  title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec eros quis enim hendrerit aliquet.',
-  content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec eros quis enim hendrerit aliquet.'
-};
+    // Alice updates the Post again
+    contentUpdate = await samplePost(alice.cells[0]);
     updateInput = { 
       original_post_hash: originalActionHash,
       previous_post_hash: updatedRecord.signed_action.hashed.hash,
@@ -169,27 +130,33 @@ test('create and update post', { concurrency: 1 }, async t => {
     });
     assert.ok(updatedRecord);
 
-
     // Wait for the updated entry to be propagated to the other node.
-    await pause(800);
+    await dhtSync([alice, bob], alice.cells[0].cell_id[0]);
         
-    // Bob gets the updated post
+    // Bob gets the updated Post
     const readUpdatedOutput1: Record = await bob.cells[0].callZome({
       zome_name: "posts",
-      fn_name: "get_post",
+      fn_name: "get_latest_post",
       payload: updatedRecord.signed_action.hashed.hash,
     });
     assert.deepEqual(contentUpdate, decode((readUpdatedOutput1.entry as any).Present.entry) as any);
 
+    // Bob gets all the revisions for Post
+    const revisions: Record[] = await bob.cells[0].callZome({
+      zome_name: "posts",
+      fn_name: "get_all_revisions_for_post",
+      payload: originalActionHash,
+    });
+    assert.equal(revisions.length, 3);
+    assert.deepEqual(contentUpdate, decode((revisions[2].entry as any).Present.entry) as any);
   });
 });
 
-test('create and delete post', { concurrency: 1 }, async t => {
+test('create and delete Post', async () => {
   await runScenario(async scenario => {
-
     // Construct proper paths for your app.
     // This assumes app bundle created by the `hc app pack` command.
-    const testAppPath = process.cwd() + '/' + "../workdir/forum.happ";
+    const testAppPath = process.cwd() + '/../workdir/forum.happ';
 
     // Set up the app to be installed 
     const appSource = { appBundleSource: { path: testAppPath } };
@@ -202,20 +169,16 @@ test('create and delete post', { concurrency: 1 }, async t => {
     // conductor of the scenario.
     await scenario.shareAllAgents();
 
-    const createInput = {
-  title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec eros quis enim hendrerit aliquet.',
-  content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec eros quis enim hendrerit aliquet.'
-};
+    const sample = await samplePost(alice.cells[0]);
 
-    // Alice creates a post
-    const record: Record = await alice.cells[0].callZome({
-      zome_name: "posts",
-      fn_name: "create_post",
-      payload: createInput,
-    });
+    // Alice creates a Post
+    const record: Record = await createPost(alice.cells[0], sample);
     assert.ok(record);
-        
-    // Alice deletes the post
+
+    await dhtSync([alice, bob], alice.cells[0].cell_id[0]);
+
+
+    // Alice deletes the Post
     const deleteActionHash = await alice.cells[0].callZome({
       zome_name: "posts",
       fn_name: "delete_post",
@@ -223,17 +186,25 @@ test('create and delete post', { concurrency: 1 }, async t => {
     });
     assert.ok(deleteActionHash);
 
-
     // Wait for the entry deletion to be propagated to the other node.
-    await pause(800);
-        
-    // Bob tries to get the deleted post
-    const readDeletedOutput = await bob.cells[0].callZome({
+    await dhtSync([alice, bob], alice.cells[0].cell_id[0]);
+
+    // Bob gets the oldest delete for the Post
+    const oldestDeleteForPost = await bob.cells[0].callZome({
       zome_name: "posts",
-      fn_name: "get_post",
+      fn_name: "get_oldest_delete_for_post",
       payload: record.signed_action.hashed.hash,
     });
-    assert.equal(readDeletedOutput, undefined);
+    assert.ok(oldestDeleteForPost);
+        
+    // Bob gets the deletions for Post
+    const deletesForPost = await bob.cells[0].callZome({
+      zome_name: "posts",
+      fn_name: "get_all_deletes_for_post",
+      payload: record.signed_action.hashed.hash,
+    });
+    assert.equal(deletesForPost.length, 1);
+
 
   });
 });

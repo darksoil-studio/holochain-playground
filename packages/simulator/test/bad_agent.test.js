@@ -1,8 +1,8 @@
 import { createConductors, demoHapp } from '../dist';
 import { assert, describe, expect, it } from 'vitest';
-import isEqual from 'lodash-es/isEqual';
+import isEqual from 'lodash-es/isEqual.js';
 
-import { sleep } from './utils';
+import { sleep } from './utils.js';
 
 describe('Bad Agent', () => {
   it(`bad agent cheats and gets booted out of the network`, async function () {

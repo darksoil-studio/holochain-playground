@@ -12,6 +12,7 @@ import {
   NewEntryAction,
   SignedActionHashed,
   Record,
+  LinkType,
 } from '@holochain/client';
 import { getHashType, HashType } from '@holochain-open-dev/utils';
 
@@ -171,11 +172,16 @@ export class Cascade {
 
   public async dht_get_links(
     base_address: EntryHash,
+    link_type: LinkType,
     options: GetLinksOptions
   ): Promise<Link[]> {
     // TODO: check if we are an authority
 
-    const linksResponses = await this.p2p.get_links(base_address, options);
+    const linksResponses = await this.p2p.get_links(
+      base_address,
+      link_type,
+      options
+    );
     return getLiveLinks(linksResponses);
   }
 

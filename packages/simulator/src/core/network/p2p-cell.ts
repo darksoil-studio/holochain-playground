@@ -7,6 +7,7 @@ import {
   CellId,
   DhtOp,
   EntryHash,
+  LinkType,
 } from '@holochain/client';
 import { isEqual } from 'lodash-es';
 
@@ -154,6 +155,7 @@ export class P2pCell {
 
   async get_links(
     base_address: EntryHash,
+    link_type: LinkType,
     options: GetLinksOptions
   ): Promise<GetLinksResponse[]> {
     return this.network.kitsune.rpc_multi(
@@ -167,7 +169,8 @@ export class P2pCell {
           cell,
           NetworkRequestType.GET_REQUEST,
           { hash: base_address, options },
-          (cell: Cell) => cell.handle_get_links(base_address, options)
+          (cell: Cell) =>
+            cell.handle_get_links(base_address, link_type, options)
         )
     );
   }

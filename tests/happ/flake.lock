@@ -39,7 +39,7 @@
         "flake-compat": "flake-compat",
         "flake-utils": "flake-utils",
         "nixpkgs": [
-          "holochain",
+          "holochain-flake",
           "nixpkgs"
         ],
         "rust-overlay": "rust-overlay"
@@ -173,6 +173,23 @@
       }
     },
     "holochain": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1707245081,
+        "narHash": "sha256-l9WHMlD9IDuEv/N/3WDCsP3XLUUnZFrOBEZjbWnC+/Y=",
+        "owner": "holochain",
+        "repo": "holochain",
+        "rev": "0a3b2408b2d6482b913b9f0faf58a39b567f763a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "holochain",
+        "ref": "holochain-0.2.6",
+        "repo": "holochain",
+        "type": "github"
+      }
+    },
+    "holochain-flake": {
       "inputs": {
         "cargo-chef": "cargo-chef",
         "cargo-rdme": "cargo-rdme",
@@ -182,15 +199,15 @@
         "flake-compat": "flake-compat_2",
         "flake-parts": "flake-parts",
         "holochain": [
-          "holochain",
+          "holochain-flake",
           "empty"
         ],
         "lair": [
-          "holochain",
+          "holochain-flake",
           "empty"
         ],
         "launcher": [
-          "holochain",
+          "holochain-flake",
           "empty"
         ],
         "nix-filter": "nix-filter",
@@ -199,10 +216,12 @@
         "repo-git": "repo-git",
         "rust-overlay": "rust-overlay_2",
         "scaffolding": [
-          "holochain",
+          "holochain-flake",
           "empty"
         ],
-        "versions": "versions"
+        "versions": [
+          "holochain-nix-versions"
+        ]
       },
       "locked": {
         "lastModified": 1707287589,
@@ -218,19 +237,25 @@
         "type": "github"
       }
     },
-    "holochain_2": {
-      "flake": false,
+    "holochain-nix-versions": {
+      "inputs": {
+        "holochain": "holochain",
+        "lair": "lair",
+        "launcher": "launcher",
+        "scaffolding": "scaffolding"
+      },
       "locked": {
-        "lastModified": 1707245081,
-        "narHash": "sha256-l9WHMlD9IDuEv/N/3WDCsP3XLUUnZFrOBEZjbWnC+/Y=",
+        "dir": "versions/0_2",
+        "lastModified": 1707287589,
+        "narHash": "sha256-5+PKdLExrZS31F5gcm0HxKt82g2rAuEkGEJz6vGOwaw=",
         "owner": "holochain",
         "repo": "holochain",
-        "rev": "0a3b2408b2d6482b913b9f0faf58a39b567f763a",
+        "rev": "5d75871802ff96ca0404c71ee330098f5d2fe38f",
         "type": "github"
       },
       "original": {
+        "dir": "versions/0_2",
         "owner": "holochain",
-        "ref": "holochain-0.2.6",
         "repo": "holochain",
         "type": "github"
       }
@@ -347,9 +372,14 @@
     },
     "root": {
       "inputs": {
-        "holochain": "holochain",
+        "flake-parts": [
+          "holochain-flake",
+          "flake-parts"
+        ],
+        "holochain-flake": "holochain-flake",
+        "holochain-nix-versions": "holochain-nix-versions",
         "nixpkgs": [
-          "holochain",
+          "holochain-flake",
           "nixpkgs"
         ]
       }
@@ -357,12 +387,12 @@
     "rust-overlay": {
       "inputs": {
         "flake-utils": [
-          "holochain",
+          "holochain-flake",
           "crane",
           "flake-utils"
         ],
         "nixpkgs": [
-          "holochain",
+          "holochain-flake",
           "crane",
           "nixpkgs"
         ]
@@ -385,7 +415,7 @@
       "inputs": {
         "flake-utils": "flake-utils_2",
         "nixpkgs": [
-          "holochain",
+          "holochain-flake",
           "nixpkgs"
         ]
       },
@@ -432,29 +462,6 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
-        "type": "github"
-      }
-    },
-    "versions": {
-      "inputs": {
-        "holochain": "holochain_2",
-        "lair": "lair",
-        "launcher": "launcher",
-        "scaffolding": "scaffolding"
-      },
-      "locked": {
-        "dir": "versions/0_2",
-        "lastModified": 1707287589,
-        "narHash": "sha256-5+PKdLExrZS31F5gcm0HxKt82g2rAuEkGEJz6vGOwaw=",
-        "owner": "holochain",
-        "repo": "holochain",
-        "rev": "5d75871802ff96ca0404c71ee330098f5d2fe38f",
-        "type": "github"
-      },
-      "original": {
-        "dir": "versions/0_1",
-        "owner": "holochain",
-        "repo": "holochain",
         "type": "github"
       }
     }

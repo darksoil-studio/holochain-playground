@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit';
 import { state, customElement, property } from 'lit/decorators.js';
-import { EntryHash, Record, ActionHash, AppAgentClient } from '@holochain/client';
+import { EntryHash, Record, ActionHash, AppAgentClient, DnaHash } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import { Task } from '@lit-labs/task';
 import { decode } from '@msgpack/msgpack';
@@ -10,8 +10,8 @@ import '@material/mwc-snackbar';
 import { Snackbar } from '@material/mwc-snackbar';
 
 
-import { clientContext } from '../../contexts.js';
-import { Comment } from './types.js';
+import { clientContext } from '../../contexts';
+import { Comment } from './types';
 
 @customElement('comment-detail')
 export class CommentDetail extends LitElement {
@@ -31,6 +31,12 @@ export class CommentDetail extends LitElement {
       payload: commentHash,
   }) as Promise<Record | undefined>, () => [this.commentHash]);
 
+  
+  firstUpdated() {
+    if (this.commentHash === undefined) {
+      throw new Error(`The commentHash property is required for the comment-detail element`);
+    }
+  }
 
   async deleteComment() {
     try {
@@ -65,13 +71,13 @@ export class CommentDetail extends LitElement {
 
       <div style="display: flex; flex-direction: column">
       	<div style="display: flex; flex-direction: row">
-          <span style="font-size: 18px; flex: 1;">Comment</span>
-
+      	  <span style="flex: 1"></span>
+      	
           <mwc-icon-button style="margin-left: 8px" icon="delete" @click=${() => this.deleteComment()}></mwc-icon-button>
         </div>
 
         <div style="display: flex; flex-direction: row; margin-bottom: 16px">
-	  <span><strong>Comment</strong></span>
+	  <span style="margin-right: 4px"><strong>Comment: </strong></span>
  	  <span style="white-space: pre-line">${ comment.comment }</span>
         </div>
 

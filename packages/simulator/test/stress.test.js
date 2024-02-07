@@ -1,6 +1,6 @@
 import { createConductors, demoHapp } from '../dist';
 import { assert, describe, expect, it } from 'vitest';
-import { sleep } from './utils';
+import { sleep } from './utils.js';
 
 describe('Stress tests links', () => {
   it('create multiple links', async function () {
@@ -39,7 +39,12 @@ describe('Stress tests links', () => {
         cellId: cell.cellId,
         cap: null,
         fnName: 'create_link',
-        payload: { base: baseHash, target: cell.cellId[1], tag: 'hello' },
+        payload: {
+          base: baseHash,
+          target: cell.cellId[1],
+          tag: 'hello',
+          link_type: 0,
+        },
         zome: 'demo_links',
       });
 
@@ -53,6 +58,7 @@ describe('Stress tests links', () => {
         fnName: 'get_links',
         payload: {
           base: baseHash,
+          link_type: 0,
         },
         zome: 'demo_links',
       });

@@ -1,14 +1,14 @@
 import { LitElement, html } from 'lit';
 import { state, customElement, property } from 'lit/decorators.js';
-import { InstalledCell, ActionHash, Record, AgentPubKey, EntryHash, AppAgentClient } from '@holochain/client';
+import { InstalledCell, ActionHash, Record, AgentPubKey, EntryHash, AppAgentClient, DnaHash } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import '@material/mwc-button';
 import '@material/mwc-snackbar';
 import { Snackbar } from '@material/mwc-snackbar';
-
 import '@material/mwc-textarea';
-import { clientContext } from '../../contexts.js';
-import { Comment } from './types.js';
+
+import { clientContext } from '../../contexts';
+import { Comment } from './types';
 
 @customElement('create-comment')
 export class CreateComment extends LitElement {
@@ -18,18 +18,23 @@ export class CreateComment extends LitElement {
   @property()
   postHash!: ActionHash;
 
-
   @state()
-  _comment: string | undefined;
+  _comment: string = '';
 
+  
+  firstUpdated() {
+    if (this.postHash === undefined) {
+      throw new Error(`The postHash input is required for the create-comment element`);
+    }
+  }
 
   isCommentValid() {
-    return true && this._comment !== undefined;
+    return true && this._comment !== '';
   }
 
   async createComment() {
     const comment: Comment = { 
-        comment: this._comment!,
+        comment: this._comment,
         post_hash: this.postHash,
     };
 
@@ -65,7 +70,7 @@ export class CreateComment extends LitElement {
         <span style="font-size: 18px">Create Comment</span>
 
           <div style="margin-bottom: 16px">
-            <mwc-textarea outlined label="Comment"  @input=${(e: CustomEvent) => { this._comment = (e.target as any).value;} } required></mwc-textarea>          
+            <mwc-textarea outlined label="Comment" .value=${ this._comment } @input=${(e: CustomEvent) => { this._comment = (e.target as any).value;} } required></mwc-textarea>          
           </div>
             
 

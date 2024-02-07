@@ -4,12 +4,13 @@ name: forum
 integrity:
   network_seed: ~
   properties: ~
-  origin_time: 1672667216286692
+  origin_time: 1707309994733766
   zomes:
     - name: posts_integrity
       hash: ~
       bundled: "../../../target/wasm32-unknown-unknown/release/posts_integrity.wasm"
       dependencies: ~
+      dylib: ~
 coordinator:
   zomes:
     - name: posts
@@ -17,3 +18,4 @@ coordinator:
       bundled: "../../../target/wasm32-unknown-unknown/release/posts.wasm"
       dependencies:
         - name: posts_integrity
+      dylib: ~

@@ -13,7 +13,7 @@ describe('Paths', () => {
       cellId: cell.cellId,
       cap: null,
       fnName: 'ensure_path',
-      payload: { path: 'a.sample.path' },
+      payload: { path: 'a.sample.path', link_type: 0 },
       zome: 'demo_paths',
     });
     const entryHash = await conductors[0].callZomeFn({
@@ -30,7 +30,7 @@ describe('Paths', () => {
       cellId: cell.cellId,
       cap: null,
       fnName: 'get_links',
-      payload: { base: entryHash },
+      payload: { base: entryHash, link_type: 0 },
       zome: 'demo_links',
     });
     expect(links.length).to.equal(1);

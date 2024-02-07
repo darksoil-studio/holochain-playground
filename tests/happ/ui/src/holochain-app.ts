@@ -1,18 +1,19 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { AppAgentClient, AppWebsocket, AppAgentWebsocket } from '@holochain/client';
+import { AppAgentClient, AppAgentWebsocket } from '@holochain/client';
 import { provide } from '@lit-labs/context';
 import '@material/mwc-circular-progress';
 
-import { clientContext } from './contexts.js';
+import { clientContext } from './contexts';
 
-import './forum/posts/all-posts.js';
-import { AllPosts } from './forum/posts/all-posts.js';
-import './forum/posts/create-post.js';
+import './forum/posts/all-posts';
+import { AllPosts } from './forum/posts/all-posts';
+import './forum/posts/create-post';
 
 @customElement('holochain-app')
 export class HolochainApp extends LitElement {
   @state() loading = true;
+
   @state() result: string | undefined;
 
   @provide({ context: clientContext })
@@ -20,16 +21,11 @@ export class HolochainApp extends LitElement {
   client!: AppAgentClient;
 
   async firstUpdated() {
-    const appWebsocket = await AppWebsocket.connect(``);
-    this.client = await AppAgentWebsocket.connect(appWebsocket, 'forum');
+    this.client = await AppAgentWebsocket.connect(new URL(``), 'forum');
     
     this.loading = false;
   }
   
-  get allPosts(): AllPosts | undefined {
-    return this.shadowRoot?.getElementById('all-posts') as AllPosts;
-  }
-
   render() {
     if (this.loading)
       return html`
@@ -38,11 +34,12 @@ export class HolochainApp extends LitElement {
 
     return html`
       <main>
-        <h1>my-app</h1>
+        <h1>Forum</h1>
 
         <div id="content">
+          <h2>All Posts</h2>
           <all-posts id="all-posts" style="margin-bottom: 16px"></all-posts>
-          <create-post @post-created=${() => this.allPosts?._fetchPosts.run()}></create-post>
+          <create-post></create-post>
         </div>
       </main>
     `;

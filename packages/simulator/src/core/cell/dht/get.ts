@@ -20,6 +20,7 @@ import {
   getDhtOpType,
   getDhtOpAction,
   encodeHashToBase64,
+  LinkType,
 } from '@holochain/client';
 
 import { uniqWith } from 'lodash-es';
@@ -249,28 +250,29 @@ export interface EntryDHTInfo {
   links: LinkMetaVal[];
 }
 
-export function getDhtShard(
-  state: CellState
-): HoloHashMap<AnyDhtHash, EntryDHTInfo> {
-  const heldEntries = getAllHeldEntries(state);
+// export function getDhtShard(
+//   state: CellState
+// ): HoloHashMap<AnyDhtHash, EntryDHTInfo> {
+//   const heldEntries = getAllHeldEntries(state);
 
-  const dhtShard: HoloHashMap<AnyDhtHash, EntryDHTInfo> = new HoloHashMap();
+//   const dhtShard: HoloHashMap<AnyDhtHash, EntryDHTInfo> = new HoloHashMap();
 
-  for (const entryHash of heldEntries) {
-    dhtShard.set(entryHash, {
-      details: getEntryDetails(state, entryHash),
-      links: getCreateLinksForHash(state, entryHash),
-    });
-  }
+//   for (const entryHash of heldEntries) {
+//     dhtShard.set(entryHash, {
+//       details: getEntryDetails(state, entryHash),
+//       links: getCreateLinksForHash(state, entryHash),
+//     });
+//   }
 
-  return dhtShard;
-}
+//   return dhtShard;
+// }
 
 export function getLinksForHash(
   state: CellState,
-  baseHash: AnyDhtHash
+  baseHash: AnyDhtHash,
+  link_type: LinkType
 ): GetLinksResponse {
-  const linkMetaVals = getCreateLinksForHash(state, baseHash);
+  const linkMetaVals = getCreateLinksForHash(state, baseHash, link_type);
 
   const link_adds: SignedActionHashed<CreateLink>[] = [];
   const link_removes: SignedActionHashed<DeleteLink>[] = [];
@@ -297,10 +299,14 @@ export function getLinksForHash(
 
 export function getCreateLinksForHash(
   state: CellState,
-  hash: AnyDhtHash
+  hash: AnyDhtHash,
+  link_type: LinkType
 ): LinkMetaVal[] {
   return state.metadata.link_meta
-    .filter(({ key, value }) => areEqual(key.base, hash))
+    .filter(
+      ({ key, value }) =>
+        areEqual(key.base, hash) && key.link_type === link_type
+    )
     .map(({ key, value }) => value);
 }
 

@@ -20,6 +20,7 @@ import {
   RecordEntry,
   AppEntryDef,
   EntryType,
+  CapAccessType,
 } from '@holochain/client';
 import { areEqual } from '../../../processors/hash.js';
 
@@ -181,7 +182,7 @@ function isCapGrantValid(
   )
     return false;
 
-  if (capGrant.access === 'Unrestricted') return true;
+  if (CapAccessType.Unrestricted in capGrant.access) return true;
   else if (
     (
       capGrant.access as {

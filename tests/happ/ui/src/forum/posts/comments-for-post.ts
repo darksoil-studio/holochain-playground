@@ -1,13 +1,13 @@
 
 import { LitElement, html } from 'lit';
 import { state, customElement, property } from 'lit/decorators.js';
-import { InstalledCell, Record, AppAgentClient, EntryHash, ActionHash, AgentPubKey } from '@holochain/client';
+import { InstalledCell, Record, Link, AppAgentClient, EntryHash, ActionHash, AgentPubKey } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import '@material/mwc-circular-progress';
 import { Task } from '@lit-labs/task';
 
-import { clientContext } from '../../contexts.js';
-import './comment-detail.js';
+import { clientContext } from '../../contexts';
+import './comment-detail';
 
 @customElement('comments-for-post')
 export class CommentsForPost extends LitElement {
@@ -25,15 +25,21 @@ export class CommentsForPost extends LitElement {
       zome_name: 'posts',
       fn_name: 'get_comments_for_post',
       payload: postHash,
-  }) as Promise<Array<ActionHash>>, () => [this.postHash]);
+  }) as Promise<Array<Link>>, () => [this.postHash]);
 
-  renderList(hashes: Array<ActionHash>) {
-    if (hashes.length === 0) return html`<span>No comments found for this post.</span>`;
+  firstUpdated() {
+    if (this.postHash === undefined) {
+      throw new Error(`The postHash property is required for the comments-for-post element`);
+    }
+  }
+
+  renderList(links: Array<Link>) {
+    if (links.length === 0) return html`<span>No comments found for this post.</span>`;
     
     return html`
       <div style="display: flex; flex-direction: column">
-        ${hashes.map(hash =>
-          html`<comment-detail .commentHash=${hash}></comment-detail>`
+        ${links.map(link =>
+          html`<comment-detail .commentHash=${link.target}></comment-detail>`
         )}
       </div>
     `;
@@ -44,7 +50,7 @@ export class CommentsForPost extends LitElement {
       pending: () => html`<div style="display: flex; flex: 1; align-items: center; justify-content: center">
         <mwc-circular-progress indeterminate></mwc-circular-progress>
       </div>`,
-      complete: (hashes) => this.renderList(hashes),
+      complete: (links) => this.renderList(links),
       error: (e: any) => html`<span>Error fetching comments: ${e.data.data}.</span>`
     });
   }

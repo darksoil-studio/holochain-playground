@@ -1,6 +1,6 @@
 {
   "name": "@holochain-playground/simulator",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "author": "guillem.cordoba@gmail.com",
   "license": "MIT",
@@ -15,9 +15,9 @@
     "test:watch": "concurrently -k -r \"npm run build:watch\" \"vitest\""
   },
   "dependencies": {
-    "@holochain-open-dev/core-types": "^0.6.6",
-    "@holochain-open-dev/utils": "^0.11.5",
-    "@holochain/client": "^0.12.2",
+    "@holochain-open-dev/core-types": "^0.7.0",
+    "@holochain-open-dev/utils": "^0.16.5",
+    "@holochain/client": "^0.16.9",
     "@msgpack/msgpack": "^2.7.1",
     "blakejs": "^1.1.0",
     "js-base64": "^3.7.2",

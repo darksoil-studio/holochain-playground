@@ -1,9 +1,8 @@
 import {
-  EntryHash,
   ActionHash,
   Record,
-  AnyDhtHash,
-  encodeHashToBase64,
+  AnyLinkableHash,
+  LinkType,
 } from '@holochain/client';
 import {
   buildCreateLink,
@@ -13,20 +12,22 @@ import { putRecord } from '../../../cell/source-chain/put.js';
 import { HostFn, HostFnWorkspace } from '../../host-fn.js';
 
 export type CreateLinkFn = (args: {
-  base: AnyDhtHash;
-  target: AnyDhtHash;
+  base: AnyLinkableHash;
+  target: AnyLinkableHash;
+  link_type: LinkType;
   tag: any;
 }) => Promise<ActionHash>;
 
 // Creates a new CreateLink action in the source chain
 export const create_link: HostFn<CreateLinkFn> =
-  (worskpace: HostFnWorkspace, zome_id: number): CreateLinkFn =>
+  (worskpace: HostFnWorkspace, zome_index: number): CreateLinkFn =>
   async (args): Promise<ActionHash> => {
     const createLink = buildCreateLink(
       worskpace.state,
-      zome_id,
+      zome_index,
       args.base,
       args.target,
+      args.link_type,
       args.tag
     );
 
