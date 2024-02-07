@@ -2,7 +2,6 @@ import {
   Create,
   Entry,
   Record,
-  RecordEntry,
   NewEntryAction,
   SignedActionHashed,
   encodeHashToBase64,
@@ -17,6 +16,7 @@ import { SimulatedCellStore } from '../../store/simulated-playground-store.js';
 import { CellStore } from '../../store/playground-store.js';
 
 export function sourceChainNodes(cellStore: CellStore<any>, records: Record[]) {
+  console.log('recores', records);
   const nodes = [];
 
   for (const record of records) {
@@ -66,7 +66,7 @@ export function sourceChainNodes(cellStore: CellStore<any>, records: Record[]) {
           newEntryAction.entry_type
         );
       } else {
-        entryType = entry.entry_type as string;
+        entryType = Object.keys(entry.entry_type)[0] as string;
       }
 
       let data = entry;

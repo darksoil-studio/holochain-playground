@@ -200,10 +200,10 @@ export function isEntryDeleted(
 
 function getConnectedEntryType(action: NewEntryAction, entry: Entry): string {
   if (
-    entry.entry_type !== 'App' &&
-    (entry.entry_type as any) !== 'CounterSign'
+    !('App' in (entry.entry_type as any)) &&
+    !('CounterSign' in (entry.entry_type as any))
   ) {
-    return entry.entry_type;
+    return Object.keys(entry.entry_type)[0];
   }
   const appEntryType = (
     action.entry_type as {
