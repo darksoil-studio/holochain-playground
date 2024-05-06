@@ -23,9 +23,9 @@ export async function launchApp() {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
 
-  const publicPath = __dirname + '/public/';
-  app.get('/', function (req, res) {
-    res.sendFile(publicPath + 'index.html');
+  const publicPath = `${__dirname  }/public/`;
+  app.get('/', (req, res) => {
+    res.sendFile(`${publicPath  }index.html`);
   });
   app.use(express.static(publicPath));
 

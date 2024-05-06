@@ -19,6 +19,7 @@ import {
   IconButton,
   CircularProgress,
 } from '@scoped-elements/material-web';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { query, state } from 'lit/decorators.js';
 import { io, Socket } from 'socket.io-client';
 import { ConnectedPlaygroundStore } from '@holochain-playground/elements';

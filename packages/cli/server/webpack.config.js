@@ -2,12 +2,15 @@ const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
 const webpackPath = require('webpack-path-resolve');
+require('dotenv').config()
+
 const resolve = webpackPath.resolve(require.resolve.paths);
 
 module.exports = {
   entry: './src/index.ts',
   target: 'node',
-  mode: 'production',
+  mode: process.env.NODE_ENV,
+  devtool: process.env.NODE_ENV === 'development' ? 'eval-source-map' : 'source-map',
   module: {
     rules: [
       {

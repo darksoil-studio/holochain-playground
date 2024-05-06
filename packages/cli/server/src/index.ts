@@ -1,4 +1,4 @@
-//@ts-ignore
+// @ts-ignore
 import semver from 'semver';
 import chalk from 'chalk';
 import { launchApp } from './app';
