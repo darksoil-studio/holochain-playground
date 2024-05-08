@@ -5,7 +5,7 @@ import {
 	List,
 	ListItem,
 } from '@scoped-elements/material-web';
-import { css, html } from 'lit';
+import { TemplateResult, css, html } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 
@@ -68,7 +68,7 @@ export class RunSteps extends PlaygroundElement<SimulatedPlaygroundStore> {
 		});
 	}
 
-	renderContent() {
+	renderContent(): TemplateResult {
 		const cells = this.store.cellsForActiveDna.get();
 		switch (cells.status) {
 			case 'pending':
@@ -104,7 +104,7 @@ export class RunSteps extends PlaygroundElement<SimulatedPlaygroundStore> {
 		}
 	}
 
-	render() {
+	render(): TemplateResult {
 		return html`
 			<mwc-card class="block-card">
 				<div class="column" style="margin: 16px; flex: 1;">

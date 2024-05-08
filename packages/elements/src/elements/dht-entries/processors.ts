@@ -29,8 +29,8 @@ export function allEntries(
 	excludedEntryTypes: string[],
 ) {
 	const summary = summarizeDht(dhtShards, simulatedDna);
-	let nodes = [];
-	const edges = [];
+	let nodes: any[] = [];
+	const edges: any[] = [];
 
 	const depsNotHeld = new HoloHashMap<HoloHash, boolean>();
 	const nodesDrawn = new HoloHashMap<HoloHash, boolean>();
@@ -296,7 +296,7 @@ function convertToHash(value: any): HoloHash | undefined {
 export function getEmbeddedReferences(
 	summary: DhtSummary,
 	value: any,
-): Array<{ label: string; target: EntryHashB64 }> {
+): Array<{ label: string | undefined; target: EntryHashB64 }> {
 	if (!value) return [];
 
 	const hash = convertToHash(value);
@@ -314,9 +314,9 @@ export function getEmbeddedReferences(
 	}
 	if (Array.isArray(value) && value.length > 0 && convertToHash(value[0])) {
 		return value
-			.filter(v => !!convertToHash(v) && !!hasHash(summary, convertToHash(v)))
+			.filter(v => !!convertToHash(v) && !!hasHash(summary, convertToHash(v)!))
 			.map(v => ({
-				target: encodeHashToBase64(hasHash(summary, convertToHash(v))),
+				target: encodeHashToBase64(hasHash(summary, convertToHash(v)!)!),
 				label: undefined,
 			}));
 	}
@@ -330,7 +330,7 @@ export function getEmbeddedReferences(
 			}
 			return implicitLinks;
 		});
-		return [].concat(...values);
+		return ([] as any[]).concat(...values);
 	}
 	return [];
 }
@@ -362,7 +362,7 @@ function getEntryContentsNode(content: any, parentId: string): Array<any> {
 		];
 	}
 
-	let nodes = [];
+	let nodes: any = [];
 	const properties = Object.keys(content);
 	for (const property of properties) {
 		const propertyParentId = `${parentId}:${property}`;

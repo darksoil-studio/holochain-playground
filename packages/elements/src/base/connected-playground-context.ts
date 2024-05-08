@@ -2,18 +2,26 @@ import { PropertyValues } from 'lit';
 import { property } from 'lit/decorators.js';
 
 import { ConnectedPlaygroundStore } from '../store/connected-playground-store.js';
-import { PlaygroundMode } from '../store/mode.js';
 import { BasePlaygroundContext } from './base-playground-context.js';
 
-export class ConnectedPlaygroundContext extends BasePlaygroundContext<
-	PlaygroundMode.Connected,
-	ConnectedPlaygroundStore
-> {
+export class ConnectedPlaygroundContext extends BasePlaygroundContext<ConnectedPlaygroundStore> {
 	@property()
-	urls: string[];
+	urls!: string[];
 
-	async buildStore() {
-		return ConnectedPlaygroundStore.create(this.urls);
+	buildStore() {
+		const store = new ConnectedPlaygroundStore();
+		store.setConductors(this.urls).then(() => {
+			this.dispatchEvent(
+				new CustomEvent('playground-ready', {
+					bubbles: true,
+					composed: true,
+					detail: {
+						store,
+					},
+				}),
+			);
+		});
+		return store;
 	}
 
 	updated(cv: PropertyValues) {

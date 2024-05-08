@@ -1,25 +1,40 @@
+import {
+	SimulatedHappBundle,
+	createConductors,
+	demoHapp,
+} from '@holochain-playground/simulator';
 import { property } from 'lit/decorators.js';
-import { demoHapp, SimulatedHappBundle } from '@holochain-playground/simulator';
-import { BasePlaygroundContext } from './base-playground-context.js';
-import { SimulatedPlaygroundStore } from '../store/simulated-playground-store.js';
+
 import { PlaygroundMode } from '../store/mode.js';
+import { SimulatedPlaygroundStore } from '../store/simulated-playground-store.js';
+import { BasePlaygroundContext } from './base-playground-context.js';
 
-export class SimulatedPlaygroundContext extends BasePlaygroundContext<
-  PlaygroundMode.Simulated,
-  SimulatedPlaygroundStore
-> {
-  @property({ type: Number })
-  numberOfSimulatedConductors: number = 10;
+export class SimulatedPlaygroundContext extends BasePlaygroundContext<SimulatedPlaygroundStore> {
+	@property({ type: Number })
+	numberOfSimulatedConductors: number = 10;
 
-  @property({ type: Object })
-  simulatedHapp: SimulatedHappBundle = demoHapp();
+	@property({ type: Object })
+	simulatedHapp: SimulatedHappBundle = demoHapp();
 
-  /** Context variables */
+	/** Context variables */
 
-  async buildStore() {
-    return SimulatedPlaygroundStore.create(
-      this.numberOfSimulatedConductors,
-      this.simulatedHapp
-    );
-  }
+	buildStore() {
+		const store = new SimulatedPlaygroundStore([], this.simulatedHapp);
+		createConductors(
+			this.numberOfSimulatedConductors,
+			[],
+			this.simulatedHapp,
+		).then(() => {
+			this.dispatchEvent(
+				new CustomEvent('playground-ready', {
+					bubbles: true,
+					composed: true,
+					detail: {
+						store,
+					},
+				}),
+			);
+		});
+		return store;
+	}
 }

@@ -57,13 +57,19 @@ export function getFromStore(
 		for (const record of sourceChain) {
 			const actionHashed: ActionHashed = record.signed_action.hashed;
 			if (isEqual(actionHashed.hash, dhtHash)) {
-				return actionHashed.content;
+				return {
+					status: 'completed',
+					value: actionHashed.content,
+				};
 			}
 			if (
 				(actionHashed.content as NewEntryAction).entry_hash &&
 				isEqual((actionHashed.content as NewEntryAction).entry_hash, dhtHash)
 			) {
-				return (record.entry as any).Present;
+				return {
+					status: 'completed',
+					value: (record.entry as any).Present,
+				};
 			}
 		}
 
@@ -72,7 +78,10 @@ export function getFromStore(
 			const actionHash = hash(action, HashType.ACTION);
 
 			if (isEqual(actionHash, dhtHash)) {
-				return action;
+				return {
+					status: 'completed',
+					value: action,
+				};
 			}
 
 			if (
@@ -81,11 +90,17 @@ export function getFromStore(
 			) {
 				const type = getDhtOpType(op);
 				if (type === DhtOpType.StoreEntry || type === DhtOpType.StoreRecord) {
-					return getDhtOpEntry(op);
+					return {
+						status: 'completed',
+						value: getDhtOpEntry(op),
+					};
 				}
 			}
 		}
-		return undefined;
+		return {
+			status: 'completed',
+			value: undefined,
+		};
 	});
 }
 

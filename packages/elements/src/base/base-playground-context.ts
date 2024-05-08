@@ -9,41 +9,33 @@ import { LitElement, css, html } from 'lit';
 import { property, query } from 'lit/decorators.js';
 
 import { sharedStyles } from '../elements/utils/shared-styles.js';
-import { PlaygroundMode } from '../store/mode.js';
+import { ConnectedPlaygroundStore } from '../store/connected-playground-store.js';
 import { PlaygroundStore } from '../store/playground-store.js';
+import { SimulatedPlaygroundStore } from '../store/simulated-playground-store.js';
 import { playgroundContext } from './context.js';
 
 export abstract class BasePlaygroundContext<
-	T extends PlaygroundMode,
-	S extends PlaygroundStore<T>,
+	T extends SimulatedPlaygroundStore | ConnectedPlaygroundStore,
 > extends ScopedElementsMixin(LitElement) {
 	@query('#snackbar')
-	private snackbar: Snackbar;
+	private snackbar!: Snackbar;
 
 	@property({ type: String })
 	private message: string | undefined;
 
 	/** Context variables */
-	abstract buildStore(): Promise<S>;
+	abstract buildStore(): T;
 
 	@provide({ context: playgroundContext })
-	store!: PlaygroundStore<any>;
+	store!: SimulatedPlaygroundStore | ConnectedPlaygroundStore;
 
-	async firstUpdated() {
-		const store = await this.buildStore();
+	firstUpdated() {
+		const store = this.buildStore();
 
 		this.store = store;
 
-		this.dispatchEvent(
-			new CustomEvent('playground-ready', {
-				bubbles: true,
-				composed: true,
-				detail: { store },
-			}),
-		);
-
-		this.addEventListener('show-message', (e: CustomEvent) => {
-			this.showMessage(e.detail.message);
+		this.addEventListener('show-message', (e: Event) => {
+			this.showMessage((e as CustomEvent).detail.message);
 		});
 
 		this.requestUpdate();

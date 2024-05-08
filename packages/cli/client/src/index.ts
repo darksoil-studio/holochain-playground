@@ -1,3 +1,4 @@
+import { watch } from '@holochain-open-dev/signals';
 import { ConnectedPlaygroundStore } from '@holochain-playground/elements';
 import {
 	ConnectedPlaygroundGoldenLayout,
@@ -67,19 +68,24 @@ class HolochainPlayground extends ScopedElementsMixin(LitElement) {
 				id="context"
 				style="flex: 1;"
 				.urls=${this.urls}
-				@playground-ready=${e => {
+				@playground-ready=${(e: any) => {
 					const store = e.detail.store as ConnectedPlaygroundStore;
-					store.conductors.subscribe(c => {
-						if (!c || c.length === 0) return;
-						c[0].cells.subscribe(cells => {
-							if (!this.ready && cells.entries().length > 0) {
-								this.ready = true;
-								store.activeDna.set(cells.entries()[0][0][0]);
-								if (this.urls.length === 1) {
-									store.activeAgentPubKey.set(cells.entries()[0][0][1]);
-								}
+
+					const conductors = store.conductors.get();
+					if (!conductors || conductors.length === 0) return;
+					const unsubs = watch(conductors[0].cells, cells => {
+						if (
+							cells.status === 'completed' &&
+							!this.ready &&
+							cells.value.entries().length > 0
+						) {
+							this.ready = true;
+							store.activeDna.set(cells.value.entries()[0][0][0]);
+							if (this.urls.length === 1) {
+								store.activeAgentPubKey.set(cells.value.entries()[0][0][1]);
 							}
-						});
+							unsubs();
+						}
 					});
 				}}
 			>

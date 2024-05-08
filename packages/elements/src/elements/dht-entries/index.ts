@@ -67,7 +67,7 @@ export class DhtEntries extends PlaygroundElement {
 
 	get elements() {
 		const dhtShards = this.store.dhtForActiveDna.get();
-		if (dhtShards.status !== 'completed') return undefined;
+		if (dhtShards.status !== 'completed') return [];
 
 		let dht = dhtShards.value;
 
@@ -210,9 +210,7 @@ export class DhtEntries extends PlaygroundElement {
 						class="fill"
 						.options=${cytoscapeConfig}
 						@node-selected=${(e: any) =>
-							this.store?.activeDhtHash.set(
-								decodeHashFromBase64(e.detail.id()),
-							)}
+							this.store.activeDhtHash.set(decodeHashFromBase64(e.detail.id()))}
 					></cytoscape-cose-bilkent>
 
 					${this.renderHelp()}

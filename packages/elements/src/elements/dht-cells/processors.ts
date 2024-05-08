@@ -92,7 +92,6 @@ export function allPeersEdges(
 	const edges: Array<any> = [];
 
 	const neighborsNotConnected = new CellMap<boolean>();
-	debugger;
 
 	for (const [cellId, neighbors] of cellsNeighbors.entries()) {
 		const cellAgentPubKey = cellId[1];

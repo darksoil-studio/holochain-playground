@@ -180,7 +180,7 @@ export class SimulatedPlaygroundStore extends PlaygroundStore<SimulatedConductor
 
 	paused = new PauseSignal();
 
-	private constructor(
+	constructor(
 		initialConductors: Conductor[],
 		initialHapp: SimulatedHappBundle,
 	) {

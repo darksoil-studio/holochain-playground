@@ -1,10 +1,10 @@
 import { commonGraphStyles } from '../utils/common-graph-styles.js';
 
 export const layoutConfig = {
-  startAngle: (4 / 2) * Math.PI,
-  ready: (e) => {
-    e.cy.resize();
-  },
+	startAngle: (4 / 2) * Math.PI,
+	ready: (e: any) => {
+		e.cy.resize();
+	},
 };
 
 export const graphStyles = `
@@ -64,9 +64,9 @@ export const graphStyles = `
 `;
 
 export const cytoscapeOptions = {
-  boxSelectionEnabled: false,
-  autoungrabify: true,
-  userPanningEnabled: false,
-  userZoomingEnabled: false,
-  style: graphStyles,
+	boxSelectionEnabled: false,
+	autoungrabify: true,
+	userPanningEnabled: false,
+	userZoomingEnabled: false,
+	style: graphStyles,
 };

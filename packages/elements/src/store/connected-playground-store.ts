@@ -183,13 +183,7 @@ export class ConnectedConductorStore
 export class ConnectedPlaygroundStore extends PlaygroundStore<ConnectedConductorStore> {
 	conductors = new Signal.State<ConnectedConductorStore[]>([]);
 
-	static async create(urls: string[]): Promise<ConnectedPlaygroundStore> {
-		const store = new ConnectedPlaygroundStore();
-		await store.setConductors(urls);
-		return store;
-	}
-
-	async setConductors(urls: string[]) {
+	public async setConductors(urls: string[]) {
 		const normalizedUrls = urls.map(u => normalizeUrl(u));
 
 		const currentUrls = this.conductors.get().map(c => c.url);
