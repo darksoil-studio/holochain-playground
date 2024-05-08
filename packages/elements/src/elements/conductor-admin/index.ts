@@ -1,4 +1,5 @@
 import '@holochain-open-dev/elements/dist/elements/holo-identicon.js';
+import { AsyncComputed } from '@holochain-open-dev/signals';
 import { encodeHashToBase64 } from '@holochain/client';
 import { JsonViewer } from '@power-elements/json-viewer';
 import {
@@ -12,15 +13,17 @@ import {
 } from '@scoped-elements/material-web';
 import { Grid, GridColumn } from '@vaadin/grid';
 import { PropertyValues, css, html } from 'lit';
-import { StoreSubscriber } from 'lit-svelte-stores';
 import { state } from 'lit/decorators.js';
 import { createRef, ref } from 'lit/directives/ref.js';
 import isEqual from 'lodash-es/isEqual.js';
-import { derived } from 'svelte/store';
 
 import { PlaygroundElement } from '../../base/playground-element.js';
 import { selectCell } from '../../base/selectors.js';
-import { ConnectedConductorStore } from '../../store/connected-playground-store.js';
+import {
+	ConnectedCellStore,
+	ConnectedConductorStore,
+	ConnectedPlaygroundStore,
+} from '../../store/connected-playground-store.js';
 import { CellStore, ConductorStore } from '../../store/playground-store.js';
 import {
 	SimulatedCellStore,
@@ -33,36 +36,16 @@ import { sharedStyles } from '../utils/shared-styles.js';
 import { adminApi } from './admin-api.js';
 
 export class ConductorAdmin extends PlaygroundElement {
-	_activeAgentPubKey = new StoreSubscriber(
-		this,
-		() => this.store?.activeAgentPubKey,
-		() => [this._store],
-	);
+	_activeConductor = new AsyncComputed(() => {
+		const activeCell = this.store.activeCell.get();
+		if (activeCell.status !== 'completed') return activeCell;
 
-	_activeDna = new StoreSubscriber(
-		this,
-		() => this.store?.activeDna,
-		() => [this._store],
-	);
-
-	_activeConductor = new StoreSubscriber(
-		this,
-		() => derived(this.store?.activeCell(), c => c?.conductorStore),
-		() => [this._store],
-	);
-
-	_happs = new StoreSubscriber(
-		this,
-		() => (this.store as SimulatedPlaygroundStore)?.happs,
-
-		() => [this._store],
-	);
-
-	_cellsForActiveConductor = new StoreSubscriber(
-		this,
-		() => this._activeConductor.value?.cells,
-		() => [this._store],
-	);
+		const conductor = activeCell.value?.conductorStore;
+		return {
+			status: 'completed',
+			value: conductor,
+		};
+	});
 
 	@state()
 	private _selectedTabIndex: number = 0;
@@ -74,6 +57,7 @@ export class ConductorAdmin extends PlaygroundElement {
 	}
 
 	renderHelp() {
+		const activeAgentPubKey = this.store.activeAgentPubKey.get();
 		return html`
 			<help-button
 				heading="Conductor Admin Help"
@@ -82,8 +66,8 @@ export class ConductorAdmin extends PlaygroundElement {
 			>
 				<span>
 					You've selected the conductor with Agent ID
-					${this._activeAgentPubKey.value
-						? encodeHashToBase64(this._activeAgentPubKey.value)
+					${activeAgentPubKey
+						? encodeHashToBase64(activeAgentPubKey)
 						: undefined}.
 					Here you can see all the cells that it's running, as well as execute
 					admin functions for it.
@@ -102,21 +86,21 @@ export class ConductorAdmin extends PlaygroundElement {
 	setupGrid(grid: Grid) {
 		setTimeout(() => {
 			if (!grid) return;
-			const dnaColumn = this.shadowRoot.querySelector(
+			const dnaColumn = this.shadowRoot!.querySelector(
 				'#dna-column',
 			) as GridColumn;
 			dnaColumn.renderer = (root: any, column, model) => {
-				const cell = model.item as any as CellStore<any>;
+				const cell = model.item as any as CellStore;
 				root.innerHTML = `<holo-identicon hash="${encodeHashToBase64(
 					cell.cellId[0],
 				)}"></holo-identicon>`;
 				root.item = model.item;
 			};
-			const agentPubKeyColumn = this.shadowRoot.querySelector(
+			const agentPubKeyColumn = this.shadowRoot!.querySelector(
 				'#agent-pub-key-column',
 			) as GridColumn;
 			agentPubKeyColumn.renderer = (root: any, column, model) => {
-				const cell = model.item as any as CellStore<any>;
+				const cell = model.item as any as CellStore;
 				root.innerHTML = `<holo-identicon hash="${encodeHashToBase64(
 					cell.cellId[1],
 				)}"></holo-identicon>`;
@@ -126,7 +110,7 @@ export class ConductorAdmin extends PlaygroundElement {
 			if (this.isSimulated) {
 				grid.rowDetailsRenderer = function (root, grid, model) {
 					if (!root.firstElementChild) {
-						const cell = model.item as any as CellStore<any>;
+						const cell = model.item as any as CellStore;
 
 						if (cell instanceof SimulatedCellStore) {
 							root.innerHTML = `
@@ -146,7 +130,7 @@ export class ConductorAdmin extends PlaygroundElement {
 					}
 				};
 
-				const detailsToggleColumn = this.shadowRoot.querySelector(
+				const detailsToggleColumn = this.shadowRoot!.querySelector(
 					'#details',
 				) as GridColumn;
 				detailsToggleColumn.renderer = function (root: any, column, model) {
@@ -166,20 +150,20 @@ export class ConductorAdmin extends PlaygroundElement {
 				};
 			}
 
-			const selectColumn = this.shadowRoot.querySelector(
+			const selectColumn = this.shadowRoot!.querySelector(
 				'#select',
 			) as GridColumn;
 			selectColumn.renderer = (root: any, column, model) => {
-				const cell = model.item as any as CellStore<any>;
+				const cell = model.item as any as CellStore;
 
 				const isSelected =
-					isEqual(this._activeDna.value, cell.cellId[0]) &&
-					isEqual(this._activeAgentPubKey.value, cell.cellId[1]);
+					isEqual(this.store.activeDna.get()!, cell.cellId[0]) &&
+					isEqual(this.store.activeAgentPubKey.get()!, cell.cellId[1]);
 				root.innerHTML = `<mwc-button label="Select" ${
 					isSelected ? 'disabled' : ''
 				}></mwc-button>`;
 				root.firstElementChild.addEventListener('click', (e: any) => {
-					const cell = model.item as any as CellStore<any>;
+					const cell = model.item as any as CellStore;
 
 					this.store.activeDna.set(cell.cellId[0]);
 					this.store.activeAgentPubKey.set(cell.cellId[1]);
@@ -191,10 +175,10 @@ export class ConductorAdmin extends PlaygroundElement {
 	}
 
 	renderCells() {
-		const cells = this._cellsForActiveConductor.value;
-		if (!cells) return html``;
+		const cells = this.store.cellsForActiveDna.get();
+		if (cells.status !== 'completed') return html``;
 
-		const items = cells.values();
+		const items = cells.value.values();
 
 		return html`
 			<div class="column fill">
@@ -235,13 +219,18 @@ export class ConductorAdmin extends PlaygroundElement {
 					available.</span
 				>
 			</div>`;
-		const conductor = this._activeConductor.value;
+		const activeConductor = this._activeConductor.get();
+		if (
+			this.store instanceof ConnectedPlaygroundStore ||
+			activeConductor.status !== 'completed' ||
+			!activeConductor.value ||
+			activeConductor.value instanceof ConnectedConductorStore
+		)
+			return html``;
 
-		const adminApiFns = adminApi(
-			this,
-			this._happs.value,
-			conductor as SimulatedConductorStore,
-		);
+		const happs = this.store.happs.get();
+
+		const adminApiFns = adminApi(this, happs, activeConductor.value);
 
 		return html` <div class="column fill">
 			<call-functions .callableFns=${adminApiFns}></call-functions>
@@ -249,7 +238,11 @@ export class ConductorAdmin extends PlaygroundElement {
 	}
 
 	renderContent() {
-		if (!this._activeConductor.value)
+		const activeConductor = this._activeConductor.get();
+
+		// TODO: add spinner on loading
+
+		if (activeConductor.status !== 'completed' || !activeConductor.value)
 			return html`
 				<div class="column fill center-content">
 					<span class="placeholder"
@@ -262,7 +255,7 @@ export class ConductorAdmin extends PlaygroundElement {
 
 			<div class="column fill">
 				<mwc-tab-bar
-					@MDCTabBar:activated=${e => {
+					@MDCTabBar:activated=${(e: any) => {
 						this._selectedTabIndex = e.detail.index;
 					}}
 					.activeIndex=${this._selectedTabIndex}
@@ -278,12 +271,16 @@ export class ConductorAdmin extends PlaygroundElement {
 	}
 
 	renderName() {
+		const activeConductor = this._activeConductor.get();
+		if (activeConductor.status !== 'completed' || !activeConductor.value)
+			return '';
 		if (this.isSimulated)
-			return (this._activeConductor.value as SimulatedConductorStore).name;
-		return (this._activeConductor.value as ConnectedConductorStore).url;
+			return (activeConductor.value as SimulatedConductorStore).name;
+		return (activeConductor.value as ConnectedConductorStore).url;
 	}
 
 	render() {
+		const activeConductor = this._activeConductor.get();
 		return html`
 			<mwc-card class="block-card">
 				<div class="column fill">
@@ -291,7 +288,8 @@ export class ConductorAdmin extends PlaygroundElement {
 						<div class="column" style="flex: 1;">
 							<span class="title"
 								>Conductor
-								Admin${this._activeConductor.value
+								Admin${activeConductor.status === 'completed' &&
+								activeConductor.value
 									? html`<span class="placeholder"
 											>, for ${this.renderName()}</span
 										>`

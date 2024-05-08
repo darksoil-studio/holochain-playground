@@ -1,5 +1,6 @@
 import {
 	AsyncComputed,
+	AsyncResult,
 	AsyncSignal,
 	Signal,
 	joinAsync,
@@ -23,78 +24,88 @@ import {
 } from '@holochain/client';
 import isEqual from 'lodash-es/isEqual.js';
 
+import { ConnectedConductorStore } from './connected-playground-store.js';
 import { PlaygroundMode } from './mode.js';
+import { SimulatedConductorStore } from './simulated-playground-store.js';
 import { joinAsyncCellMap, mapCellValues } from './utils.js';
 
-export abstract class CellStore<T extends PlaygroundMode> {
-	abstract sourceChain: AsyncSignal<Record[]>;
+export interface CellStore {
+	sourceChain: AsyncSignal<Record[]>;
 
-	abstract peers: AsyncSignal<AgentPubKey[]>;
+	peers: AsyncSignal<AgentPubKey[]>;
 
-	abstract dhtShard: AsyncSignal<Array<DhtOp>>;
+	dhtShard: AsyncSignal<Array<DhtOp>>;
 
-	abstract cellId: CellId;
+	cellId: CellId;
 
-	constructor(public conductorStore: ConductorStore<T>) {}
-
-	get(dhtHash: AnyDhtHash): AsyncSignal<any | undefined> {
-		return new AsyncComputed(() => {
-			const sourceChainResult = this.sourceChain.get();
-			const dhtShardResult = this.dhtShard.get();
-			if (sourceChainResult.status !== 'completed') return sourceChainResult;
-			if (dhtShardResult.status !== 'completed') return dhtShardResult;
-
-			const sourceChain = sourceChainResult.value;
-			const dhtShard = dhtShardResult.value;
-
-			for (const record of sourceChain) {
-				const actionHashed: ActionHashed = record.signed_action.hashed;
-				if (isEqual(actionHashed.hash, dhtHash)) {
-					return actionHashed.content;
-				}
-				if (
-					(actionHashed.content as NewEntryAction).entry_hash &&
-					isEqual((actionHashed.content as NewEntryAction).entry_hash, dhtHash)
-				) {
-					return (record.entry as any).Present;
-				}
-			}
-
-			for (const op of dhtShard) {
-				const action = getDhtOpAction(op);
-				const actionHash = hash(action, HashType.ACTION);
-
-				if (isEqual(actionHash, dhtHash)) {
-					return action;
-				}
-
-				if (
-					(action as NewEntryAction).entry_hash &&
-					isEqual((action as NewEntryAction).entry_hash, dhtHash)
-				) {
-					const type = getDhtOpType(op);
-					if (type === DhtOpType.StoreEntry || type === DhtOpType.StoreRecord) {
-						return getDhtOpEntry(op);
-					}
-				}
-			}
-			return undefined;
-		});
-	}
+	get(dhtHash: AnyDhtHash): AsyncSignal<any | undefined>;
 }
 
-export abstract class ConductorStore<T extends PlaygroundMode> {
-	abstract cells: AsyncSignal<CellMap<CellStore<T>>>;
+export function getFromStore(
+	cellStore: CellStore,
+	dhtHash: AnyDhtHash,
+): AsyncSignal<any | undefined> {
+	return new AsyncComputed(() => {
+		const sourceChainResult = cellStore.sourceChain.get();
+		const dhtShardResult = cellStore.dhtShard.get();
+		if (sourceChainResult.status !== 'completed') return sourceChainResult;
+		if (dhtShardResult.status !== 'completed') return dhtShardResult;
+
+		const sourceChain = sourceChainResult.value;
+		const dhtShard = dhtShardResult.value;
+
+		for (const record of sourceChain) {
+			const actionHashed: ActionHashed = record.signed_action.hashed;
+			if (isEqual(actionHashed.hash, dhtHash)) {
+				return actionHashed.content;
+			}
+			if (
+				(actionHashed.content as NewEntryAction).entry_hash &&
+				isEqual((actionHashed.content as NewEntryAction).entry_hash, dhtHash)
+			) {
+				return (record.entry as any).Present;
+			}
+		}
+
+		for (const op of dhtShard) {
+			const action = getDhtOpAction(op);
+			const actionHash = hash(action, HashType.ACTION);
+
+			if (isEqual(actionHash, dhtHash)) {
+				return action;
+			}
+
+			if (
+				(action as NewEntryAction).entry_hash &&
+				isEqual((action as NewEntryAction).entry_hash, dhtHash)
+			) {
+				const type = getDhtOpType(op);
+				if (type === DhtOpType.StoreEntry || type === DhtOpType.StoreRecord) {
+					return getDhtOpEntry(op);
+				}
+			}
+		}
+		return undefined;
+	});
 }
 
-export abstract class PlaygroundStore<T extends PlaygroundMode> {
+export interface ConductorStore<T extends CellStore> {
+	cells: AsyncSignal<CellMap<T>>;
+}
+
+type CellStoreForConductorStore<T> =
+	T extends ConductorStore<infer CellStore> ? CellStore : never;
+
+export abstract class PlaygroundStore<
+	T extends SimulatedConductorStore | ConnectedConductorStore,
+> {
 	activeDna = new Signal.State<DnaHash | undefined>(undefined);
 
 	activeAgentPubKey = new Signal.State<AgentPubKey | undefined>(undefined);
 
 	activeDhtHash = new Signal.State<AnyDhtHash | undefined>(undefined);
 
-	abstract conductors: Signal.State<Array<ConductorStore<T>>>;
+	abstract conductors: Signal.State<Array<T>>;
 
 	constructor() {
 		let currentvalue: DnaHash | undefined;
@@ -124,7 +135,7 @@ export abstract class PlaygroundStore<T extends PlaygroundMode> {
 		});
 	}
 
-	cell(cellId: CellId): AsyncSignal<CellStore<T> | undefined> {
+	cell(cellId: CellId): AsyncSignal<CellStoreForConductorStore<T> | undefined> {
 		return new AsyncComputed(() => {
 			const cells = this.allCells.get();
 			if (cells.status !== 'completed') return cells;
@@ -167,9 +178,14 @@ export abstract class PlaygroundStore<T extends PlaygroundMode> {
 		};
 	});
 
-	allCells = new AsyncComputed(() => {
+	allCells = new AsyncComputed<CellMap<CellStoreForConductorStore<T>>>(() => {
 		const conductors = this.conductors.get();
-		const cellMaps = joinAsync(conductors.map(c => c.cells.get()));
+		const cellMaps = joinAsync(
+			conductors.map(
+				c =>
+					c.cells.get() as AsyncResult<CellMap<CellStoreForConductorStore<T>>>,
+			),
+		);
 		if (cellMaps.status !== 'completed') return cellMaps;
 
 		const value = cellMaps.value.reduce((acc, next) => {
@@ -220,7 +236,7 @@ export abstract class PlaygroundStore<T extends PlaygroundMode> {
 		const allCells = this.allCells.get();
 		if (allCells.status !== 'completed') return allCells;
 
-		const map = new CellMap<CellStore<T>>();
+		const map = new CellMap<CellStoreForConductorStore<T>>();
 
 		for (const [cellId, value] of allCells.value.entries()) {
 			if (isEqual(activeDna?.toString(), cellId[0].toString())) {

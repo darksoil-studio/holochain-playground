@@ -16,44 +16,50 @@ import {
 	selectDhtShard,
 	selectSourceChain,
 } from '@holochain-playground/simulator';
-import { AgentPubKey, CellId, DhtOp, Record } from '@holochain/client';
+import {
+	AgentPubKey,
+	AnyDhtHash,
+	CellId,
+	DhtOp,
+	Record,
+} from '@holochain/client';
 
-import { PlaygroundMode } from './mode.js';
+import { ConnectedCellStore } from './connected-playground-store.js';
 import {
 	CellStore,
 	ConductorStore,
 	PlaygroundStore,
+	getFromStore,
 } from './playground-store.js';
 import { cellChanges } from './utils.js';
 
-export class SimulatedCellStore extends CellStore<PlaygroundMode.Simulated> {
-	private _sourceChain: Signal.State<Record[]> = new Signal.State([]);
+export class SimulatedCellStore implements CellStore {
+	private _sourceChain = new Signal.State<Record[]>([]);
 	sourceChain: AsyncSignal<Record[]> = new AsyncComputed(() => ({
 		status: 'completed',
 		value: this._sourceChain.get(),
 	}));
 
-	private _peers: Signal.State<AgentPubKey[]> = new Signal.State([]);
+	private _peers = new Signal.State<AgentPubKey[]>([]);
 	peers: AsyncSignal<AgentPubKey[]> = new AsyncComputed(() => ({
 		status: 'completed',
 		value: this._peers.get(),
 	}));
 
-	private _dhtShard: Signal.State<DhtOp[]> = new Signal.State([]);
+	private _dhtShard = new Signal.State<DhtOp[]>([]);
 	dhtShard: AsyncSignal<DhtOp[]> = new AsyncComputed(() => ({
 		status: 'completed',
 		value: this._dhtShard.get(),
 	}));
 
-	badAgents: Signal.State<AgentPubKey[]> = new Signal.State([]);
+	badAgents = new Signal.State<AgentPubKey[]>([]);
 
-	farPeers: Signal.State<AgentPubKey[]> = new Signal.State([]);
+	farPeers = new Signal.State<AgentPubKey[]>([]);
 
 	constructor(
 		public conductorStore: SimulatedConductorStore,
 		public cell: Cell,
 	) {
-		super(conductorStore);
 		cell.workflowExecutor.success(async () => this.update());
 	}
 
@@ -75,19 +81,23 @@ export class SimulatedCellStore extends CellStore<PlaygroundMode.Simulated> {
 		this.badAgents.set(p2pstate.badAgents);
 		this.farPeers.set(p2pstate.farKnownPeers);
 	}
+
+	get(hash: AnyDhtHash): AsyncSignal<any | undefined> {
+		return getFromStore(this, hash);
+	}
 }
 
-export class SimulatedConductorStore extends ConductorStore<PlaygroundMode.Simulated> {
+export class SimulatedConductorStore
+	implements ConductorStore<SimulatedCellStore>
+{
 	cells: AsyncState<CellMap<SimulatedCellStore>>;
 
-	badAgent: Signal.Computed<BadAgent>;
+	badAgent: Signal.Computed<BadAgent | undefined>;
 
 	constructor(public conductor: Conductor) {
-		super();
-
 		let cellMap = this.buildStores(conductor, new CellMap());
 
-		let unsubscribe;
+		let unsubscribe: (() => void) | undefined;
 
 		this.cells = new AsyncState(
 			{
@@ -128,7 +138,7 @@ export class SimulatedConductorStore extends ConductorStore<PlaygroundMode.Simul
 		for (const cellId of cellsToAdd) {
 			currentCells.set(
 				cellId,
-				new SimulatedCellStore(this, conductor.getCell(cellId)),
+				new SimulatedCellStore(this, conductor.getCell(cellId)!),
 			);
 		}
 		for (const cellId of cellsToRemove) {
@@ -140,7 +150,7 @@ export class SimulatedConductorStore extends ConductorStore<PlaygroundMode.Simul
 
 export class PauseSignal extends Signal.State<boolean> {
 	private _awaitResume = Promise.resolve();
-	private awaitResolve;
+	private awaitResolve: any;
 	constructor() {
 		super(false);
 	}
@@ -163,7 +173,7 @@ export class PauseSignal extends Signal.State<boolean> {
 	}
 }
 
-export class SimulatedPlaygroundStore extends PlaygroundStore<PlaygroundMode.Simulated> {
+export class SimulatedPlaygroundStore extends PlaygroundStore<SimulatedConductorStore> {
 	conductors: Signal.State<Array<SimulatedConductorStore>>;
 
 	happs: Signal.State<Dictionary<SimulatedHappBundle>>;

@@ -3,6 +3,7 @@ import '@holochain-open-dev/elements/dist/elements/holo-identicon.js';
 import { AsyncComputed, Signal } from '@holochain-open-dev/signals';
 import { CellMap, HoloHashMap } from '@holochain-open-dev/utils';
 import {
+	BadAgent,
 	NetworkRequestInfo,
 	NetworkRequestType,
 	PublishRequestInfo,
@@ -10,6 +11,7 @@ import {
 	sleep,
 } from '@holochain-playground/simulator';
 import {
+	AgentPubKey,
 	DhtOp,
 	decodeHashFromBase64,
 	encodeHashToBase64,
@@ -37,6 +39,7 @@ import uniq from 'lodash-es/uniq.js';
 
 import { MiddlewareController } from '../../base/middleware-controller.js';
 import { PlaygroundElement } from '../../base/playground-element.js';
+import { CellStore } from '../../store/playground-store.js';
 import {
 	SimulatedCellStore,
 	SimulatedPlaygroundStore,
@@ -110,7 +113,7 @@ export class DhtCells extends PlaygroundElement {
 		if (!(this.store instanceof SimulatedPlaygroundStore))
 			return {
 				status: 'completed',
-				value: new CellMap(),
+				value: new CellMap<BadAgent | undefined>(),
 			};
 
 		const cellsForActiveDna = this.store.cellsForActiveDna.get();
@@ -130,7 +133,7 @@ export class DhtCells extends PlaygroundElement {
 		if (cellsForActiveDna.status !== 'completed') return cellsForActiveDna;
 
 		return joinAsyncCellMap(
-			mapCellValues(cellsForActiveDna.value, (c: SimulatedCellStore) =>
+			mapCellValues(cellsForActiveDna.value, (c: CellStore) =>
 				c.dhtShard.get(),
 			),
 		);
@@ -140,12 +143,15 @@ export class DhtCells extends PlaygroundElement {
 		if (cellsForActiveDna.status !== 'completed') return cellsForActiveDna;
 
 		return joinAsyncCellMap(
-			mapCellValues(cellsForActiveDna.value, (c: SimulatedCellStore) =>
-				c.peers.get(),
-			),
+			mapCellValues(cellsForActiveDna.value, (c: CellStore) => c.peers.get()),
 		);
 	});
 	_farPeers = new AsyncComputed(() => {
+		if (!(this.store instanceof SimulatedPlaygroundStore))
+			return {
+				status: 'completed',
+				value: new CellMap<AgentPubKey[]>(),
+			};
 		const cellsForActiveDna = this.store.cellsForActiveDna.get();
 		if (cellsForActiveDna.status !== 'completed') return cellsForActiveDna;
 
@@ -159,6 +165,11 @@ export class DhtCells extends PlaygroundElement {
 		};
 	});
 	_recognizedBadActors = new AsyncComputed(() => {
+		if (!(this.store instanceof SimulatedPlaygroundStore))
+			return {
+				status: 'completed',
+				value: new CellMap<AgentPubKey[]>(),
+			};
 		const cellsForActiveDna = this.store.cellsForActiveDna.get();
 		if (cellsForActiveDna.status !== 'completed') return cellsForActiveDna;
 

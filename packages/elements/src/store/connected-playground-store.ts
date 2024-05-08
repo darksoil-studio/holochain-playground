@@ -7,6 +7,7 @@ import { AGENT_PREFIX, CellMap } from '@holochain-open-dev/utils';
 import {
 	AdminWebsocket,
 	AgentPubKey,
+	AnyDhtHash,
 	CellId,
 	DhtOp,
 	FullIntegrationStateDump,
@@ -16,17 +17,17 @@ import {
 import { Base64 } from 'js-base64';
 import isEqual from 'lodash-es/isEqual.js';
 
-import { PlaygroundMode } from './mode.js';
 import {
 	CellStore,
 	ConductorStore,
 	PlaygroundStore,
+	getFromStore,
 } from './playground-store.js';
 import { pollingSignal } from './polling-store.js';
 import { cellChanges } from './utils.js';
 
-export class ConnectedCellStore extends CellStore<PlaygroundMode.Connected> {
-	_state: AsyncSignal<FullStateDump | undefined>;
+export class ConnectedCellStore implements CellStore {
+	private _state: AsyncSignal<FullStateDump>;
 
 	sourceChain: AsyncSignal<Record[]>;
 
@@ -35,11 +36,10 @@ export class ConnectedCellStore extends CellStore<PlaygroundMode.Connected> {
 	dhtShard: AsyncSignal<Array<DhtOp>>;
 
 	constructor(
-		conductorStore: ConnectedConductorStore,
+		public conductorStore: ConnectedConductorStore,
 		public cellId: CellId,
 		adminWs: AdminWebsocket,
 	) {
-		super(conductorStore);
 		this._state = pollingSignal(async currentState => {
 			const fullState = await adminWs.dumpFullState({
 				cell_id: cellId,
@@ -54,19 +54,23 @@ export class ConnectedCellStore extends CellStore<PlaygroundMode.Connected> {
 				dht_ops_cursor: fullState.integration_dump.dht_ops_cursor,
 				integrated: currentState
 					? [
-							...currentIntegration.integrated,
+							...(currentIntegration ? currentIntegration.integrated : []),
 							...fullState.integration_dump.integrated,
 						]
 					: fullState.integration_dump.integrated,
 				validation_limbo: currentState
 					? [
-							...currentIntegration.validation_limbo,
+							...(currentIntegration
+								? currentIntegration.validation_limbo
+								: []),
 							...fullState.integration_dump.validation_limbo,
 						]
 					: fullState.integration_dump.validation_limbo,
 				integration_limbo: currentState
 					? [
-							...currentIntegration.integration_limbo,
+							...(currentIntegration
+								? currentIntegration.integration_limbo
+								: []),
 							...fullState.integration_dump.integration_limbo,
 						]
 					: fullState.integration_dump.integration_limbo,
@@ -75,25 +79,28 @@ export class ConnectedCellStore extends CellStore<PlaygroundMode.Connected> {
 			return {
 				...fullState,
 				integration_dump,
-			};
+			} as FullStateDump;
 		});
 
-		this.sourceChain = new AsyncComputed(() => {
+		this.sourceChain = new AsyncComputed<Record[]>(() => {
 			const state = this._state.get();
 			if (state.status !== 'completed') return state;
 			const value = state.value
-				? state.value.source_chain_dump.records.map(r => ({
-						signed_action: {
-							hashed: {
-								hash: r.action_address,
-								content: r.action,
-							},
-							signature: r.signature,
-						},
-						entry: {
-							Present: r.entry,
-						},
-					}))
+				? state.value.source_chain_dump.records.map(
+						r =>
+							({
+								signed_action: {
+									hashed: {
+										hash: r.action_address,
+										content: r.action,
+									},
+									signature: r.signature,
+								},
+								entry: {
+									Present: r.entry,
+								},
+							}) as Record,
+					)
 				: [];
 
 			return {
@@ -131,14 +138,18 @@ export class ConnectedCellStore extends CellStore<PlaygroundMode.Connected> {
 			};
 		});
 	}
+
+	get(hash: AnyDhtHash): AsyncSignal<any | undefined> {
+		return getFromStore(this, hash);
+	}
 }
 
-export class ConnectedConductorStore extends ConductorStore<PlaygroundMode.Connected> {
+export class ConnectedConductorStore
+	implements ConductorStore<ConnectedCellStore>
+{
 	cells: AsyncSignal<CellMap<ConnectedCellStore>>;
 
 	constructor(protected adminWs: AdminWebsocket) {
-		super();
-
 		this.cells = pollingSignal(async currentCells => {
 			if (!currentCells) {
 				currentCells = new CellMap<ConnectedCellStore>();
@@ -169,7 +180,7 @@ export class ConnectedConductorStore extends ConductorStore<PlaygroundMode.Conne
 	}
 }
 
-export class ConnectedPlaygroundStore extends PlaygroundStore<PlaygroundMode.Connected> {
+export class ConnectedPlaygroundStore extends PlaygroundStore<ConnectedConductorStore> {
 	conductors = new Signal.State<ConnectedConductorStore[]>([]);
 
 	static async create(urls: string[]): Promise<ConnectedPlaygroundStore> {

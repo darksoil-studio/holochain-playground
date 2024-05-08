@@ -1,10 +1,10 @@
 import { AsyncSignal, AsyncState, Signal } from '@holochain-open-dev/signals';
 
 export function pollingSignal<T>(
-	pollingRequest: (currentState: T) => Promise<T>,
+	pollingRequest: (currentState: T | undefined) => Promise<T>,
 	pollingIntervalMs = 1000,
 ): AsyncSignal<T> {
-	let interval = undefined;
+	let interval: any = undefined;
 	const signal = new AsyncState<T>(
 		{
 			status: 'pending',

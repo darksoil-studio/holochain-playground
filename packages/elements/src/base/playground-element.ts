@@ -4,15 +4,18 @@ import { ScopedElementsMixin } from '@open-wc/scoped-elements';
 import { LitElement } from 'lit';
 import { state } from 'lit/decorators.js';
 
-import { PlaygroundStore } from '../store/playground-store.js';
+import { ConnectedPlaygroundStore } from '../store/connected-playground-store.js';
+import { SimulatedPlaygroundStore } from '../store/simulated-playground-store.js';
 import { playgroundContext } from './context.js';
 
 export class PlaygroundElement<
-	T extends PlaygroundStore<any> = PlaygroundStore<any>,
+	T extends ConnectedPlaygroundStore | SimulatedPlaygroundStore =
+		| ConnectedPlaygroundStore
+		| SimulatedPlaygroundStore,
 > extends SignalWatcher(ScopedElementsMixin(LitElement)) {
 	@consume({ context: playgroundContext, subscribe: true })
 	@state()
-	private _store: PlaygroundStore<any>;
+	private _store!: ConnectedPlaygroundStore | SimulatedPlaygroundStore;
 
 	get store(): T {
 		return this._store as T;

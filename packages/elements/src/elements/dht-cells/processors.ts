@@ -23,20 +23,20 @@ import { CellStore } from '../../store/playground-store.js';
 import { SimulatedCellStore } from '../../store/simulated-playground-store.js';
 
 export function dhtCellsNodes(
-	cells: CellMap<CellStore<any>>,
-	badAgents?: CellMap<BadAgent>,
+	cells: CellMap<CellStore>,
+	badAgents?: CellMap<BadAgent | undefined>,
 ) {
 	const sortedCells = cells
 		.entries()
 		.sort(
-			(a: [CellId, CellStore<any>], b: [CellId, CellStore<any>]) =>
+			(a: [CellId, CellStore], b: [CellId, CellStore]) =>
 				location(a[0][1]) - location(b[0][1]),
 		);
 	const cellNodes = sortedCells.map(([cellId, cellStore]) => {
 		const simulated = cellStore instanceof SimulatedCellStore;
 		const label = simulated
 			? `${(cellStore as SimulatedCellStore).conductorStore.name}${
-					badAgents.has(cellId) ? '😈' : ''
+					badAgents?.has(cellId) ? '😈' : ''
 				}`
 			: `${encodeHashToBase64(cellId[1]).slice(0, 7)}...`;
 
@@ -52,7 +52,7 @@ export function dhtCellsNodes(
 }
 
 export function simulatedNeighbors(
-	cells: CellMap<CellStore<any>>,
+	cells: CellMap<CellStore>,
 	peers: CellMap<AgentPubKey[]>,
 	farPeers: CellMap<AgentPubKey[]>,
 	badAgents: CellMap<AgentPubKey[]>,
@@ -81,7 +81,7 @@ export function simulatedNeighbors(
 }
 
 export function allPeersEdges(
-	cells: CellMap<CellStore<any>>,
+	cells: CellMap<CellStore>,
 	cellsNeighbors: CellMap<Array<AgentPubKey>>,
 ) {
 	// Segmented by originAgentPubKey/targetAgentPubKey
@@ -150,8 +150,8 @@ function doTheyHaveBeef(
 	const cellId2: CellId = [cellId1[0], agentPubKey];
 
 	return (
-		!!badAgents.get(cellId1).find(a => isEqual(a, agentPubKey)) ||
-		!!badAgents.get(cellId2).find(a => isEqual(a, cellId1[1]))
+		!!badAgents.get(cellId1)?.find(a => isEqual(a, agentPubKey)) ||
+		!!badAgents.get(cellId2)?.find(a => isEqual(a, cellId1[1]))
 	);
 }
 
