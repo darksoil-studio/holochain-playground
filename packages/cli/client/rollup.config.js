@@ -5,6 +5,10 @@ import typescript from '@rollup/plugin-typescript';
 import html from '@web/rollup-plugin-html';
 import { importMetaAssets } from '@web/rollup-plugin-import-meta-assets';
 import { terser } from 'rollup-plugin-terser';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import dotenv from 'dotenv'
+
+dotenv.config();
 
 export default {
   input: 'index.html',
@@ -13,6 +17,7 @@ export default {
     chunkFileNames: '[hash].js',
     assetFileNames: '[hash][extname]',
     format: 'es',
+    sourcemap: process.env.NODE_ENV === 'development',
     dir: 'dist',
   },
   preserveEntrySignatures: false,

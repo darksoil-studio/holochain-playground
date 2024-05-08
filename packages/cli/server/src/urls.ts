@@ -12,7 +12,7 @@ export function getLivePorts(): number[] {
   const files = getHcLiveFiles();
 
   const fileContents = files.map(file => readFileSync(file, 'utf8'));
-  return fileContents.map(c => parseInt(c));
+  return fileContents.map(c => parseInt(c, 10));
 }
 
 export function getHcLiveFiles(): string[] {

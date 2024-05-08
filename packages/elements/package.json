@@ -8,7 +8,7 @@
   "module": "dist/index.js",
   "scripts": {
     "start": "vite --clearScreen false --open",
-    "build": "tsc"
+    "build": "tsc && vite build"
   },
   "dependencies": {
     "@holochain-open-dev/core-types": "^0.7.0",
