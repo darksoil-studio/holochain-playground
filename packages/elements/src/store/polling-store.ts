@@ -1,20 +1,37 @@
-import { readable, Readable } from 'svelte/store';
+import { AsyncSignal, AsyncState, Signal } from '@holochain-open-dev/signals';
 
-export function pollingStore<T>(
-  startValue: T,
-  pollingRequest: (currentState: T) => Promise<T>
-): Readable<T> {
-  const store = readable(startValue, (set) => {
-    let value: T = startValue;
+export function pollingSignal<T>(
+	pollingRequest: (currentState: T) => Promise<T>,
+	pollingIntervalMs = 1000,
+): AsyncSignal<T> {
+	let interval = undefined;
+	const signal = new AsyncState<T>(
+		{
+			status: 'pending',
+		},
+		{
+			[Signal.subtle.watched]: () => {
+				interval = setInterval(async () => {
+					let currentValue: T | undefined;
+					const currentResult = signal.get();
+					if (currentResult.status === 'completed')
+						currentValue = currentResult.value;
+					const value = await pollingRequest(currentValue);
+					signal.set({
+						status: 'completed',
+						value,
+					});
+				}, pollingIntervalMs);
+			},
+			[Signal.subtle.unwatched]: () => {
+				signal.set({
+					status: 'pending',
+				});
+				clearInterval(interval);
+				interval = undefined;
+			},
+		},
+	);
 
-    const interval = setInterval(async () => {
-      value = await pollingRequest(value);
-      set(value);
-    }, 1000);
-
-    return function stop() {
-      clearInterval(interval);
-    };
-  });
-  return store;
+	return signal;
 }

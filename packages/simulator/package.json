@@ -1,59 +1,42 @@
 {
-  "name": "@holochain-playground/simulator",
-  "version": "0.1.1",
-  "description": "",
-  "author": "guillem.cordoba@gmail.com",
-  "license": "MIT",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "scripts": {
-    "build": "tsc",
-    "build:watch": "tsc -w",
-    "lint": "eslint --ext .ts,.html . --ignore-path .gitignore && prettier \"**/*.ts\" --check --ignore-path .gitignore",
-    "format": "eslint --ext .ts,.html . --fix --ignore-path .gitignore && prettier \"**/*.ts\" --write --ignore-path .gitignore",
-    "test": "npm run build && vitest run",
-    "test:watch": "concurrently -k -r \"npm run build:watch\" \"vitest\""
-  },
-  "dependencies": {
-    "@holochain-open-dev/core-types": "^0.7.0",
-    "@holochain-open-dev/utils": "^0.16.5",
-    "@holochain/client": "^0.16.9",
-    "@msgpack/msgpack": "^2.7.1",
-    "blakejs": "^1.1.0",
-    "js-base64": "^3.7.2",
-    "lodash-es": "^4.17.20",
-    "unique-names-generator": "^4.4.0"
-  },
-  "devDependencies": {
-    "@esm-bundle/chai": "^4.1.5",
-    "@open-wc/eslint-config": "^4.2.0",
-    "@open-wc/testing": "^2.0.0",
-    "@types/lodash-es": "^4.17.4",
-    "@typescript-eslint/eslint-plugin": "^4.15.0",
-    "@typescript-eslint/parser": "^4.15.0",
-    "concurrently": "^5.3.0",
-    "deepmerge": "^4.2.2",
-    "eslint": "^7.20.0",
-    "eslint-config-prettier": "^7.2.0",
-    "gh-pages": "^3.1.0",
-    "husky": "^1.0.0",
-    "lint-staged": "^10.0.0",
-    "prettier": "^2.0.4",
-    "rimraf": "^2.6.3",
-    "tslib": "^2.0.3",
-    "typescript": "^4.9.0",
-    "vite": "^4.1.1",
-    "vitest": "^0.28.5"
-  },
-  "prettier": {
-    "singleQuote": true,
-    "arrowParens": "avoid"
-  },
-  "lint-staged": {
-    "*.ts": ["eslint --fix", "prettier --write", "git add"]
-  },
-  "type": "module",
-  "publishConfig": {
-    "access": "public"
-  }
+	"name": "@holochain-playground/simulator",
+	"version": "0.300.0-dev.0",
+	"description": "",
+	"author": "guillem.cordoba@gmail.com",
+	"license": "MIT",
+	"main": "dist/index.js",
+	"module": "dist/index.js",
+	"scripts": {
+		"build": "tsc",
+		"build:watch": "tsc -w",
+		"lint": "eslint src && prettier \"**/*.ts\" --check --ignore-path .gitignore",
+		"format": "eslint src && prettier \"**/*.ts\" --write --ignore-path .gitignore",
+		"test": "npm run build && vitest run",
+		"test:watch": "concurrently -k -r \"npm run build:watch\" \"vitest\""
+	},
+	"dependencies": {
+		"@holochain-open-dev/core-types": "^0.300.0-dev.0",
+		"@holochain-open-dev/utils": "^0.300.0-dev.0",
+		"@holochain/client": "^0.18.0-dev.0",
+		"@msgpack/msgpack": "^2.7.1",
+		"blakejs": "^1.1.0",
+		"js-base64": "^3.7.2",
+		"lodash-es": "^4.17.20",
+		"unique-names-generator": "^4.4.0"
+	},
+	"devDependencies": {
+		"@types/lodash-es": "^4.17.4",
+		"concurrently": "^5.3.0",
+		"deepmerge": "^4.2.2",
+		"eslint": "^8.0.0",
+		"prettier": "^3.2.5",
+		"tslib": "^2.0.3",
+		"typescript": "^4.9.0",
+		"vite": "^4.1.1",
+		"vitest": "^1.4.0"
+	},
+	"type": "module",
+	"publishConfig": {
+		"access": "public"
+	}
 }

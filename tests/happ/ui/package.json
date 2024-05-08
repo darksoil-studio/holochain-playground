@@ -4,12 +4,12 @@
   "scripts": {
     "start": "vite --port $UI_PORT --clearScreen false",
     "build": "vite build",
-    "lint": "eslint --ext .ts,.html . --ignore-path .gitignore && prettier \"**/*.ts\" --check --ignore-path .gitignore",
-    "format": "eslint --ext .ts,.html . --fix --ignore-path .gitignore && prettier \"**/*.ts\" --write --ignore-path .gitignore",
+    "lint": "eslint src && prettier \"**/*.ts\" --check --ignore-path .gitignore",
+    "format": "eslint src && prettier \"**/*.ts\" --write --ignore-path .gitignore",
     "package": "npm run build && cd dist && bestzip ../dist.zip *"
   },
   "dependencies": {
-    "@holochain/client": "^0.16.5",
+    "@holochain/client": "^0.17.0-dev.12",
     "@lit-labs/context": "^0.2.0",
     "@lit-labs/task": "^2.0.0",
     "@material/mwc-circular-progress": "^0.27.0",
@@ -36,38 +36,7 @@
     "prettier": "^2.3.2",
     "rimraf": "^3.0.2",
     "vite": "^4.0.0",
-    "vite-plugin-checker": "^0.5.3",
-    "typescript": "^4.5.5"
-  },
-  "eslintConfig": {
-    "parser": "@typescript-eslint/parser",
-    "extends": [
-      "@open-wc",
-      "prettier"
-    ],
-    "plugins": [
-      "@typescript-eslint"
-    ],
-    "rules": {
-      "wc/guard-super-call": "off",
-      "prefer-destructuring": "off",
-      "no-useless-constructor": "off",
-      "no-empty-function": "off",
-      "no-empty-pattern": "off",
-      "camelcase": "off",
-      "import/no-duplicates": "off",
-      "no-unused-vars": "off",
-      "class-methods-use-this": "off",
-      "@typescript-eslint/no-unused-vars": "off",
-      "import/no-unresolved": "off",
-      "import/extensions": "off",
-      "no-use-before-define": "off",
-      "lines-between-class-members": "off"
-    }
-  },
-  "prettier": {
-    "singleQuote": true,
-    "arrowParens": "avoid"
+    "typescript": "^5.4.0"
   },
   "type": "module"
 }

@@ -1,203 +1,244 @@
 import {
-  AgentPubKey,
-  AnyDhtHash,
-  CellId,
-  DhtOp,
-  DhtOpType,
-  DnaHash,
-  getDhtOpEntry,
-  getDhtOpAction,
-  getDhtOpType,
-  NewEntryAction,
-  Record,
-  ActionHashed,
+	AsyncComputed,
+	AsyncSignal,
+	Signal,
+	joinAsync,
+	joinAsyncMap,
+	watch,
+} from '@holochain-open-dev/signals';
+import { CellMap, HashType, hash } from '@holochain-open-dev/utils';
+import {
+	ActionHashed,
+	AgentPubKey,
+	AnyDhtHash,
+	CellId,
+	DhtOp,
+	DhtOpType,
+	DnaHash,
+	NewEntryAction,
+	Record,
+	getDhtOpAction,
+	getDhtOpEntry,
+	getDhtOpType,
 } from '@holochain/client';
 import isEqual from 'lodash-es/isEqual.js';
-import {
-  deriveStore,
-  derived,
-  get,
-  Readable,
-  writable,
-  Writable,
-} from '@holochain-open-dev/stores';
-import { HashType, hash, CellMap } from '@holochain-open-dev/utils';
 
 import { PlaygroundMode } from './mode.js';
-import { mapDerive } from './utils.js';
+import { joinAsyncCellMap, mapCellValues } from './utils.js';
 
 export abstract class CellStore<T extends PlaygroundMode> {
-  abstract sourceChain: Readable<Record[]>;
+	abstract sourceChain: AsyncSignal<Record[]>;
 
-  abstract peers: Readable<AgentPubKey[]>;
+	abstract peers: AsyncSignal<AgentPubKey[]>;
 
-  abstract dhtShard: Readable<Array<DhtOp>>;
+	abstract dhtShard: AsyncSignal<Array<DhtOp>>;
 
-  abstract cellId: CellId;
+	abstract cellId: CellId;
 
-  constructor(public conductorStore: ConductorStore<T>) {}
+	constructor(public conductorStore: ConductorStore<T>) {}
 
-  get(dhtHash: AnyDhtHash): any {
-    return derived(
-      [this.sourceChain, this.dhtShard],
-      ([sourceChain, dhtShard]) => {
-        for (const record of sourceChain) {
-          const actionHashed: ActionHashed = record.signed_action.hashed;
-          if (isEqual(actionHashed.hash, dhtHash)) {
-            return actionHashed.content;
-          }
-          if (
-            (actionHashed.content as NewEntryAction).entry_hash &&
-            isEqual(
-              (actionHashed.content as NewEntryAction).entry_hash,
-              dhtHash
-            )
-          ) {
-            return (record.entry as any).Present;
-          }
-        }
+	get(dhtHash: AnyDhtHash): AsyncSignal<any | undefined> {
+		return new AsyncComputed(() => {
+			const sourceChainResult = this.sourceChain.get();
+			const dhtShardResult = this.dhtShard.get();
+			if (sourceChainResult.status !== 'completed') return sourceChainResult;
+			if (dhtShardResult.status !== 'completed') return dhtShardResult;
 
-        for (const op of dhtShard) {
-          const action = getDhtOpAction(op);
-          const actionHash = hash(action, HashType.ACTION);
+			const sourceChain = sourceChainResult.value;
+			const dhtShard = dhtShardResult.value;
 
-          if (isEqual(actionHash, dhtHash)) {
-            return action;
-          }
+			for (const record of sourceChain) {
+				const actionHashed: ActionHashed = record.signed_action.hashed;
+				if (isEqual(actionHashed.hash, dhtHash)) {
+					return actionHashed.content;
+				}
+				if (
+					(actionHashed.content as NewEntryAction).entry_hash &&
+					isEqual((actionHashed.content as NewEntryAction).entry_hash, dhtHash)
+				) {
+					return (record.entry as any).Present;
+				}
+			}
 
-          if (
-            (action as NewEntryAction).entry_hash &&
-            isEqual((action as NewEntryAction).entry_hash, dhtHash)
-          ) {
-            const type = getDhtOpType(op);
-            if (
-              type === DhtOpType.StoreEntry ||
-              type === DhtOpType.StoreRecord
-            ) {
-              return getDhtOpEntry(op);
-            }
-          }
-        }
-        return undefined;
-      }
-    );
-  }
+			for (const op of dhtShard) {
+				const action = getDhtOpAction(op);
+				const actionHash = hash(action, HashType.ACTION);
+
+				if (isEqual(actionHash, dhtHash)) {
+					return action;
+				}
+
+				if (
+					(action as NewEntryAction).entry_hash &&
+					isEqual((action as NewEntryAction).entry_hash, dhtHash)
+				) {
+					const type = getDhtOpType(op);
+					if (type === DhtOpType.StoreEntry || type === DhtOpType.StoreRecord) {
+						return getDhtOpEntry(op);
+					}
+				}
+			}
+			return undefined;
+		});
+	}
 }
 
 export abstract class ConductorStore<T extends PlaygroundMode> {
-  abstract cells: Readable<CellMap<CellStore<T>>>;
+	abstract cells: AsyncSignal<CellMap<CellStore<T>>>;
 }
 
 export abstract class PlaygroundStore<T extends PlaygroundMode> {
-  activeDna: Writable<DnaHash | undefined> = writable(undefined);
+	activeDna = new Signal.State<DnaHash | undefined>(undefined);
 
-  activeAgentPubKey: Writable<AgentPubKey | undefined> = writable(undefined);
+	activeAgentPubKey = new Signal.State<AgentPubKey | undefined>(undefined);
 
-  activeDhtHash: Writable<AnyDhtHash | undefined> = writable(undefined);
+	activeDhtHash = new Signal.State<AnyDhtHash | undefined>(undefined);
 
-  abstract conductors: Readable<Array<ConductorStore<T>>>;
+	abstract conductors: Signal.State<Array<ConductorStore<T>>>;
 
-  constructor() {
-    let currentvalue;
-    this.activeDna.subscribe((v: DnaHash) => {
-      if (!isEqual(v, currentvalue)) {
-        currentvalue = v;
+	constructor() {
+		let currentvalue: DnaHash | undefined;
 
-        this.activeDhtHash.set(undefined);
-        const currentConductors = get(this.conductors);
+		watch(this.activeDna, v => {
+			if (!isEqual(v, currentvalue)) {
+				currentvalue = v;
 
-        const activePubKey = get(this.activeAgentPubKey);
-        if (
-          activePubKey &&
-          !currentConductors.find((c) => get(c.cells).has([v, activePubKey]))
-        ) {
-          this.activeAgentPubKey.set(undefined);
-        }
-      }
-    });
-  }
+				this.activeDhtHash.set(undefined);
+				const currentConductors = this.conductors.get();
 
-  cell(cellId: CellId): Readable<CellStore<T> | undefined> {
-    return derived(this.allCells(), (cells) => cells.get(cellId));
-  }
+				const activePubKey = this.activeAgentPubKey.get();
+				if (
+					!v ||
+					(activePubKey &&
+						!currentConductors.find(c => {
+							const cells = c.cells.get();
+							return (
+								cells.status === 'completed' &&
+								cells.value.has([v, activePubKey])
+							);
+						}))
+				) {
+					this.activeAgentPubKey.set(undefined);
+				}
+			}
+		});
+	}
 
-  activeCell(): Readable<CellStore<T> | undefined> {
-    return derived(
-      [this.activeDna, this.activeAgentPubKey, this.allCells()],
-      ([dnaHash, agentPubKey, cellMap]) => {
-        if (!dnaHash || !agentPubKey) return undefined;
+	cell(cellId: CellId): AsyncSignal<CellStore<T> | undefined> {
+		return new AsyncComputed(() => {
+			const cells = this.allCells.get();
+			if (cells.status !== 'completed') return cells;
 
-        return cellMap.get([dnaHash, agentPubKey]);
-      }
-    );
-  }
+			const value = cells.value.get(cellId);
+			return {
+				status: 'completed',
+				value,
+			};
+		});
+	}
 
-  allDnas(): Readable<DnaHash[]> {
-    return derived(this.allCells(), (cellMap) =>
-      cellMap.cellIds().map((cellId) => cellId[0])
-    );
-  }
+	activeCell = new AsyncComputed(() => {
+		const activeDna = this.activeDna.get();
+		const activeAgentPubKey = this.activeAgentPubKey.get();
+		const allCells = this.allCells.get();
+		if (allCells.status !== 'completed') return allCells;
 
-  allCells(): Readable<CellMap<CellStore<T>>> {
-    return deriveStore(this.conductors, (conductors) =>
-      derived(
-        conductors.map((c) => c.cells),
-        (cellMaps) =>
-          cellMaps.reduce((acc, next) => {
-            for (const [cellId, store] of next.entries()) {
-              acc.set(cellId, store);
-            }
-            return acc;
-          }, new CellMap())
-      )
-    );
-  }
+		if (!activeDna || !activeAgentPubKey)
+			return {
+				status: 'completed',
+				value: undefined,
+			};
 
-  activeContent(): Readable<any | undefined> {
-    const contentMap = deriveStore(
-      derived(
-        [this.cellsForActiveDna(), this.activeDhtHash],
-        ([cellMap, activeHash]) =>
-          mapDerive(cellMap, (c) => (c as any).get(activeHash))
-      ),
-      (i) => i
-    );
+		const value = allCells.value.get([activeDna, activeAgentPubKey]);
+		return {
+			status: 'completed',
+			value,
+		};
+	});
 
-    return derived(contentMap, (map) => {
-      for (const a of map.values()) {
-        if (a) {
-          return a;
-        }
-      }
-      return undefined;
-    });
-  }
+	allDnas = new AsyncComputed(() => {
+		const allCells = this.allCells.get();
+		if (allCells.status !== 'completed') return allCells;
 
-  cellsForActiveDna(): Readable<CellMap<CellStore<T>>> {
-    return derived(
-      [this.activeDna, this.allCells()],
-      ([activeDna, allCells]) => {
-        const map = new CellMap<CellStore<T>>();
+		const value = allCells.value.cellIds().map(cellId => cellId[0]);
+		return {
+			status: 'completed',
+			value,
+		};
+	});
 
-        for (const [cellId, value] of allCells.entries()) {
-          if (isEqual(activeDna, cellId[0])) {
-            map.set(cellId, value);
-          }
-        }
-        return map;
-      }
-    );
-  }
+	allCells = new AsyncComputed(() => {
+		const conductors = this.conductors.get();
+		const cellMaps = joinAsync(conductors.map(c => c.cells.get()));
+		if (cellMaps.status !== 'completed') return cellMaps;
 
-  dhtForActiveDna(): Readable<CellMap<DhtOp[]>> {
-    return deriveStore(
-      derived(this.cellsForActiveDna(), (cellMap) =>
-        mapDerive<CellStore<T>, DhtOp[]>(
-          cellMap,
-          (cellStore) => cellStore.dhtShard
-        )
-      ),
-      (i) => i
-    );
-  }
+		const value = cellMaps.value.reduce((acc, next) => {
+			for (const [cellId, store] of next.entries()) {
+				acc.set(cellId, store);
+			}
+			return acc;
+		}, new CellMap());
+		return {
+			status: 'completed',
+			value,
+		};
+	});
+
+	activeContent = new AsyncComputed(() => {
+		const activeDhtHash = this.activeDhtHash.get();
+
+		if (!activeDhtHash)
+			return {
+				status: 'completed',
+				value: undefined,
+			};
+
+		const cellsForActiveDna = this.cellsForActiveDna.get();
+		if (cellsForActiveDna.status !== 'completed') return cellsForActiveDna;
+
+		for (const [_cellId, cell] of cellsForActiveDna.value.entries()) {
+			const result = cell.get(activeDhtHash).get();
+			if (result.status === 'completed') {
+				if (result.value) {
+					return {
+						status: 'completed',
+						value: result.value,
+					};
+				}
+			} else {
+				return result;
+			}
+		}
+		return {
+			status: 'completed',
+			value: undefined,
+		};
+	});
+
+	cellsForActiveDna = new AsyncComputed(() => {
+		const activeDna = this.activeDna.get();
+		const allCells = this.allCells.get();
+		if (allCells.status !== 'completed') return allCells;
+
+		const map = new CellMap<CellStore<T>>();
+
+		for (const [cellId, value] of allCells.value.entries()) {
+			if (isEqual(activeDna?.toString(), cellId[0].toString())) {
+				map.set(cellId, value);
+			}
+		}
+		return {
+			status: 'completed',
+			value: map,
+		};
+	});
+
+	dhtForActiveDna = new AsyncComputed(() => {
+		const cellsForActiveDna = this.cellsForActiveDna.get();
+		if (cellsForActiveDna.status !== 'completed') return cellsForActiveDna;
+
+		return joinAsyncCellMap(
+			mapCellValues(cellsForActiveDna.value, c => c.dhtShard.get()),
+		);
+	});
 }

@@ -1,39 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    />
-    <meta name="Description" content="Put your description here." />
+	<head>
+		<meta charset="utf-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+		/>
+		<meta name="Description" content="Put your description here." />
 
-    <style>
-      html,
-      body {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        margin: 0;
-        padding: 0;
-        font-family: sans-serif;
-        background-color: #ededed;
-      }
-      :root {
-        --mdc-theme-primary: #e64a19;
-        --mdc-theme-secondary: #7c4dff;
-      }
-    </style>
-    <title>Holochain Playground</title>
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet"
-    />
-  </head>
+		<style>
+			html,
+			body {
+				width: 100%;
+				height: 100%;
+				display: flex;
+				margin: 0;
+				padding: 0;
+				font-family: sans-serif;
+				background-color: #ededed;
+			}
+			:root {
+				--mdc-theme-primary: #e64a19;
+				--mdc-theme-secondary: #7c4dff;
+			}
+		</style>
+		<title>Holochain Playground</title>
+		<link
+			href="https://fonts.googleapis.com/icon?family=Material+Icons"
+			rel="stylesheet"
+		/>
+	</head>
 
-  <body>
-    <holochain-playground style="flex: 1"></holochain-playground>
+	<body>
+		<script
+			src="@webcomponents/scoped-custom-element-registry/scoped-custom-element-registry.min.js"
+			type="module"
+		></script>
 
-    <script type="module" src="./src/index.ts"></script>
-  </body>
+		<holochain-playground style="flex: 1"></holochain-playground>
+
+		<script type="module" src="./src/index.ts"></script>
+	</body>
 </html>

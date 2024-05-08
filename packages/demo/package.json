@@ -5,14 +5,14 @@
   "scripts": {
     "start": "vite --open",
     "build": "vite build",
-    "lint": "eslint --ext .ts,.html . --ignore-path .gitignore && prettier \"**/*.ts\" --check --ignore-path .gitignore",
-    "format": "eslint --ext .ts,.html . --fix --ignore-path .gitignore && prettier \"**/*.ts\" --write --ignore-path .gitignore",
+    "lint": "eslint src && prettier \"**/*.ts\" --check --ignore-path .gitignore",
+    "format": "eslint src && prettier \"**/*.ts\" --write --ignore-path .gitignore",
     "publish": "npm run build && gh-pages -d ./dist -b gh-pages"
   },
   "dependencies": {
-    "@holochain-open-dev/core-types": "^0.7.0",
-    "@holochain-playground/golden-layout": "^0.1.1",
-    "@holochain-playground/simulator": "^0.1.1",
+    "@holochain-open-dev/core-types": "^0.300.0-dev.0",
+    "@holochain-playground/golden-layout": "^0.300.0-dev.0",
+    "@holochain-playground/simulator": "^0.300.0-dev.0",
     "@open-wc/scoped-elements": "^2.0.0",
     "@scoped-elements/golden-layout": "^0.1.0",
     "@scoped-elements/material-web": "^0.0.19",
@@ -22,50 +22,16 @@
     "lodash-es": "^4.17.21"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.15.8",
-    "@custom-elements-manifest/analyzer": "^0.4.17",
-    "@open-wc/eslint-config": "^4.3.0",
+    "@custom-elements-manifest/analyzer": "^0.5.7",
     "@types/lodash-es": "^4.17.5",
-    "@typescript-eslint/eslint-plugin": "^4.33.0",
-    "@typescript-eslint/parser": "^4.33.0",
     "deepmerge": "^4.2.2",
-    "eslint": "^7.32.0",
-    "eslint-config-prettier": "^8.3.0",
     "gh-pages": "^3.2.3",
-    "husky": "^4.3.8",
-    "lint-staged": "^10.5.4",
-    "prettier": "^2.4.1",
-    "rimraf": "^3.0.2",
+    "eslint": "^8.0.0",
+    "prettier": "^3.2.5",
     "tslib": "^2.3.1",
-    "typescript": "^4.4.3",
+    "typescript": "^5.4.0",
     "vite": "^4.1.2",
     "vite-plugin-checker": "^0.5.6"
-  },
-  "eslintConfig": {
-    "parser": "@typescript-eslint/parser",
-    "extends": ["@open-wc", "prettier"],
-    "plugins": ["@typescript-eslint"],
-    "rules": {
-      "no-use-before-define": "off",
-      "no-await-in-loop": "off",
-      "camelcase": "off",
-      "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": "off",
-      "import/no-unresolved": "off",
-      "import/extensions": "off"
-    }
-  },
-  "prettier": {
-    "singleQuote": true,
-    "arrowParens": "avoid"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.ts": ["eslint --fix", "prettier --write"]
   },
   "customElements": "custom-elements.json"
 }

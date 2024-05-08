@@ -1,218 +1,218 @@
 import { DhtOpHash } from '@holochain-open-dev/core-types';
 import { HoloHashMap } from '@holochain-open-dev/utils';
 import {
-  AgentPubKey,
-  Dna,
-  ActionType,
-  CellId,
-  DhtOp,
-  SignedActionHashed,
-  NewEntryAction,
-  Delete,
-  ZomeCallCapGrant,
-  Update,
-  Entry,
-  CapSecret,
-  DnaHash,
-  ActionHash,
-  Record,
-  GrantedFunctionsType,
-  RecordEntry,
-  AppEntryDef,
-  EntryType,
-  CapAccessType,
+	ActionHash,
+	ActionType,
+	AgentPubKey,
+	AppEntryDef,
+	CapAccessType,
+	CapSecret,
+	CellId,
+	Delete,
+	DhtOp,
+	Dna,
+	DnaHash,
+	Entry,
+	EntryType,
+	GrantedFunctionsType,
+	NewEntryAction,
+	Record,
+	RecordEntry,
+	SignedActionHashed,
+	Update,
+	ZomeCallCapGrant,
 } from '@holochain/client';
-import { areEqual } from '../../../processors/hash.js';
 
+import { areEqual } from '../../../processors/hash.js';
 import { CellState } from '../state.js';
 import { getAllAuthoredActions } from './get.js';
 
 export function getTipOfChain(cellState: CellState): ActionHash {
-  return cellState.sourceChain[cellState.sourceChain.length - 1];
+	return cellState.sourceChain[cellState.sourceChain.length - 1];
 }
 
 export function getAuthor(cellState: CellState): AgentPubKey {
-  return getActionAt(cellState, 0).hashed.content.author;
+	return getActionAt(cellState, 0).hashed.content.author;
 }
 
 export function getDnaHash(state: CellState): DnaHash {
-  const firstActionHash = state.sourceChain[state.sourceChain.length - 1];
+	const firstActionHash = state.sourceChain[state.sourceChain.length - 1];
 
-  const dna: SignedActionHashed<Dna> = state.CAS.get(firstActionHash);
-  return dna.hashed.content.hash;
+	const dna: SignedActionHashed<Dna> = state.CAS.get(firstActionHash);
+	return dna.hashed.content.hash;
 }
 
 export function getActionAt(
-  cellState: CellState,
-  index: number
+	cellState: CellState,
+	index: number,
 ): SignedActionHashed {
-  const actionHash = cellState.sourceChain[index];
-  return cellState.CAS.get(actionHash);
+	const actionHash = cellState.sourceChain[index];
+	return cellState.CAS.get(actionHash);
 }
 
 export function getNextActionSeq(cellState: CellState): number {
-  return cellState.sourceChain.length;
+	return cellState.sourceChain.length;
 }
 export function isPublic(entry_type: EntryType): boolean {
-  return (
-    entry_type === 'Agent' ||
-    (typeof entry_type === 'object' &&
-      'App' in (entry_type as any) &&
-      'Public' in ((entry_type as any).App as AppEntryDef).visibility)
-  );
+	return (
+		entry_type === 'Agent' ||
+		(typeof entry_type === 'object' &&
+			'App' in (entry_type as any) &&
+			'Public' === ((entry_type as any).App as AppEntryDef).visibility)
+	);
 }
 
 export function getRecord(state: CellState, actionHash: ActionHash): Record {
-  const signed_action: SignedActionHashed = state.CAS.get(actionHash);
+	const signed_action: SignedActionHashed = state.CAS.get(actionHash);
 
-  let entry: RecordEntry;
-  if (
-    signed_action.hashed.content.type == ActionType.Create ||
-    signed_action.hashed.content.type == ActionType.Update
-  ) {
-    const entry_type = signed_action.hashed.content.entry_type;
-    if (isPublic(entry_type)) {
-      entry = {
-        Present: state.CAS.get(signed_action.hashed.content.entry_hash),
-      };
-    } else {
-      entry = {
-        Hidden: null,
-      };
-    }
-  } else {
-    entry = {
-      NotApplicable: null,
-    };
-  }
-  return { signed_action, entry };
+	let entry: RecordEntry;
+	if (
+		signed_action.hashed.content.type == ActionType.Create ||
+		signed_action.hashed.content.type == ActionType.Update
+	) {
+		const entry_type = signed_action.hashed.content.entry_type;
+		if (isPublic(entry_type)) {
+			entry = {
+				Present: state.CAS.get(signed_action.hashed.content.entry_hash),
+			};
+		} else {
+			entry = {
+				Hidden: null,
+			};
+		}
+	} else {
+		entry = {
+			NotApplicable: null,
+		};
+	}
+	return { signed_action, entry };
 }
 
 export function getCellId(state: CellState): CellId {
-  const author = getAuthor(state);
-  const dna = getDnaHash(state);
-  return [dna, author];
+	const author = getAuthor(state);
+	const dna = getDnaHash(state);
+	return [dna, author];
 }
 
 export function getNonPublishedDhtOps(
-  state: CellState
+	state: CellState,
 ): HoloHashMap<DhtOpHash, DhtOp> {
-  const nonPublishedDhtOps: HoloHashMap<DhtOpHash, DhtOp> = new HoloHashMap();
-  for (const dhtOpHash of state.authoredDHTOps.keys()) {
-    const authoredValue = state.authoredDHTOps.get(dhtOpHash);
-    if (authoredValue.last_publish_time === undefined) {
-      nonPublishedDhtOps.set(dhtOpHash, authoredValue.op);
-    }
-  }
+	const nonPublishedDhtOps: HoloHashMap<DhtOpHash, DhtOp> = new HoloHashMap();
+	for (const dhtOpHash of state.authoredDHTOps.keys()) {
+		const authoredValue = state.authoredDHTOps.get(dhtOpHash);
+		if (authoredValue.last_publish_time === undefined) {
+			nonPublishedDhtOps.set(dhtOpHash, authoredValue.op);
+		}
+	}
 
-  return nonPublishedDhtOps;
+	return nonPublishedDhtOps;
 }
 
 export function valid_cap_grant(
-  state: CellState,
-  zome: string,
-  fnName: string,
-  provenance: AgentPubKey,
-  secret: CapSecret | undefined
+	state: CellState,
+	zome: string,
+	fnName: string,
+	provenance: AgentPubKey,
+	secret: CapSecret | undefined,
 ): boolean {
-  if (areEqual(provenance, getCellId(state)[1])) return true;
+	if (areEqual(provenance, getCellId(state)[1])) return true;
 
-  const aliveCapGrantsActions: HoloHashMap<
-    ActionHash,
-    SignedActionHashed<NewEntryAction>
-  > = new HoloHashMap();
+	const aliveCapGrantsActions: HoloHashMap<
+		ActionHash,
+		SignedActionHashed<NewEntryAction>
+	> = new HoloHashMap();
 
-  const allActions = getAllAuthoredActions(state);
+	const allActions = getAllAuthoredActions(state);
 
-  for (const action of allActions) {
-    if (isCapGrant(action)) {
-      aliveCapGrantsActions.set(
-        action.hashed.hash,
-        action as SignedActionHashed<NewEntryAction>
-      );
-    }
-  }
+	for (const action of allActions) {
+		if (isCapGrant(action)) {
+			aliveCapGrantsActions.set(
+				action.hashed.hash,
+				action as SignedActionHashed<NewEntryAction>,
+			);
+		}
+	}
 
-  for (const action of allActions) {
-    const actionContent = action.hashed.content;
-    if (
-      (actionContent as Update).original_action_address &&
-      aliveCapGrantsActions.has(
-        (actionContent as Update).original_action_address
-      )
-    ) {
-      aliveCapGrantsActions.delete(
-        (actionContent as Update).original_action_address
-      );
-    }
-    if (
-      (actionContent as Delete).deletes_address &&
-      aliveCapGrantsActions.has((actionContent as Delete).deletes_address)
-    ) {
-      aliveCapGrantsActions.delete((actionContent as Delete).deletes_address);
-    }
-  }
+	for (const action of allActions) {
+		const actionContent = action.hashed.content;
+		if (
+			(actionContent as Update).original_action_address &&
+			aliveCapGrantsActions.has(
+				(actionContent as Update).original_action_address,
+			)
+		) {
+			aliveCapGrantsActions.delete(
+				(actionContent as Update).original_action_address,
+			);
+		}
+		if (
+			(actionContent as Delete).deletes_address &&
+			aliveCapGrantsActions.has((actionContent as Delete).deletes_address)
+		) {
+			aliveCapGrantsActions.delete((actionContent as Delete).deletes_address);
+		}
+	}
 
-  const aliveCapGrants: Array<ZomeCallCapGrant> = Array.from(
-    aliveCapGrantsActions.values()
-  ).map(
-    (sah) =>
-      (state.CAS.get(sah.hashed.content.entry_hash) as Entry)
-        .entry as ZomeCallCapGrant
-  );
+	const aliveCapGrants: Array<ZomeCallCapGrant> = Array.from(
+		aliveCapGrantsActions.values(),
+	).map(
+		sah =>
+			(state.CAS.get(sah.hashed.content.entry_hash) as Entry)
+				.entry as ZomeCallCapGrant,
+	);
 
-  return !!aliveCapGrants.find((capGrant) =>
-    isCapGrantValid(capGrant, zome, fnName, provenance, secret)
-  );
+	return !!aliveCapGrants.find(capGrant =>
+		isCapGrantValid(capGrant, zome, fnName, provenance, secret),
+	);
 }
 
 function isCapGrantValid(
-  capGrant: ZomeCallCapGrant,
-  zome: string,
-  fnName: string,
-  check_agent: AgentPubKey,
-  check_secret: CapSecret | undefined
+	capGrant: ZomeCallCapGrant,
+	zome: string,
+	fnName: string,
+	check_agent: AgentPubKey,
+	check_secret: CapSecret | undefined,
 ): boolean {
-  if (GrantedFunctionsType.All in capGrant.functions) return true;
+	if (GrantedFunctionsType.All === capGrant.functions) return true;
 
-  if (
-    !capGrant.functions[GrantedFunctionsType.Listed].find(
-      ([zome_name, fn_name]) => fn_name === fnName && zome_name === zome
-    )
-  )
-    return false;
+	if (
+		!capGrant.functions[GrantedFunctionsType.Listed].find(
+			([zome_name, fn_name]) => fn_name === fnName && zome_name === zome,
+		)
+	)
+		return false;
 
-  if (CapAccessType.Unrestricted in capGrant.access) return true;
-  else if (
-    (
-      capGrant.access as {
-        Assigned: { assignees: AgentPubKey[]; secret: CapSecret };
-      }
-    ).Assigned
-  ) {
-    return !!(
-      capGrant.access as {
-        Assigned: {
-          secret: CapSecret;
-          assignees: AgentPubKey[];
-        };
-      }
-    ).Assigned.assignees.find((a) => areEqual(a, check_agent));
-  } else {
-    return (
-      (
-        capGrant.access as {
-          Transferable: { secret: CapSecret };
-        }
-      ).Transferable.secret === check_secret
-    );
-  }
+	if (CapAccessType.Unrestricted in capGrant.access) return true;
+	else if (
+		(
+			capGrant.access as {
+				Assigned: { assignees: AgentPubKey[]; secret: CapSecret };
+			}
+		).Assigned
+	) {
+		return !!(
+			capGrant.access as {
+				Assigned: {
+					secret: CapSecret;
+					assignees: AgentPubKey[];
+				};
+			}
+		).Assigned.assignees.find(a => areEqual(a, check_agent));
+	} else {
+		return (
+			(
+				capGrant.access as {
+					Transferable: { secret: CapSecret };
+				}
+			).Transferable.secret === check_secret
+		);
+	}
 }
 
 function isCapGrant(action: SignedActionHashed): boolean {
-  const content = action.hashed.content;
-  return !!(
-    (content as NewEntryAction).entry_hash &&
-    (content as NewEntryAction).entry_type === 'CapGrant'
-  );
+	const content = action.hashed.content;
+	return !!(
+		(content as NewEntryAction).entry_hash &&
+		(content as NewEntryAction).entry_type === 'CapGrant'
+	);
 }

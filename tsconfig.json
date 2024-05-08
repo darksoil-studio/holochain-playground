@@ -1,22 +1,23 @@
 {
-  "compilerOptions": {
-    "target": "ES2015",
-    "module": "ESNext",
-    "moduleResolution": "node",
-    "lib": ["es2017", "dom"],
-    "allowJs": true,
-    "strict": false,
-    "declaration": true,
-    "sourceMap": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "noImplicitThis": false,
-    "alwaysStrict": true,
-    "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "useDefineForClassFields": false
-  },
-  "include": ["src"],
-  "exclude": ["node_modules/!(@open-wc)"]
+	"compilerOptions": {
+		"target": "ES2015",
+		"module": "ESNext",
+		"moduleResolution": "node",
+		"lib": ["es2017", "dom"],
+		"allowJs": true,
+		"strict": true,
+		"declaration": true,
+		"sourceMap": true,
+		"incremental": true,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"noImplicitThis": false,
+		"alwaysStrict": true,
+		"skipLibCheck": true,
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"useDefineForClassFields": false
+	},
+	"include": ["src"],
+	"exclude": ["node_modules/!(@open-wc)"]
 }

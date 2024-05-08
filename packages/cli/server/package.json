@@ -1,13 +1,12 @@
 {
   "name": "@holochain-playground/cli",
-  "version": "0.2.0",
+  "version": "0.300.0-dev.0",
   "description": "CLI tool that boots up the holochain playground to connect to a real running Holochain conductor",
   "author": "guillem.cordoba@gmail.com",
   "scripts": {
     "start": "npm run build && concurrently \"webpack --config webpack.config.js --watch --mode development\" \"nodemon --config ./nodemon.config.json\" --raw",
     "build": "rimraf dist && cross-env NODE_ENV=development webpack --config webpack.config.js && chmod +x dist/app.js",
-    "build:release": "dist && cross-env NODE_ENV=production webpack --config webpack.config.js && chmod +x dist/app.js",
-    "eslint:fix": "eslint --cache './src/**/*.{js,ts}' --fix"
+    "build:release": "dist && cross-env NODE_ENV=production webpack --config webpack.config.js && chmod +x dist/app.js"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
@@ -20,20 +19,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/holochain-playground/holochain-playground"
+    "url": "https://github.com/darksoil-studio/holochain-playground"
   },
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.15.5",
     "@babel/preset-env": "^7.15.6",
-    "@holochain-playground/cli-client": "0.1.0",
+    "@holochain-playground/cli-client": "0.300.0-dev.0",
     "@mdi/font": "5.9.55",
     "@types/body-parser": "^1.19.0",
     "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.7",
     "@types/prompts": "^2.0.14",
-    "@typescript-eslint/eslint-plugin": "^4.18.0",
-    "@typescript-eslint/parser": "^4.18.0",
     "babel-loader": "^8.2.2",
     "babel-polyfill": "^6.26.0",
     "body-parser": "^1.19.0",
@@ -47,16 +44,14 @@
     "deepmerge": "^4.2.2",
     "diff": "^5.0.0",
     "dotenv": "^8.6.0",
-    "eslint": "^6.7.2",
-    "eslint-plugin-prettier": "^3.3.1",
+    "eslint": "^8.0.0",
     "express": "^4.17.1",
     "get-port-please": "^2.2.0",
-    "gh-pages": "^3.2.3",
     "node-fetch": "^3.0.0",
     "nodemon": "^2.0.4",
     "open": "^8.2.1",
     "path": "^0.12.7",
-    "prettier": "^1.19.1",
+    "prettier": "^3.2.5",
     "prompts": "^2.4.1",
     "rimraf": "^3.0.2",
     "sass": "~1.32",
@@ -66,7 +61,7 @@
     "stream": "^0.0.2",
     "ts-loader": "^8.0.0",
     "ts-node": "^8.10.2",
-    "typescript": "^4.4.3",
+    "typescript": "^5.4.0",
     "utf-8-validate": "^5.0.5",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1",

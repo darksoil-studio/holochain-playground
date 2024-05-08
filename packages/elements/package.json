@@ -1,50 +1,45 @@
 {
-  "name": "@holochain-playground/elements",
-  "version": "0.1.4",
-  "description": "Holochain playground elements for visual introspection and simulator interaction",
-  "author": "guillem.cordoba@gmail.com",
-  "license": "MIT",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "scripts": {
-    "start": "vite --clearScreen false --open",
-    "build": "tsc && vite build"
-  },
-  "dependencies": {
-    "@holochain-open-dev/core-types": "^0.7.0",
-    "@holochain-open-dev/elements": "^0.8.0",
-    "@holochain-open-dev/stores": "^0.8.11",
-    "@holochain-open-dev/utils": "^0.16.5",
-    "@holochain-playground/simulator": "^0.1.1",
-    "@holochain/client": "^0.16.9",
-    "@lit/context": "^1.0.0",
-    "@msgpack/msgpack": "^2.7.1",
-    "@open-wc/scoped-elements": "^2.0.1",
-    "@power-elements/json-viewer": "^2.1.1",
-    "@scoped-elements/cytoscape": "^0.1.0",
-    "@scoped-elements/material-web": "^0.0.19",
-    "@vaadin/grid": "^23.3.2",
-    "cytoscape": "^3.17.0",
-    "js-base64": "^3.7.2",
-    "lit": "^3.0.0",
-    "lodash-es": "^4.17.21"
-  },
-  "devDependencies": {
-    "@open-wc/testing": "^3.0.0-next.5",
-    "@storybook/addon-actions": "^6.1.20",
-    "@storybook/addon-essentials": "^6.1.20",
-    "@storybook/addon-links": "^6.1.20",
-    "@storybook/web-components": "^6.1.20",
-    "@types/lodash-es": "^4.17.3",
-    "@webcomponents/scoped-custom-element-registry": "^0.0.8",
-    "babel-loader": "^8.2.2",
-    "rimraf": "^2.7.1",
-    "typescript": "^4.3.5",
-    "vite": "^4.1.2",
-    "vite-plugin-checker": "^0.5.6"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "type": "module"
+	"name": "@holochain-playground/elements",
+	"version": "0.300.0-dev.0",
+	"description": "Holochain playground elements for visual introspection and simulator interaction",
+	"author": "guillem.cordoba@gmail.com",
+	"license": "MIT",
+	"main": "dist/index.js",
+	"module": "dist/index.js",
+	"scripts": {
+		"start": "vite --clearScreen false --open",
+		"build": "tsc"
+	},
+	"dependencies": {
+		"@holochain-open-dev/core-types": "^0.300.0-dev.0",
+		"@holochain-open-dev/elements": "^0.300.0-dev.0",
+		"@holochain-open-dev/signals": "^0.300.0-dev.0",
+		"@holochain-open-dev/utils": "^0.300.0-dev.0",
+		"@holochain-playground/simulator": "^0.300.0-dev.0",
+		"@holochain/client": "^0.18.0-dev.0",
+		"@lit/context": "^1.0.0",
+		"@msgpack/msgpack": "^2.7.1",
+		"@open-wc/scoped-elements": "^2.0.1",
+		"@power-elements/json-viewer": "^2.1.1",
+		"@scoped-elements/cytoscape": "^0.1.0",
+		"@scoped-elements/material-web": "^0.0.19",
+		"@vaadin/grid": "^23.3.2",
+		"cytoscape": "^3.17.0",
+		"js-base64": "^3.7.2",
+		"lit": "^3.0.0",
+		"lodash-es": "^4.17.21"
+	},
+	"devDependencies": {
+		"@types/lodash-es": "^4.17.3",
+		"@webcomponents/scoped-custom-element-registry": "^0.0.8",
+		"eslint": "^8.0.0",
+		"prettier": "^3.2.5",
+		"typescript": "^5.4.0",
+		"vite": "^4.1.2",
+		"vite-plugin-checker": "^0.5.6"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"type": "module"
 }

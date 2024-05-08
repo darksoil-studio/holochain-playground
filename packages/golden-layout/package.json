@@ -1,38 +1,32 @@
 {
-  "name": "@holochain-playground/golden-layout",
-  "version": "0.1.1",
-  "description": "Holochain playground golden-layout helpers",
-  "author": "guillem.cordoba@gmail.com",
-  "license": "MIT",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "scripts": {
-    "start": "vite --open --clearScreen false",
-    "build": "tsc --incremental"
-  },
-  "dependencies": {
-    "@holochain-open-dev/stores": "^0.3.0",
-    "@holochain-playground/elements": "^0.1.0",
-    "@holochain-playground/simulator": "^0.1.1",
-    "@open-wc/scoped-elements": "^2.1.0",
-    "@scoped-elements/golden-layout": "^0.1.0",
-    "@scoped-elements/material-web": "^0.0.19",
-    "lit": "^2.0.2"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.13.8",
-    "@open-wc/testing": "^3.0.0-next.5",
-    "@storybook/addon-actions": "^6.1.20",
-    "@storybook/addon-essentials": "^6.1.20",
-    "@storybook/addon-links": "^6.1.20",
-    "@storybook/web-components": "^6.1.20",
-    "@types/lodash-es": "^4.17.3",
-    "rimraf": "^2.7.1",
-    "typescript": "^4.3.5",
-    "vite": "^4.1.2",
-    "vite-plugin-checker": "^0.5.6"
-  },
-  "publishConfig": {
-    "access": "public"
-  }
+	"name": "@holochain-playground/golden-layout",
+	"version": "0.300.0-dev.0",
+	"description": "Holochain playground golden-layout helpers",
+	"author": "guillem.cordoba@gmail.com",
+	"license": "MIT",
+	"main": "dist/index.js",
+	"module": "dist/index.js",
+	"scripts": {
+		"start": "vite --open --clearScreen false",
+		"build": "tsc"
+	},
+	"dependencies": {
+		"@holochain-open-dev/signals": "^0.300.0-dev.0",
+		"@holochain-playground/elements": "^0.300.0-dev.0",
+		"@holochain-playground/simulator": "^0.300.0-dev.0",
+		"@open-wc/scoped-elements": "^2.1.0",
+		"@scoped-elements/golden-layout": "^0.1.0",
+		"@scoped-elements/material-web": "^0.0.19",
+		"lit": "^3.0.0"
+	},
+	"devDependencies": {
+		"@types/lodash-es": "^4.17.3",
+		"rimraf": "^2.7.1",
+		"typescript": "^5.4.0",
+		"vite": "^4.1.2",
+		"vite-plugin-checker": "^0.5.6"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
 }

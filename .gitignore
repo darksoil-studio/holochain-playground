@@ -108,3 +108,5 @@ target/
 *.dna
 *.happ
 .hc*
+
+.direnv

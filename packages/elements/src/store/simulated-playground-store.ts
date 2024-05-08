@@ -1,171 +1,197 @@
 import {
-  Cell,
-  Conductor,
-  createConductors,
-  SimulatedHappBundle,
-  selectSourceChain,
-  ConductorSignalType,
-  selectDhtShard,
-  BadAgent,
-  Dictionary,
-} from '@holochain-playground/simulator';
+	AsyncComputed,
+	AsyncSignal,
+	AsyncState,
+	Signal,
+} from '@holochain-open-dev/signals';
 import { CellMap } from '@holochain-open-dev/utils';
-import { AgentPubKey, CellId, DhtOp, Record } from '@holochain/client';
 import {
-  readable,
-  Readable,
-  writable,
-  Writable,
-} from '@holochain-open-dev/stores';
+	BadAgent,
+	Cell,
+	Conductor,
+	ConductorSignalType,
+	Dictionary,
+	SimulatedHappBundle,
+	createConductors,
+	selectDhtShard,
+	selectSourceChain,
+} from '@holochain-playground/simulator';
+import { AgentPubKey, CellId, DhtOp, Record } from '@holochain/client';
 
 import { PlaygroundMode } from './mode.js';
 import {
-  CellStore,
-  ConductorStore,
-  PlaygroundStore,
+	CellStore,
+	ConductorStore,
+	PlaygroundStore,
 } from './playground-store.js';
 import { cellChanges } from './utils.js';
 
 export class SimulatedCellStore extends CellStore<PlaygroundMode.Simulated> {
-  sourceChain: Writable<Record[]> = writable([]);
+	private _sourceChain: Signal.State<Record[]> = new Signal.State([]);
+	sourceChain: AsyncSignal<Record[]> = new AsyncComputed(() => ({
+		status: 'completed',
+		value: this._sourceChain.get(),
+	}));
 
-  peers: Writable<AgentPubKey[]> = writable([]);
+	private _peers: Signal.State<AgentPubKey[]> = new Signal.State([]);
+	peers: AsyncSignal<AgentPubKey[]> = new AsyncComputed(() => ({
+		status: 'completed',
+		value: this._peers.get(),
+	}));
 
-  dhtShard: Writable<DhtOp[]> = writable([]);
+	private _dhtShard: Signal.State<DhtOp[]> = new Signal.State([]);
+	dhtShard: AsyncSignal<DhtOp[]> = new AsyncComputed(() => ({
+		status: 'completed',
+		value: this._dhtShard.get(),
+	}));
 
-  badAgents: Writable<AgentPubKey[]> = writable([]);
+	badAgents: Signal.State<AgentPubKey[]> = new Signal.State([]);
 
-  farPeers: Writable<AgentPubKey[]> = writable([]);
+	farPeers: Signal.State<AgentPubKey[]> = new Signal.State([]);
 
-  constructor(
-    public conductorStore: SimulatedConductorStore,
-    public cell: Cell
-  ) {
-    super(conductorStore);
-    cell.workflowExecutor.success(async () => this.update());
-  }
+	constructor(
+		public conductorStore: SimulatedConductorStore,
+		public cell: Cell,
+	) {
+		super(conductorStore);
+		cell.workflowExecutor.success(async () => this.update());
+	}
 
-  get dna() {
-    return this.cell.getSimulatedDna();
-  }
+	get dna() {
+		return this.cell.getSimulatedDna();
+	}
 
-  get cellId(): CellId {
-    return this.cell.cellId;
-  }
+	get cellId(): CellId {
+		return this.cell.cellId;
+	}
 
-  update() {
-    const state = this.cell._state;
-    const p2pstate = this.cell.p2p.getState();
+	update() {
+		const state = this.cell._state;
+		const p2pstate = this.cell.p2p.getState();
 
-    this.sourceChain.set(selectSourceChain(state));
-    this.peers.set(p2pstate.neighbors);
-    this.dhtShard.set(selectDhtShard(state));
-    this.badAgents.set(p2pstate.badAgents);
-    this.farPeers.set(p2pstate.farKnownPeers);
-  }
+		this._sourceChain.set(selectSourceChain(state));
+		this._peers.set(p2pstate.neighbors);
+		this._dhtShard.set(selectDhtShard(state));
+		this.badAgents.set(p2pstate.badAgents);
+		this.farPeers.set(p2pstate.farKnownPeers);
+	}
 }
 
 export class SimulatedConductorStore extends ConductorStore<PlaygroundMode.Simulated> {
-  cells: Readable<CellMap<SimulatedCellStore>>;
+	cells: AsyncState<CellMap<SimulatedCellStore>>;
 
-  badAgent: Readable<BadAgent>;
+	badAgent: Signal.Computed<BadAgent>;
 
-  constructor(public conductor: Conductor) {
-    super();
+	constructor(public conductor: Conductor) {
+		super();
 
-    let cellMap = this.buildStores(conductor, new CellMap());
+		let cellMap = this.buildStores(conductor, new CellMap());
 
-    this.cells = readable(cellMap, (set) => {
-      const { unsubscribe } = conductor.addSignalHandler((signal) => {
-        if (signal === ConductorSignalType.CellsChanged) {
-          cellMap = this.buildStores(conductor, cellMap);
-          set(cellMap);
-        }
-      });
-      return () => {
-        unsubscribe();
-      };
-    });
-    this.badAgent = readable(this.conductor.badAgent);
-  }
+		let unsubscribe;
 
-  get name() {
-    return this.conductor.name;
-  }
+		this.cells = new AsyncState(
+			{
+				status: 'completed',
+				value: cellMap,
+			},
+			{
+				[Signal.subtle.watched]: () => {
+					const un = conductor.addSignalHandler(signal => {
+						if (signal === ConductorSignalType.CellsChanged) {
+							cellMap = this.buildStores(conductor, cellMap);
+							this.cells.set({
+								status: 'completed',
+								value: cellMap,
+							});
+						}
+					});
+					unsubscribe = un.unsubscribe;
+				},
+				[Signal.subtle.unwatched]: () => {
+					if (unsubscribe) unsubscribe();
+				},
+			},
+		);
+		this.badAgent = new Signal.Computed(() => this.conductor.badAgent);
+	}
 
-  buildStores(conductor: Conductor, currentCells: CellMap<SimulatedCellStore>) {
-    const { cellsToAdd, cellsToRemove } = cellChanges(
-      currentCells.cellIds(),
-      conductor.cells.cellIds()
-    );
+	get name() {
+		return this.conductor.name;
+	}
 
-    for (const cellId of cellsToAdd) {
-      currentCells.set(
-        cellId,
-        new SimulatedCellStore(this, conductor.getCell(cellId))
-      );
-    }
-    for (const cellId of cellsToRemove) {
-      currentCells.delete(cellId);
-    }
-    return currentCells;
-  }
+	buildStores(conductor: Conductor, currentCells: CellMap<SimulatedCellStore>) {
+		const { cellsToAdd, cellsToRemove } = cellChanges(
+			currentCells.cellIds(),
+			conductor.cells.cellIds(),
+		);
+
+		for (const cellId of cellsToAdd) {
+			currentCells.set(
+				cellId,
+				new SimulatedCellStore(this, conductor.getCell(cellId)),
+			);
+		}
+		for (const cellId of cellsToRemove) {
+			currentCells.delete(cellId);
+		}
+		return currentCells;
+	}
 }
 
-export function pauseStore() {
-  const { subscribe, set } = writable(false);
+export class PauseSignal extends Signal.State<boolean> {
+	private _awaitResume = Promise.resolve();
+	private awaitResolve;
+	constructor() {
+		super(false);
+	}
 
-  let _awaitResume = Promise.resolve();
+	pause() {
+		this._awaitResume = new Promise(r => {
+			this.awaitResolve = r;
+		});
+		this.set(true);
+	}
 
-  let awaitResolve;
+	resume() {
+		this.set(false);
 
-  return {
-    subscribe,
-    pause: () => {
-      _awaitResume = new Promise((r) => {
-        awaitResolve = r;
-      });
-      set(true);
-    },
-    awaitResume() {
-      return _awaitResume;
-    },
-    resume: () => {
-      set(false);
-      if (awaitResolve) awaitResolve();
-    },
-  };
+		if (this.awaitResolve) this.awaitResolve();
+	}
+
+	awaitResume() {
+		return this._awaitResume;
+	}
 }
 
 export class SimulatedPlaygroundStore extends PlaygroundStore<PlaygroundMode.Simulated> {
-  conductors: Writable<Array<SimulatedConductorStore>>;
+	conductors: Signal.State<Array<SimulatedConductorStore>>;
 
-  happs: Writable<Dictionary<SimulatedHappBundle>>;
+	happs: Signal.State<Dictionary<SimulatedHappBundle>>;
 
-  paused = pauseStore();
+	paused = new PauseSignal();
 
-  private constructor(
-    initialConductors: Conductor[],
-    initialHapp: SimulatedHappBundle
-  ) {
-    super();
-    this.conductors = writable(
-      initialConductors.map((c) => new SimulatedConductorStore(c))
-    );
-    this.happs = writable({ [initialHapp.name]: initialHapp });
-    this.activeDna.set(initialConductors[0].cells.cellIds()[0][0]);
-  }
+	private constructor(
+		initialConductors: Conductor[],
+		initialHapp: SimulatedHappBundle,
+	) {
+		super();
+		this.conductors = new Signal.State(
+			initialConductors.map(c => new SimulatedConductorStore(c)),
+		);
+		this.happs = new Signal.State({ [initialHapp.name]: initialHapp });
+		this.activeDna.set(initialConductors[0].cells.cellIds()[0][0]);
+	}
 
-  static async create(
-    numberOfConductors: number,
-    simulatedHapp: SimulatedHappBundle
-  ) {
-    const initialConductors = await createConductors(
-      numberOfConductors,
-      [],
-      simulatedHapp
-    );
+	static async create(
+		numberOfConductors: number,
+		simulatedHapp: SimulatedHappBundle,
+	) {
+		const initialConductors = await createConductors(
+			numberOfConductors,
+			[],
+			simulatedHapp,
+		);
 
-    return new SimulatedPlaygroundStore(initialConductors, simulatedHapp);
-  }
+		return new SimulatedPlaygroundStore(initialConductors, simulatedHapp);
+	}
 }
