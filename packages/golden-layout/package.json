@@ -1,6 +1,6 @@
 {
 	"name": "@holochain-playground/golden-layout",
-	"version": "0.300.0-dev.0",
+	"version": "0.300.0-rc",
 	"description": "Holochain playground golden-layout helpers",
 	"author": "guillem.cordoba@gmail.com",
 	"license": "MIT",
@@ -11,9 +11,9 @@
 		"build": "tsc"
 	},
 	"dependencies": {
-		"@holochain-open-dev/signals": "^0.300.0-dev.0",
-		"@holochain-playground/elements": "^0.300.0-dev.0",
-		"@holochain-playground/simulator": "^0.300.0-dev.0",
+		"@holochain-open-dev/signals": "^0.300.0-rc",
+		"@holochain-playground/elements": "^0.300.0-rc",
+		"@holochain-playground/simulator": "^0.300.0-rc",
 		"@open-wc/scoped-elements": "^2.1.0",
 		"@scoped-elements/golden-layout": "^0.1.0",
 		"@scoped-elements/material-web": "^0.0.19",

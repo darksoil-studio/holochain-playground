@@ -9,8 +9,8 @@ resolver = "2"
 members = ["dnas/*/zomes/coordinator/*", "dnas/*/zomes/integrity/*"]
 
 [workspace.dependencies]
-hdi = "0.5.0-dev"
-hdk = "0.4.0-dev"
+hdi = "0.4.1-rc"
+hdk = "0.3.1-rc"
 serde = "1.0.193"
 
 [workspace.dependencies.posts]
