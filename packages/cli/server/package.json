@@ -1,6 +1,6 @@
 {
 	"name": "@holochain-playground/cli",
-	"version": "0.300.0-rc",
+	"version": "0.300.0-rc.0",
 	"description": "CLI tool that boots up the holochain playground to connect to a real running Holochain conductor",
 	"author": "guillem.cordoba@gmail.com",
 	"scripts": {
