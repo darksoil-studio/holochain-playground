@@ -1,5 +1,4 @@
+import { AppClient } from '@holochain/client';
 import { createContext } from '@lit-labs/context';
-import { AppAgentClient } from '@holochain/client';
 
-export const clientContext = createContext<AppAgentClient>('appAgentClient');
-
+export const clientContext = createContext<AppClient>('appAgentClient');

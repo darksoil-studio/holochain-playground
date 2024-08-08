@@ -619,24 +619,25 @@ export class DhtCells extends PlaygroundElement {
 
 	render() {
 		const activeDna = this.store.activeDna.get();
+
 		return html`
 			<mwc-card class="block-card" style="position: relative;">
 				${this.renderHelp()} ${this.renderTasksTooltips()}
 				<div class="column fill">
-					<span class="block-title row" style="margin: 16px;"
-						>Dht Cells
+					<div class="block-title row" style="margin: 16px;">
+						Dht Cells
 						${activeDna
 							? html`
-									<span class="placeholder row">
-										, for Dna
+									<div class="placeholder row">
+										<span>, for Dna</span>
 										<holo-identicon
 											.hash=${activeDna}
 											style="margin-left: 8px;"
 										></holo-identicon>
-									</span>
+									</div>
 								`
 							: html``}
-					</span>
+					</div>
 					<cytoscape-circle
 						id="graph"
 						class="fill ${classMap({
