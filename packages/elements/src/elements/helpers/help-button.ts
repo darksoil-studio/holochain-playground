@@ -1,41 +1,37 @@
-import { ScopedElementsMixin } from '@open-wc/scoped-elements';
-import { Button, Dialog, IconButton } from '@scoped-elements/material-web';
+import { mdiHelpCircleOutline } from '@mdi/js';
+import '@shoelace-style/shoelace/dist/components/button/button.js';
+import '@shoelace-style/shoelace/dist/components/dialog/dialog.js';
+import SlDialog from '@shoelace-style/shoelace/dist/components/dialog/dialog.js';
+import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import { LitElement, html } from 'lit';
-import { property, query } from 'lit/decorators.js';
+import { customElement, property, query } from 'lit/decorators.js';
 
-export class HelpButton extends ScopedElementsMixin(LitElement) {
+@customElement('help-button')
+export class HelpButton extends LitElement {
 	@property({ type: String })
 	heading!: string;
 
 	@query('#help-dialog')
-	_helpDialog!: Dialog;
+	_helpDialog!: SlDialog;
 
 	renderHelpDialog() {
 		return html`
-			<mwc-dialog id="help-dialog" .heading=${this.heading}>
+			<sl-dialog id="help-dialog" .label=${this.heading}>
 				<slot></slot>
-				<mwc-button slot="primaryAction" dialogAction="cancel">
+				<sl-button slot="footer" @click=${() => this._helpDialog.hide()}>
 					Got it!
-				</mwc-button>
-			</mwc-dialog>
+				</sl-button>
+			</sl-dialog>
 		`;
 	}
 
 	render() {
 		return html`
 			${this.renderHelpDialog()}
-			<mwc-icon-button
-				icon="help_outline"
+			<sl-icon-button
+				.src=${mdiHelpCircleOutline}
 				@click=${() => this._helpDialog.show()}
-			></mwc-icon-button>
+			></sl-icon-button>
 		`;
-	}
-
-	static get scopedElements() {
-		return {
-			'mwc-icon-button': IconButton,
-			'mwc-button': Button,
-			'mwc-dialog': Dialog,
-		};
 	}
 }

@@ -1,12 +1,8 @@
-import {
-	Button,
-	Card,
-	CircularProgress,
-	List,
-	ListItem,
-} from '@scoped-elements/material-web';
+import '@shoelace-style/shoelace/dist/components/button/button.js';
+import '@shoelace-style/shoelace/dist/components/card/card.js';
+import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import { TemplateResult, css, html } from 'lit';
-import { property, state } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 
 import { PlaygroundElement } from '../../base/playground-element.js';
@@ -18,6 +14,7 @@ export interface Step {
 	run: (context: PlaygroundElement) => Promise<void>;
 }
 
+@customElement('run-steps')
 export class RunSteps extends PlaygroundElement<SimulatedPlaygroundStore> {
 	@property({ type: Array })
 	steps!: Array<Step>;
@@ -86,41 +83,41 @@ export class RunSteps extends PlaygroundElement<SimulatedPlaygroundStore> {
 						<span class="placeholder">There are no steps to run</span>
 					</div>`;
 				return html`
-					<mwc-list activatable>
+					<div class="row">
 						${this.steps.map(
 							(step, index) =>
-								html`<mwc-list-item
-									noninteractive
+								html`<span
 									class=${classMap({
 										future: this._runningStepIndex! < index,
 									})}
 									.activated=${this._running &&
 									this._runningStepIndex === index}
-									>${index + 1}. ${step.title(this)}</mwc-list-item
+									>${index + 1}. ${step.title(this)}</span
 								>`,
 						)}
-					</mwc-list>
+					</div>
 				`;
 		}
 	}
 
 	render(): TemplateResult {
 		return html`
-			<mwc-card class="block-card">
+			<sl-card class="block-card">
 				<div class="column" style="margin: 16px; flex: 1;">
 					<div class="row">
 						<span class="block-title" style="flex: 1;">Run Steps</span>
-						<mwc-button
-							.label=${this._running ? 'RUNNING...' : 'RUN'}
-							raised
+						<sl-button
+							variant="primary"
 							.disabled=${this._running ||
 							this.store.cellsForActiveDna.get().status !== 'completed'}
 							@click=${() => this.runSteps()}
-						></mwc-button>
+						>
+							${this._running ? 'RUNNING...' : 'RUN'}
+						</sl-button>
 					</div>
 					${this.renderContent()}
 				</div>
-			</mwc-card>
+			</sl-card>
 		`;
 	}
 
@@ -137,15 +134,5 @@ export class RunSteps extends PlaygroundElement<SimulatedPlaygroundStore> {
 			`,
 			sharedStyles,
 		];
-	}
-
-	static get scopedElements() {
-		return {
-			'mwc-circular-progress': CircularProgress,
-			'mwc-list-item': ListItem,
-			'mwc-list': List,
-			'mwc-button': Button,
-			'mwc-card': Card,
-		};
 	}
 }

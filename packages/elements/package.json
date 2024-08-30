@@ -9,7 +9,7 @@
 	"scripts": {
 		"start": "vite --clearScreen false --open",
 		"build": "tsc",
-		"build:watch": "tsc --watch"
+		"build:watch": "tsc --watch --preserveWatchOutput"
 	},
 	"dependencies": {
 		"@holochain-open-dev/core-types": "^0.300.0",
@@ -19,11 +19,11 @@
 		"@holochain-playground/simulator": "^0.300.0",
 		"@holochain/client": "^0.17.0",
 		"@lit/context": "^1.0.0",
+		"@mdi/js": "^7.4.47",
 		"@msgpack/msgpack": "^2.7.1",
-		"@open-wc/scoped-elements": "^2.0.1",
 		"@power-elements/json-viewer": "^2.1.1",
-		"@scoped-elements/cytoscape": "^0.1.0",
-		"@scoped-elements/material-web": "^0.0.19",
+		"@scoped-elements/cytoscape": "^0.2.0",
+		"@shoelace-style/shoelace": "^2.16.0",
 		"@vaadin/grid": "^23.3.2",
 		"cytoscape": "^3.17.0",
 		"js-base64": "^3.7.2",

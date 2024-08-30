@@ -1,3 +1,4 @@
+import { wrapPathInSvg } from '@holochain-open-dev/elements';
 import '@holochain-open-dev/elements/dist/elements/holo-identicon.js';
 import { CellMap, isHash } from '@holochain-open-dev/utils';
 import {
@@ -6,32 +7,28 @@ import {
 	SimulatedZome,
 } from '@holochain-playground/simulator';
 import { decodeHashFromBase64, encodeHashToBase64 } from '@holochain/client';
-import { JsonViewer } from '@power-elements/json-viewer';
-import {
-	Card,
-	CircularProgress,
-	Icon,
-	Tab,
-	TabBar,
-} from '@scoped-elements/material-web';
+import { mdiAlertOutline, mdiCheckCircleOutline } from '@mdi/js';
+import '@power-elements/json-viewer';
+import '@shoelace-style/shoelace/dist/components/card/card.js';
+import '@shoelace-style/shoelace/dist/components/icon/icon.js';
+import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
+import '@shoelace-style/shoelace/dist/components/tab-group/tab-group.js';
+import '@shoelace-style/shoelace/dist/components/tab-panel/tab-panel.js';
+import '@shoelace-style/shoelace/dist/components/tab/tab.js';
 import { css, html } from 'lit';
-import { property, state } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { cloneDeepWith } from 'lodash-es';
 
 import { PlaygroundElement } from '../../base/playground-element.js';
-import { selectCell } from '../../base/selectors.js';
 import {
 	SimulatedCellStore,
 	SimulatedConductorStore,
 	SimulatedPlaygroundStore,
 } from '../../store/simulated-playground-store.js';
-import {
-	CallFns,
-	CallableFn,
-	CallableFnArgument,
-} from '../helpers/call-functions.js';
-import { ExpandableLine } from '../helpers/expandable-line.js';
+import { CallFns, CallableFn } from '../helpers/call-functions.js';
+import '../helpers/call-functions.js';
+import '../helpers/expandable-line.js';
 import { shortenStrRec } from '../utils/hash.js';
 import { sharedStyles } from '../utils/shared-styles.js';
 import { ZomeFunctionResult } from './types.js';
@@ -41,6 +38,7 @@ type Dictionary<T> = Record<string, T>;
 /**
  * @element call-zome-fns
  */
+@customElement('call-zome-fns')
 export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 	@property({ type: Boolean, attribute: 'hide-zome-selector' })
 	hideZomeSelector = false;
@@ -57,19 +55,18 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 	// Results segmented by dnaHash/agentPubKey/timestamp
 	_results: CellMap<ZomeFunctionResult[]> = new CellMap();
 
-	get activeZome(): SimulatedZome | undefined {
-		return this.dna?.zomes[this._selectedZomeIndex];
-	}
-
 	get dna(): SimulatedDna | undefined {
 		const activeCell = this.store.activeCell.get();
 		if (activeCell.status !== 'completed') return undefined;
 		return activeCell.value?.dna;
 	}
 
-	async callZomeFunction(fnName: string, args: Dictionary<any>) {
+	async callZomeFunction(
+		zome: SimulatedZome,
+		fnName: string,
+		args: Dictionary<any>,
+	) {
 		const activeCell = this.store.activeCell.get();
-		const zome = this.activeZome;
 		if (activeCell.status !== 'completed' || !activeCell.value || !zome) return;
 
 		const cellId = activeCell.value.cellId;
@@ -137,9 +134,7 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 		}
 	}
 
-	renderActiveZomeFns() {
-		const zome = this.activeZome;
-		if (!zome) return html``;
+	renderActiveZomeFns(zome: SimulatedZome) {
 		const zomeFns = Object.entries(zome.zome_functions);
 
 		if (zomeFns.length === 0)
@@ -152,7 +147,7 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 		const fns: Array<CallableFn> = zomeFns.map(zomeFn => ({
 			name: zomeFn[0],
 			args: zomeFn[1].arguments.map(arg => ({ ...arg, field: 'textfield' })),
-			call: args => this.callZomeFunction(zomeFn[0], args),
+			call: args => this.callZomeFunction(zome, zomeFn[0], args),
 		}));
 
 		return html` <call-functions .callableFns=${fns}></call-functions> `;
@@ -187,100 +182,95 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 	renderResults() {
 		const results = this.getActiveResults();
 		return html`
-        <div class="column" style="flex: 1; margin: 16px">
-          <span class="title row"
-            >Results
-          </span>
-          ${
-						results.length === 0
-							? html`
-									<div class="row fill center-content">
-										<span class="placeholder" style="margin: 0 24px;"
-											>Call a ZomeFn to see its results</span
-										>
-									</div>
-								`
-							: html` <div class="flex-scrollable-parent">
-									<div class="flex-scrollable-container">
-										<div class="flex-scrollable-y">
-											<div style="margin: 0 16px;">
-												${results.map(
-													(result, index) => html`
-														<div class="column" style="flex: 1;">
-															<div class="row" style="margin: 8px 0;">
-																${result.result
-																	? html`
-																			<mwc-icon
-																				style=${styleMap({
-																					color: result.result.success
-																						? 'green'
-																						: 'red',
-																					'align-self': 'start',
-																					'margin-top': '16px',
-																					'--mdc-icon-size': '36px',
-																				})}
-																				>${result.result.success
-																					? 'check_circle_outline'
-																					: 'error_outline'}</mwc-icon
-																			>
-																		`
-																	: html`
-																			<mwc-circular-progress
-																				indeterminate
-																				density="-2"
-																				style="align-self: center;"
-																			></mwc-circular-progress>
-																		`}
-																<div
-																	class="column"
-																	style="flex: 1; margin: 12px; margin-right: 0;"
-																>
-																	<div class="row" style="flex: 1;">
-																		<span style="flex: 1; margin-bottom: 8px;">
-																			${result.fnName}
-																			<span class="placeholder">
-																				in ${result.zome}
-																				zome${result.result
-																					? result.result.success
-																						? ', result:'
-																						: ', error:'
-																					: ''}
-																			</span>
-																		</span>
-																		<span class="placeholder">
-																			${new Date(
-																				result.timestamp,
-																			).toLocaleTimeString()}
-																		</span>
-																	</div>
-																	${this.renderResult(result)}
-																</div>
+			<div class="column" style="flex: 1; margin: 16px">
+				<span class="title row">Results </span>
+				${results.length === 0
+					? html`
+							<div class="row fill center-content">
+								<span class="placeholder" style="margin: 0 24px;"
+									>Call a ZomeFn to see its results</span
+								>
+							</div>
+						`
+					: html` <div class="flex-scrollable-parent">
+							<div class="flex-scrollable-container">
+								<div class="flex-scrollable-y">
+									<div style="margin: 0 16px;">
+										${results.map(
+											(result, index) => html`
+												<div class="column" style="flex: 1;">
+													<div class="row" style="margin: 8px 0;">
+														${result.result
+															? html`
+																	<sl-icon
+																		style=${styleMap({
+																			color: result.result.success
+																				? 'green'
+																				: 'red',
+																			'align-self': 'start',
+																			'margin-top': '16px',
+																			'font-size': '36px',
+																		})}
+																		.src=${wrapPathInSvg(
+																			result.result.success
+																				? mdiCheckCircleOutline
+																				: mdiAlertOutline,
+																		)}
+																	></sl-icon>
+																`
+															: html`
+																	<sl-spinner
+																		style="align-self: center;"
+																	></sl-spinner>
+																`}
+														<div
+															class="column"
+															style="flex: 1; margin: 12px; margin-right: 0;"
+														>
+															<div class="row" style="flex: 1;">
+																<span style="flex: 1; margin-bottom: 8px;">
+																	${result.fnName}
+																	<span class="placeholder">
+																		in ${result.zome}
+																		zome${result.result
+																			? result.result.success
+																				? ', result:'
+																				: ', error:'
+																			: ''}
+																	</span>
+																</span>
+																<span class="placeholder">
+																	${new Date(
+																		result.timestamp,
+																	).toLocaleTimeString()}
+																</span>
 															</div>
-															${index < results.length - 1
-																? html`
-																		<span
-																			class="horizontal-divider"
-																			style="align-self: center;"
-																		></span>
-																	`
-																: html``}
+															${this.renderResult(result)}
 														</div>
-													`,
-												)}
-											</div>
-										</div>
+													</div>
+													${index < results.length - 1
+														? html`
+																<span
+																	class="horizontal-divider"
+																	style="align-self: center;"
+																></span>
+															`
+														: html``}
+												</div>
+											`,
+										)}
 									</div>
-								</div>`
-					}
-        </div>
-      </mwc-card>
-    `;
+								</div>
+							</div>
+						</div>`}
+			</div>
+		`;
 	}
 
 	render() {
 		const activeCell = this.store.activeCell.get();
 		return html`
-			<mwc-card style="width: auto; flex: 1;">
+			<sl-card style="width: auto; flex: 1;">
 				${activeCell.status === 'completed' && activeCell.value
 					? html`
 							<div class="column" style="flex: 1">
@@ -306,7 +296,7 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 										${this.hideZomeSelector
 											? html``
 											: html`
-													<mwc-tab-bar
+													<sl-tab-group
 														.activeIndex=${this._selectedZomeIndex}
 														@MDCTabBar:activated=${(e: CustomEvent) => {
 															this.selectedZomeFnName = undefined;
@@ -315,12 +305,16 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 													>
 														${this.dna?.zomes.map(
 															zome => html`
-																<mwc-tab .label=${zome.name}></mwc-tab>
+																<sl-tab slot="nav" .panel=${zome.name}
+																	>${zome.name}</sl-tab
+																>
+																<sl-tab-panel name=${zome.name}>
+																	${this.renderActiveZomeFns(zome)}
+																</sl-tab-panel>
 															`,
 														)}
-													</mwc-tab-bar>
+													</sl-tab-group>
 												`}
-										${this.renderActiveZomeFns()}
 									</div>
 
 									<span class="vertical-divider"></span>
@@ -334,7 +328,7 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 								>Select a cell to call its zome functions</span
 							>
 						</div>`}
-			</mwc-card>
+			</sl-card>
 		`;
 	}
 
@@ -348,18 +342,5 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 				}
 			`,
 		];
-	}
-
-	static get scopedElements() {
-		return {
-			'mwc-circular-progress': CircularProgress,
-			'mwc-icon': Icon,
-			'mwc-tab': Tab,
-			'mwc-tab-bar': TabBar,
-			'mwc-card': Card,
-			'call-functions': CallFns,
-			'json-viewer': JsonViewer,
-			'expandable-line': ExpandableLine,
-		};
 	}
 }

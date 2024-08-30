@@ -5,24 +5,20 @@ import {
 	decodeHashFromBase64,
 	encodeHashToBase64,
 } from '@holochain/client';
-import { CytoscapeCoseBilkent } from '@scoped-elements/cytoscape';
-import {
-	Button,
-	Card,
-	Checkbox,
-	Formfield,
-	Icon,
-	IconButton,
-	ListItem,
-	Menu,
-} from '@scoped-elements/material-web';
+import '@scoped-elements/cytoscape/dist/cytoscape-cose-bilkent.js';
+import '@shoelace-style/shoelace/dist/components/button/button.js';
+import '@shoelace-style/shoelace/dist/components/card/card.js';
+import '@shoelace-style/shoelace/dist/components/checkbox/checkbox.js';
+import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
+import '@shoelace-style/shoelace/dist/components/icon/icon.js';
+import '@shoelace-style/shoelace/dist/components/select/select.js';
 import { css, html } from 'lit';
-import { property, query, state } from 'lit/decorators.js';
-import { isEqual } from 'lodash-es';
+import { customElement, property, query, state } from 'lit/decorators.js';
+import isEqual from 'lodash-es/isEqual.js';
 
 import { PlaygroundElement } from '../../base/playground-element.js';
 import { SimulatedCellStore } from '../../store/simulated-playground-store.js';
-import { HelpButton } from '../helpers/help-button.js';
+import '../helpers/help-button.js';
 import { sharedStyles } from '../utils/shared-styles.js';
 import { cytoscapeConfig } from './graph.js';
 import { allEntries } from './processors.js';
@@ -30,6 +26,7 @@ import { allEntries } from './processors.js';
 /**
  * @element dht-entries
  */
+@customElement('dht-entries')
 export class DhtEntries extends PlaygroundElement {
 	@property({ type: Boolean, attribute: 'hide-filter' })
 	hideFilter: boolean = false;
@@ -48,12 +45,6 @@ export class DhtEntries extends PlaygroundElement {
 
 	@state()
 	private _entryTypes: string[] = [];
-
-	@query('#visible-entries-button')
-	private _visibleEntriesButton!: Button;
-
-	@query('#visible-entries-menu')
-	private _visibleEntriesMenu!: Menu;
 
 	get _simulatedDna() {
 		const cellsForActiveDna = this.store.cellsForActiveDna.get();
@@ -119,67 +110,39 @@ export class DhtEntries extends PlaygroundElement {
 			class="row"
 			style="align-items: center; justify-content: start; margin: 8px;"
 		>
-			<mwc-formfield label="Show Entry Contents" style="margin-right: 16px">
-				<mwc-checkbox
-					.checked=${this.showEntryContents}
-					@change=${(e: any) => {
-						this.showEntryContents = e.target.checked;
-					}}
-				></mwc-checkbox
-			></mwc-formfield>
-
-			<mwc-formfield
-				label="Show Only Active Agent's Shard"
+			<sl-checkbox
 				style="margin-right: 16px"
+				.checked=${this.showEntryContents}
+				@sl-change=${(e: any) => {
+					this.showEntryContents = e.target.checked;
+				}}
+				>Show Entry Contents</sl-checkbox
 			>
-				<mwc-checkbox
-					.checked=${this.showOnlyActiveAgentsShard}
-					@change=${(e: any) => {
-						this.showOnlyActiveAgentsShard = e.target.checked;
-					}}
-				></mwc-checkbox
-			></mwc-formfield>
+
+			<sl-checkbox
+				.checked=${this.showOnlyActiveAgentsShard}
+				style="margin-right: 16px"
+				@change=${(e: any) => {
+					this.showOnlyActiveAgentsShard = e.target.checked;
+				}}
+				>Show Only Active Agent's Shard</sl-checkbox
+			>
 
 			<span class="vertical-divider"></span>
 
 			<div class="row" style="position: relative;">
-				<mwc-button
-					label="Visible entries"
-					style="--mdc-theme-primary: rgba(0,0,0,0.7); margin-left: 16px;"
-					icon="arrow_drop_down"
-					id="visible-entries-button"
-					trailingIcon
-					@click=${() => this._visibleEntriesMenu.show()}
-				></mwc-button>
-				<mwc-menu
-					corner="BOTTOM_RIGHT"
-					multi
-					fixed
-					activatable
-					id="visible-entries-menu"
-					.anchor=${this._visibleEntriesButton}
-					@selected=${(e: any) => {
-						const includedEntryTypes = [...e.detail.index];
-						this.excludedEntryTypes = this._entryTypes.filter(
-							(type, index) => !includedEntryTypes.includes(index),
-						);
+				<sl-select
+					multiple
+					label="Excluded entries"
+					help-text="Excluded entries won' be visible in the graph"
+					@sl-change=${(e: any) => {
+						this.excludedEntryTypes = e.target.value;
 					}}
 				>
 					${this._entryTypes.map(
-						type => html`
-							<mwc-list-item
-								graphic="icon"
-								.selected=${!this.excludedEntryTypes.includes(type)}
-								.activated=${!this.excludedEntryTypes.includes(type)}
-							>
-								${!this.excludedEntryTypes.includes(type)
-									? html` <mwc-icon slot="graphic">check</mwc-icon> `
-									: html``}
-								${type}
-							</mwc-list-item>
-						`,
+						type => html` <sl-option value="${type}"> ${type} </sl-option> `,
 					)}
-				</mwc-menu>
+				</sl-select>
 			</div>
 		</div>`;
 	}
@@ -187,7 +150,7 @@ export class DhtEntries extends PlaygroundElement {
 	render() {
 		const activeDna = this.store.activeDna.get();
 		return html`
-			<mwc-card class="block-card" style="position: relative;">
+			<sl-card class="block-card" style="position: relative;">
 				<div class="column fill">
 					<span class="block-title row" style="margin: 16px; margin-bottom: 0;"
 						>Dht
@@ -216,23 +179,8 @@ export class DhtEntries extends PlaygroundElement {
 					${this.renderHelp()}
 					${!this.hideFilter ? this.renderFilter() : html``}
 				</div>
-			</mwc-card>
+			</sl-card>
 		`;
-	}
-
-	static get scopedElements() {
-		return {
-			'mwc-checkbox': Checkbox,
-			'mwc-formfield': Formfield,
-			'mwc-icon-button': IconButton,
-			'mwc-card': Card,
-			'mwc-menu': Menu,
-			'mwc-icon': Icon,
-			'mwc-list-item': ListItem,
-			'mwc-button': Button,
-			'help-button': HelpButton,
-			'cytoscape-cose-bilkent': CytoscapeCoseBilkent,
-		};
 	}
 
 	static get styles() {

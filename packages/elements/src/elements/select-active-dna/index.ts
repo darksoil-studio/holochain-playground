@@ -1,11 +1,14 @@
 import { DnaHash, encodeHashToBase64 } from '@holochain/client';
-import { Card, ListItem, Select } from '@scoped-elements/material-web';
+import '@shoelace-style/shoelace/dist/components/card/card.js';
+import '@shoelace-style/shoelace/dist/components/select/select.js';
 import { css, html } from 'lit';
+import { customElement } from 'lit/decorators.js';
 import isEqual from 'lodash-es/isEqual.js';
 
 import { PlaygroundElement } from '../../base/playground-element.js';
 import { sharedStyles } from '../utils/shared-styles.js';
 
+@customElement('select-active-dna')
 export class SelectActiveDna extends PlaygroundElement {
 	selectDNA(dna: DnaHash) {
 		this.store.activeDna.set(dna);
@@ -27,20 +30,18 @@ export class SelectActiveDna extends PlaygroundElement {
 		const allDnas =
 			allDnasResult.status === 'completed' ? allDnasResult.value : [];
 		return html`
-			<mwc-card class="block-card">
+			<sl-card class="block-card">
 				<div class="column" style="margin: 16px;">
 					<span class="block-title" style="margin-bottom: 16px;"
 						>Select Active Dna</span
 					>
-					<mwc-select
-						outlined
-						fullwidth
+					<sl-select
 						@selected=${(e: any) => this.selectDNA(allDnas[e.detail.index])}
 					>
 						${allDnas.map(dna => this.renderDna(dna))}
-					</mwc-select>
+					</sl-select>
 				</div>
-			</mwc-card>
+			</sl-card>
 		`;
 	}
 
@@ -54,13 +55,5 @@ export class SelectActiveDna extends PlaygroundElement {
 			`,
 			sharedStyles,
 		];
-	}
-
-	static get scopedElements() {
-		return {
-			'mwc-list-item': ListItem,
-			'mwc-select': Select,
-			'mwc-card': Card,
-		};
 	}
 }

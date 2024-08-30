@@ -1,15 +1,13 @@
 import { Dictionary } from '@holochain-playground/simulator';
-import { ScopedElementsMixin } from '@open-wc/scoped-elements';
-import {
-	Button,
-	Drawer,
-	List,
-	ListItem,
-	Select,
-	TextField,
-} from '@scoped-elements/material-web';
+import '@shoelace-style/shoelace/dist/components/button/button.js';
+import '@shoelace-style/shoelace/dist/components/drawer/drawer.js';
+import '@shoelace-style/shoelace/dist/components/input/input.js';
+import '@shoelace-style/shoelace/dist/components/select/select.js';
+import '@shoelace-style/shoelace/dist/components/tab-group/tab-group.js';
+import '@shoelace-style/shoelace/dist/components/tab-panel/tab-panel.js';
+import '@shoelace-style/shoelace/dist/components/tab/tab.js';
 import { LitElement, PropertyValues, TemplateResult, css, html } from 'lit';
-import { property } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import isEqual from 'lodash-es/isEqual.js';
 
 import { sharedStyles } from '../utils/shared-styles.js';
@@ -31,19 +29,10 @@ export interface CallableFn {
 	call: (args: Dictionary<any>) => void;
 }
 
-export class CallFns extends ScopedElementsMixin(LitElement) {
+@customElement('call-fns')
+export class CallFns extends LitElement {
 	@property()
 	callableFns!: CallableFn[];
-
-	@property()
-	selectedFnName: string | undefined;
-
-	get activeFn() {
-		return (
-			this.callableFns.find(fn => fn.name === this.selectedFnName) ||
-			this.callableFns[0]
-		);
-	}
 
 	// Segmented by fnName/argName
 	_arguments: Dictionary<Dictionary<any>> = {};
@@ -76,16 +65,15 @@ export class CallFns extends ScopedElementsMixin(LitElement) {
 
 	renderField(callableFn: CallableFn, arg: CallableFnArgument) {
 		if (arg.field === 'textfield')
-			return html`<mwc-textfield
+			return html`<sl-textfield
 				style="margin-top: 12px"
-				outlined
 				label=${arg.name + ': ' + arg.type}
 				.value=${(this._arguments[callableFn.name] &&
 					this._arguments[callableFn.name][arg.name]) ||
 				''}
-				@input=${(e: any) =>
+				@sl-input=${(e: any) =>
 					this.setArgument(callableFn.name, arg.name, e.target.value)}
-			></mwc-textfield>`;
+			></sl-textfield>`;
 		if (arg.field === 'custom')
 			return html`<div style="margin-top: 12px;" class="column">
 				${arg.render(this._arguments[callableFn.name] || {}, value =>
@@ -127,11 +115,11 @@ export class CallFns extends ScopedElementsMixin(LitElement) {
 					</div>
 				</div>
 			</div>
-			<mwc-button
-				raised
+			<sl-button
+				variant="primary"
 				@click=${() => this.callFunction(callableFunction)}
 				.disabled=${this.isExecuteDisabled(callableFunction)}
-				>Execute</mwc-button
+				>Execute</sl-button
 			>
 		</div>`;
 	}
@@ -147,26 +135,16 @@ export class CallFns extends ScopedElementsMixin(LitElement) {
 			<div class="flex-scrollable-parent">
 				<div class="flex-scrollable-container">
 					<div class="flex-scrollable-y" style="height: 100%">
-						<mwc-drawer style="--mdc-drawer-width: auto;">
-							<mwc-list
-								activatable
-								@selected=${(e: any) =>
-									(this.selectedFnName = this.callableFns[e.detail.index].name)}
-							>
-								${this.callableFns.map(
-									({ name }) => html`
-										<mwc-list-item .activated=${this.activeFn.name === name}
-											>${name}
-										</mwc-list-item>
-									`,
-								)}
-							</mwc-list>
-							<div slot="appContent" class="column" style="height: 100%;">
-								<div class="column" style="flex: 1;">
-									${this.renderCallableFunction(this.activeFn)}
-								</div>
-							</div>
-						</mwc-drawer>
+						<sl-tab-group>
+							${this.callableFns.map(
+								fn => html`
+									<sl-tab slot="nav" .panel=${fn.name}>${fn.name}</sl-tab>
+									<sl-tab-panel .name=${fn.name}>
+										${this.renderCallableFunction(fn)}
+									</sl-tab-panel>
+								`,
+							)}
+						</sl-tab-group>
 					</div>
 				</div>
 			</div>
@@ -182,15 +160,4 @@ export class CallFns extends ScopedElementsMixin(LitElement) {
 			}
 		`,
 	];
-
-	static get scopedElements() {
-		return {
-			'mwc-drawer': Drawer,
-			'mwc-list': List,
-			'mwc-list-item': ListItem,
-			'mwc-button': Button,
-			'mwc-textfield': TextField,
-			'mwc-select': Select,
-		};
-	}
 }

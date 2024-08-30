@@ -1,7 +1,8 @@
 import '@holochain-open-dev/elements/dist/elements/holo-identicon.js';
-import { JsonViewer } from '@power-elements/json-viewer';
-import { Card } from '@scoped-elements/material-web';
+import '@power-elements/json-viewer';
+import '@shoelace-style/shoelace/dist/components/card/card.js';
 import { html } from 'lit';
+import { customElement } from 'lit/decorators.js';
 
 import { PlaygroundElement } from '../../base/playground-element.js';
 import { shortenStrRec } from '../utils/hash.js';
@@ -11,12 +12,13 @@ import { getEntryContents } from '../utils/utils.js';
 /**
  * @element entry-contents
  */
+@customElement('entry-contents')
 export class EntryContents extends PlaygroundElement {
 	render() {
 		const activeDhtHash = this.store.activeDhtHash.get();
 		const activeContent = this.store.activeContent.get();
 		return html`
-			<mwc-card style="width: auto; min-height: 200px;" class="fill">
+			<sl-card style="width: auto; min-height: 200px;" class="fill">
 				<div class="column fill" style="padding: 16px;">
 					<span class="title row" style="margin-bottom: 8px;">
 						${activeContent.status === 'completed' &&
@@ -59,15 +61,8 @@ export class EntryContents extends PlaygroundElement {
 								</div>
 							`}
 				</div>
-			</mwc-card>
+			</sl-card>
 		`;
-	}
-
-	static get scopedElements() {
-		return {
-			'json-viewer': JsonViewer,
-			'mwc-card': Card,
-		};
 	}
 
 	static styles = [sharedStyles];

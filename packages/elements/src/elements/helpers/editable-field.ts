@@ -1,12 +1,14 @@
-import { ScopedElementsMixin } from '@open-wc/scoped-elements';
-import { IconButton } from '@scoped-elements/material-web';
+import { wrapPathInSvg } from '@holochain-open-dev/elements';
+import { mdiClose, mdiContentSave, mdiPencil } from '@mdi/js';
+import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import { LitElement, html } from 'lit';
-import { property, state } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { ref } from 'lit/directives/ref.js';
 
 import { sharedStyles } from '../utils/shared-styles.js';
 
-export class EditableField extends ScopedElementsMixin(LitElement) {
+@customElement('editable-field')
+export class EditableField extends LitElement {
 	@property()
 	value: any;
 
@@ -53,28 +55,22 @@ export class EditableField extends ScopedElementsMixin(LitElement) {
 		return html`<div class="row">
 			${this._editing
 				? html` <slot ${ref(this.setupField)}></slot
-						><mwc-icon-button
+						><sl-icon-button
 							@click=${() => this.save()}
 							.disabled=${!this._valid}
-							icon="save"
-						></mwc-icon-button
-						><mwc-icon-button
+							.src=${wrapPathInSvg(mdiContentSave)}
+						></sl-icon-button
+						><sl-icon-button
 							@click=${() => this.cancel()}
-							icon="close"
-						></mwc-icon-button>`
+							.src=${wrapPathInSvg(mdiClose)}
+						></sl-icon-button>`
 				: html`<span class="center-content">${this.value}</span
-						><mwc-icon-button
+						><sl-icon-button
 							class="placeholder"
 							@click=${() => (this._editing = true)}
-							icon="mode_edit"
-						></mwc-icon-button>`}
+							.src=${wrapPathInSvg(mdiPencil)}
+						></sl-icon-button>`}
 		</div>`;
-	}
-
-	static get scopedElements() {
-		return {
-			'mwc-icon-button': IconButton,
-		};
 	}
 
 	static styles = [sharedStyles];

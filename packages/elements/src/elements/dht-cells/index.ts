@@ -17,22 +17,23 @@ import {
 	encodeHashToBase64,
 	getDhtOpType,
 } from '@holochain/client';
-import { CytoscapeCircle } from '@scoped-elements/cytoscape';
-import {
-	Button,
-	Card,
-	Formfield,
-	Icon,
-	IconButton,
-	ListItem,
-	Menu,
-	MenuSurface,
-	Slider,
-	Switch,
-} from '@scoped-elements/material-web';
+import '@scoped-elements/cytoscape/dist/cytoscape-circle.js';
+import { CytoscapeCircle } from '@scoped-elements/cytoscape/dist/cytoscape-circle.js';
+import SlButton from '@shoelace-style/shoelace/dist/components/button/button.js';
+import '@shoelace-style/shoelace/dist/components/button/button.js';
+import '@shoelace-style/shoelace/dist/components/card/card.js';
+import '@shoelace-style/shoelace/dist/components/dropdown/dropdown.js';
+import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
+import '@shoelace-style/shoelace/dist/components/icon/icon.js';
+import '@shoelace-style/shoelace/dist/components/input/input.js';
+import '@shoelace-style/shoelace/dist/components/menu-item/menu-item.js';
+import '@shoelace-style/shoelace/dist/components/menu/menu.js';
+import SlMenu from '@shoelace-style/shoelace/dist/components/menu/menu.js';
+import '@shoelace-style/shoelace/dist/components/range/range.js';
+import '@shoelace-style/shoelace/dist/components/switch/switch.js';
 import { NodeSingular } from 'cytoscape';
 import { PropertyValues, css, html } from 'lit';
-import { property, query } from 'lit/decorators.js';
+import { customElement, property, query } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import uniq from 'lodash-es/uniq.js';
@@ -45,8 +46,8 @@ import {
 	SimulatedPlaygroundStore,
 } from '../../store/simulated-playground-store.js';
 import { joinAsyncCellMap, mapCellValues } from '../../store/utils.js';
-import { CellTasks } from '../helpers/cell-tasks.js';
-import { HelpButton } from '../helpers/help-button.js';
+import '../helpers/cell-tasks.js';
+import '../helpers/help-button.js';
 import { sharedStyles } from '../utils/shared-styles.js';
 import { cytoscapeOptions, layoutConfig } from './graph.js';
 import {
@@ -93,14 +94,14 @@ export class DhtCells extends PlaygroundElement {
 	showZomeFnSuccess = false;
 
 	@query('#active-workflows-button')
-	private _activeWorkflowsButton!: Button;
+	private _activeWorkflowsButton!: SlButton;
 	@query('#active-workflows-menu')
-	private _activeWorkflowsMenu!: Menu;
+	private _activeWorkflowsMenu!: SlMenu;
 
 	@query('#network-requests-button')
-	private _networkRequestsButton!: Button;
+	private _networkRequestsButton!: SlButton;
 	@query('#network-requests-menu')
-	private _networkRequestsMenu!: Menu;
+	private _networkRequestsMenu!: SlMenu;
 	@query('#graph')
 	private _graph!: CytoscapeCircle;
 
@@ -524,85 +525,74 @@ export class DhtCells extends PlaygroundElement {
 				${this.hideFilter
 					? html``
 					: html`
-							<mwc-button
-								label="Visible Worfklows"
-								style="--mdc-theme-primary: rgba(0,0,0,0.7);"
-								icon="arrow_drop_down"
-								id="active-workflows-button"
-								trailingIcon
-								@click=${() => this._activeWorkflowsMenu.show()}
-							></mwc-button>
-							<mwc-menu
-								corner="BOTTOM_END"
-								multi
-								activatable
-								id="active-workflows-menu"
-								.anchor=${this._activeWorkflowsButton}
-								@selected=${(e: any) =>
-									(this.workflowsToDisplay = [...e.detail.index].map(
-										index => workflowsNames[index],
-									))}
-							>
-								${workflowsNames.map(
-									type => html`
-										<mwc-list-item
-											graphic="icon"
-											.selected=${this.workflowsToDisplay.includes(
-												type as WorkflowType,
-											)}
-											.activated=${this.workflowsToDisplay.includes(
-												type as WorkflowType,
-											)}
-										>
-											${this.workflowsToDisplay.includes(type as WorkflowType)
-												? html` <mwc-icon slot="graphic">check</mwc-icon> `
-												: html``}
-											${type}
-										</mwc-list-item>
-									`,
-								)}
-							</mwc-menu>
+							<sl-dropdown>
+								<sl-button id="active-workflows-button" caret slot="trigger">
+									<sl-icon></sl-icon>
+									Visible Worfklows</sl-button
+								>
+								<sl-menu id="active-workflows-menu">
+									${workflowsNames.map(
+										type => html`
+											<sl-menu-item
+												type="checkbox"
+												.checked=${this.workflowsToDisplay.includes(
+													type as WorkflowType,
+												)}
+												value=${type}
+												@sl-select=${(event: any) => {
+													const checked = event.detail.item.checked;
+													const value = event.detail.item.value;
 
-							<mwc-button
-								label="Visible Network Requests"
-								style="--mdc-theme-primary: rgba(0,0,0,0.7);"
-								icon="arrow_drop_down"
-								id="network-requests-button"
-								trailingIcon
-								@click=${() => this._networkRequestsMenu.show()}
-							></mwc-button>
-							<mwc-menu
-								corner="BOTTOM_END"
-								multi
-								activatable
-								id="network-requests-menu"
-								.anchor=${this._networkRequestsButton}
-								@selected=${(e: any) =>
-									(this.networkRequestsToDisplay = [...e.detail.index].map(
-										index => networkRequestNames[index],
-									))}
-							>
-								${networkRequestNames.map(
-									type => html`
-										<mwc-list-item
-											graphic="icon"
-											.selected=${this.networkRequestsToDisplay.includes(
-												type as NetworkRequestType,
-											)}
-											.activated=${this.networkRequestsToDisplay.includes(
-												type as NetworkRequestType,
-											)}
-										>
-											${this.networkRequestsToDisplay.includes(
-												type as NetworkRequestType,
-											)
-												? html` <mwc-icon slot="graphic">check</mwc-icon> `
-												: html``}
-											${type}
-										</mwc-list-item>
-									`,
-								)}
-							</mwc-menu>
+													this.workflowsToDisplay =
+														this.workflowsToDisplay.filter(w => w !== value);
+													if (checked) {
+														this.workflowsToDisplay = [
+															...this.workflowsToDisplay,
+															value,
+														];
+													}
+												}}
+											>
+												${type}
+											</sl-menu-item>
+										`,
+									)}
+								</sl-menu>
+							</sl-dropdown>
+							<sl-dropdown>
+								<sl-button id="network-requests-button" caret slot="trigget"
+									>Visible Network Requests</sl-button
+								>
+								<sl-menu
+									id="network-requests-menu"
+									@sl-select=${(event: any) => {
+										const checked = event.detail.item.checked;
+										const value = event.detail.item.value;
+
+										this.networkRequestsToDisplay =
+											this.networkRequestsToDisplay.filter(w => w !== value);
+										if (checked) {
+											this.networkRequestsToDisplay = [
+												...this.networkRequestsToDisplay,
+												value,
+											];
+										}
+									}}
+								>
+									${networkRequestNames.map(
+										type => html`
+											<sl-menu-item
+												type="checkbox"
+												.checked=${this.networkRequestsToDisplay.includes(
+													type as NetworkRequestType,
+												)}
+											>
+												${type}
+											</sl-menu-item>
+										`,
+									)}
+								</sl-menu>
+							</sl-dropdown>
 						`}
 
 				<span style="flex: 1;"></span>
@@ -621,7 +611,7 @@ export class DhtCells extends PlaygroundElement {
 		const activeDna = this.store.activeDna.get();
 
 		return html`
-			<mwc-card class="block-card" style="position: relative;">
+			<sl-card class="block-card" style="position: relative;">
 				${this.renderHelp()} ${this.renderTasksTooltips()}
 				<div class="column fill">
 					<div class="block-title row" style="margin: 16px;">
@@ -631,7 +621,7 @@ export class DhtCells extends PlaygroundElement {
 									<div class="placeholder row">
 										<span>, for Dna</span>
 										<holo-identicon
-											.hash=${activeDna}
+											hash="${encodeHashToBase64(activeDna)}"
 											style="margin-left: 8px;"
 										></holo-identicon>
 									</div>
@@ -654,7 +644,7 @@ export class DhtCells extends PlaygroundElement {
 					></cytoscape-circle>
 					${this.renderBottomToolbar()}
 				</div>
-			</mwc-card>
+			</sl-card>
 		`;
 	}
 
@@ -673,23 +663,5 @@ export class DhtCells extends PlaygroundElement {
 				}
 			`,
 		];
-	}
-
-	static get scopedElements() {
-		return {
-			'mwc-card': Card,
-			'mwc-menu-surface': MenuSurface,
-			'mwc-button': Button,
-			'mwc-icon': Icon,
-			'mwc-menu': Menu,
-			'mwc-list-item': ListItem,
-			'mwc-slider': Slider,
-			'mwc-switch': Switch,
-			'mwc-formfield': Formfield,
-			'mwc-icon-button': IconButton,
-			'cytoscape-circle': CytoscapeCircle,
-			'help-button': HelpButton,
-			'cell-tasks': CellTasks,
-		};
 	}
 }

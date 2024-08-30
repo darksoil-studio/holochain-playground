@@ -1,6 +1,5 @@
 import { SignalWatcher } from '@holochain-open-dev/signals';
 import { consume } from '@lit/context';
-import { ScopedElementsMixin } from '@open-wc/scoped-elements';
 import { LitElement } from 'lit';
 import { state } from 'lit/decorators.js';
 
@@ -12,7 +11,7 @@ export class PlaygroundElement<
 	T extends ConnectedPlaygroundStore | SimulatedPlaygroundStore =
 		| ConnectedPlaygroundStore
 		| SimulatedPlaygroundStore,
-> extends SignalWatcher(ScopedElementsMixin(LitElement)) {
+> extends SignalWatcher(LitElement) {
 	@consume({ context: playgroundContext, subscribe: true })
 	@state()
 	private _store!: ConnectedPlaygroundStore | SimulatedPlaygroundStore;

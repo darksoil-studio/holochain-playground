@@ -4,14 +4,15 @@ import {
 	decodeHashFromBase64,
 	encodeHashToBase64,
 } from '@holochain/client';
-import { CytoscapeDagre } from '@scoped-elements/cytoscape';
-import { Card } from '@scoped-elements/material-web';
+import '@scoped-elements/cytoscape/dist/cytoscape-dagre.js';
+import '@shoelace-style/shoelace/dist/components/card/card.js';
 import { css, html } from 'lit';
+import { customElement } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import isEqual from 'lodash-es/isEqual.js';
 
 import { PlaygroundElement } from '../../base/playground-element.js';
-import { HelpButton } from '../helpers/help-button.js';
+import '../helpers/help-button.js';
 import { sharedStyles } from '../utils/shared-styles.js';
 import { graphStyles } from './graph.js';
 import { sourceChainNodes } from './processors.js';
@@ -19,6 +20,7 @@ import { sourceChainNodes } from './processors.js';
 /**
  * @element source-chain
  */
+@customElement('source-chain')
 export class SourceChain extends PlaygroundElement {
 	get elements() {
 		const activeCell = this.store.activeCell.get();
@@ -85,7 +87,7 @@ export class SourceChain extends PlaygroundElement {
 		const activeAgent = this.store.activeAgentPubKey.get();
 		const activeCell = this.store.activeCell.get();
 		return html`
-			<mwc-card class="block-card">
+			<sl-card class="block-card">
 				<div class="column fill">
 					<span class="block-title row" style="margin: 16px;"
 						>Source
@@ -132,7 +134,7 @@ export class SourceChain extends PlaygroundElement {
 						})}
 					></cytoscape-dagre>
 				</div>
-			</mwc-card>
+			</sl-card>
 		`;
 	}
 
@@ -151,13 +153,5 @@ export class SourceChain extends PlaygroundElement {
 				}
 			`,
 		];
-	}
-
-	static get scopedElements() {
-		return {
-			'mwc-card': Card,
-			'cytoscape-dagre': CytoscapeDagre,
-			'help-button': HelpButton,
-		};
 	}
 }

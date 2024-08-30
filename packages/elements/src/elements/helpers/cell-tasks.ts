@@ -9,15 +9,17 @@ import {
 	workflowPriority,
 } from '@holochain-playground/simulator';
 import {
-	Card,
-	Icon,
-	LinearProgress,
-	List,
-	ListItem,
-} from '@scoped-elements/material-web';
+	mdiAlertOutline,
+	mdiCallMade,
+	mdiCheckCircleOutline,
+	mdiCogs,
+} from '@mdi/js';
+import '@shoelace-style/shoelace/dist/components/card/card.js';
+import '@shoelace-style/shoelace/dist/components/icon/icon.js';
+import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import { css, html } from 'lit';
 import { styleMap } from 'lit-html/directives/style-map.js';
-import { property, state } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 
 import { MiddlewareController } from '../../base/middleware-controller.js';
 import { PlaygroundElement } from '../../base/playground-element.js';
@@ -27,6 +29,7 @@ import {
 } from '../../store/simulated-playground-store.js';
 import { sharedStyles } from '../utils/shared-styles.js';
 
+@customElement('cell-tasks')
 export class CellTasks extends PlaygroundElement<SimulatedPlaygroundStore> {
 	/** Public properties */
 
@@ -222,17 +225,13 @@ export class CellTasks extends PlaygroundElement<SimulatedPlaygroundStore> {
 		color: string = 'inherit',
 	) {
 		return html`
-			<mwc-list-item
-				twoline
-				graphic="icon"
-				style="--mdc-list-item-graphic-margin: 4px;"
-			>
-				<mwc-icon slot="graphic" style=${styleMap({ color: color })}
-					>${icon}</mwc-icon
-				>
-				<span>${primary}</span>
+			<div class="column">
+				<div class="row">
+					<sl-icon .src=${icon} style=${styleMap({ color: color })}></sl-icon>
+					<span>${primary}</span>
+				</div>
 				<span slot="secondary">${secondary}</span>
-			</mwc-list-item>
+			</div>
 		`;
 	}
 
@@ -240,11 +239,14 @@ export class CellTasks extends PlaygroundElement<SimulatedPlaygroundStore> {
 		if (!this.showTasks()) return html``;
 		const orderedTasks = this.sortTasks(Object.entries(this._runningTasks));
 		return html`
-			<mwc-card class="tasks-card">
-				<mwc-list style="max-height: 300px; overflow-y: auto; width: 200px;">
+			<sl-card class="tasks-card">
+				<div
+					class="row"
+					style="max-height: 300px; overflow-y: auto; width: 200px;"
+				>
 					${this._callZomeTasks.map(callZome =>
 						this.renderListItem(
-							'call_made',
+							mdiCallMade,
 							callZome.details.fnName,
 							callZome.details.zome + ' zome',
 							'green',
@@ -252,7 +254,7 @@ export class CellTasks extends PlaygroundElement<SimulatedPlaygroundStore> {
 					)}
 					${this._workflowErrors.map(errorInfo =>
 						this.renderListItem(
-							'error_outline',
+							mdiAlertOutline,
 							errorInfo.error.message,
 							errorInfo.task.type === WorkflowType.CALL_ZOME
 								? `${
@@ -264,7 +266,7 @@ export class CellTasks extends PlaygroundElement<SimulatedPlaygroundStore> {
 					)}
 					${this._networkRequestErrors.map(errorInfo =>
 						this.renderListItem(
-							'error_outline',
+							mdiAlertOutline,
 							errorInfo.error.message,
 							errorInfo.networkRequest.type,
 							'red',
@@ -272,24 +274,18 @@ export class CellTasks extends PlaygroundElement<SimulatedPlaygroundStore> {
 					)}
 					${this._successes.map(({ task, payload }) =>
 						this.renderListItem(
-							'check_circle_outline',
+							mdiCheckCircleOutline,
 							task.details.fnName,
 							'Success',
 							'green',
 						),
 					)}
 					${orderedTasks.map(([taskName, taskNumber]) =>
-						this.renderListItem(
-							'miscellaneous_services',
-							taskName,
-							'Cell Workflow',
-						),
+						this.renderListItem(mdiCogs, taskName, 'Cell Workflow'),
 					)}
-				</mwc-list>
-				${this.stepByStep
-					? html``
-					: html` <mwc-linear-progress indeterminate></mwc-linear-progress> `}
-			</mwc-card>
+				</div>
+				${this.stepByStep ? html`` : html` <sl-spinner></sl-spinner> `}
+			</sl-card>
 		`;
 	}
 
@@ -302,15 +298,5 @@ export class CellTasks extends PlaygroundElement<SimulatedPlaygroundStore> {
 				}
 			`,
 		];
-	}
-
-	static get scopedElements() {
-		return {
-			'mwc-card': Card,
-			'mwc-list': List,
-			'mwc-icon': Icon,
-			'mwc-list-item': ListItem,
-			'mwc-linear-progress': LinearProgress,
-		};
 	}
 }

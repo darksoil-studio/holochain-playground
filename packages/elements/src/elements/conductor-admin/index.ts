@@ -1,19 +1,18 @@
 import '@holochain-open-dev/elements/dist/elements/holo-identicon.js';
 import { AsyncComputed } from '@holochain-open-dev/signals';
 import { encodeHashToBase64 } from '@holochain/client';
-import { JsonViewer } from '@power-elements/json-viewer';
-import {
-	Button,
-	Card,
-	IconButton,
-	List,
-	ListItem,
-	Tab,
-	TabBar,
-} from '@scoped-elements/material-web';
-import { Grid, GridColumn } from '@vaadin/grid';
+import '@power-elements/json-viewer';
+import '@shoelace-style/shoelace/dist/components/button/button.js';
+import '@shoelace-style/shoelace/dist/components/card/card.js';
+import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
+import '@shoelace-style/shoelace/dist/components/tab-group/tab-group.js';
+import '@shoelace-style/shoelace/dist/components/tab-panel/tab-panel.js';
+import '@shoelace-style/shoelace/dist/components/tab/tab.js';
+import '@vaadin/grid/vaadin-grid-column.js';
+import '@vaadin/grid/vaadin-grid.js';
+import { Grid, GridColumn } from '@vaadin/grid/vaadin-grid.js';
 import { PropertyValues, css, html } from 'lit';
-import { state } from 'lit/decorators.js';
+import { customElement, state } from 'lit/decorators.js';
 import { createRef, ref } from 'lit/directives/ref.js';
 import isEqual from 'lodash-es/isEqual.js';
 
@@ -30,11 +29,12 @@ import {
 	SimulatedConductorStore,
 	SimulatedPlaygroundStore,
 } from '../../store/simulated-playground-store.js';
-import { CallFns } from '../helpers/call-functions.js';
-import { HelpButton } from '../helpers/help-button.js';
+import '../helpers/call-functions.js';
+import '../helpers/help-button.js';
 import { sharedStyles } from '../utils/shared-styles.js';
 import { adminApi } from './admin-api.js';
 
+@customElement('conductor-admin')
 export class ConductorAdmin extends PlaygroundElement {
 	_activeConductor = new AsyncComputed(() => {
 		const activeCell = this.store.activeCell.get();
@@ -46,9 +46,6 @@ export class ConductorAdmin extends PlaygroundElement {
 			value: conductor,
 		};
 	});
-
-	@state()
-	private _selectedTabIndex: number = 0;
 
 	private _grid = createRef<Grid>();
 
@@ -135,7 +132,7 @@ export class ConductorAdmin extends PlaygroundElement {
 				) as GridColumn;
 				detailsToggleColumn.renderer = function (root: any, column, model) {
 					if (!root.firstElementChild) {
-						root.innerHTML = '<mwc-button label="Details"></mwc-button>';
+						root.innerHTML = '<sl-button>Details</sl-button>';
 						let opened = false;
 						root.firstElementChild.addEventListener('click', (e: any) => {
 							if (!opened) {
@@ -159,9 +156,9 @@ export class ConductorAdmin extends PlaygroundElement {
 				const isSelected =
 					isEqual(this.store.activeDna.get()!, cell.cellId[0]) &&
 					isEqual(this.store.activeAgentPubKey.get()!, cell.cellId[1]);
-				root.innerHTML = `<mwc-button label="Select" ${
+				root.innerHTML = `<sl-button label="Select" ${
 					isSelected ? 'disabled' : ''
-				}></mwc-button>`;
+				}></sl-button>`;
 				root.firstElementChild.addEventListener('click', (e: any) => {
 					const cell = model.item as any as CellStore;
 
@@ -254,18 +251,12 @@ export class ConductorAdmin extends PlaygroundElement {
 			${this.renderHelp()}
 
 			<div class="column fill">
-				<mwc-tab-bar
-					@MDCTabBar:activated=${(e: any) => {
-						this._selectedTabIndex = e.detail.index;
-					}}
-					.activeIndex=${this._selectedTabIndex}
-				>
-					<mwc-tab label="Cells"></mwc-tab>
-					<mwc-tab label="Admin API"></mwc-tab>
-				</mwc-tab-bar>
-				${this._selectedTabIndex === 0
-					? this.renderCells()
-					: this.renderAdminAPI()}
+				<sl-tab-group>
+					<sl-tab slot="nav" panel="cells">Cells</sl-tab>
+					<sl-tab slot="nav" panel="admin_api">Admin API</sl-tab>
+					<sl-tab-panel name="cells">${this.renderCells()}</sl-tab-panel>
+					<sl-tab-panel name="admin_api">${this.renderAdminAPI()}</sl-tab-panel>
+				</sl-tab-group>
 			</div>
 		`;
 	}
@@ -282,7 +273,7 @@ export class ConductorAdmin extends PlaygroundElement {
 	render() {
 		const activeConductor = this._activeConductor.get();
 		return html`
-			<mwc-card class="block-card">
+			<sl-card class="block-card">
 				<div class="column fill">
 					<div class="row" style="padding: 16px">
 						<div class="column" style="flex: 1;">
@@ -299,7 +290,7 @@ export class ConductorAdmin extends PlaygroundElement {
 					</div>
 					<div class="column fill">${this.renderContent()}</div>
 				</div>
-			</mwc-card>
+			</sl-card>
 		`;
 	}
 
@@ -315,22 +306,5 @@ export class ConductorAdmin extends PlaygroundElement {
 				}
 			`,
 		];
-	}
-
-	static get scopedElements() {
-		return {
-			'call-functions': CallFns,
-			'mwc-tab': Tab,
-			'vaadin-grid': Grid,
-			'vaadin-grid-column': GridColumn,
-			'mwc-tab-bar': TabBar,
-			'mwc-list': List,
-			'json-viewer': JsonViewer,
-			'mwc-list-item': ListItem,
-			'mwc-card': Card,
-			'mwc-button': Button,
-			'mwc-icon-button': IconButton,
-			'help-button': HelpButton,
-		};
 	}
 }
