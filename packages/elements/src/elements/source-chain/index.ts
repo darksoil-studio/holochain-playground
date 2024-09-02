@@ -4,7 +4,7 @@ import {
 	decodeHashFromBase64,
 	encodeHashToBase64,
 } from '@holochain/client';
-import '@scoped-elements/cytoscape/dist/cytoscape-dagre.js';
+import '@scoped-elements/cytoscape';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import { css, html } from 'lit';
 import { customElement } from 'lit/decorators.js';

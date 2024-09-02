@@ -1,9 +1,10 @@
 import { PropertyValues } from 'lit';
-import { property } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 
 import { ConnectedPlaygroundStore } from '../store/connected-playground-store.js';
 import { BasePlaygroundContext } from './base-playground-context.js';
 
+@customElement('connected-playground-context')
 export class ConnectedPlaygroundContext extends BasePlaygroundContext<ConnectedPlaygroundStore> {
 	@property()
 	urls!: string[];

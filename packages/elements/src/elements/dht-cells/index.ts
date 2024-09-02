@@ -17,8 +17,8 @@ import {
 	encodeHashToBase64,
 	getDhtOpType,
 } from '@holochain/client';
-import '@scoped-elements/cytoscape/dist/cytoscape-circle.js';
-import { CytoscapeCircle } from '@scoped-elements/cytoscape/dist/cytoscape-circle.js';
+import '@scoped-elements/cytoscape';
+import { CytoscapeCircle } from '@scoped-elements/cytoscape';
 import SlButton from '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
@@ -64,6 +64,7 @@ const MAX_ANIMATION_DELAY = 7;
 /**
  * @element dht-cells
  */
+@customElement('dht-cells')
 export class DhtCells extends PlaygroundElement {
 	@property({ type: Number })
 	animationDelay: number = 2;

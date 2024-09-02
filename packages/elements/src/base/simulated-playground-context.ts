@@ -3,12 +3,13 @@ import {
 	createConductors,
 	demoHapp,
 } from '@holochain-playground/simulator';
-import { property } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 
 import { PlaygroundMode } from '../store/mode.js';
 import { SimulatedPlaygroundStore } from '../store/simulated-playground-store.js';
 import { BasePlaygroundContext } from './base-playground-context.js';
 
+@customElement('simulated-playground-context')
 export class SimulatedPlaygroundContext extends BasePlaygroundContext<SimulatedPlaygroundStore> {
 	@property({ type: Number })
 	numberOfSimulatedConductors: number = 10;

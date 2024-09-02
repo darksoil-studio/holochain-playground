@@ -8,18 +8,18 @@
 		"lint": "eslint src && prettier \"**/*.ts\" --check --ignore-path .gitignore",
 		"format": "eslint src && prettier \"**/*.ts\" --write --ignore-path .gitignore",
 		"build": "vite build",
-		"build:watch": "tsc --watch --preserveWatchOutput"
+		"build:watch": "vite build --watch"
 	},
 	"dependencies": {
 		"@holochain-open-dev/core-types": "^0.300.0",
+		"@holochain-open-dev/elements": "^0.300.0",
 		"@holochain-open-dev/signals": "^0.300.0",
 		"@holochain-playground/elements": "^0.300.0",
 		"@holochain-playground/golden-layout": "^0.300.0",
 		"@holochain-playground/simulator": "^0.300.0",
-		"@open-wc/scoped-elements": "^2.1.2",
+		"@mdi/js": "^7.4.47",
 		"@scoped-elements/golden-layout": "^0.1.0",
-		"@scoped-elements/material-web": "^0.0.19",
-		"@webcomponents/scoped-custom-element-registry": "^0.0.5",
+		"@shoelace-style/shoelace": "^2.16.0",
 		"golden-layout": "^2.4.0",
 		"lit": "^3.0.0",
 		"lodash-es": "^4.17.21",

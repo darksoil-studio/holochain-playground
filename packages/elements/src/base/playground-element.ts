@@ -19,14 +19,4 @@ export class PlaygroundElement<
 	get store(): T {
 		return this._store as T;
 	}
-
-	showMessage(message: string) {
-		this.dispatchEvent(
-			new CustomEvent('show-message', {
-				bubbles: true,
-				composed: true,
-				detail: { message },
-			}),
-		);
-	}
 }

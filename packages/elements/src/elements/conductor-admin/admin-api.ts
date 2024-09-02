@@ -1,3 +1,4 @@
+import { notifyError } from '@holochain-open-dev/elements';
 import {
 	Dictionary,
 	SimulatedHappBundle,
@@ -204,7 +205,7 @@ export function adminApi(
 					element.store.activeDna.set(cell.dnaHash);
 					element.store.activeAgentPubKey.set(cell.agentPubKey);
 				} catch (e) {
-					element.showMessage(`Error: ${(e as any).message}`);
+					notifyError(`Error: ${(e as any).message}`);
 				}
 			},
 		},

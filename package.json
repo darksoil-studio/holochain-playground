@@ -12,11 +12,9 @@
 	"scripts": {
 		"start": "npm run build -w @holochain-playground/simulator && npm start -w @holochain-playground/elements",
 		"start:golden-layout": "npm run build -w @holochain-playground/simulator -w @holochain-playground/elements && npm start -w @holochain-playground/golden-layout",
-		"start:cli": "npm run build:happ && npm run build:libs && cross-env ADMIN_PORT=$(port) BOOTSTRAP_PORT=$(port) SIGNAL_PORT=$(port) concurrently -k \"npm run local-services\" \"cd tests/happ && npm start\" \"npm run dev:cli\"",
-		"dev:cli": "npm run build:watch -w @holochain-playground/elements -w @holochain-playground/cli-client && concurrently -k \"sleep 5 && npm start -w @holochain-playground/cli\"",
+		"start:cli": "npm run build:libs && cross-env ADMIN_PORT=$(port) mprocs \"cd tests/happ && npm start\" \"npm run build:watch -w @holochain-playground/elements\" \"npm run build:watch -w @holochain-playground/golden-layout\" n\"pm run build:watch -w @holochain-playground/cli-client\" \"sleep 5 && npm start -w @holochain-playground/cli\"",
 		"test": "npm t -w @holochain-playground/simulator",
 		"playground": "holochain-playground",
-		"local-services": "hc run-local-services --bootstrap-port $BOOTSTRAP_PORT --signal-port $SIGNAL_PORT",
 		"build:libs": "npm run build -w @holochain-playground/elements -w @holochain-playground/golden-layout",
 		"demo:start": "npm run build -w @holochain-playground/simulator -w @holochain-playground/elements -w @holochain-playground/golden-layout && npm start -w @holochain-playground/demo",
 		"demo:publish": "npm run build -ws && npm run publish -w @holochain-playground/demo"

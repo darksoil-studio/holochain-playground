@@ -5,7 +5,7 @@ import {
 	decodeHashFromBase64,
 	encodeHashToBase64,
 } from '@holochain/client';
-import '@scoped-elements/cytoscape/dist/cytoscape-cose-bilkent.js';
+import '@scoped-elements/cytoscape';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/checkbox/checkbox.js';
