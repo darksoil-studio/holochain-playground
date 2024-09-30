@@ -4,7 +4,7 @@
 	"description": "CLI tool that boots up the holochain playground to connect to a real running Holochain conductor",
 	"author": "guillem.cordoba@gmail.com",
 	"scripts": {
-		"start": "npm run build && concurrently \"webpack --config webpack.config.js --watch --mode development\" \"nodemon --config ./nodemon.config.json\" --raw",
+		"start": "npm run build && concurrently \"nodemon --config ./nodemon.config.json\" --raw",
 		"build": "rimraf dist && cross-env NODE_ENV=development webpack --config webpack.config.js && chmod +x dist/app.js",
 		"build:release": "dist && cross-env NODE_ENV=production webpack --config webpack.config.js && chmod +x dist/app.js"
 	},

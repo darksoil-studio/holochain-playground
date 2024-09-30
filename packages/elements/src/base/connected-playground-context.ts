@@ -1,4 +1,4 @@
-import { PropertyValues } from 'lit';
+import { PropertyValues, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
 import { ConnectedPlaygroundStore } from '../store/connected-playground-store.js';
@@ -31,5 +31,9 @@ export class ConnectedPlaygroundContext extends BasePlaygroundContext<ConnectedP
 		if (this.store && cv.has('urls')) {
 			(this.store as ConnectedPlaygroundStore).setConductors(this.urls);
 		}
+	}
+
+	render() {
+		return html`<slot></slot>`;
 	}
 }

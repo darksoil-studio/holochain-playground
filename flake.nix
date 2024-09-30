@@ -5,7 +5,7 @@
     nixpkgs.follows = "holonix/nixpkgs";
     holonix.url = "github:holochain/holonix/main-0.3";
 
-    p2p-shipyard.url = "github:darksoil-studio/p2p-shipyard/develop";
+    p2p-shipyard.url = "github:darksoil-studio/p2p-shipyard";
   };
 
   outputs = inputs@{ ... }:

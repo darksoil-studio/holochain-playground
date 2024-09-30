@@ -1,6 +1,5 @@
 import { sharedStyles } from '@holochain-playground/elements';
 import { GoldenLayoutDragSource } from '@scoped-elements/golden-layout';
-import { List, ListItem } from '@scoped-elements/material-web';
 import { LitElement, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 

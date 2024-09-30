@@ -88,49 +88,49 @@ export class HolochainPlayground extends LitElement {
 
 						<connected-playground-golden-layout-menu></connected-playground-golden-layout-menu>
 					</div>
-					<div class="column" style="display: flex; flex: 1">
-						<div class="row" style="align-items: center; gap: 12px">
-							<sl-icon-button
-								slot="navigationIcon"
-								@click=${() => {
-									this.drawer.show();
-								}}
-								.src=${wrapPathInSvg(mdiMenu)}
-								icon="menu"
-							></sl-icon-button>
-							<div>Holochain Playground</div>
-						</div>
-						<golden-layout-root style="flex: 1; margin-top: 66px;">
-							<golden-layout-row>
+				</sl-drawer>
+				<div class="column" style="display: flex; flex: 1">
+					<div class="row" style="align-items: center; gap: 12px">
+						<sl-icon-button
+							slot="navigationIcon"
+							@click=${() => {
+								this.drawer.show();
+							}}
+							.src=${wrapPathInSvg(mdiMenu)}
+							icon="menu"
+						></sl-icon-button>
+						<div>Holochain Playground</div>
+					</div>
+					<golden-layout-root style="flex: 1; margin-top: 66px;">
+						<golden-layout-row>
+							<golden-layout-component
+								component-type="source-chain"
+								width="30"
+							></golden-layout-component>
+							<golden-layout-column>
 								<golden-layout-component
-									component-type="source-chain"
-									width="30"
+									component-type="dht-entries"
 								></golden-layout-component>
-								<golden-layout-column>
+
+								<golden-layout-row>
 									<golden-layout-component
-										component-type="dht-entries"
+										component-type="dht-cells"
+										height="40"
 									></golden-layout-component>
 
-									<golden-layout-row>
+									<golden-layout-stack>
 										<golden-layout-component
-											component-type="dht-cells"
-											height="40"
+											component-type="entry-contents"
 										></golden-layout-component>
-
-										<golden-layout-stack>
-											<golden-layout-component
-												component-type="entry-contents"
-											></golden-layout-component>
-											<golden-layout-component
-												component-type="conductor-admin"
-											></golden-layout-component>
-										</golden-layout-stack>
-									</golden-layout-row>
-								</golden-layout-column>
-							</golden-layout-row>
-						</golden-layout-root>
-					</div>
-				</sl-drawer>
+										<golden-layout-component
+											component-type="conductor-admin"
+										></golden-layout-component>
+									</golden-layout-stack>
+								</golden-layout-row>
+							</golden-layout-column>
+						</golden-layout-row>
+					</golden-layout-root>
+				</div>
 			</connected-playground-golden-layout>
 		`;
 	}
