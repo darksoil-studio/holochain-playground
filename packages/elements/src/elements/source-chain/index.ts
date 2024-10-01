@@ -89,20 +89,17 @@ export class SourceChain extends PlaygroundElement {
 		return html`
 			<sl-card class="block-card">
 				<div class="column fill">
-					<span class="block-title row" style="margin: 16px;"
-						>Source
-						Chain${activeAgent
+					<div class="block-title row" style="align-items: center">
+						<span>Source Chain</span>${activeAgent
 							? html`
-									<span class="placeholder row">
-										, for Agent
-										<holo-identicon
-											.hash=${activeAgent}
-											style="margin-left: 8px;"
-										></holo-identicon>
-									</span>
+									<span class="placeholder row"> , for Agent </span>
+									<holo-identicon
+										.hash=${activeAgent}
+										style="margin-left: 8px; height: 32px"
+									></holo-identicon>
 								`
-							: html``}</span
-					>
+							: html``}
+					</div>
 					${this.renderHelp()}
 					${activeCell.status === 'completed' && activeCell.value
 						? html``

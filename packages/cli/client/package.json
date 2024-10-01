@@ -21,6 +21,7 @@
 		"@mdi/js": "^7.4.47",
 		"@scoped-elements/golden-layout": "^0.1.0",
 		"@shoelace-style/shoelace": "^2.16.0",
+		"dockview-core": "^1.17.1",
 		"golden-layout": "^2.4.0",
 		"lit": "^3.0.0",
 		"lodash-es": "^4.17.21",

@@ -615,17 +615,15 @@ export class DhtCells extends PlaygroundElement {
 			<sl-card class="block-card" style="position: relative;">
 				${this.renderHelp()} ${this.renderTasksTooltips()}
 				<div class="column fill">
-					<div class="block-title row" style="margin: 16px;">
-						Dht Cells
+					<div class="block-title row" style="align-items: center">
+						<span>Dht Cells</span>
 						${activeDna
 							? html`
-									<div class="placeholder row">
-										<span>, for Dna</span>
-										<holo-identicon
-											hash="${encodeHashToBase64(activeDna)}"
-											style="margin-left: 8px;"
-										></holo-identicon>
-									</div>
+									<span class="placeholder">, for Dna</span>
+									<holo-identicon
+										hash="${encodeHashToBase64(activeDna)}"
+										style="margin-left: 8px; height: 32px"
+									></holo-identicon>
 								`
 							: html``}
 					</div>

@@ -152,20 +152,17 @@ export class DhtEntries extends PlaygroundElement {
 		return html`
 			<sl-card class="block-card" style="position: relative;">
 				<div class="column fill">
-					<span class="block-title row" style="margin: 16px; margin-bottom: 0;"
-						>Dht
-						Entries${activeDna
+					<div class="block-title row" style="align-items: center">
+						<span>Dht Entries</span>${activeDna
 							? html`
-									<span class="placeholder row">
-										, for Dna
-										<holo-identicon
-											.hash=${activeDna}
-											style="margin-left: 8px;"
-										></holo-identicon>
-									</span>
+									<span class="placeholder"> , for Dna </span>
+									<holo-identicon
+										.hash=${activeDna}
+										style="margin-left: 8px; height: 32px"
+									></holo-identicon>
 								`
-							: html``}</span
-					>
+							: html``}
+					</div>
 
 					<cytoscape-cose-bilkent
 						.elements=${this.elements}

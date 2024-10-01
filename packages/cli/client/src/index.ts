@@ -12,11 +12,24 @@ import { SlDrawer } from '@shoelace-style/shoelace';
 import '@shoelace-style/shoelace/dist/components/drawer/drawer.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
+import { DockviewApi, SerializedDockview } from 'dockview-core';
+import { unsafeCSS } from 'lit';
 import { LitElement, css, html } from 'lit';
 import { customElement, query, state } from 'lit/decorators.js';
+import { ref } from 'lit/directives/ref.js';
 import { Socket, io } from 'socket.io-client';
 
+import './dock-view.js';
+import { DockViewEl } from './dock-view.js';
+
 export const socket: Socket = io();
+// const layout: SerializedDockview = {
+// 	grid: {
+// 		height: 1,
+// 		width: 1,
+
+// 	}
+// };
 
 @customElement('holochain-playground')
 export class HolochainPlayground extends LitElement {
@@ -57,7 +70,7 @@ export class HolochainPlayground extends LitElement {
 			`;
 
 		return html`
-			<connected-playground-golden-layout
+			<connected-playground-context
 				id="context"
 				style="flex: 1;"
 				.urls=${this.urls}
@@ -89,7 +102,7 @@ export class HolochainPlayground extends LitElement {
 						<connected-playground-golden-layout-menu></connected-playground-golden-layout-menu>
 					</div>
 				</sl-drawer>
-				<div class="column" style="display: flex; flex: 1;">
+				<div class="column " style="display: flex; flex: 1;">
 					<div
 						class="row"
 						style="padding: 4px; align-items: center; height: 48px; color: white; gap: 12px;  background-color: var(--sl-color-primary-500)"
@@ -105,40 +118,96 @@ export class HolochainPlayground extends LitElement {
 						></sl-icon-button>
 						<div>Holochain Playground</div>
 					</div>
-					<golden-layout-root style="flex: 1;">
-						<golden-layout-row>
-							<golden-layout-component
-								component-type="source-chain"
-								width="30"
-							></golden-layout-component>
-							<golden-layout-column>
-								<golden-layout-component
-									component-type="dht-entries"
-								></golden-layout-component>
+					<dock-view
+						style="flex: 1"
+						@dockview-ready=${(e: CustomEvent) => {
+							const dockview: DockviewApi = e.detail.dockview;
 
-								<golden-layout-row>
-									<golden-layout-component
-										component-type="dht-cells"
-										height="40"
-									></golden-layout-component>
+							const root = dockview.addGroup();
+							const group = dockview.addGroup({
+								referenceGroup: root,
+								direction: 'right',
+							});
+							const subgroup = dockview.addGroup({
+								referenceGroup: group,
+								direction: 'below',
+							});
+							const subsubgroup = dockview.addGroup({
+								referenceGroup: subgroup,
+								direction: 'right',
+							});
+							// const subsubsubgroup = dockview.addGroup({
+							// 	referenceGroup: subsubgroup,
+							// });
 
-									<golden-layout-stack>
-										<golden-layout-component
-											component-type="entry-contents"
-										></golden-layout-component>
-										<golden-layout-component
-											component-type="conductor-admin"
-										></golden-layout-component>
-									</golden-layout-stack>
-								</golden-layout-row>
-							</golden-layout-column>
-						</golden-layout-row>
-					</golden-layout-root>
+							dockview.addPanel({
+								id: 'DHT Entries',
+								component: 'dht-entries',
+								position: {
+									referenceGroup: group,
+								},
+							});
+
+							dockview.addPanel({
+								id: 'DHT Cells',
+								component: 'dht-cells',
+								position: {
+									referenceGroup: subgroup,
+								},
+							});
+
+							dockview.addPanel({
+								id: 'Entry Contents',
+								component: 'entry-contents',
+								position: {
+									referenceGroup: subsubgroup,
+								},
+							});
+
+							dockview.addPanel({
+								id: 'Source Chain',
+								component: 'source-chain',
+								position: {
+									referenceGroup: root,
+								},
+							});
+						}}
+					>
+					</dock-view>
 				</div>
-			</connected-playground-golden-layout>
+			</connected-playground-context>
 		`;
 	}
 
+	// <golden-layout-root>
+	// 	<golden-layout-row>
+	// 		<golden-layout-component
+	// 			component-type="source-chain"
+	// 			width="30"
+	// 		></golden-layout-component>
+	// 		<golden-layout-column>
+	// 			<golden-layout-component
+	// 				component-type="dht-entries"
+	// 			></golden-layout-component>
+
+	// 			<golden-layout-row>
+	// 				<golden-layout-component
+	// 					component-type="dht-cells"
+	// 					height="40"
+	// 				></golden-layout-component>
+
+	// 				<golden-layout-stack>
+	// 					<golden-layout-component
+	// 						component-type="entry-contents"
+	// 					></golden-layout-component>
+	// 					<golden-layout-component
+	// 						component-type="conductor-admin"
+	// 					></golden-layout-component>
+	// 				</golden-layout-stack>
+	// 			</golden-layout-row>
+	// 		</golden-layout-column>
+	// 	</golden-layout-row>
+	// </golden-layout-root>
 	static get styles() {
 		return [
 			css`
