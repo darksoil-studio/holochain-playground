@@ -82,15 +82,18 @@ export class HolochainPlayground extends LitElement {
 					});
 				}}
 			>
-				<sl-drawer label="Blocks" style="flex:1;">
+				<sl-drawer placement="start" label="Blocks" style="flex:1;">
 					<div class="column" style="gap: 12px">
 						<span>Drag-and-drop items </span>
 
 						<connected-playground-golden-layout-menu></connected-playground-golden-layout-menu>
 					</div>
 				</sl-drawer>
-				<div class="column" style="display: flex; flex: 1">
-					<div class="row" style="align-items: center; gap: 12px">
+				<div class="column" style="display: flex; flex: 1;">
+					<div
+						class="row"
+						style="padding: 4px; align-items: center; height: 48px; color: white; gap: 12px;  background-color: var(--sl-color-primary-500)"
+					>
 						<sl-icon-button
 							slot="navigationIcon"
 							@click=${() => {
@@ -98,10 +101,11 @@ export class HolochainPlayground extends LitElement {
 							}}
 							.src=${wrapPathInSvg(mdiMenu)}
 							icon="menu"
+							style="color: white; margin: 4px"
 						></sl-icon-button>
 						<div>Holochain Playground</div>
 					</div>
-					<golden-layout-root style="flex: 1; margin-top: 66px;">
+					<golden-layout-root style="flex: 1;">
 						<golden-layout-row>
 							<golden-layout-component
 								component-type="source-chain"
