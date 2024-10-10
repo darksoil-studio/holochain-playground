@@ -29,6 +29,7 @@ export function allEntries(
 	excludedEntryTypes: string[],
 ) {
 	const summary = summarizeDht(dhtShards, simulatedDna);
+	console.log(summary);
 	let nodes: any[] = [];
 	const edges: any[] = [];
 
@@ -102,14 +103,16 @@ export function allEntries(
 	}
 
 	// Add link edges
+	console.log(summary.links);
 
 	for (const [baseAddress, links] of summary.links.entries()) {
 		let entryHash;
+		console.log(baseAddress, getHashType(baseAddress));
 		if (getHashType(baseAddress) === HashType.ENTRY) {
 			entryHash = baseAddress;
 		} else if (getHashType(baseAddress) === HashType.ACTION) {
 			const action: Action = summary.actions.get(baseAddress);
-			if ((action as NewEntryAction).entry_hash) {
+			if (action && (action as NewEntryAction).entry_hash) {
 				entryHash = (action as NewEntryAction).entry_hash;
 			}
 		}
@@ -126,6 +129,7 @@ export function allEntries(
 				if (getHashType(link.target_address) === HashType.ENTRY) {
 					targetEntryHash = link.target_address;
 				} else if (getHashType(link.target_address) === HashType.ACTION) {
+					console.log(encodeHashToBase64(link.target_address));
 					const action: Action = summary.actions.get(link.target_address);
 					if (action && (action as NewEntryAction).entry_hash) {
 						targetEntryHash = (action as NewEntryAction).entry_hash;
@@ -264,6 +268,8 @@ export function allEntries(
 	}
 
 	const allEntryTypes = uniq(Array.from(summary.entryTypes.values()));
+
+	console.log(nodes);
 
 	return {
 		nodes,

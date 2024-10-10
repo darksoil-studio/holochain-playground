@@ -19,7 +19,7 @@ export class EntryContents extends PlaygroundElement {
 		const activeContent = this.store.activeContent.get();
 		return html`
 			<sl-card style="width: auto; min-height: 200px;" class="fill">
-				<div class="column fill" style="padding: 16px;">
+				<div class="column fill">
 					<span class="title row" style="margin-bottom: 8px;">
 						${activeContent.status === 'completed' &&
 						activeContent.value &&

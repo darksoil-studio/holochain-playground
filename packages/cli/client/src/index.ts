@@ -95,28 +95,12 @@ export class HolochainPlayground extends LitElement {
 					});
 				}}
 			>
-				<sl-drawer placement="start" label="Blocks" style="flex:1;">
-					<div class="column" style="gap: 12px">
-						<span>Drag-and-drop items </span>
-
-						<connected-playground-golden-layout-menu></connected-playground-golden-layout-menu>
-					</div>
-				</sl-drawer>
 				<div class="column " style="display: flex; flex: 1;">
 					<div
 						class="row"
-						style="padding: 4px; align-items: center; height: 48px; color: white; gap: 12px;  background-color: var(--sl-color-primary-500)"
+						style="padding: 4px; align-items: center; height: 48px; color: white; gap: 12px; background-color: var(--sl-color-primary-500);"
 					>
-						<sl-icon-button
-							slot="navigationIcon"
-							@click=${() => {
-								this.drawer.show();
-							}}
-							.src=${wrapPathInSvg(mdiMenu)}
-							icon="menu"
-							style="color: white; margin: 4px"
-						></sl-icon-button>
-						<div>Holochain Playground</div>
+						<div style="margin-left: 12px">Holochain Playground</div>
 					</div>
 					<dock-view
 						style="flex: 1"
@@ -179,35 +163,6 @@ export class HolochainPlayground extends LitElement {
 		`;
 	}
 
-	// <golden-layout-root>
-	// 	<golden-layout-row>
-	// 		<golden-layout-component
-	// 			component-type="source-chain"
-	// 			width="30"
-	// 		></golden-layout-component>
-	// 		<golden-layout-column>
-	// 			<golden-layout-component
-	// 				component-type="dht-entries"
-	// 			></golden-layout-component>
-
-	// 			<golden-layout-row>
-	// 				<golden-layout-component
-	// 					component-type="dht-cells"
-	// 					height="40"
-	// 				></golden-layout-component>
-
-	// 				<golden-layout-stack>
-	// 					<golden-layout-component
-	// 						component-type="entry-contents"
-	// 					></golden-layout-component>
-	// 					<golden-layout-component
-	// 						component-type="conductor-admin"
-	// 					></golden-layout-component>
-	// 				</golden-layout-stack>
-	// 			</golden-layout-row>
-	// 		</golden-layout-column>
-	// 	</golden-layout-row>
-	// </golden-layout-root>
 	static get styles() {
 		return [
 			css`

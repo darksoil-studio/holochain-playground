@@ -1,9 +1,4 @@
-import {
-	CellMap,
-	HashType,
-	HoloHashMap,
-	hash,
-} from '@holochain-open-dev/utils';
+import { CellMap, HoloHashMap, hashAction } from '@holochain-open-dev/utils';
 import {
 	SimulatedDna,
 	getEntryTypeString,
@@ -124,7 +119,7 @@ export function summarizeDht(
 
 			const action = getDhtOpAction(dhtOp);
 
-			const actionHash = hash(action, HashType.ACTION);
+			const actionHash = hashAction(action);
 
 			if (!visited.has(actionHash)) {
 				visited.set(actionHash, []);

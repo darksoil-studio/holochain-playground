@@ -1,5 +1,5 @@
 {
 	"watch": ["./src", "../client/dist"],
 	"ignore": ["**/*.map.js"],
-	"exec": "webpack --config webpack.config.js --mode development && node ./dist/app.js ws://localhost:${ADMIN_PORT}"
+	"exec": "webpack --config webpack.config.js --mode development && node ./dist/app.js ws://localhost:${ADMIN_PORT} ws://localhost:${ADMIN_PORT_2}"
 }
