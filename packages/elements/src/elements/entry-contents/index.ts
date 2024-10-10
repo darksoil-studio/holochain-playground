@@ -20,14 +20,17 @@ export class EntryContents extends PlaygroundElement {
 		return html`
 			<sl-card style="width: auto; min-height: 200px;" class="fill">
 				<div class="column fill">
-					<span class="title row" style="margin-bottom: 8px;">
+					<span
+						class="title row"
+						style="margin-bottom: 8px; align-items:center"
+					>
 						${activeContent.status === 'completed' &&
 						activeContent.value &&
 						activeContent.value.type
 							? 'Action'
 							: 'Entry'}
 						Contents${activeDhtHash
-							? html`<span class="row placeholder">
+							? html`<span class="row placeholder" style="align-items:center">
 									, with hash
 									<holo-identicon
 										.hash=${activeDhtHash}

@@ -6,6 +6,7 @@
     holonix.url = "github:holochain/holonix/main-0.3";
 
     p2p-shipyard.url = "github:darksoil-studio/p2p-shipyard";
+    hc-infra.url = "github:holochain-open-dev/infrastructure";
   };
 
   outputs = inputs@{ ... }:
@@ -13,7 +14,10 @@
       systems = builtins.attrNames inputs.holonix.devShells;
       perSystem = { config, pkgs, system, inputs', ... }: {
         devShells.default = pkgs.mkShell {
-          inputsFrom = [ inputs.holonix.devShells.${system}.default ];
+          inputsFrom = [
+            inputs.holonix.devShells.${system}.default
+            inputs'.hc-infra.devShells.synchronized-pnpm
+          ];
           packages = [
             pkgs.nodejs_20
             inputs'.p2p-shipyard.packages.hc-pilot

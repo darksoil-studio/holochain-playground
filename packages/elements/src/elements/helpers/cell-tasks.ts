@@ -18,8 +18,8 @@ import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import { css, html } from 'lit';
-import { styleMap } from 'lit-html/directives/style-map.js';
 import { customElement, property, state } from 'lit/decorators.js';
+import { styleMap } from 'lit/directives/style-map.js';
 
 import { MiddlewareController } from '../../base/middleware-controller.js';
 import { PlaygroundElement } from '../../base/playground-element.js';

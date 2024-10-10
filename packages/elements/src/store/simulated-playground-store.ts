@@ -6,24 +6,31 @@ import {
 } from '@holochain-open-dev/signals';
 import { CellMap } from '@holochain-open-dev/utils';
 import {
+	AppRole,
 	BadAgent,
 	Cell,
 	Conductor,
 	ConductorSignalType,
 	Dictionary,
+	InstalledHapps,
 	SimulatedHappBundle,
 	createConductors,
 	selectDhtShard,
 	selectSourceChain,
+	simulatedRolesToCellInfo,
 } from '@holochain-playground/simulator';
 import {
 	AgentPubKey,
 	AnyDhtHash,
 	AppInfo,
 	CellId,
+	CellInfo,
+	CellType,
 	DhtOp,
+	DnaModifiers,
 	Record,
 } from '@holochain/client';
+import { encode } from '@msgpack/msgpack';
 
 import { ConnectedCellStore } from './connected-playground-store.js';
 import {
@@ -126,14 +133,15 @@ export class SimulatedConductorStore
 			},
 		);
 		this.badAgent = new Signal.Computed(() => this.conductor.badAgent);
-		this.happs = pollingSignal(apps => {
+
+		this.happs = pollingSignal(async apps => {
 			return Object.values(this.conductor.installedHapps).map(
 				h =>
 					({
 						agent_pub_key: h.agent_pub_key,
 						installed_app_id: h.app_id,
 						status: 'running',
-						cell_info: 
+						cell_info: simulatedRolesToCellInfo(h.roles),
 					}) as AppInfo,
 			);
 		});
@@ -190,7 +198,7 @@ export class PauseSignal extends Signal.State<boolean> {
 export class SimulatedPlaygroundStore extends PlaygroundStore<SimulatedConductorStore> {
 	conductors: Signal.State<Array<SimulatedConductorStore>>;
 
-	happs: Signal.State<Dictionary<SimulatedHappBundle>>;
+	simulatedHapps: Signal.State<Dictionary<SimulatedHappBundle>>;
 
 	paused = new PauseSignal();
 
@@ -202,7 +210,7 @@ export class SimulatedPlaygroundStore extends PlaygroundStore<SimulatedConductor
 		this.conductors = new Signal.State(
 			initialConductors.map(c => new SimulatedConductorStore(c)),
 		);
-		this.happs = new Signal.State({ [initialHapp.name]: initialHapp });
+		this.simulatedHapps = new Signal.State({ [initialHapp.name]: initialHapp });
 		this.activeDna.set(initialConductors[0].cells.cellIds()[0][0]);
 	}
 

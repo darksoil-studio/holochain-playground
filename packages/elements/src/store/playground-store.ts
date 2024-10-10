@@ -5,6 +5,7 @@ import {
 	Signal,
 	joinAsync,
 	joinAsyncMap,
+	uniquify,
 	watch,
 } from '@holochain-open-dev/signals';
 import { CellMap, HashType, hash } from '@holochain-open-dev/utils';
@@ -116,8 +117,6 @@ type CellStoreForConductorStore<T> =
 export abstract class PlaygroundStore<
 	T extends SimulatedConductorStore | ConnectedConductorStore,
 > {
-	activeHapp = new Signal.State<string | undefined>(undefined);
-
 	activeDna = new Signal.State<DnaHash | undefined>(undefined);
 
 	activeAgentPubKey = new Signal.State<AgentPubKey | undefined>(undefined);
@@ -192,7 +191,7 @@ export abstract class PlaygroundStore<
 		const allCells = this.allCells.get();
 		if (allCells.status !== 'completed') return allCells;
 
-		const value = allCells.value.cellIds().map(cellId => cellId[0]);
+		const value = uniquify(allCells.value.cellIds().map(cellId => cellId[0]));
 		return {
 			status: 'completed',
 			value,

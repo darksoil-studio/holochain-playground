@@ -1,3 +1,4 @@
+export * from './core/utils.js';
 export * from './core/cell/index.js';
 export * from './core/network/network.js';
 export * from './core/network/p2p-cell.js';

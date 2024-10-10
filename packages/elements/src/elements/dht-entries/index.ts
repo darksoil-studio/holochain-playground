@@ -1,3 +1,4 @@
+import { wrapPathInSvg } from '@holochain-open-dev/elements';
 import '@holochain-open-dev/elements/dist/elements/holo-identicon.js';
 import { CellMap } from '@holochain-open-dev/utils';
 import {
@@ -5,10 +6,12 @@ import {
 	decodeHashFromBase64,
 	encodeHashToBase64,
 } from '@holochain/client';
+import { mdiFilter, mdiFilterMinus } from '@mdi/js';
 import '@scoped-elements/cytoscape';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/checkbox/checkbox.js';
+import '@shoelace-style/shoelace/dist/components/divider/divider.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import '@shoelace-style/shoelace/dist/components/select/select.js';
@@ -108,7 +111,7 @@ export class DhtEntries extends PlaygroundElement {
 	renderFilter() {
 		return html` <div
 			class="row"
-			style="align-items: center; justify-content: start; margin: 8px;"
+			style="align-items: center; justify-content: start;"
 		>
 			<sl-checkbox
 				style="margin-right: 16px"
@@ -128,22 +131,25 @@ export class DhtEntries extends PlaygroundElement {
 				>Show Only Active Agent's Shard</sl-checkbox
 			>
 
-			<span class="vertical-divider"></span>
+			<div style="flex: 1"></div>
 
-			<div class="row" style="position: relative;">
-				<sl-select
-					multiple
-					label="Excluded entries"
-					help-text="Excluded entries won' be visible in the graph"
-					@sl-change=${(e: any) => {
-						this.excludedEntryTypes = e.target.value;
-					}}
-				>
-					${this._entryTypes.map(
-						type => html` <sl-option value="${type}"> ${type} </sl-option> `,
-					)}
-				</sl-select>
-			</div>
+			<sl-select
+				multiple
+				@sl-change=${(e: any) => {
+					this.excludedEntryTypes = e.target.value;
+				}}
+				placeholder="No filtered entry types"
+				style="min-width: 20em"
+			>
+				<sl-icon
+					slot="prefix"
+					style="margin-left: 8px"
+					.src=${wrapPathInSvg(mdiFilter)}
+				></sl-icon>
+				${this._entryTypes.map(
+					type => html` <sl-option value="${type}"> ${type} </sl-option> `,
+				)}
+			</sl-select>
 		</div>`;
 	}
 
@@ -153,15 +159,10 @@ export class DhtEntries extends PlaygroundElement {
 			<sl-card class="block-card" style="position: relative;">
 				<div class="column fill">
 					<div class="block-title row" style="align-items: center">
-						<span>Dht Entries</span>${activeDna
-							? html`
-									<span class="placeholder"> , for Dna </span>
-									<holo-identicon
-										.hash=${activeDna}
-										style="margin-left: 8px; height: 32px"
-									></holo-identicon>
-								`
-							: html``}
+						<span>Dht Entries</span>
+						<div style="flex: 1"></div>
+
+						${this.renderHelp()}
 					</div>
 
 					<cytoscape-cose-bilkent
@@ -172,8 +173,6 @@ export class DhtEntries extends PlaygroundElement {
 						@node-selected=${(e: any) =>
 							this.store.activeDhtHash.set(decodeHashFromBase64(e.detail.id()))}
 					></cytoscape-cose-bilkent>
-
-					${this.renderHelp()}
 					${!this.hideFilter ? this.renderFilter() : html``}
 				</div>
 			</sl-card>

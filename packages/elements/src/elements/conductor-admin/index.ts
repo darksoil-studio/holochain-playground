@@ -56,11 +56,7 @@ export class ConductorAdmin extends PlaygroundElement {
 	renderHelp() {
 		const activeAgentPubKey = this.store.activeAgentPubKey.get();
 		return html`
-			<help-button
-				heading="Conductor Admin Help"
-				style="--mdc-dialog-max-width: 700px"
-				class="block-help"
-			>
+			<help-button heading="Conductor Admin Help">
 				<span>
 					You've selected the conductor with Agent ID
 					${activeAgentPubKey
@@ -225,7 +221,7 @@ export class ConductorAdmin extends PlaygroundElement {
 		)
 			return html``;
 
-		const happs = this.store.happs.get();
+		const happs = this.store.simulatedHapps.get();
 
 		const adminApiFns = adminApi(this, happs, activeConductor.value);
 

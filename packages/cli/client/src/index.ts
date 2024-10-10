@@ -1,35 +1,22 @@
-import { wrapPathInSvg } from '@holochain-open-dev/elements';
 import { watch } from '@holochain-open-dev/signals';
 import {
 	ConnectedPlaygroundStore,
 	sharedStyles,
 } from '@holochain-playground/elements';
-import '@holochain-playground/golden-layout/dist/connected/connected-playground-golden-layout-menu.js';
-import '@holochain-playground/golden-layout/dist/connected/connected-playground-golden-layout.js';
+import '@holochain-playground/elements';
 import { mdiMenu } from '@mdi/js';
-import '@scoped-elements/golden-layout';
 import { SlDrawer } from '@shoelace-style/shoelace';
 import '@shoelace-style/shoelace/dist/components/drawer/drawer.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import { DockviewApi, SerializedDockview } from 'dockview-core';
-import { unsafeCSS } from 'lit';
 import { LitElement, css, html } from 'lit';
 import { customElement, query, state } from 'lit/decorators.js';
-import { ref } from 'lit/directives/ref.js';
 import { Socket, io } from 'socket.io-client';
 
 import './dock-view.js';
-import { DockViewEl } from './dock-view.js';
 
 export const socket: Socket = io();
-// const layout: SerializedDockview = {
-// 	grid: {
-// 		height: 1,
-// 		width: 1,
-
-// 	}
-// };
 
 @customElement('holochain-playground')
 export class HolochainPlayground extends LitElement {
@@ -98,9 +85,9 @@ export class HolochainPlayground extends LitElement {
 				<div class="column " style="display: flex; flex: 1;">
 					<div
 						class="row"
-						style="padding: 4px; align-items: center; height: 48px; color: white; gap: 12px; background-color: var(--sl-color-primary-500);"
+						style="padding: 8px; align-items: center; color: white; gap: 12px; background-color: var(--sl-color-primary-500);"
 					>
-						<div style="margin-left: 12px">Holochain Playground</div>
+						<select-active-dna> </select-active-dna>
 					</div>
 					<dock-view
 						style="flex: 1"

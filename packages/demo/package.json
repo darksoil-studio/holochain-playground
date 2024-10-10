@@ -1,37 +1,34 @@
 {
-	"name": "@holochain-playground/demo",
-	"description": "Webcomponent devcamp-8 following open-wc recommendations",
-	"private": true,
-	"scripts": {
-		"start": "vite --open",
-		"build": "vite build",
-		"lint": "eslint src && prettier \"**/*.ts\" --check --ignore-path .gitignore",
-		"format": "eslint src && prettier \"**/*.ts\" --write --ignore-path .gitignore",
-		"publish": "npm run build && gh-pages -d ./dist -b gh-pages"
-	},
-	"dependencies": {
-		"@holochain-open-dev/core-types": "^0.300.0",
-		"@holochain-open-dev/elements": "^0.300.0",
-		"@holochain-playground/golden-layout": "^0.300.0",
-		"@holochain-playground/simulator": "^0.300.0",
-		"@mdi/js": "^7.4.47",
-		"@scoped-elements/golden-layout": "^0.1.0",
-		"@shoelace-style/shoelace": "^2.16.0",
-		"golden-layout": "^2.4.0",
-		"lit": "^3.0.0",
-		"lodash-es": "^4.17.21"
-	},
-	"devDependencies": {
-		"@custom-elements-manifest/analyzer": "^0.5.7",
-		"@types/lodash-es": "^4.17.5",
-		"deepmerge": "^4.2.2",
-		"gh-pages": "^3.2.3",
-		"eslint": "^8.0.0",
-		"prettier": "^3.2.5",
-		"tslib": "^2.3.1",
-		"typescript": "^5.4.0",
-		"vite": "^4.1.2",
-		"vite-plugin-checker": "^0.5.6"
-	},
-	"customElements": "custom-elements.json"
+  "name": "@holochain-playground/demo",
+  "description": "Webcomponent devcamp-8 following open-wc recommendations",
+  "private": true,
+  "scripts": {
+    "start": "vite --open",
+    "build": "vite build",
+    "lint": "eslint src && prettier \"**/*.ts\" --check --ignore-path .gitignore",
+    "format": "eslint src && prettier \"**/*.ts\" --write --ignore-path .gitignore",
+    "publish": "npm run build && gh-pages -d ./dist -b gh-pages"
+  },
+  "dependencies": {
+    "@holochain-open-dev/core-types": "^0.300.0",
+    "@holochain-open-dev/elements": "^0.300.0",
+    "@holochain-playground/simulator": "workspace:^0.300.0",
+    "@mdi/js": "^7.4.47",
+    "@shoelace-style/shoelace": "^2.16.0",
+    "lit": "^3.0.0",
+    "lodash-es": "^4.17.21"
+  },
+  "devDependencies": {
+    "@custom-elements-manifest/analyzer": "^0.5.7",
+    "@types/lodash-es": "^4.17.5",
+    "deepmerge": "^4.2.2",
+    "gh-pages": "^3.2.3",
+    "eslint": "^8.0.0",
+    "prettier": "^3.2.5",
+    "tslib": "^2.3.1",
+    "typescript": "^5.4.0",
+    "vite": "^4.1.2",
+    "vite-plugin-checker": "^0.5.6"
+  },
+  "customElements": "custom-elements.json"
 }

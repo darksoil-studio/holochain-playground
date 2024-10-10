@@ -1,44 +1,41 @@
 {
-	"name": "@holochain-playground/cli-client",
-	"description": "Webcomponent devcamp-8 following open-wc recommendations",
-	"license": "MIT",
-	"author": "guillem.cordoba@gmail.com",
-	"version": "0.300.0",
-	"scripts": {
-		"lint": "eslint src && prettier \"**/*.ts\" --check --ignore-path .gitignore",
-		"format": "eslint src && prettier \"**/*.ts\" --write --ignore-path .gitignore",
-		"build": "vite build",
-		"build:watch": "vite build --watch",
-		"prepare": "npm run build"
-	},
-	"dependencies": {
-		"@holochain-open-dev/core-types": "^0.300.0",
-		"@holochain-open-dev/elements": "^0.300.0",
-		"@holochain-open-dev/signals": "^0.300.0",
-		"@holochain-playground/elements": "^0.300.0",
-		"@holochain-playground/golden-layout": "^0.300.0",
-		"@holochain-playground/simulator": "^0.300.0",
-		"@mdi/js": "^7.4.47",
-		"@scoped-elements/golden-layout": "^0.1.0",
-		"@shoelace-style/shoelace": "^2.16.0",
-		"dockview-core": "^1.17.1",
-		"golden-layout": "^2.4.0",
-		"lit": "^3.0.0",
-		"lodash-es": "^4.17.21",
-		"socket.io-client": "^4.4.0"
-	},
-	"devDependencies": {
-		"@custom-elements-manifest/analyzer": "^0.5.7",
-		"@types/lodash-es": "^4.17.5",
-		"concurrently": "^5.3.0",
-		"cross-env": "^7.0.3",
-		"deepmerge": "^4.2.2",
-		"dotenv": "^16.4.5",
-		"eslint": "^8.0.0",
-		"prettier": "^3.2.5",
-		"tslib": "^2.3.1",
-		"typescript": "^5.4.0",
-		"vite": "^4.1.2"
-	},
-	"customElements": "custom-elements.json"
+  "name": "@holochain-playground/cli-client",
+  "description": "Webcomponent devcamp-8 following open-wc recommendations",
+  "license": "MIT",
+  "author": "guillem.cordoba@gmail.com",
+  "version": "0.300.0",
+  "scripts": {
+    "lint": "eslint src && prettier \"**/*.ts\" --check --ignore-path .gitignore",
+    "format": "eslint src && prettier \"**/*.ts\" --write --ignore-path .gitignore",
+    "build": "vite build",
+    "build:watch": "vite build --watch",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "@holochain-open-dev/core-types": "^0.300.0",
+    "@holochain-open-dev/elements": "^0.300.0",
+    "@holochain-open-dev/signals": "^0.300.0",
+    "@holochain-playground/elements": "workspace:^0.300.0",
+    "@holochain-playground/simulator": "workspace:^0.300.0",
+    "@mdi/js": "^7.4.47",
+    "@shoelace-style/shoelace": "^2.16.0",
+    "dockview-core": "^1.17.1",
+    "lit": "^3.0.0",
+    "lodash-es": "^4.17.21",
+    "socket.io-client": "^4.4.0"
+  },
+  "devDependencies": {
+    "@custom-elements-manifest/analyzer": "^0.5.7",
+    "@types/lodash-es": "^4.17.5",
+    "concurrently": "^5.3.0",
+    "cross-env": "^7.0.3",
+    "deepmerge": "^4.2.2",
+    "dotenv": "^16.4.5",
+    "eslint": "^8.0.0",
+    "prettier": "^3.2.5",
+    "tslib": "^2.3.1",
+    "typescript": "^5.4.0",
+    "vite": "^4.1.2"
+  },
+  "customElements": "custom-elements.json"
 }

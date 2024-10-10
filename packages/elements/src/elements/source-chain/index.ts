@@ -99,8 +99,9 @@ export class SourceChain extends PlaygroundElement {
 									></holo-identicon>
 								`
 							: html``}
+						<div style="flex: 1"></div>
+						${this.renderHelp()}
 					</div>
-					${this.renderHelp()}
 					${activeCell.status === 'completed' && activeCell.value
 						? html``
 						: html`

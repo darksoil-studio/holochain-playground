@@ -16,3 +16,16 @@ roles:
         quantum_time: ~
       installed_hash: ~
       clone_limit: 0
+  - name: forum2
+    provisioning:
+      strategy: create
+      deferred: false
+    dna:
+      bundled: "../dnas/forum/workdir/forum.dna"
+      modifiers:
+        network_seed: asdfasdf
+        properties: ~
+        origin_time: ~
+        quantum_time: ~
+      installed_hash: ~
+      clone_limit: 0

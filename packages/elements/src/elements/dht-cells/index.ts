@@ -613,19 +613,13 @@ export class DhtCells extends PlaygroundElement {
 
 		return html`
 			<sl-card class="block-card" style="position: relative;">
-				${this.renderHelp()} ${this.renderTasksTooltips()}
+				${this.renderTasksTooltips()}
 				<div class="column fill">
 					<div class="block-title row" style="align-items: center">
 						<span>Dht Cells</span>
-						${activeDna
-							? html`
-									<span class="placeholder">, for Dna</span>
-									<holo-identicon
-										hash="${encodeHashToBase64(activeDna)}"
-										style="margin-left: 8px; height: 32px"
-									></holo-identicon>
-								`
-							: html``}
+
+						<div style="flex: 1"></div>
+						${this.renderHelp()}
 					</div>
 					<cytoscape-circle
 						id="graph"

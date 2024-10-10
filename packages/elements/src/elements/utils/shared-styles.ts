@@ -39,12 +39,6 @@ export const sharedStyles = css`
 		font-size: 20px;
 	}
 
-	.block-help {
-		position: absolute;
-		right: 8px;
-		top: 8px;
-	}
-
 	.horizontal-divider {
 		background-color: grey;
 		height: 1px;

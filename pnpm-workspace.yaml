@@ -1,0 +1,6 @@
+packages:
+  - 'packages/simulator'
+  - 'packages/elements'
+  - 'packages/cli/client'
+  - 'packages/cli/server'
+  - 'packages/demo'

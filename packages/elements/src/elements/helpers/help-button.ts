@@ -1,3 +1,4 @@
+import { wrapPathInSvg } from '@holochain-open-dev/elements';
 import { mdiHelpCircleOutline } from '@mdi/js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/dialog/dialog.js';
@@ -18,9 +19,6 @@ export class HelpButton extends LitElement {
 		return html`
 			<sl-dialog id="help-dialog" .label=${this.heading}>
 				<slot></slot>
-				<sl-button slot="footer" @click=${() => this._helpDialog.hide()}>
-					Got it!
-				</sl-button>
 			</sl-dialog>
 		`;
 	}
@@ -29,7 +27,7 @@ export class HelpButton extends LitElement {
 		return html`
 			${this.renderHelpDialog()}
 			<sl-icon-button
-				.src=${mdiHelpCircleOutline}
+				.src=${wrapPathInSvg(mdiHelpCircleOutline)}
 				@click=${() => this._helpDialog.show()}
 			></sl-icon-button>
 		`;
