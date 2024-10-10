@@ -8,6 +8,7 @@ import {
 	AdminWebsocket,
 	AgentPubKey,
 	AnyDhtHash,
+	AppInfo,
 	CellId,
 	DhtOp,
 	FullIntegrationStateDump,
@@ -147,6 +148,7 @@ export class ConnectedCellStore implements CellStore {
 export class ConnectedConductorStore
 	implements ConductorStore<ConnectedCellStore>
 {
+	happs: AsyncSignal<Array<AppInfo>>;
 	cells: AsyncSignal<CellMap<ConnectedCellStore>>;
 
 	constructor(protected adminWs: AdminWebsocket) {
@@ -172,6 +174,10 @@ export class ConnectedConductorStore
 			}
 
 			return currentCells;
+		});
+		this.happs = pollingSignal(async currentHapps => {
+			const apps = await adminWs.listApps({});
+			return apps;
 		});
 	}
 

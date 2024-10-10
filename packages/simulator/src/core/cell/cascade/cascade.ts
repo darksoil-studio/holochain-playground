@@ -240,9 +240,13 @@ export class Cascade {
 		const response = result as GetRecordResponse;
 
 		const record: Record = {
-			entry: {
-				Present: response.maybe_entry,
-			},
+			entry: response.maybe_entry
+				? {
+						Present: response.maybe_entry,
+					}
+				: {
+						NotApplicable: undefined,
+					},
 			signed_action: response.signed_action,
 		};
 

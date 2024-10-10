@@ -4,17 +4,17 @@ import { CellState } from '../state.js';
 import { extractEntry, hashEntry } from '../utils.js';
 
 export const putRecord =
-  (record: Record) =>
-  (state: CellState): void => {
-    // Put action in CAS
-    const actionHash = record.signed_action.hashed.hash;
-    state.CAS.set(actionHash, record.signed_action);
+	(record: Record) =>
+	(state: CellState): void => {
+		// Put action in CAS
+		const actionHash = record.signed_action.hashed.hash;
+		state.CAS.set(actionHash, record.signed_action);
 
-    // Put entry in CAS if it exist
-    if ('Present' in record.entry) {
-      const entryHash = hashEntry(extractEntry(record));
-      state.CAS.set(entryHash, extractEntry(record));
-    }
+		// Put entry in CAS if it exist
+		if ('Present' in record.entry) {
+			const entryHash = hashEntry(extractEntry(record)!);
+			state.CAS.set(entryHash, extractEntry(record));
+		}
 
-    state.sourceChain.push(actionHash);
-  };
+		state.sourceChain.push(actionHash);
+	};

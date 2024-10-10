@@ -77,12 +77,12 @@ export function getRecord(state: CellState, actionHash: ActionHash): Record {
 			};
 		} else {
 			entry = {
-				Hidden: null,
+				Hidden: undefined,
 			};
 		}
 	} else {
 		entry = {
-			NotApplicable: null,
+			NotApplicable: undefined,
 		};
 	}
 	return { signed_action, entry };

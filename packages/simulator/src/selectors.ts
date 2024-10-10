@@ -1,33 +1,48 @@
 import {
-  DhtOp,
-  Entry,
-  NewEntryAction,
-  SignedActionHashed,
-  Record,
+	DhtOp,
+	Entry,
+	NewEntryAction,
+	Record,
+	SignedActionHashed,
 } from '@holochain/client';
+
+import { isPublic } from './core/cell/index.js';
 import { CellState } from './core/cell/state.js';
 
 export function selectSourceChain(cellState: CellState): Record[] {
-  const actionHashes = cellState.sourceChain;
+	const actionHashes = cellState.sourceChain;
 
-  return actionHashes.map((hash) => {
-    const signed_action: SignedActionHashed = { ...cellState.CAS.get(hash) };
+	return actionHashes.map(hash => {
+		const signed_action: SignedActionHashed = { ...cellState.CAS.get(hash) };
 
-    const { entry_hash } = signed_action.hashed.content as NewEntryAction;
-    let entry: Entry | undefined;
-    if (entry_hash) {
-      entry = { ...cellState.CAS.get(entry_hash) };
-    }
+		const newEntryAction = signed_action.hashed.content as NewEntryAction;
+		const { entry_hash } = newEntryAction;
+		let entry: Entry | undefined;
+		if (entry_hash) {
+			const storedEntry = cellState.CAS.get(entry_hash);
+			if (storedEntry) {
+				entry = { ...storedEntry };
+			}
+		}
 
-    return {
-      signed_action,
-      entry: {
-        Present: entry,
-      },
-    };
-  });
+		const publicEntryType = isPublic(newEntryAction.entry_type);
+		return {
+			signed_action,
+			entry: entry
+				? {
+						Present: entry,
+					}
+				: publicEntryType
+					? {
+							NotStored: undefined,
+						}
+					: {
+							Hidden: undefined,
+						},
+		};
+	});
 }
 
 export function selectDhtShard(cellState: CellState): DhtOp[] {
-  return Array.from(cellState.integratedDHTOps.values()).map((v) => v.op);
+	return Array.from(cellState.integratedDHTOps.values()).map(v => v.op);
 }

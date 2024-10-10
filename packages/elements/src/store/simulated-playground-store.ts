@@ -19,6 +19,7 @@ import {
 import {
 	AgentPubKey,
 	AnyDhtHash,
+	AppInfo,
 	CellId,
 	DhtOp,
 	Record,
@@ -31,6 +32,7 @@ import {
 	PlaygroundStore,
 	getFromStore,
 } from './playground-store.js';
+import { pollingSignal } from './polling-store.js';
 import { cellChanges } from './utils.js';
 
 export class SimulatedCellStore implements CellStore {
@@ -90,6 +92,7 @@ export class SimulatedCellStore implements CellStore {
 export class SimulatedConductorStore
 	implements ConductorStore<SimulatedCellStore>
 {
+	happs: AsyncSignal<AppInfo[]>;
 	cells: AsyncState<CellMap<SimulatedCellStore>>;
 
 	badAgent: Signal.Computed<BadAgent | undefined>;
@@ -123,6 +126,17 @@ export class SimulatedConductorStore
 			},
 		);
 		this.badAgent = new Signal.Computed(() => this.conductor.badAgent);
+		this.happs = pollingSignal(apps => {
+			return Object.values(this.conductor.installedHapps).map(
+				h =>
+					({
+						agent_pub_key: h.agent_pub_key,
+						installed_app_id: h.app_id,
+						status: 'running',
+						cell_info: 
+					}) as AppInfo,
+			);
+		});
 	}
 
 	get name() {

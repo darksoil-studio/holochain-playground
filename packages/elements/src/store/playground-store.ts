@@ -12,6 +12,7 @@ import {
 	ActionHashed,
 	AgentPubKey,
 	AnyDhtHash,
+	AppInfo,
 	CellId,
 	DhtOp,
 	DhtOpType,
@@ -105,6 +106,7 @@ export function getFromStore(
 }
 
 export interface ConductorStore<T extends CellStore> {
+	happs: AsyncSignal<Array<AppInfo>>;
 	cells: AsyncSignal<CellMap<T>>;
 }
 
@@ -114,6 +116,8 @@ type CellStoreForConductorStore<T> =
 export abstract class PlaygroundStore<
 	T extends SimulatedConductorStore | ConnectedConductorStore,
 > {
+	activeHapp = new Signal.State<string | undefined>(undefined);
+
 	activeDna = new Signal.State<DnaHash | undefined>(undefined);
 
 	activeAgentPubKey = new Signal.State<AgentPubKey | undefined>(undefined);
@@ -181,6 +185,8 @@ export abstract class PlaygroundStore<
 			value,
 		};
 	});
+
+	// allHapps =
 
 	allDnas = new AsyncComputed(() => {
 		const allCells = this.allCells.get();
