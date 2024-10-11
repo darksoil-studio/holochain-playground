@@ -1,15 +1,17 @@
 # holochain-playground
 
-Mono repo for the holochain playground
+Mono repo for the holochain playground.
 
-## Building
+## CLI
+
+### Starting the CLI
 
 ```bash
-npm run build
+pnpm start:cli 
 ```
 
-## Trying the CLI
+### Building the CLI
 
 ```bash
-npm run playground ws://localhost:2222
+pnpm build:cli
 ```
