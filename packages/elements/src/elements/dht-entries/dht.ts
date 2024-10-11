@@ -6,6 +6,7 @@ import {
 import {
 	Action,
 	ActionHash,
+	ActionType,
 	AnyDhtHash,
 	AppEntryDef,
 	CreateLink,
@@ -72,6 +73,15 @@ export function getDhtOpAction(op: DhtOp): Action {
 	) {
 		return {
 			type: 'Update',
+			...action,
+		};
+	}
+	if (
+		opType === DhtOpType.RegisterDeletedBy ||
+		opType === DhtOpType.RegisterDeletedEntryAction
+	) {
+		return {
+			type: 'Delete',
 			...action,
 		};
 	}
