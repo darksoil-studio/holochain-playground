@@ -9,7 +9,7 @@
     "format": "eslint src && prettier \"**/*.ts\" --write --ignore-path .gitignore",
     "build": "vite build",
     "build:watch": "vite build --watch",
-    "prepare": "npm run build"
+    "prepare": "pnpm build"
   },
   "dependencies": {
     "@holochain-open-dev/core-types": "^0.300.0",
