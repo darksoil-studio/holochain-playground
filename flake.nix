@@ -65,7 +65,6 @@
           '';
           meta.mainProgram = "hc-playground";
         };
-
       };
     };
 }
