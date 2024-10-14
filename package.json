@@ -1,25 +1,25 @@
 {
-  "name": "@holochain-playground/dev",
-  "private": true,
-  "scripts": {
-    "start": "pnpm build -F @holochain-playground/simulator && pnpm start -F @holochain-playground/elements",
-    "start:cli": "pnpm build:libs && cross-env ADMIN_PORT=$(port) ADMIN_PORT_2=$(port) mprocs \"cd tests/happ && pnpm start\" \"pnpm -F @holochain-playground/elements build:watch\" \"pnpm -F @holochain-playground/cli-client build:watch\" \"sleep 5 && pnpm -F @holochain-playground/cli start\"",
-    "build:cli": "pnpm -F @holochain-playground/elements build && pnpm -F @holochain-playground/cli-client build && pnpm -F @holochain-playground/cli build",
-    "test": "pnpm -F @holochain-playground/simulator test",
-    "build:libs": "pnpm -F @holochain-playground/elements build",
-    "demo:start": "pnpm -F @holochain-playground/simulator build && pnpm -F @holochain-playground/elements build && pnpm -F @holochain-playground/demo start",
-    "demo:publish": "pnpm -r build && pnpm -F @holochain-playground/demo run publish"
-  },
-  "devDependencies": {
-    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
-    "@eslint/js": "^8.0.0",
-    "concurrently": "^6.4.0",
-    "cross-env": "^7.0.3",
-    "eslint": "^8.0.0",
-    "eslint-config-prettier": "^9.1.0",
-    "new-port-cli": "^1.0.0",
-    "prettier": "^3.2.5",
-    "typescript-eslint": "^7.7.0",
-    "typescript": "^5.4.5"
-  }
+	"name": "@holochain-playground/dev",
+	"private": true,
+	"scripts": {
+		"start": "pnpm build -F @holochain-playground/simulator && pnpm start -F @holochain-playground/elements",
+		"start:cli": "pnpm build:libs && cross-env ADMIN_PORT=$(port) ADMIN_PORT_2=$(port) mprocs \"cd tests/happ && pnpm start\" \"pnpm -F @holochain-playground/elements build:watch\" \"pnpm -F @holochain-playground/cli-client build:watch\" \"sleep 5 && pnpm -F @holochain-playground/cli start\"",
+		"build:cli": "pnpm -F @holochain-playground/simulator build && pnpm -F @holochain-playground/elements build && pnpm -F @holochain-playground/cli-client build && pnpm -F @holochain-playground/cli build",
+		"test": "pnpm -F @holochain-playground/simulator test",
+		"build:libs": "pnpm -F @holochain-playground/elements build",
+		"demo:start": "pnpm -F @holochain-playground/simulator build && pnpm -F @holochain-playground/elements build && pnpm -F @holochain-playground/demo start",
+		"demo:publish": "pnpm -r build && pnpm -F @holochain-playground/demo run publish"
+	},
+	"devDependencies": {
+		"@trivago/prettier-plugin-sort-imports": "^4.3.0",
+		"@eslint/js": "^8.0.0",
+		"concurrently": "^6.4.0",
+		"cross-env": "^7.0.3",
+		"eslint": "^8.0.0",
+		"eslint-config-prettier": "^9.1.0",
+		"new-port-cli": "^1.0.0",
+		"prettier": "^3.2.5",
+		"typescript-eslint": "^7.7.0",
+		"typescript": "^5.4.5"
+	}
 }

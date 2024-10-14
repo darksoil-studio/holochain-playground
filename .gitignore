@@ -110,3 +110,4 @@ target/
 .hc*
 
 .direnv
+result*
