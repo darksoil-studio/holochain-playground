@@ -53,7 +53,7 @@
               inputs.tnesh-stack.inputs.pnpmnixpkgs.outputs.legacyPackages.${system}.pnpm.fetchDeps {
                 inherit (finalAttrs) version pname src;
 
-                hash = "sha256-KWJc+daidI1vkdBDCSGkzC9C/dkE3PPgbIB3Mpxtc1A=";
+                hash = "sha256-x7x9r5hQogF6/d+ZCjP8fPPLHGHkecJa68QGaKgIdas=";
               };
             buildPhase = ''
               runHook preBuild
