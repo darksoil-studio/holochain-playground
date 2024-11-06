@@ -1,9 +1,3 @@
-import {
-	CellMap,
-	HashType,
-	HoloHashMap,
-	hash,
-} from '@holochain-open-dev/utils';
 import { BadAgent, Cell, location } from '@holochain-playground/simulator';
 import {
 	ActionHash,
@@ -17,6 +11,7 @@ import {
 	getDhtOpAction,
 	getDhtOpType,
 } from '@holochain/client';
+import { CellMap, HashType, HoloHashMap, hash } from '@tnesh-stack/utils';
 import isEqual from 'lodash-es/isEqual.js';
 
 import { CellStore } from '../../store/playground-store.js';

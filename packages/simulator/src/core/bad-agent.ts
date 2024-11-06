@@ -1,13 +1,14 @@
-import { CellMap } from '@holochain-open-dev/utils';
+import { CellMap } from '@tnesh-stack/utils';
+
 import { SimulatedDna } from '../dnas/simulated-dna.js';
 
 export interface BadAgentConfig {
-  disable_validation_before_publish: boolean;
-  pretend_invalid_records_are_valid: boolean;
+	disable_validation_before_publish: boolean;
+	pretend_invalid_records_are_valid: boolean;
 }
 
 export interface BadAgent {
-  config: BadAgentConfig;
+	config: BadAgentConfig;
 
-  counterfeitDnas: CellMap<SimulatedDna>; // Segmented by DnaHash / AgentPubKey
+	counterfeitDnas: CellMap<SimulatedDna>; // Segmented by DnaHash / AgentPubKey
 }

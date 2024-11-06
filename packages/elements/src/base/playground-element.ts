@@ -1,5 +1,5 @@
-import { SignalWatcher } from '@holochain-open-dev/signals';
 import { consume } from '@lit/context';
+import { SignalWatcher } from '@tnesh-stack/signals';
 import { LitElement } from 'lit';
 import { state } from 'lit/decorators.js';
 

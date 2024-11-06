@@ -1,6 +1,6 @@
-import { wrapPathInSvg } from '@holochain-open-dev/elements';
 import { mdiArrowDown, mdiArrowUp } from '@mdi/js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
+import { wrapPathInSvg } from '@tnesh-stack/elements';
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 

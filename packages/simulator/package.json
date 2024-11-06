@@ -15,8 +15,8 @@
     "test:watch": "concurrently -k -r \"pnpm build:watch\" \"vitest\""
   },
   "dependencies": {
-    "@holochain-open-dev/core-types": "^0.300.0",
-    "@holochain-open-dev/utils": "^0.300.0",
+    "@tnesh-stack/core-types": "^0.300.0",
+    "@tnesh-stack/utils": "^0.300.0",
     "@holochain/client": "^0.17.0",
     "@msgpack/msgpack": "^2.7.1",
     "blakejs": "^1.1.0",

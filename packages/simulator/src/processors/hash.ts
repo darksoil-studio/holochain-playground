@@ -1,5 +1,5 @@
-import { HoloHashMap } from '@holochain-open-dev/utils';
 import { HoloHash } from '@holochain/client';
+import { HoloHashMap } from '@tnesh-stack/utils';
 // @ts-ignore
 import blake from 'blakejs';
 

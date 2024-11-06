@@ -1,11 +1,4 @@
 import {
-	AsyncComputed,
-	AsyncSignal,
-	AsyncState,
-	Signal,
-} from '@holochain-open-dev/signals';
-import { CellMap } from '@holochain-open-dev/utils';
-import {
 	AppRole,
 	BadAgent,
 	Cell,
@@ -31,6 +24,13 @@ import {
 	Record,
 } from '@holochain/client';
 import { encode } from '@msgpack/msgpack';
+import {
+	AsyncComputed,
+	AsyncSignal,
+	AsyncState,
+	Signal,
+} from '@tnesh-stack/signals';
+import { CellMap } from '@tnesh-stack/utils';
 
 import { ConnectedCellStore } from './connected-playground-store.js';
 import {

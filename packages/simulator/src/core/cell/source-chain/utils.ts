@@ -1,5 +1,3 @@
-import { DhtOpHash } from '@holochain-open-dev/core-types';
-import { HoloHashMap } from '@holochain-open-dev/utils';
 import {
 	ActionHash,
 	ActionType,
@@ -22,6 +20,8 @@ import {
 	Update,
 	ZomeCallCapGrant,
 } from '@holochain/client';
+import { DhtOpHash } from '@tnesh-stack/core-types';
+import { HoloHashMap } from '@tnesh-stack/utils';
 
 import { areEqual } from '../../../processors/hash.js';
 import { CellState } from '../state.js';

@@ -10,8 +10,8 @@
     "publish": "npm run build && gh-pages -d ./dist -b gh-pages"
   },
   "dependencies": {
-    "@holochain-open-dev/core-types": "^0.300.0",
-    "@holochain-open-dev/elements": "^0.300.0",
+    "@tnesh-stack/core-types": "^0.300.0",
+    "@tnesh-stack/elements": "^0.300.0",
     "@holochain-playground/simulator": "workspace:^0.300.0",
     "@mdi/js": "^7.4.47",
     "@shoelace-style/shoelace": "^2.16.0",

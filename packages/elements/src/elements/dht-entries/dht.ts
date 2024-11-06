@@ -1,4 +1,3 @@
-import { CellMap, HoloHashMap, hashAction } from '@holochain-open-dev/utils';
 import {
 	SimulatedDna,
 	getEntryTypeString,
@@ -22,6 +21,7 @@ import {
 	getDhtOpEntry,
 	getDhtOpType,
 } from '@holochain/client';
+import { CellMap, HoloHashMap, hashAction } from '@tnesh-stack/utils';
 
 function appendToArray<T>(
 	map: HoloHashMap<HoloHash, T[]>,

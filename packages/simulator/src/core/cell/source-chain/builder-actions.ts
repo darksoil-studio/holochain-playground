@@ -1,161 +1,161 @@
 import {
-  Dna,
-  ActionType,
-  AgentValidationPkg,
-  Entry,
-  EntryType,
-  Create,
-  Update,
-  SignedActionHashed,
-  Action,
-  CreateLink,
-  Delete,
-  DeleteLink,
-  AgentPubKey,
-  DnaHash,
-  EntryHash,
-  ActionHash,
-  AnyLinkableHash,
-  LinkType,
+	Action,
+	ActionHash,
+	ActionType,
+	AgentPubKey,
+	AgentValidationPkg,
+	AnyLinkableHash,
+	Create,
+	CreateLink,
+	Delete,
+	DeleteLink,
+	Dna,
+	DnaHash,
+	Entry,
+	EntryHash,
+	EntryType,
+	LinkType,
+	SignedActionHashed,
+	Update,
 } from '@holochain/client';
-import { hash, HashType } from '@holochain-open-dev/utils';
+import { HashType, hash } from '@tnesh-stack/utils';
 
 import { CellState } from '../state.js';
 import { hashEntry } from '../utils.js';
 import { getAuthor, getNextActionSeq, getTipOfChain } from './utils.js';
 
 export function buildShh(action: Action): SignedActionHashed {
-  return {
-    hashed: {
-      content: action,
-      hash: hash(action, HashType.ACTION),
-    },
-    signature: Uint8Array.from([]),
-  };
+	return {
+		hashed: {
+			content: action,
+			hash: hash(action, HashType.ACTION),
+		},
+		signature: Uint8Array.from([]),
+	};
 }
 
 export function buildDna(dnaHash: DnaHash, agentId: AgentPubKey): Dna {
-  const dna: Dna = {
-    author: agentId,
-    hash: dnaHash,
-    timestamp: Date.now() * 1000,
-    type: ActionType.Dna,
-  };
+	const dna: Dna = {
+		author: agentId,
+		hash: dnaHash,
+		timestamp: Date.now() * 1000,
+		type: ActionType.Dna,
+	};
 
-  return dna;
+	return dna;
 }
 
 export function buildAgentValidationPkg(
-  state: CellState,
-  membrane_proof: any
+	state: CellState,
+	membrane_proof: any,
 ): AgentValidationPkg {
-  const pkg: AgentValidationPkg = {
-    ...buildCommon(state),
-    membrane_proof,
-    type: ActionType.AgentValidationPkg,
-  };
-  return pkg;
+	const pkg: AgentValidationPkg = {
+		...buildCommon(state),
+		membrane_proof,
+		type: ActionType.AgentValidationPkg,
+	};
+	return pkg;
 }
 
 export function buildCreate(
-  state: CellState,
-  entry: Entry,
-  entry_type: EntryType
+	state: CellState,
+	entry: Entry,
+	entry_type: EntryType,
 ): Create {
-  const entry_hash = hashEntry(entry);
-  const create: Create = {
-    ...buildCommon(state),
-    entry_hash,
-    entry_type,
-    type: ActionType.Create,
-  };
-  return create;
+	const entry_hash = hashEntry(entry);
+	const create: Create = {
+		...buildCommon(state),
+		entry_hash,
+		entry_type,
+		type: ActionType.Create,
+	};
+	return create;
 }
 
 export function buildCreateLink(
-  state: CellState,
-  zome_index: number,
-  base: AnyLinkableHash,
-  target: AnyLinkableHash,
-  link_type: LinkType,
-  tag: any
+	state: CellState,
+	zome_index: number,
+	base: AnyLinkableHash,
+	target: AnyLinkableHash,
+	link_type: LinkType,
+	tag: any,
 ): CreateLink {
-  const create_link: CreateLink = {
-    ...buildCommon(state),
-    base_address: base,
-    target_address: target,
-    tag,
-    zome_index,
-    link_type,
-    type: ActionType.CreateLink,
-    weight: {
-      bucket_id: 0,
-      units: 0,
-    },
-  };
-  return create_link;
+	const create_link: CreateLink = {
+		...buildCommon(state),
+		base_address: base,
+		target_address: target,
+		tag,
+		zome_index,
+		link_type,
+		type: ActionType.CreateLink,
+		weight: {
+			bucket_id: 0,
+			units: 0,
+		},
+	};
+	return create_link;
 }
 
 export function buildUpdate(
-  state: CellState,
-  entry: Entry,
-  entry_type: EntryType,
-  original_entry_address: EntryHash,
-  original_action_address: ActionHash
+	state: CellState,
+	entry: Entry,
+	entry_type: EntryType,
+	original_entry_address: EntryHash,
+	original_action_address: ActionHash,
 ): Update {
-  const entry_hash = hashEntry(entry);
+	const entry_hash = hashEntry(entry);
 
-  const update: Update = {
-    ...buildCommon(state),
-    entry_hash,
-    entry_type,
-    original_entry_address,
-    original_action_address,
+	const update: Update = {
+		...buildCommon(state),
+		entry_hash,
+		entry_type,
+		original_entry_address,
+		original_action_address,
 
-    type: ActionType.Update,
-  };
-  return update;
+		type: ActionType.Update,
+	};
+	return update;
 }
 
 export function buildDelete(
-  state: CellState,
-  deletes_address: ActionHash,
-  deletes_entry_address: EntryHash
+	state: CellState,
+	deletes_address: ActionHash,
+	deletes_entry_address: EntryHash,
 ): Delete {
-  const deleteAction: Delete = {
-    ...buildCommon(state),
-    type: ActionType.Delete,
-    deletes_address,
-    deletes_entry_address,
-  };
-  return deleteAction;
+	const deleteAction: Delete = {
+		...buildCommon(state),
+		type: ActionType.Delete,
+		deletes_address,
+		deletes_entry_address,
+	};
+	return deleteAction;
 }
 
 export function buildDeleteLink(
-  state: CellState,
-  base_address: EntryHash,
-  link_add_address: ActionHash
+	state: CellState,
+	base_address: EntryHash,
+	link_add_address: ActionHash,
 ): DeleteLink {
-  const deleteAction: DeleteLink = {
-    ...buildCommon(state),
-    type: ActionType.DeleteLink,
-    base_address,
-    link_add_address,
-  };
-  return deleteAction;
+	const deleteAction: DeleteLink = {
+		...buildCommon(state),
+		type: ActionType.DeleteLink,
+		base_address,
+		link_add_address,
+	};
+	return deleteAction;
 }
 /** Helpers */
 
 function buildCommon(state: CellState) {
-  const author = getAuthor(state);
-  const action_seq = getNextActionSeq(state);
-  const prev_action = getTipOfChain(state);
-  const timestamp = Date.now() * 1000;
+	const author = getAuthor(state);
+	const action_seq = getNextActionSeq(state);
+	const prev_action = getTipOfChain(state);
+	const timestamp = Date.now() * 1000;
 
-  return {
-    author,
-    action_seq,
-    prev_action,
-    timestamp,
-  };
+	return {
+		author,
+		action_seq,
+		prev_action,
+		timestamp,
+	};
 }

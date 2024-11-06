@@ -5,8 +5,8 @@
     nixpkgs.follows = "holonix/nixpkgs";
     holonix.url = "github:holochain/holonix/main-0.3";
 
-    p2p-shipyard.url = "github:darksoil-studio/p2p-shipyard";
-    hc-infra.url = "github:holochain-open-dev/infrastructure";
+    p2p-shipyard.url = "github:darksoil-studio/p2p-shipyard/main-0.3";
+    tnesh-stack.url = "github:darksoil-studio/tnesh-stack/main-0.3";
   };
 
   outputs = inputs@{ ... }:
@@ -16,7 +16,7 @@
         devShells.default = pkgs.mkShell {
           inputsFrom = [
             inputs.holonix.devShells.${system}.default
-            inputs'.hc-infra.devShells.synchronized-pnpm
+            inputs'.tnesh-stack.devShells.synchronized-pnpm
           ];
           packages = [
             pkgs.nodejs_20
@@ -30,16 +30,16 @@
             version = "0.300.0";
             pname = "holochain-playground-cli";
             src =
-              # (inputs.hc-infra.outputs.lib.cleanPnpmDepsSource { inherit lib; })
+              # (inputs.tnesh-stack.outputs.lib.cleanPnpmDepsSource { inherit lib; })
               ./.;
 
             nativeBuildInputs =
-              with inputs.hc-infra.inputs.pnpmnixpkgs.outputs.legacyPackages.${system}; [
+              with inputs.tnesh-stack.inputs.pnpmnixpkgs.outputs.legacyPackages.${system}; [
                 nodejs
                 pnpm.configHook
               ];
             pnpmDeps =
-              inputs.hc-infra.inputs.pnpmnixpkgs.outputs.legacyPackages.${system}.pnpm.fetchDeps {
+              inputs.tnesh-stack.inputs.pnpmnixpkgs.outputs.legacyPackages.${system}.pnpm.fetchDeps {
                 inherit (finalAttrs) version pname src;
 
                 hash = "sha256-KWJc+daidI1vkdBDCSGkzC9C/dkE3PPgbIB3Mpxtc1A=";

@@ -1,6 +1,3 @@
-import { DhtOpHash } from '@holochain-open-dev/core-types';
-import { HashType, getHashType, hash } from '@holochain-open-dev/utils';
-import { HoloHashMap } from '@holochain-open-dev/utils';
 import {
 	AgentPubKey,
 	AnyDhtHash,
@@ -12,6 +9,9 @@ import {
 	LinkType,
 	Record,
 } from '@holochain/client';
+import { DhtOpHash } from '@tnesh-stack/core-types';
+import { HashType, getHashType, hash } from '@tnesh-stack/utils';
+import { HoloHashMap } from '@tnesh-stack/utils';
 import { cloneDeep, isEqual, uniqWith } from 'lodash-es';
 
 import { MiddlewareExecutor } from '../../executor/middleware-executor.js';

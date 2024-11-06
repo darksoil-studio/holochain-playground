@@ -1,6 +1,6 @@
-import '@holochain-open-dev/elements/dist/elements/holo-identicon.js';
 import '@power-elements/json-viewer';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
+import '@tnesh-stack/elements/dist/elements/holo-identicon.js';
 import { html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 

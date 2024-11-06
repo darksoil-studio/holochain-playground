@@ -1,6 +1,3 @@
-import { wrapPathInSvg } from '@holochain-open-dev/elements';
-import '@holochain-open-dev/elements/dist/elements/holo-identicon.js';
-import { CellMap, isHash } from '@holochain-open-dev/utils';
 import {
 	Cell,
 	SimulatedDna,
@@ -15,6 +12,9 @@ import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import '@shoelace-style/shoelace/dist/components/tab-group/tab-group.js';
 import '@shoelace-style/shoelace/dist/components/tab-panel/tab-panel.js';
 import '@shoelace-style/shoelace/dist/components/tab/tab.js';
+import { wrapPathInSvg } from '@tnesh-stack/elements';
+import '@tnesh-stack/elements/dist/elements/holo-identicon.js';
+import { CellMap, isHash } from '@tnesh-stack/utils';
 import { css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';

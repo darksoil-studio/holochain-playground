@@ -1,10 +1,5 @@
-import {
-	CellMap,
-	HashType,
-	HoloHashMap,
-	hash,
-} from '@holochain-open-dev/utils';
 import { AgentPubKey, CapSecret, CellId, DnaHash } from '@holochain/client';
+import { CellMap, HashType, HoloHashMap, hash } from '@tnesh-stack/utils';
 import isEqual from 'lodash-es/isEqual.js';
 
 import { BootstrapService } from '../bootstrap/bootstrap-service.js';

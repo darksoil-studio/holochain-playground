@@ -1,6 +1,3 @@
-import { wrapPathInSvg } from '@holochain-open-dev/elements';
-import '@holochain-open-dev/elements/dist/elements/holo-identicon.js';
-import { CellMap } from '@holochain-open-dev/utils';
 import {
 	DhtOp,
 	decodeHashFromBase64,
@@ -15,6 +12,9 @@ import '@shoelace-style/shoelace/dist/components/divider/divider.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import '@shoelace-style/shoelace/dist/components/select/select.js';
+import { wrapPathInSvg } from '@tnesh-stack/elements';
+import '@tnesh-stack/elements/dist/elements/holo-identicon.js';
+import { CellMap } from '@tnesh-stack/utils';
 import { css, html } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import isEqual from 'lodash-es/isEqual.js';

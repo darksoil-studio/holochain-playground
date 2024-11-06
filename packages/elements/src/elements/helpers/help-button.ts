@@ -1,9 +1,9 @@
-import { wrapPathInSvg } from '@holochain-open-dev/elements';
 import { mdiHelpCircleOutline } from '@mdi/js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/dialog/dialog.js';
 import SlDialog from '@shoelace-style/shoelace/dist/components/dialog/dialog.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
+import { wrapPathInSvg } from '@tnesh-stack/elements';
 import { LitElement, html } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 

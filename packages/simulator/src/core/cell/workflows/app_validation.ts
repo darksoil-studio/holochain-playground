@@ -1,4 +1,3 @@
-import { HashType, hash, hashAction } from '@holochain-open-dev/utils';
 import {
 	ActionType,
 	AgentPubKey,
@@ -14,6 +13,7 @@ import {
 	getDhtOpAction,
 	getDhtOpSignature,
 } from '@holochain/client';
+import { HashType, hash, hashAction } from '@tnesh-stack/utils';
 import { isEqual } from 'lodash-es';
 
 import {

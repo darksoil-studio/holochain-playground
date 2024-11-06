@@ -1,11 +1,4 @@
 import {
-	Details,
-	DetailsType,
-	EntryDetails,
-	RecordDetails,
-} from '@holochain-open-dev/core-types';
-import { HashType, getHashType } from '@holochain-open-dev/utils';
-import {
 	ActionHash,
 	AnyDhtHash,
 	Entry,
@@ -15,6 +8,13 @@ import {
 	Record,
 	SignedActionHashed,
 } from '@holochain/client';
+import {
+	Details,
+	DetailsType,
+	EntryDetails,
+	RecordDetails,
+} from '@tnesh-stack/core-types';
+import { HashType, getHashType } from '@tnesh-stack/utils';
 
 import { areEqual } from '../../../processors/hash.js';
 import { GetLinksOptions, GetOptions, GetStrategy } from '../../../types.js';

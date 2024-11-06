@@ -1,8 +1,8 @@
-import { notifyError } from '@holochain-open-dev/elements';
 import {
 	Dictionary,
 	SimulatedHappBundle,
 } from '@holochain-playground/simulator';
+import { notifyError } from '@tnesh-stack/elements';
 import { html } from 'lit';
 
 import { PlaygroundElement } from '../../base/playground-element.js';

@@ -6,7 +6,7 @@
     "start:cli": "pnpm build:libs && cross-env ADMIN_PORT=$(port) ADMIN_PORT_2=$(port) mprocs \"cd tests/happ && pnpm start\" \"pnpm -F @holochain-playground/elements build:watch\" \"pnpm -F @holochain-playground/cli-client build:watch\" \"sleep 5 && pnpm -F @holochain-playground/cli start\"",
     "build:cli": "pnpm -F @holochain-playground/simulator build && pnpm -F @holochain-playground/elements build && pnpm -F @holochain-playground/cli-client build && pnpm -F @holochain-playground/cli build",
     "test": "pnpm -F @holochain-playground/simulator test",
-    "build:libs": "pnpm -F @holochain-playground/elements build",
+    "build:libs": "pnpm -F @holochain-playground/simulator build && pnpm -F @holochain-playground/elements build && pnpm -F @holochain-playground/cli-client build",
     "demo:start": "pnpm -F @holochain-playground/simulator build && pnpm -F @holochain-playground/elements build && pnpm -F @holochain-playground/demo start",
     "demo:publish": "pnpm -r build && pnpm -F @holochain-playground/demo run publish"
   },

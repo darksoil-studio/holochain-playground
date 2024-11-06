@@ -1,10 +1,4 @@
 import {
-	AsyncComputed,
-	AsyncSignal,
-	Signal,
-} from '@holochain-open-dev/signals';
-import { AGENT_PREFIX, CellMap } from '@holochain-open-dev/utils';
-import {
 	AdminWebsocket,
 	AgentPubKey,
 	AnyDhtHash,
@@ -15,6 +9,8 @@ import {
 	FullStateDump,
 	Record,
 } from '@holochain/client';
+import { AsyncComputed, AsyncSignal, Signal } from '@tnesh-stack/signals';
+import { AGENT_PREFIX, CellMap } from '@tnesh-stack/utils';
 import { Base64 } from 'js-base64';
 import isEqual from 'lodash-es/isEqual.js';
 

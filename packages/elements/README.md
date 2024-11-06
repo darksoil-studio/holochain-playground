@@ -1,6 +1,6 @@
 # Holochain Playground
 
-Visit the [playground](https://holochain-open-dev.github.io/holochain-playground/).
+Visit the [playground](https://darksoil.studio/holochain-playground/).
 
 This is an experimental ongoing effort to build a holochain playground simulation. It's trying to follow as accurately as possible the internal mechanisms of holochain, displaying the DHT and enabling detailed inspection.
 
@@ -8,7 +8,7 @@ This package is distributed as an [NPM package component library](https://npmjs.
 
 ## Library Usage
 
-1. Install the package with `npm i holochain-playground` .
+1. Install the package with `npm i @holochain-playground/elements` .
 2. Import the `holochain-playground-provider` in your application like this:
 
 ``` js

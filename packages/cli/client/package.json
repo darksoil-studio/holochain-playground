@@ -12,9 +12,9 @@
     "prepare": "pnpm build"
   },
   "dependencies": {
-    "@holochain-open-dev/core-types": "^0.300.0",
-    "@holochain-open-dev/elements": "^0.300.0",
-    "@holochain-open-dev/signals": "^0.300.0",
+    "@tnesh-stack/core-types": "^0.300.0",
+    "@tnesh-stack/elements": "^0.300.1",
+    "@tnesh-stack/signals": "^0.300.1",
     "@holochain-playground/elements": "workspace:^0.300.0",
     "@holochain-playground/simulator": "workspace:^0.300.0",
     "@mdi/js": "^7.4.47",

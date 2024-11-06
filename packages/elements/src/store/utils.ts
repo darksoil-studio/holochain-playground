@@ -1,10 +1,6 @@
-import {
-	AsyncResult,
-	JoinAsyncOptions,
-	joinAsync,
-} from '@holochain-open-dev/signals';
-import { CellMap } from '@holochain-open-dev/utils';
 import { CellId } from '@holochain/client';
+import { AsyncResult, JoinAsyncOptions, joinAsync } from '@tnesh-stack/signals';
+import { CellMap } from '@tnesh-stack/utils';
 import isEqual from 'lodash-es/isEqual.js';
 
 export function cellChanges(

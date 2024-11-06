@@ -1,4 +1,3 @@
-import { HashType, hash } from '@holochain-open-dev/utils';
 import {
 	ActionType,
 	AnyDhtHash,
@@ -18,6 +17,7 @@ import {
 	getDhtOpEntry,
 	getDhtOpType,
 } from '@holochain/client';
+import { HashType, hash } from '@tnesh-stack/utils';
 
 import { SimulatedDna } from '../../dnas/simulated-dna.js';
 import { isPublic } from './source-chain/utils.js';

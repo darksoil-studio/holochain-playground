@@ -1,5 +1,3 @@
-import '@holochain-open-dev/elements/dist/elements/holo-identicon.js';
-import { AsyncComputed } from '@holochain-open-dev/signals';
 import { encodeHashToBase64 } from '@holochain/client';
 import '@power-elements/json-viewer';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
@@ -8,6 +6,8 @@ import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/tab-group/tab-group.js';
 import '@shoelace-style/shoelace/dist/components/tab-panel/tab-panel.js';
 import '@shoelace-style/shoelace/dist/components/tab/tab.js';
+import '@tnesh-stack/elements/dist/elements/holo-identicon.js';
+import { AsyncComputed } from '@tnesh-stack/signals';
 import '@vaadin/grid/vaadin-grid-column.js';
 import '@vaadin/grid/vaadin-grid.js';
 import { Grid, GridColumn } from '@vaadin/grid/vaadin-grid.js';

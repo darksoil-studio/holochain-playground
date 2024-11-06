@@ -1,4 +1,3 @@
-import { watch } from '@holochain-open-dev/signals';
 import {
 	ConnectedPlaygroundStore,
 	sharedStyles,
@@ -9,6 +8,7 @@ import { SlDrawer } from '@shoelace-style/shoelace';
 import '@shoelace-style/shoelace/dist/components/drawer/drawer.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
+import { watch } from '@tnesh-stack/signals';
 import { DockviewApi, SerializedDockview } from 'dockview-core';
 import { LitElement, css, html } from 'lit';
 import { customElement, query, state } from 'lit/decorators.js';

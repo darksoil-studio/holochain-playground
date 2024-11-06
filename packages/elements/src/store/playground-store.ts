@@ -1,15 +1,4 @@
 import {
-	AsyncComputed,
-	AsyncResult,
-	AsyncSignal,
-	Signal,
-	joinAsync,
-	joinAsyncMap,
-	uniquify,
-	watch,
-} from '@holochain-open-dev/signals';
-import { CellMap, HashType, hash } from '@holochain-open-dev/utils';
-import {
 	ActionHashed,
 	AgentPubKey,
 	AnyDhtHash,
@@ -24,6 +13,17 @@ import {
 	getDhtOpEntry,
 	getDhtOpType,
 } from '@holochain/client';
+import {
+	AsyncComputed,
+	AsyncResult,
+	AsyncSignal,
+	Signal,
+	joinAsync,
+	joinAsyncMap,
+	uniquify,
+	watch,
+} from '@tnesh-stack/signals';
+import { CellMap, HashType, hash } from '@tnesh-stack/utils';
 import isEqual from 'lodash-es/isEqual.js';
 
 import { ConnectedConductorStore } from './connected-playground-store.js';

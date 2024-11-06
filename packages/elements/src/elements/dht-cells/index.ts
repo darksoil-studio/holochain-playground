@@ -1,7 +1,3 @@
-import { DhtOpHash } from '@holochain-open-dev/core-types';
-import '@holochain-open-dev/elements/dist/elements/holo-identicon.js';
-import { AsyncComputed, Signal } from '@holochain-open-dev/signals';
-import { CellMap, HoloHashMap } from '@holochain-open-dev/utils';
 import {
 	BadAgent,
 	NetworkRequestInfo,
@@ -31,6 +27,10 @@ import '@shoelace-style/shoelace/dist/components/menu/menu.js';
 import SlMenu from '@shoelace-style/shoelace/dist/components/menu/menu.js';
 import '@shoelace-style/shoelace/dist/components/range/range.js';
 import '@shoelace-style/shoelace/dist/components/switch/switch.js';
+import { DhtOpHash } from '@tnesh-stack/core-types';
+import '@tnesh-stack/elements/dist/elements/holo-identicon.js';
+import { AsyncComputed, Signal } from '@tnesh-stack/signals';
+import { CellMap, HoloHashMap } from '@tnesh-stack/utils';
 import { NodeSingular } from 'cytoscape';
 import { PropertyValues, css, html } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';

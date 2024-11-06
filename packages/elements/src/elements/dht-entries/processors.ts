@@ -1,10 +1,3 @@
-import {
-	CellMap,
-	HashType,
-	HoloHashMap,
-	getHashType,
-	retype,
-} from '@holochain-open-dev/utils';
 import { SimulatedDna, getAppEntryType } from '@holochain-playground/simulator';
 import {
 	Action,
@@ -15,6 +8,13 @@ import {
 	decodeHashFromBase64,
 	encodeHashToBase64,
 } from '@holochain/client';
+import {
+	CellMap,
+	HashType,
+	HoloHashMap,
+	getHashType,
+	retype,
+} from '@tnesh-stack/utils';
 import uniq from 'lodash-es/uniq.js';
 
 import { shortenStrRec } from '../utils/hash.js';

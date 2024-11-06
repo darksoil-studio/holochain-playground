@@ -16,10 +16,10 @@
     "build:watch": "tsc --watch"
   },
   "dependencies": {
-    "@holochain-open-dev/core-types": "^0.300.0",
-    "@holochain-open-dev/elements": "^0.300.0",
-    "@holochain-open-dev/signals": "^0.300.0",
-    "@holochain-open-dev/utils": "^0.300.5",
+    "@tnesh-stack/core-types": "^0.300.0",
+    "@tnesh-stack/elements": "^0.300.0",
+    "@tnesh-stack/signals": "^0.300.0",
+    "@tnesh-stack/utils": "^0.300.0",
     "@holochain-playground/simulator": "workspace:^0.300.0",
     "@holochain/client": "^0.17.0",
     "@lit/context": "^1.0.0",

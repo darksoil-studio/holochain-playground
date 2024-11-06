@@ -1,4 +1,3 @@
-import { CellMap } from '@holochain-open-dev/utils';
 import {
 	Cell,
 	ErrorMiddleware,
@@ -7,6 +6,7 @@ import {
 	SuccessMiddleware,
 } from '@holochain-playground/simulator';
 import { CellId } from '@holochain/client';
+import { CellMap } from '@tnesh-stack/utils';
 import { ReactiveController, ReactiveElement } from 'lit';
 
 import { cellChanges } from '../store/utils.js';
