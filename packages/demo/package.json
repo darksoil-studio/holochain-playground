@@ -10,9 +10,9 @@
     "publish": "npm run build && gh-pages -d ./dist -b gh-pages"
   },
   "dependencies": {
-    "@tnesh-stack/core-types": "^0.300.0",
-    "@tnesh-stack/elements": "^0.300.0",
-    "@holochain-playground/simulator": "workspace:^0.300.0",
+    "@tnesh-stack/core-types": "^0.400.0-rc",
+    "@tnesh-stack/elements": "^0.400.0-rc",
+    "@holochain-playground/simulator": "workspace:^0.400.0-rc",
     "@mdi/js": "^7.4.47",
     "@shoelace-style/shoelace": "^2.16.0",
     "lit": "^3.0.0",

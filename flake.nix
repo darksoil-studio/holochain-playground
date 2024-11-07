@@ -3,10 +3,10 @@
 
   inputs = {
     nixpkgs.follows = "holonix/nixpkgs";
-    holonix.url = "github:holochain/holonix/main-0.3";
+    holonix.url = "github:holochain/holonix/main-0.4";
 
-    p2p-shipyard.url = "github:darksoil-studio/p2p-shipyard/main-0.3";
-    tnesh-stack.url = "github:darksoil-studio/tnesh-stack/main-0.3";
+    p2p-shipyard.url = "github:darksoil-studio/p2p-shipyard/main-0.4";
+    tnesh-stack.url = "github:darksoil-studio/tnesh-stack/main-0.4";
   };
 
   nixConfig = {
@@ -38,7 +38,7 @@
 
         packages.hc-playground = let
           cliDist = pkgs.stdenv.mkDerivation (finalAttrs: {
-            version = "0.300.0";
+            version = "0.400.0";
             pname = "holochain-playground-cli";
             src =
               # (inputs.tnesh-stack.outputs.lib.cleanPnpmDepsSource { inherit lib; })
