@@ -100,85 +100,105 @@ export function recordToDhtOps(record: Record): DhtOp[] {
 
 	// All hdk commands have these two DHT Ops
 	allDhtOps.push({
-		[DhtOpType.RegisterAgentActivity]: [
-			record.signed_action.signature,
-			record.signed_action.hashed.content,
-		],
+		ChainOp: {
+			[DhtOpType.RegisterAgentActivity]: [
+				record.signed_action.signature,
+				record.signed_action.hashed.content,
+			],
+		},
 	});
 	allDhtOps.push({
-		[DhtOpType.StoreRecord]: [
-			record.signed_action.signature,
-			record.signed_action.hashed.content,
-			extractEntry(record),
-		],
+		ChainOp: {
+			[DhtOpType.StoreRecord]: [
+				record.signed_action.signature,
+				record.signed_action.hashed.content,
+				extractEntry(record),
+			],
+		},
 	});
 
 	// Each action derives into different DhtOps
 
 	if (record.signed_action.hashed.content.type === ActionType.Update) {
 		allDhtOps.push({
-			[DhtOpType.RegisterUpdatedContent]: [
-				record.signed_action.signature,
-				record.signed_action.hashed.content,
-				extractEntry(record),
-			],
+			ChainOp: {
+				[DhtOpType.RegisterUpdatedContent]: [
+					record.signed_action.signature,
+					record.signed_action.hashed.content,
+					extractEntry(record),
+				],
+			},
 		});
 		allDhtOps.push({
-			[DhtOpType.RegisterUpdatedRecord]: [
-				record.signed_action.signature,
-				record.signed_action.hashed.content,
-				extractEntry(record),
-			],
+			ChainOp: {
+				[DhtOpType.RegisterUpdatedRecord]: [
+					record.signed_action.signature,
+					record.signed_action.hashed.content,
+					extractEntry(record),
+				],
+			},
 		});
 		if (isPublic(record.signed_action.hashed.content.entry_type)) {
 			allDhtOps.push({
-				[DhtOpType.StoreEntry]: [
-					record.signed_action.signature,
-					record.signed_action.hashed.content,
-					extractEntry(record)!,
-				],
+				ChainOp: {
+					[DhtOpType.StoreEntry]: [
+						record.signed_action.signature,
+						record.signed_action.hashed.content,
+						extractEntry(record)!,
+					],
+				},
 			});
 		}
 	} else if (record.signed_action.hashed.content.type === ActionType.Create) {
 		if (isPublic(record.signed_action.hashed.content.entry_type)) {
 			allDhtOps.push({
-				[DhtOpType.StoreEntry]: [
-					record.signed_action.signature,
-					record.signed_action.hashed.content,
-					extractEntry(record)!,
-				],
+				ChainOp: {
+					[DhtOpType.StoreEntry]: [
+						record.signed_action.signature,
+						record.signed_action.hashed.content,
+						extractEntry(record)!,
+					],
+				},
 			});
 		}
 	} else if (record.signed_action.hashed.content.type === ActionType.Delete) {
 		allDhtOps.push({
-			[DhtOpType.RegisterDeletedBy]: [
-				record.signed_action.signature,
-				record.signed_action.hashed.content,
-			],
+			ChainOp: {
+				[DhtOpType.RegisterDeletedBy]: [
+					record.signed_action.signature,
+					record.signed_action.hashed.content,
+				],
+			},
 		});
 		allDhtOps.push({
-			[DhtOpType.RegisterDeletedEntryAction]: [
-				record.signed_action.signature,
-				record.signed_action.hashed.content,
-			],
+			ChainOp: {
+				[DhtOpType.RegisterDeletedEntryAction]: [
+					record.signed_action.signature,
+					record.signed_action.hashed.content,
+				],
+			},
 		});
 	} else if (
 		record.signed_action.hashed.content.type === ActionType.DeleteLink
 	) {
 		allDhtOps.push({
-			[DhtOpType.RegisterRemoveLink]: [
-				record.signed_action.signature,
-				record.signed_action.hashed.content,
-			],
+			ChainOp: {
+				[DhtOpType.RegisterRemoveLink]: [
+					record.signed_action.signature,
+					record.signed_action.hashed.content,
+				],
+			},
 		});
 	} else if (
 		record.signed_action.hashed.content.type === ActionType.CreateLink
 	) {
 		allDhtOps.push({
-			[DhtOpType.RegisterAddLink]: [
-				record.signed_action.signature,
-				record.signed_action.hashed.content,
-			],
+			ChainOp: {
+				[DhtOpType.RegisterAddLink]: [
+					record.signed_action.signature,
+					record.signed_action.hashed.content,
+				],
+			},
 		});
 	}
 
