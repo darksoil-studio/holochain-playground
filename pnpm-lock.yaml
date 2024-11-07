@@ -42,10 +42,10 @@ importers:
   packages/cli/client:
     dependencies:
       '@holochain-playground/elements':
-        specifier: workspace:^0.300.0
+        specifier: workspace:^0.400.0-rc
         version: link:../../elements
       '@holochain-playground/simulator':
-        specifier: workspace:^0.300.0
+        specifier: workspace:^0.400.0-rc
         version: link:../../simulator
       '@mdi/js':
         specifier: ^7.4.47
@@ -54,14 +54,14 @@ importers:
         specifier: ^2.16.0
         version: 2.17.1(@types/react@18.3.11)
       '@tnesh-stack/core-types':
-        specifier: ^0.300.0
-        version: 0.300.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.400.0-rc
+        version: 0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@tnesh-stack/elements':
-        specifier: ^0.300.1
-        version: 0.300.1(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.400.0-rc
+        version: 0.400.0-rc.0(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@tnesh-stack/signals':
-        specifier: ^0.300.1
-        version: 0.300.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.400.0-rc
+        version: 0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       dockview-core:
         specifier: ^1.17.1
         version: 1.17.1
@@ -118,7 +118,7 @@ importers:
         specifier: ^7.15.6
         version: 7.25.8(@babel/core@7.25.8)
       '@holochain-playground/cli-client':
-        specifier: workspace:^0.300.0
+        specifier: workspace:^0.400.0-rc
         version: link:../client
       '@mdi/font':
         specifier: 5.9.55
@@ -247,7 +247,7 @@ importers:
   packages/demo:
     dependencies:
       '@holochain-playground/simulator':
-        specifier: workspace:^0.300.0
+        specifier: workspace:^0.400.0-rc
         version: link:../simulator
       '@mdi/js':
         specifier: ^7.4.47
@@ -256,11 +256,11 @@ importers:
         specifier: ^2.16.0
         version: 2.17.1(@types/react@18.3.11)
       '@tnesh-stack/core-types':
-        specifier: ^0.300.0
-        version: 0.300.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.400.0-rc
+        version: 0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@tnesh-stack/elements':
-        specifier: ^0.300.0
-        version: 0.300.1(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.400.0-rc
+        version: 0.400.0-rc.0(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       lit:
         specifier: ^3.0.0
         version: 3.2.1
@@ -302,11 +302,11 @@ importers:
   packages/elements:
     dependencies:
       '@holochain-playground/simulator':
-        specifier: workspace:^0.300.0
+        specifier: workspace:^0.400.0-rc
         version: link:../simulator
       '@holochain/client':
-        specifier: ^0.17.0
-        version: 0.17.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.18.0-rc
+        version: 0.18.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@lit/context':
         specifier: ^1.0.0
         version: 1.1.3
@@ -326,17 +326,17 @@ importers:
         specifier: ^2.16.0
         version: 2.17.1(@types/react@18.3.11)
       '@tnesh-stack/core-types':
-        specifier: ^0.300.0
-        version: 0.300.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.400.0-rc
+        version: 0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@tnesh-stack/elements':
-        specifier: ^0.300.0
-        version: 0.300.1(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.400.0-rc
+        version: 0.400.0-rc.0(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@tnesh-stack/signals':
-        specifier: ^0.300.0
-        version: 0.300.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.400.0-rc
+        version: 0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@tnesh-stack/utils':
-        specifier: ^0.300.0
-        version: 0.300.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.400.0-rc
+        version: 0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@vaadin/grid':
         specifier: ^23.3.2
         version: 23.5.6
@@ -378,17 +378,17 @@ importers:
   packages/simulator:
     dependencies:
       '@holochain/client':
-        specifier: ^0.17.0
-        version: 0.17.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.18.0-rc
+        version: 0.18.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@msgpack/msgpack':
         specifier: ^2.7.1
         version: 2.8.0
       '@tnesh-stack/core-types':
-        specifier: ^0.300.0
-        version: 0.300.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.400.0-rc
+        version: 0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@tnesh-stack/utils':
-        specifier: ^0.300.0
-        version: 0.300.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.400.0-rc
+        version: 0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       blakejs:
         specifier: ^1.1.0
         version: 1.2.1
@@ -1339,8 +1339,8 @@ packages:
   '@holo-host/identicon@0.1.0':
     resolution: {integrity: sha512-Dn5pTV/m3XaK1Zvq3liw/vQUt7goM7Y84x2zUyH8cb9CNMs4kPCNHs3kalbJZ/ymzFvwcdiLwwNW8AKk+WWN5A==}
 
-  '@holochain/client@0.17.1':
-    resolution: {integrity: sha512-Jvh6DN+OdktV3KQH+tioRzvPT+LWJFBp1klMFG9vaccphIVvJN1LepJfRB8OyxW5iGAZ/TFCTwF19XSJuM1fQQ==}
+  '@holochain/client@0.18.0-rc.0':
+    resolution: {integrity: sha512-y9dfvrnUL4OeIhW+yHUnsjsBMoWvL1HnvUKGjfoBQDBsqJGpanmysV6ALScNErF5axPVZ30/m0nmQ9NgpFzUGg==}
     engines: {node: '>=18.0.0 || >=20.0.0'}
 
   '@holochain/serialization@0.1.0-beta-rc.3':
@@ -1576,17 +1576,17 @@ packages:
   '@socket.io/component-emitter@3.1.2':
     resolution: {integrity: sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==}
 
-  '@tnesh-stack/core-types@0.300.0':
-    resolution: {integrity: sha512-9+Y/z8z4+ClLif16dN5hR2zNdnPaWTsjTm0qV68Wco2p0uqYYud2kQxIXIen+J+JiAge48y8LNz/BwPA4Mw1xg==}
+  '@tnesh-stack/core-types@0.400.0-rc.0':
+    resolution: {integrity: sha512-qhnK7u7nqyA4lRYRoawSllAa/2iU8oH6XpMbA4HIdjVBWei+NMgV8yoExfu/L+kK/P7olZJ6X7vXc2ppSqQHbA==}
 
-  '@tnesh-stack/elements@0.300.1':
-    resolution: {integrity: sha512-fdiN7zW/as84egpQTNHy64va4+Lcey9W3NZPRMpo1fRNNHmXl4HvgMk9Y8DuymSIowlvWK7yZEyB3Y+4gRRD1A==}
+  '@tnesh-stack/elements@0.400.0-rc.0':
+    resolution: {integrity: sha512-JpEZRRaQsi66ZoqYCCC6eAmBwpEqJOVCNJc0TNItmgBN5gd1JxdIIM96JItHab7k6L5d4SVGQV6cT+PeKL11LA==}
 
-  '@tnesh-stack/signals@0.300.1':
-    resolution: {integrity: sha512-Z97y1wF6DeRRjJ06O8Kwutt/mY1nbyFJMdTRnSfndyZmDkyDmv5UzZXSbCBl2+RlTzVomyy2rUBeTVLKdJqy7g==}
+  '@tnesh-stack/signals@0.400.0-rc.0':
+    resolution: {integrity: sha512-YuC75wjWvy6U5skTtmULMHaqegFgopci/KdSSrmCjR9B94qZOAdFgHBEG9K98A0pIdwyollYeI3pkvyYkH4Vgg==}
 
-  '@tnesh-stack/utils@0.300.0':
-    resolution: {integrity: sha512-zw2svZLU3h0bjOMNqu/jHdYckCzS1Vv9indE1B2IwlybHzCimHB3xm5bHB0Wl+CXvNOa6lW0uoO6EeF1DkxIuQ==}
+  '@tnesh-stack/utils@0.400.0-rc.0':
+    resolution: {integrity: sha512-N69oS3YXDCTHz5Zl57SjoJtC9nikfzsjFjDy4nEnuMGpYSvMxwWjEwIp1Jx+doPoMMEfrSv2LDqLR6qKXCZ3xQ==}
 
   '@trivago/prettier-plugin-sort-imports@4.3.0':
     resolution: {integrity: sha512-r3n0onD3BTOVUNPhR4lhVK4/pABGpbA7bW3eumZnYdKaHkf1qEC+Mag6DPbGNuuh0eG8AaYj+YqmVHSiGslaTQ==}
@@ -5297,7 +5297,7 @@ snapshots:
 
   '@holo-host/identicon@0.1.0': {}
 
-  '@holochain/client@0.17.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@holochain/client@0.18.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
       '@bitgo/blake2b': 3.2.4
       '@holochain/serialization': 0.1.0-beta-rc.3
@@ -5530,17 +5530,17 @@ snapshots:
 
   '@socket.io/component-emitter@3.1.2': {}
 
-  '@tnesh-stack/core-types@0.300.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@tnesh-stack/core-types@0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
-      '@holochain/client': 0.17.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@holochain/client': 0.18.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  '@tnesh-stack/elements@0.300.1(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@tnesh-stack/elements@0.400.0-rc.0(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
       '@holo-host/identicon': 0.1.0
-      '@holochain/client': 0.17.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@holochain/client': 0.18.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@lit-labs/router': 0.1.3
       '@lit/localize': 0.12.2
       '@mdi/js': 7.4.47
@@ -5551,11 +5551,11 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@tnesh-stack/signals@0.300.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@tnesh-stack/signals@0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
-      '@holochain/client': 0.17.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@holochain/client': 0.18.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@msgpack/msgpack': 2.8.0
-      '@tnesh-stack/utils': 0.300.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@tnesh-stack/utils': 0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       async-signals: 0.1.11
       lit-signal-watcher: 0.1.1
       lodash-es: 4.17.21
@@ -5564,9 +5564,9 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@tnesh-stack/utils@0.300.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@tnesh-stack/utils@0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
-      '@holochain/client': 0.17.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@holochain/client': 0.18.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@msgpack/msgpack': 2.8.0
       blakejs: 1.2.1
       emittery: 1.0.3
