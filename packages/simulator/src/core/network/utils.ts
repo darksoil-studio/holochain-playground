@@ -1,14 +1,10 @@
-import {
-	AgentPubKey,
-	AnyDhtHash,
-	DhtOp,
-	getDhtOpAction,
-} from '@holochain/client';
+import { AgentPubKey, AnyDhtHash, ChainOp, DhtOp } from '@holochain/client';
 import { ValidationReceipt, ValidationStatus } from '@tnesh-stack/core-types';
 import { uniq } from 'lodash-es';
 
 import { distance, location, wrap } from '../../processors/hash.js';
 import { CellState } from '../cell/state.js';
+import { getDhtOpAction, isWarrantOp } from '../cell/utils.js';
 
 export function getClosestNeighbors(
 	peers: AgentPubKey[],
@@ -66,7 +62,11 @@ export function getBadActions(state: CellState): Array<BadAction> {
 			};
 
 			if (myReceipt.validation_status === ValidationStatus.Rejected) {
-				badAction.badAgents.push(getDhtOpAction(dhtOp).author);
+				if (!isWarrantOp(dhtOp)) {
+					badAction.badAgents.push(
+						getDhtOpAction((dhtOp as { ChainOp: ChainOp }).ChainOp).author,
+					);
+				}
 			}
 			for (const [validatorAgent, receipt] of receipts.entries()) {
 				if (receipt.validation_status !== myReceipt.validation_status) {

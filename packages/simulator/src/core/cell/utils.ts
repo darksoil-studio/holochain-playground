@@ -1,7 +1,9 @@
 import {
+	Action,
 	ActionType,
 	AnyDhtHash,
 	AppEntryDef,
+	ChainOp,
 	Create,
 	CreateLink,
 	Delete,
@@ -12,12 +14,11 @@ import {
 	EntryHash,
 	EntryType,
 	Record,
+	Signature,
 	Update,
-	getDhtOpAction,
-	getDhtOpEntry,
-	getDhtOpType,
+	WarrantOp,
 } from '@holochain/client';
-import { HashType, hash } from '@tnesh-stack/utils';
+import { HashType, hash, hashAction } from '@tnesh-stack/utils';
 
 import { SimulatedDna } from '../../dnas/simulated-dna.js';
 import { isPublic } from './source-chain/utils.js';
@@ -55,9 +56,23 @@ export function getEntryTypeString(
 }
 
 export function getDhtOpBasis(dhtOp: DhtOp): AnyDhtHash {
+	if (isWarrantOp(dhtOp)) {
+		return getWarrantOpBasis((dhtOp as { WarrantOp: WarrantOp }).WarrantOp);
+	}
+	return getChainOpBasis((dhtOp as { ChainOp: ChainOp }).ChainOp);
+}
+
+export function getWarrantOpBasis(op: WarrantOp): AnyDhtHash {
+	// const invalidChainOp = op.warrant.ChainIntegrity.InvalidChainOp;
+	// if (invalidChainOp.)
+	throw new Error('Unimplemented');
+}
+
+export function getChainOpBasis(dhtOp: ChainOp): AnyDhtHash {
 	const type = getDhtOpType(dhtOp);
 	const action = getDhtOpAction(dhtOp);
-	const actionHash = hash(action, HashType.ACTION);
+
+	const actionHash = hashAction(action);
 
 	switch (type) {
 		case DhtOpType.StoreRecord:
@@ -205,15 +220,81 @@ export function recordToDhtOps(record: Record): DhtOp[] {
 	return allDhtOps;
 }
 
-export function sortDhtOps(dhtOps: DhtOp[]): DhtOp[] {
-	const prio = (dhtOp: DhtOp) =>
-		DHT_SORT_PRIORITY.findIndex(type => type === getDhtOpType(dhtOp));
-	return dhtOps.sort((dhtA: DhtOp, dhtB: DhtOp) => prio(dhtA) - prio(dhtB));
-}
+// export function sortDhtOps(dhtOps: DhtOp[]): DhtOp[] {
+// 	const prio = (dhtOp: DhtOp) =>
+// 		DHT_SORT_PRIORITY.findIndex(type => type === getDhtOpType(dhtOp));
+// 	return dhtOps.sort((dhtA: DhtOp, dhtB: DhtOp) => prio(dhtA) - prio(dhtB));
+// }
 
 export function getEntry(dhtOp: DhtOp): Entry | undefined {
-	const type = getDhtOpType(dhtOp);
-	if (type === DhtOpType.StoreEntry) return getDhtOpEntry(dhtOp);
-	else if (type === DhtOpType.StoreRecord) return getDhtOpEntry(dhtOp);
+	if (isWarrantOp(dhtOp)) return undefined;
+
+	const chainOp = (dhtOp as { ChainOp: ChainOp }).ChainOp;
+
+	const type = getDhtOpType(chainOp);
+	if (type === DhtOpType.StoreEntry) return getDhtOpEntry(chainOp);
+	else if (type === DhtOpType.StoreRecord) return getDhtOpEntry(chainOp);
 	return undefined;
+}
+
+export function isWarrantOp(op: DhtOp): boolean {
+	if ((op as { ChainOp: ChainOp }).ChainOp) {
+		return false;
+	}
+	if ((op as { WarrantOp: WarrantOp }).WarrantOp) {
+		return true;
+	}
+	throw new Error(`Invalid DhtOp shape: ${JSON.stringify(op)}`);
+}
+
+export function getDhtOpType(op: ChainOp): DhtOpType {
+	return Object.keys(op)[0] as DhtOpType;
+}
+
+export function getDhtOpAction(op: ChainOp): Action {
+	const opType = getDhtOpType(op);
+
+	const action = Object.values(op)[0][1];
+
+	if (opType === DhtOpType.RegisterAddLink) {
+		return {
+			type: 'CreateLink',
+			...action,
+		};
+	}
+	if (
+		opType === DhtOpType.RegisterUpdatedContent ||
+		opType === DhtOpType.RegisterUpdatedRecord
+	) {
+		return {
+			type: 'Update',
+			...action,
+		};
+	}
+	if (
+		opType === DhtOpType.RegisterDeletedBy ||
+		opType === DhtOpType.RegisterDeletedEntryAction
+	) {
+		return {
+			type: 'Delete',
+			...action,
+		};
+	}
+
+	if (action.author) return action;
+	else {
+		const actionType = Object.keys(action)[0];
+		return {
+			type: actionType,
+			...action[actionType],
+		};
+	}
+}
+
+export function getDhtOpEntry(op: ChainOp): Entry | undefined {
+	return Object.values(op)[0][2];
+}
+
+export function getDhtOpSignature(op: ChainOp): Signature {
+	return Object.values(op)[0][1];
 }

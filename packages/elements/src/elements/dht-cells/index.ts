@@ -4,14 +4,16 @@ import {
 	NetworkRequestType,
 	PublishRequestInfo,
 	WorkflowType,
+	getDhtOpType,
+	isWarrantOp,
 	sleep,
 } from '@holochain-playground/simulator';
 import {
 	AgentPubKey,
+	ChainOp,
 	DhtOp,
 	decodeHashFromBase64,
 	encodeHashToBase64,
-	getDhtOpType,
 } from '@holochain/client';
 import '@scoped-elements/cytoscape';
 import { CytoscapeCircle } from '@scoped-elements/cytoscape';
@@ -245,9 +247,10 @@ export class DhtCells extends PlaygroundElement {
 				networkRequest as PublishRequestInfo
 			).details.dhtOps;
 
-			const types = Array.from(dhtOps.values()).map(dhtOp =>
-				getDhtOpType(dhtOp),
-			);
+			const types = Array.from(dhtOps.values())
+				.filter(dhtOp => !isWarrantOp(dhtOp))
+				.map(dhtOp => (dhtOp as { ChainOp: ChainOp }).ChainOp)
+				.map(dhtOp => getDhtOpType(dhtOp));
 
 			label = `Publish: ${uniq(types).join(', ')}`;
 		}

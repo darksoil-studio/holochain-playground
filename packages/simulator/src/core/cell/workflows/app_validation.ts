@@ -3,6 +3,7 @@ import {
 	AgentPubKey,
 	AgentValidationPkg,
 	AppEntryDef,
+	ChainOp,
 	CreateLink,
 	DeleteLink,
 	DhtOp,
@@ -10,8 +11,6 @@ import {
 	NewEntryAction,
 	Record,
 	RecordEntry,
-	getDhtOpAction,
-	getDhtOpSignature,
 } from '@holochain/client';
 import { HashType, hash, hashAction } from '@tnesh-stack/utils';
 import { isEqual } from 'lodash-es';
@@ -42,7 +41,12 @@ import {
 	ValidationStatus,
 } from '../state.js';
 import { ValidationOutcome } from '../sys_validate/types.js';
-import { getEntry } from '../utils.js';
+import {
+	getDhtOpAction,
+	getDhtOpSignature,
+	getEntry,
+	isWarrantOp,
+} from '../utils.js';
 import { integrate_dht_ops_task } from './integrate_dht_ops.js';
 import { DepsMissing } from './sys_validation.js';
 import {
@@ -65,21 +69,25 @@ export const app_validation = async (
 	]);
 
 	for (const dhtOpHash of pendingDhtOps.keys()) {
-		deleteValidationLimboValue(dhtOpHash)(workspace.state);
-
 		const validationLimboValue = pendingDhtOps.get(dhtOpHash);
+		if (isWarrantOp(validationLimboValue.op)) {
+			continue;
+		}
+		const chainOp = (validationLimboValue.op as { ChainOp: ChainOp }).ChainOp;
+
+		deleteValidationLimboValue(dhtOpHash)(workspace.state);
 
 		// If we are a bad agent, we don't validate our stuff
 		let outcome: ValidationOutcome = { resolved: true, valid: true };
 		if (
 			shouldValidate(
 				workspace.state.agentPubKey,
-				validationLimboValue.op,
+				chainOp,
 				workspace.badAgentConfig,
 			)
 		) {
 			outcome = await validate_op(
-				validationLimboValue.op,
+				chainOp,
 				validationLimboValue.from_agent,
 				workspace,
 			);
@@ -125,7 +133,7 @@ export function app_validation_task(
 
 function shouldValidate(
 	agentPubKey: AgentPubKey,
-	dhtOp: DhtOp,
+	dhtOp: ChainOp,
 	badAgentConfig?: BadAgentConfig,
 ): boolean {
 	if (!badAgentConfig) return true;
@@ -133,7 +141,7 @@ function shouldValidate(
 }
 
 export async function validate_op(
-	op: DhtOp,
+	op: ChainOp,
 	from_agent: AgentPubKey | undefined,
 	workspace: Workspace,
 ): Promise<ValidationOutcome> {
@@ -183,14 +191,14 @@ export async function validate_op(
 	}
 }
 
-function dht_ops_to_record(op: DhtOp): Record {
+function dht_ops_to_record(op: ChainOp): Record {
 	const action = getDhtOpAction(op);
 	const actionHash = hashAction(action);
 	let entry: RecordEntry = {
 		NotApplicable: undefined,
 	};
 	if ((action as NewEntryAction).entry_hash) {
-		const e = getEntry(op);
+		const e = getEntry({ ChainOp: op });
 		const publicEntryType = isPublic((action as NewEntryAction).entry_type);
 		entry = e
 			? {

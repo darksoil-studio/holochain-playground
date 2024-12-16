@@ -18,7 +18,7 @@ import {
 	SignedActionHashed,
 	Update,
 } from '@holochain/client';
-import { HashType, hash } from '@tnesh-stack/utils';
+import { HashType, hash, hashAction } from '@tnesh-stack/utils';
 
 import { CellState } from '../state.js';
 import { hashEntry } from '../utils.js';
@@ -28,7 +28,7 @@ export function buildShh(action: Action): SignedActionHashed {
 	return {
 		hashed: {
 			content: action,
-			hash: hash(action, HashType.ACTION),
+			hash: hashAction(action),
 		},
 		signature: Uint8Array.from([]),
 	};
@@ -63,12 +63,17 @@ export function buildCreate(
 	entry_type: EntryType,
 ): Create {
 	const entry_hash = hashEntry(entry);
-	const create: Create = {
+	const create = {
 		...buildCommon(state),
 		entry_hash,
 		entry_type,
 		type: ActionType.Create,
-	};
+		weight: {
+			bucket_id: 0,
+			units: 0,
+			rate_bytes: 0,
+		},
+	} as Create;
 	return create;
 }
 
@@ -113,7 +118,12 @@ export function buildUpdate(
 		original_action_address,
 
 		type: ActionType.Update,
-	};
+		weight: {
+			bucket_id: 0,
+			units: 0,
+			rate_bytes: 0,
+		},
+	} as Update;
 	return update;
 }
 
@@ -122,12 +132,16 @@ export function buildDelete(
 	deletes_address: ActionHash,
 	deletes_entry_address: EntryHash,
 ): Delete {
-	const deleteAction: Delete = {
+	const deleteAction = {
 		...buildCommon(state),
 		type: ActionType.Delete,
 		deletes_address,
 		deletes_entry_address,
-	};
+		weight: {
+			bucket_id: 0,
+			units: 0,
+		},
+	} as Delete;
 	return deleteAction;
 }
 

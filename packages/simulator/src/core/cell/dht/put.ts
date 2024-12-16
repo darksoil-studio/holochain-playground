@@ -3,6 +3,7 @@ import {
 	ActionHash,
 	ActionType,
 	AnyDhtHash,
+	ChainOp,
 	CreateLink,
 	Delete,
 	DeleteLink,
@@ -13,16 +14,13 @@ import {
 	SignedActionHashed,
 	Update,
 	encodeHashToBase64,
-	getDhtOpAction,
-	getDhtOpSignature,
-	getDhtOpType,
 } from '@holochain/client';
 import {
 	DhtOpHash,
 	EntryDhtStatus,
 	ValidationReceipt,
 } from '@tnesh-stack/core-types';
-import { HashType, HoloHashMap, hash } from '@tnesh-stack/utils';
+import { HashType, HoloHashMap, hash, hashAction } from '@tnesh-stack/utils';
 import isEqual from 'lodash-es/isEqual.js';
 
 import {
@@ -37,7 +35,13 @@ import {
 	LinkMetaVal,
 	SysMetaVal,
 } from '../state/metadata.js';
-import { getEntry } from '../utils.js';
+import {
+	getDhtOpAction,
+	getDhtOpSignature,
+	getDhtOpType,
+	getEntry,
+	isWarrantOp,
+} from '../utils.js';
 import { getActionsForEntry } from './get.js';
 
 export const putValidationLimboValue =
@@ -70,15 +74,20 @@ export const putIntegrationLimboValue =
 	};
 
 export const putDhtOpData = (dhtOp: DhtOp) => (state: CellState) => {
-	const action = getDhtOpAction(dhtOp);
-	const actionHash = hash(action, HashType.ACTION);
+	if (isWarrantOp(dhtOp)) {
+		return;
+	}
+	const chainOp = (dhtOp as { ChainOp: ChainOp }).ChainOp;
+
+	const action = getDhtOpAction(chainOp);
+	const actionHash = hashAction(action);
 
 	const ssh: SignedActionHashed = {
 		hashed: {
 			content: action,
 			hash: actionHash,
 		},
-		signature: getDhtOpSignature(dhtOp),
+		signature: getDhtOpSignature(chainOp),
 	};
 	state.CAS.set(actionHash, ssh);
 
@@ -89,9 +98,13 @@ export const putDhtOpData = (dhtOp: DhtOp) => (state: CellState) => {
 };
 
 export const putDhtOpMetadata = (dhtOp: DhtOp) => (state: CellState) => {
-	const type = getDhtOpType(dhtOp);
-	const action = getDhtOpAction(dhtOp);
-	const actionHash = hash(action, HashType.ACTION);
+	if (isWarrantOp(dhtOp)) {
+		return;
+	}
+	const chainOp = (dhtOp as { ChainOp: ChainOp }).ChainOp;
+	const type = getDhtOpType(chainOp);
+	const action = getDhtOpAction(chainOp);
+	const actionHash = hashAction(action);
 
 	if (type === DhtOpType.StoreRecord) {
 		state.metadata.misc_meta.set(actionHash, 'StoreRecord');

@@ -1,6 +1,10 @@
 import {
 	SimulatedDna,
+	getDhtOpAction,
+	getDhtOpEntry,
+	getDhtOpType,
 	getEntryTypeString,
+	isWarrantOp,
 } from '@holochain-playground/simulator';
 import {
 	Action,
@@ -8,6 +12,7 @@ import {
 	ActionType,
 	AnyDhtHash,
 	AppEntryDef,
+	ChainOp,
 	CreateLink,
 	Delete,
 	DeleteLink,
@@ -18,8 +23,6 @@ import {
 	HoloHash,
 	NewEntryAction,
 	Update,
-	getDhtOpEntry,
-	getDhtOpType,
 } from '@holochain/client';
 import { CellMap, HoloHashMap, hashAction } from '@tnesh-stack/utils';
 
@@ -57,45 +60,6 @@ export interface DhtSummary {
 	entryTypes: HoloHashMap<EntryHash, string>;
 }
 
-export function getDhtOpAction(op: DhtOp): Action {
-	const opType = getDhtOpType(op);
-	const action = Object.values(op)[0][1];
-
-	if (opType === DhtOpType.RegisterAddLink) {
-		return {
-			type: 'CreateLink',
-			...action,
-		};
-	}
-	if (
-		opType === DhtOpType.RegisterUpdatedContent ||
-		opType === DhtOpType.RegisterUpdatedRecord
-	) {
-		return {
-			type: 'Update',
-			...action,
-		};
-	}
-	if (
-		opType === DhtOpType.RegisterDeletedBy ||
-		opType === DhtOpType.RegisterDeletedEntryAction
-	) {
-		return {
-			type: 'Delete',
-			...action,
-		};
-	}
-
-	if (action.author) return action;
-	else {
-		const actionType = Object.keys(action)[0];
-		return {
-			type: actionType,
-			...action[actionType],
-		};
-	}
-}
-
 export function summarizeDht(
 	dhtShards: CellMap<DhtOp[]>,
 	simulatedDna?: SimulatedDna,
@@ -125,9 +89,15 @@ export function summarizeDht(
 	const entryTypes = new HoloHashMap<EntryHash, string>();
 	for (const shard of dhtShards.values()) {
 		for (const dhtOp of shard) {
-			const dhtOpType = getDhtOpType(dhtOp);
+			if (isWarrantOp(dhtOp)) {
+				continue;
+			}
 
-			const action = getDhtOpAction(dhtOp);
+			const chainOp = (dhtOp as { ChainOp: ChainOp }).ChainOp;
+
+			const dhtOpType = getDhtOpType(chainOp);
+
+			const action = getDhtOpAction(chainOp);
 
 			const actionHash = hashAction(action);
 

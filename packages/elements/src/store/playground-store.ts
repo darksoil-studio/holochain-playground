@@ -1,17 +1,21 @@
 import {
+	getDhtOpAction,
+	getDhtOpEntry,
+	getDhtOpType,
+	isWarrantOp,
+} from '@holochain-playground/simulator';
+import {
 	ActionHashed,
 	AgentPubKey,
 	AnyDhtHash,
 	AppInfo,
 	CellId,
+	ChainOp,
 	DhtOp,
 	DhtOpType,
 	DnaHash,
 	NewEntryAction,
 	Record,
-	getDhtOpAction,
-	getDhtOpEntry,
-	getDhtOpType,
 } from '@holochain/client';
 import {
 	AsyncComputed,
@@ -23,7 +27,7 @@ import {
 	uniquify,
 	watch,
 } from '@tnesh-stack/signals';
-import { CellMap, HashType, hash } from '@tnesh-stack/utils';
+import { CellMap, HashType, hash, hashAction } from '@tnesh-stack/utils';
 import isEqual from 'lodash-es/isEqual.js';
 
 import { ConnectedConductorStore } from './connected-playground-store.js';
@@ -76,8 +80,14 @@ export function getFromStore(
 		}
 
 		for (const op of dhtShard) {
-			const action = getDhtOpAction(op);
-			const actionHash = hash(action, HashType.ACTION);
+			if (isWarrantOp(op)) {
+				continue;
+			}
+
+			const chainOp = (op as { ChainOp: ChainOp }).ChainOp;
+
+			const action = getDhtOpAction(chainOp);
+			const actionHash = hashAction(action);
 
 			if (isEqual(actionHash, dhtHash)) {
 				return {
@@ -90,7 +100,7 @@ export function getFromStore(
 				(action as NewEntryAction).entry_hash &&
 				isEqual((action as NewEntryAction).entry_hash, dhtHash)
 			) {
-				const type = getDhtOpType(op);
+				const type = getDhtOpType(chainOp);
 				if (type === DhtOpType.StoreEntry || type === DhtOpType.StoreRecord) {
 					return {
 						status: 'completed',

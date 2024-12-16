@@ -1,17 +1,29 @@
-import { BadAgent, Cell, location } from '@holochain-playground/simulator';
+import {
+	BadAgent,
+	Cell,
+	getDhtOpAction,
+	getDhtOpType,
+	isWarrantOp,
+	location,
+} from '@holochain-playground/simulator';
 import {
 	ActionHash,
 	AgentPubKey,
 	CellId,
+	ChainOp,
 	DhtOp,
 	DhtOpType,
 	EntryHash,
 	NewEntryAction,
 	encodeHashToBase64,
-	getDhtOpAction,
-	getDhtOpType,
 } from '@holochain/client';
-import { CellMap, HashType, HoloHashMap, hash } from '@tnesh-stack/utils';
+import {
+	CellMap,
+	HashType,
+	HoloHashMap,
+	hash,
+	hashAction,
+} from '@tnesh-stack/utils';
 import isEqual from 'lodash-es/isEqual.js';
 
 import { CellStore } from '../../store/playground-store.js';
@@ -151,9 +163,13 @@ function doTheyHaveBeef(
 
 export function isHoldingEntry(dhtShard: DhtOp[], entryHash: EntryHash) {
 	for (const dhtOp of dhtShard) {
+		if (isWarrantOp(dhtOp)) {
+			continue;
+		}
+		const chainOp = (dhtOp as { ChainOp: ChainOp }).ChainOp;
 		if (
-			getDhtOpType(dhtOp) === DhtOpType.StoreEntry &&
-			isEqual(entryHash, (getDhtOpAction(dhtOp) as NewEntryAction).entry_hash)
+			getDhtOpType(chainOp) === DhtOpType.StoreEntry &&
+			isEqual(entryHash, (getDhtOpAction(chainOp) as NewEntryAction).entry_hash)
 		) {
 			return true;
 		}
@@ -164,9 +180,13 @@ export function isHoldingEntry(dhtShard: DhtOp[], entryHash: EntryHash) {
 
 export function isHoldingElement(dhtShard: DhtOp[], actionHash: ActionHash) {
 	for (const dhtOp of dhtShard) {
-		const dhtOpactionHash = hash(getDhtOpAction(dhtOp), HashType.ACTION);
+		if (isWarrantOp(dhtOp)) {
+			continue;
+		}
+		const chainOp = (dhtOp as { ChainOp: ChainOp }).ChainOp;
+		const dhtOpactionHash = hashAction(getDhtOpAction(chainOp));
 		if (
-			getDhtOpType(dhtOp) === DhtOpType.StoreRecord &&
+			getDhtOpType(chainOp) === DhtOpType.StoreRecord &&
 			isEqual(dhtOpactionHash, actionHash)
 		) {
 			return true;

@@ -2,6 +2,7 @@ import {
 	ActionHash,
 	ActionType,
 	EntryHash as AnyDhtHash,
+	ChainOp,
 	Create,
 	CreateLink,
 	Delete,
@@ -12,8 +13,6 @@ import {
 	SignedActionHashed,
 	Update,
 	encodeHashToBase64,
-	getDhtOpAction,
-	getDhtOpType,
 } from '@holochain/client';
 import {
 	DhtOpHash,
@@ -21,7 +20,7 @@ import {
 	EntryDhtStatus,
 	ValidationReceipt,
 } from '@tnesh-stack/core-types';
-import { HoloHashMap } from '@tnesh-stack/utils';
+import { HoloHashMap, hashAction } from '@tnesh-stack/utils';
 import { HashType, hash } from '@tnesh-stack/utils';
 import { uniqWith } from 'lodash-es';
 
@@ -35,6 +34,7 @@ import {
 	ValidationLimboValue,
 } from '../state.js';
 import { LinkMetaVal, getSysMetaValActionHash } from '../state/metadata.js';
+import { getDhtOpAction, getDhtOpType, isWarrantOp } from '../utils.js';
 
 export function getValidationLimboDhtOps(
 	state: CellState,
@@ -186,8 +186,10 @@ export function getActionModifiers(
 
 export function getAllHeldEntries(state: CellState): AnyDhtHash[] {
 	const newEntryActions = Array.from(state.integratedDHTOps.values())
-		.filter(dhtOpValue => getDhtOpType(dhtOpValue.op) === DhtOpType.StoreEntry)
-		.map(dhtOpValue => getDhtOpAction(dhtOpValue.op));
+		.filter(dhtOpValue => !isWarrantOp(dhtOpValue.op))
+		.map(dhtOpValue => (dhtOpValue.op as { ChainOp: ChainOp }).ChainOp)
+		.filter(chainOp => getDhtOpType(chainOp) === DhtOpType.StoreEntry)
+		.map(chainOp => getDhtOpAction(chainOp));
 
 	const allEntryHashes = newEntryActions.map(
 		h => (h as NewEntryAction).entry_hash,
@@ -198,18 +200,21 @@ export function getAllHeldEntries(state: CellState): AnyDhtHash[] {
 
 export function getAllHeldActions(state: CellState): ActionHash[] {
 	const actions = Array.from(state.integratedDHTOps.values())
-		.filter(dhtOpValue => getDhtOpType(dhtOpValue.op) === DhtOpType.StoreRecord)
-		.map(dhtOpValue => getDhtOpAction(dhtOpValue.op));
+		.filter(dhtOpValue => !isWarrantOp(dhtOpValue.op))
+		.map(dhtOpValue => (dhtOpValue.op as { ChainOp: ChainOp }).ChainOp)
+		.filter(chainOp => getDhtOpType(chainOp) === DhtOpType.StoreRecord)
+		.map(chainOp => getDhtOpAction(chainOp));
 
-	const allActionHashes = actions.map(h => hash(h, HashType.ACTION));
+	const allActionHashes = actions.map(h => hashAction(h));
 
 	return uniqWith(allActionHashes, areEqual);
 }
 
 export function getAllAuthoredEntries(state: CellState): AnyDhtHash[] {
-	const allActions = Array.from(state.authoredDHTOps.values()).map(dhtOpValue =>
-		getDhtOpAction(dhtOpValue.op),
-	);
+	const allActions = Array.from(state.authoredDHTOps.values())
+		.filter(dhtOpValue => !isWarrantOp(dhtOpValue.op))
+		.map(dhtOpValue => (dhtOpValue.op as { ChainOp: ChainOp }).ChainOp)
+		.map(chainOp => getDhtOpAction(chainOp));
 
 	const newEntryActions: NewEntryAction[] = allActions.filter(
 		h => (h as NewEntryAction).entry_hash,
