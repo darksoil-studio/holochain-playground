@@ -147,8 +147,6 @@ export async function validate_op(
 			resolved: true,
 		};
 
-	// TODO: implement validation package
-
 	const maybeEntryDef = await get_associated_entry_def(
 		record,
 		workspace.dna,

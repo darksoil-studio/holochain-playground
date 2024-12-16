@@ -5,7 +5,7 @@ import isEqual from 'lodash-es/isEqual.js';
 import { BootstrapService } from '../bootstrap/bootstrap-service.js';
 import { Cell, getCellId } from '../core/cell/index.js';
 import {
-	InstalledHapps,
+	InstalledHapp,
 	SimulatedDna,
 	SimulatedHappBundle,
 	hashDna,
@@ -20,7 +20,7 @@ export interface ConductorState {
 	cellsState: CellMap<CellState>;
 	networkState: NetworkState;
 	registeredDnas: HoloHashMap<DnaHash, SimulatedDna>;
-	installedHapps: Dictionary<InstalledHapps>;
+	installedHapps: Dictionary<InstalledHapp>;
 	name: string;
 	badAgent: BadAgent | undefined;
 }
@@ -34,7 +34,7 @@ export type SignalCb = (type: ConductorSignalType) => void;
 export class Conductor {
 	readonly cells: CellMap<Cell>;
 	registeredDnas!: HoloHashMap<DnaHash, SimulatedDna>;
-	installedHapps!: Dictionary<InstalledHapps>;
+	installedHapps!: Dictionary<InstalledHapp>;
 
 	signalCbs: Array<SignalCb> = [];
 
@@ -146,7 +146,7 @@ export class Conductor {
 	async cloneCell(
 		installedAppId: string,
 		cellRole: string,
-		uid?: string,
+		networkSeed?: string,
 		properties?: Dictionary<any>,
 		membraneProof?: any,
 	): Promise<Cell> {
@@ -170,7 +170,7 @@ export class Conductor {
 
 		const dna: SimulatedDna = { ...dnaToClone };
 
-		if (uid) dna.uid = uid;
+		if (networkSeed) dna.networkSeed = networkSeed;
 		if (properties) dna.properties = properties;
 
 		const newDnaHash = hashDna(dna);

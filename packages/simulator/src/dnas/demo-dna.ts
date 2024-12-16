@@ -176,7 +176,7 @@ export function demoDna(): SimulatedDna {
 	const zomes = [demoEntriesZome, demoLinksZome, demoPathsZome];
 	return {
 		properties: {},
-		uid: '',
+		networkSeed: '',
 		zomes,
 	};
 }
