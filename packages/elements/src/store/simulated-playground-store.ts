@@ -5,7 +5,7 @@ import {
 	Conductor,
 	ConductorSignalType,
 	Dictionary,
-	InstalledHapps,
+	InstalledHapp,
 	SimulatedHappBundle,
 	createConductors,
 	selectDhtShard,
