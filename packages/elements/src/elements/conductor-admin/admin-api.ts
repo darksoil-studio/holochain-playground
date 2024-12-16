@@ -146,7 +146,7 @@ export function adminApi(
 						</mwc-select>`;
 					},
 				},
-				{ name: 'uid', field: 'textfield', type: 'String' },
+				{ name: 'networkSeed', field: 'textfield', type: 'String' },
 				{
 					name: 'properties',
 					field: 'custom',
@@ -197,7 +197,7 @@ export function adminApi(
 					const cell = await conductorStore.conductor.cloneCell(
 						args.installedAppId,
 						args.cellRole,
-						args.uid,
+						args.networkSeed,
 						args.properties,
 						args.membraneProof,
 					);

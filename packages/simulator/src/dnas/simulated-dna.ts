@@ -51,7 +51,7 @@ export interface SimulatedZome {
 export interface SimulatedDna {
 	zomes: Array<SimulatedZome>;
 	properties: Dictionary<any>;
-	uid: string;
+	networkSeed: string;
 }
 
 export interface SimulatedDnaRole {
@@ -70,7 +70,7 @@ export interface AppRole {
 	clones: CellId[];
 }
 
-export interface InstalledHapps {
+export interface InstalledHapp {
 	app_id: string;
 	agent_pub_key: AgentPubKey;
 	roles: Dictionary<AppRole>;

@@ -108,7 +108,7 @@ export class ConductorAdmin extends PlaygroundElement {
 						if (cell instanceof SimulatedCellStore) {
 							root.innerHTML = `
             <div class="column" style="padding: 8px; padding-top: 0">
-            <span>uid: "${cell.dna.uid}"</span>
+            <span>networkSeed: "${cell.dna.networkSeed}"</span>
             <div class="row">
             <span>Properties:</span>
             <json-viewer style="margin-left: 8px">
