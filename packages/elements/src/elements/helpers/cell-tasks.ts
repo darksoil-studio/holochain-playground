@@ -17,6 +17,7 @@ import {
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
+import { wrapPathInSvg } from '@tnesh-stack/elements';
 import { css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
@@ -225,12 +226,15 @@ export class CellTasks extends PlaygroundElement<SimulatedPlaygroundStore> {
 		color: string = 'inherit',
 	) {
 		return html`
-			<div class="column">
-				<div class="row">
-					<sl-icon .src=${icon} style=${styleMap({ color: color })}></sl-icon>
+			<div class="row" style="gap: 8px; align-items: center">
+				<sl-icon
+					.src=${wrapPathInSvg(icon)}
+					style=${styleMap({ color: color })}
+				></sl-icon>
+				<div class="column" style="gap: 4px">
 					<span>${primary}</span>
+					<span class="placeholder" style="font-size: 12px">${secondary}</span>
 				</div>
-				<span slot="secondary">${secondary}</span>
 			</div>
 		`;
 	}
@@ -239,52 +243,54 @@ export class CellTasks extends PlaygroundElement<SimulatedPlaygroundStore> {
 		if (!this.showTasks()) return html``;
 		const orderedTasks = this.sortTasks(Object.entries(this._runningTasks));
 		return html`
-			<sl-card class="tasks-card">
-				<div
-					class="row"
-					style="max-height: 300px; overflow-y: auto; width: 200px;"
-				>
-					${this._callZomeTasks.map(callZome =>
-						this.renderListItem(
-							mdiCallMade,
-							callZome.details.fnName,
-							callZome.details.zome + ' zome',
-							'green',
-						),
-					)}
-					${this._workflowErrors.map(errorInfo =>
-						this.renderListItem(
-							mdiAlertOutline,
-							errorInfo.error.message,
-							errorInfo.task.type === WorkflowType.CALL_ZOME
-								? `${
-										(errorInfo.task as CallZomeFnWorkflow).details.fnName
-									} in ${(errorInfo.task as CallZomeFnWorkflow).details.zome}`
-								: errorInfo.task.type,
-							'red',
-						),
-					)}
-					${this._networkRequestErrors.map(errorInfo =>
-						this.renderListItem(
-							mdiAlertOutline,
-							errorInfo.error.message,
-							errorInfo.networkRequest.type,
-							'red',
-						),
-					)}
-					${this._successes.map(({ task, payload }) =>
-						this.renderListItem(
-							mdiCheckCircleOutline,
-							task.details.fnName,
-							'Success',
-							'green',
-						),
-					)}
-					${orderedTasks.map(([taskName, taskNumber]) =>
-						this.renderListItem(mdiCogs, taskName, 'Cell Workflow'),
-					)}
+			<sl-card class="tasks-card"
+				><div class="row" style=" align-items: center; gap: 16px">
+					<div
+						class="row"
+						style="max-height: 200px; overflow-y: auto; max-width: 180px;"
+					>
+						${this._callZomeTasks.map(callZome =>
+							this.renderListItem(
+								mdiCallMade,
+								callZome.details.fnName,
+								callZome.details.zome + ' zome',
+								'green',
+							),
+						)}
+						${this._workflowErrors.map(errorInfo =>
+							this.renderListItem(
+								mdiAlertOutline,
+								errorInfo.error.message,
+								errorInfo.task.type === WorkflowType.CALL_ZOME
+									? `${
+											(errorInfo.task as CallZomeFnWorkflow).details.fnName
+										} in ${(errorInfo.task as CallZomeFnWorkflow).details.zome}`
+									: errorInfo.task.type,
+								'red',
+							),
+						)}
+						${this._networkRequestErrors.map(errorInfo =>
+							this.renderListItem(
+								mdiAlertOutline,
+								errorInfo.error.message,
+								errorInfo.networkRequest.type,
+								'red',
+							),
+						)}
+						${this._successes.map(({ task, payload }) =>
+							this.renderListItem(
+								mdiCheckCircleOutline,
+								task.details.fnName,
+								'Success',
+								'green',
+							),
+						)}
+						${orderedTasks.map(([taskName, taskNumber]) =>
+							this.renderListItem(mdiCogs, taskName, 'Cell Workflow'),
+						)}
+					</div>
+					${this.stepByStep ? html`` : html` <sl-spinner></sl-spinner> `}
 				</div>
-				${this.stepByStep ? html`` : html` <sl-spinner></sl-spinner> `}
 			</sl-card>
 		`;
 	}
@@ -295,6 +301,7 @@ export class CellTasks extends PlaygroundElement<SimulatedPlaygroundStore> {
 			css`
 				.tasks-card {
 					width: auto;
+					--padding: 8px;
 				}
 			`,
 		];

@@ -15,12 +15,21 @@ import {
 	decodeHashFromBase64,
 	encodeHashToBase64,
 } from '@holochain/client';
+import {
+	mdiCog,
+	mdiCogClockwise,
+	mdiLanConnect,
+	mdiPlay,
+	mdiSpeedometer,
+} from '@mdi/js';
 import '@scoped-elements/cytoscape';
 import { CytoscapeCircle } from '@scoped-elements/cytoscape';
 import SlButton from '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
+import '@shoelace-style/shoelace/dist/components/divider/divider.js';
 import '@shoelace-style/shoelace/dist/components/dropdown/dropdown.js';
+import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import '@shoelace-style/shoelace/dist/components/input/input.js';
@@ -28,8 +37,10 @@ import '@shoelace-style/shoelace/dist/components/menu-item/menu-item.js';
 import '@shoelace-style/shoelace/dist/components/menu/menu.js';
 import SlMenu from '@shoelace-style/shoelace/dist/components/menu/menu.js';
 import '@shoelace-style/shoelace/dist/components/range/range.js';
+import '@shoelace-style/shoelace/dist/components/range/range.js';
 import '@shoelace-style/shoelace/dist/components/switch/switch.js';
 import { DhtOpHash } from '@tnesh-stack/core-types';
+import { wrapPathInSvg } from '@tnesh-stack/elements';
 import '@tnesh-stack/elements/dist/elements/holo-identicon.js';
 import { AsyncComputed, Signal } from '@tnesh-stack/signals';
 import { CellMap, HoloHashMap } from '@tnesh-stack/utils';
@@ -224,7 +235,8 @@ export class DhtCells extends PlaygroundElement {
 
 		if (!this.networkRequestsToDisplay.includes(networkRequest.type)) return;
 		if (
-			networkRequest.toAgent.toString() === networkRequest.fromAgent.toString()
+			encodeHashToBase64(networkRequest.toAgent) ===
+			encodeHashToBase64(networkRequest.fromAgent)
 		)
 			return;
 
@@ -254,18 +266,17 @@ export class DhtCells extends PlaygroundElement {
 
 			label = `Publish: ${uniq(types).join(', ')}`;
 		}
+		await sleep(10);
 
-		const el = this._graph.cy.add([
-			{
-				group: 'nodes',
-				data: {
-					networkRequest,
-					label,
-				},
-				position: { x: fromPosition.x + 1, y: fromPosition.y + 1 },
-				classes: 'network-request',
+		const el = this._graph.cy.add({
+			group: 'nodes',
+			data: {
+				networkRequest,
+				label,
 			},
-		]);
+			position: { x: fromPosition.x + 1, y: fromPosition.y + 1 },
+			classes: 'network-request',
+		});
 
 		const delay = this.animationDelay * 1000;
 		if (this.stepByStep) {
@@ -273,28 +284,40 @@ export class DhtCells extends PlaygroundElement {
 				x: (toPosition.x - fromPosition.x) / 2 + fromPosition.x,
 				y: (toPosition.y - fromPosition.y) / 2 + fromPosition.y,
 			};
-			el.animate({
-				position: halfPosition,
-				duration: delay / 2,
-			});
+			el.animate(
+				{
+					position: halfPosition,
+				},
+				{
+					duration: delay / 2,
+				},
+			);
 
 			await sleep(delay / 2);
-
 			store.paused.pause();
 
 			await store.paused.awaitResume();
 
-			el.animate({
-				position: toPosition,
-				duration: delay / 2,
-			});
+			el.animate(
+				{
+					position: toPosition,
+				},
+				{
+					duration: delay / 2,
+				},
+			);
 
 			await sleep(delay / 2);
 		} else {
-			el.animate({
-				position: toNode.position(),
-				duration: delay,
-			});
+			console.log(el);
+			el.animate(
+				{
+					position: toNode.position(),
+				},
+				{
+					duration: delay,
+				},
+			);
 
 			await sleep(delay);
 		}
@@ -311,13 +334,15 @@ export class DhtCells extends PlaygroundElement {
 		});
 
 		if (
-			changedValues.has('store') &&
 			!this._middlewares &&
 			this.store &&
 			this.store instanceof SimulatedPlaygroundStore
 		) {
 			const cellsForActiveDna = this.store.cellsForActiveDna.get();
-			if (cellsForActiveDna.status === 'completed') {
+			if (
+				cellsForActiveDna.status === 'completed' &&
+				Array.from(cellsForActiveDna.value.entries()).length > 0
+			) {
 				this._middlewares = new MiddlewareController(
 					this,
 					() => cellsForActiveDna.value.map((s: SimulatedCellStore) => s.cell),
@@ -375,49 +400,41 @@ export class DhtCells extends PlaygroundElement {
 		const store: SimulatedPlaygroundStore = this.store;
 
 		return html`
-			<div class="row center-content">
+			<div class="row" style="gap: 16px; align-items: center">
 				${this.stepByStep
 					? html`
-							<mwc-icon-button
+							<sl-button
+								circle
 								.disabled=${!this._paused.get()}
-								icon="play_arrow"
-								style=${styleMap({
-									'background-color': this._paused.get() ? '#dbdbdb' : 'white',
-									'border-radius': '50%',
-								})}
 								@click=${() => store.paused.resume()}
-							></mwc-icon-button>
+							>
+								<sl-icon .src=${wrapPathInSvg(mdiPlay)}></sl-icon
+							></sl-button>
 						`
 					: html`
-							<mwc-slider
-								style="margin-right: 16px; width: 150px;"
-								discrete
-								withTickMarks
-								.value=${MAX_ANIMATION_DELAY - this.animationDelay}
-								.valueEnd=${MAX_ANIMATION_DELAY - this.animationDelay}
-								.min=${MIN_ANIMATION_DELAY}
-								.max=${MAX_ANIMATION_DELAY}
-								@change=${(e: any) =>
-									(this.animationDelay = MAX_ANIMATION_DELAY - e.target.value)}
-							></mwc-slider>
-							<mwc-icon style="margin: 0 8px;">speed</mwc-icon>
+							<div class="row" style="gap: 8px; align-items: center">
+								<sl-icon .src=${wrapPathInSvg(mdiSpeedometer)}></sl-icon>
+								<sl-range
+									style="--track-color-active: var(--sl-color-primary-600);"
+									.value=${MAX_ANIMATION_DELAY - this.animationDelay}
+									.min=${MIN_ANIMATION_DELAY}
+									.max=${MAX_ANIMATION_DELAY}
+									@sl-change=${(e: any) =>
+										(this.animationDelay =
+											MAX_ANIMATION_DELAY - e.target.value)}
+								></sl-range>
+							</div>
 						`}
 
-				<span
-					class="vertical-divider"
-					style="margin: 0 16px; margin-right: 24px;"
-				></span>
-
-				<mwc-formfield label="Step By Step" style="margin-right: 16px;">
-					<mwc-switch
-						id="step-by-step-switch"
-						.checked=${this.stepByStep}
-						@change=${(e: any) => {
-							this.stepByStep = e.target.checked;
-							if (this._paused.get()) store.paused.resume();
-						}}
-					></mwc-switch>
-				</mwc-formfield>
+				<sl-switch
+					id="step-by-step-switch"
+					.checked=${this.stepByStep}
+					@sl-change=${(e: any) => {
+						this.stepByStep = e.target.checked;
+						if (this._paused.get()) store.paused.resume();
+					}}
+					>Step By Step</sl-switch
+				>
 			</div>
 		`;
 	}
@@ -443,7 +460,7 @@ export class DhtCells extends PlaygroundElement {
 					In the DHT, all nodes have a <strong>public and private key</strong>.
 					The public key is visible and shared througout the network, but
 					private keys never leave their nodes. This public key is of 256 bits
-					an it's actually the node's ID, which you can see labeled besides the
+					and it's actually the node's ID, which you can see labeled besides the
 					nodes (encoded in base58 strings).
 					<br />
 					<br />
@@ -499,7 +516,7 @@ export class DhtCells extends PlaygroundElement {
 			const leftSide = this._graph.cy.width() / 2 > position.x;
 			const upSide = this._graph.cy.height() / 2 > position.y;
 
-			const finalX = position.x + (leftSide ? -250 : 50);
+			const finalX = position.x + (leftSide ? -210 : 50);
 			const finalY = position.y + (upSide ? -50 : 50);
 
 			return html`<cell-tasks
@@ -525,14 +542,17 @@ export class DhtCells extends PlaygroundElement {
 		const workflowsNames = Object.values(WorkflowType);
 		const networkRequestNames = Object.values(NetworkRequestType);
 		return html`
-			<div class="row center-content" style="margin: 16px; position: relative;">
+			<div class="row " style="align-items: center; gap: 8px">
 				${this.hideFilter
 					? html``
 					: html`
 							<sl-dropdown>
 								<sl-button id="active-workflows-button" caret slot="trigger">
-									<sl-icon></sl-icon>
-									Visible Worfklows</sl-button
+									<sl-icon
+										.src=${wrapPathInSvg(mdiCog)}
+										slot="prefix"
+									></sl-icon>
+									Worfklows</sl-button
 								>
 								<sl-menu id="active-workflows-menu">
 									${workflowsNames.map(
@@ -563,9 +583,14 @@ export class DhtCells extends PlaygroundElement {
 									)}
 								</sl-menu>
 							</sl-dropdown>
+
 							<sl-dropdown>
-								<sl-button id="network-requests-button" caret slot="trigget"
-									>Visible Network Requests</sl-button
+								<sl-button id="network-requests-button" caret slot="trigger">
+									<sl-icon
+										.src=${wrapPathInSvg(mdiLanConnect)}
+										slot="prefix"
+									></sl-icon>
+									Network Requests</sl-button
 								>
 								<sl-menu
 									id="network-requests-menu"
@@ -590,6 +615,7 @@ export class DhtCells extends PlaygroundElement {
 												.checked=${this.networkRequestsToDisplay.includes(
 													type as NetworkRequestType,
 												)}
+												value="${type}"
 											>
 												${type}
 											</sl-menu-item>
@@ -612,35 +638,31 @@ export class DhtCells extends PlaygroundElement {
 	}
 
 	render() {
-		const activeDna = this.store.activeDna.get();
-
 		return html`
-			<sl-card class="block-card" style="position: relative;">
-				${this.renderTasksTooltips()}
-				<div class="column fill">
-					<div class="block-title row" style="align-items: center">
-						<span>Dht Cells</span>
+			${this.renderTasksTooltips()}
+			<div class="column fill">
+				<div class="block-title row" style="align-items: center">
+					<span>Dht Cells</span>
 
-						<div style="flex: 1"></div>
-						${this.renderHelp()}
-					</div>
-					<cytoscape-circle
-						id="graph"
-						class="fill ${classMap({
-							paused: this._paused.get(),
-						})}"
-						.elements=${this.elements}
-						.options=${cytoscapeOptions}
-						.circleOptions=${layoutConfig}
-						@node-selected=${(e: CustomEvent) =>
-							this.store.activeAgentPubKey.set(
-								decodeHashFromBase64(e.detail.id()),
-							)}
-						.selectedNodesIds=${this.selectedNodesIds}
-					></cytoscape-circle>
-					${this.renderBottomToolbar()}
+					<div style="flex: 1"></div>
+					${this.renderHelp()}
 				</div>
-			</sl-card>
+				<cytoscape-circle
+					id="graph"
+					class="fill ${classMap({
+						paused: this._paused.get(),
+					})}"
+					.elements=${this.elements}
+					.options=${cytoscapeOptions}
+					.circleOptions=${layoutConfig}
+					@node-selected=${(e: CustomEvent) =>
+						this.store.activeAgentPubKey.set(
+							decodeHashFromBase64(e.detail.id()),
+						)}
+					.selectedNodesIds=${this.selectedNodesIds}
+				></cytoscape-circle>
+				${this.renderBottomToolbar()}
+			</div>
 		`;
 	}
 
@@ -652,6 +674,7 @@ export class DhtCells extends PlaygroundElement {
 					min-height: 350px;
 					min-width: 400px;
 					display: flex;
+					position: relative;
 				}
 
 				.paused {

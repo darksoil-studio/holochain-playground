@@ -8,12 +8,14 @@ import { mdiAlertOutline, mdiCheckCircleOutline } from '@mdi/js';
 import '@power-elements/json-viewer';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/copy-button/copy-button.js';
+import '@shoelace-style/shoelace/dist/components/details/details.js';
 import '@shoelace-style/shoelace/dist/components/divider/divider.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import '@shoelace-style/shoelace/dist/components/tab-group/tab-group.js';
 import '@shoelace-style/shoelace/dist/components/tab-panel/tab-panel.js';
 import '@shoelace-style/shoelace/dist/components/tab/tab.js';
+import '@shoelace-style/shoelace/dist/components/tag/tag.js';
 import { wrapPathInSvg } from '@tnesh-stack/elements';
 import '@tnesh-stack/elements/dist/elements/holo-identicon.js';
 import { CellMap, isHash } from '@tnesh-stack/utils';
@@ -31,7 +33,6 @@ import {
 } from '../../store/simulated-playground-store.js';
 import { CallableFn } from '../helpers/call-functions.js';
 import '../helpers/call-functions.js';
-import '../helpers/expandable-line.js';
 import { shortenStrRec } from '../utils/hash.js';
 import { sharedStyles } from '../utils/shared-styles.js';
 import { ZomeFunctionResult } from './types.js';
@@ -171,15 +172,16 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 			: undefined;
 		if (!result.result.payload || typeof payload === 'string')
 			return html`<div class="row" style="gap: 4px; align-items: center">
-				<span style="overflow: hidden; text-overflow: ellipsis; flex: 1"
-					>${payload}</span
-				><sl-copy-button .value=${payload}></sl-copy-button>
+				<sl-tag style="overflow: hidden; text-overflow: ellipsis; flex: 1">
+					${payload}</sl-tag
+				>
+				<sl-copy-button .value=${payload}></sl-copy-button>
 			</div>`;
 		else
 			return html`
-				<expandable-line>
+				<sl-details summary="Expand to see result">
 					<json-viewer .object=${payload} class="fill"></json-viewer>
-				</expandable-line>
+				</sl-details>
 			`;
 	}
 

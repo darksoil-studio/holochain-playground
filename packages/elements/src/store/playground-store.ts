@@ -16,6 +16,7 @@ import {
 	DnaHash,
 	NewEntryAction,
 	Record,
+	encodeHashToBase64,
 } from '@holochain/client';
 import {
 	AsyncComputed,
@@ -269,7 +270,10 @@ export abstract class PlaygroundStore<
 		const map = new CellMap<CellStoreForConductorStore<T>>();
 
 		for (const [cellId, value] of allCells.value.entries()) {
-			if (isEqual(activeDna?.toString(), cellId[0].toString())) {
+			if (
+				activeDna &&
+				encodeHashToBase64(activeDna) === encodeHashToBase64(cellId[0])
+			) {
 				map.set(cellId, value);
 			}
 		}

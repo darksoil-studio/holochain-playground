@@ -178,6 +178,7 @@ export class PauseSignal extends Signal.State<boolean> {
 	}
 
 	pause() {
+		if (this.get()) return;
 		this._awaitResume = new Promise(r => {
 			this.awaitResolve = r;
 		});
