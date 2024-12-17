@@ -7,6 +7,8 @@ import { decodeHashFromBase64, encodeHashToBase64 } from '@holochain/client';
 import { mdiAlertOutline, mdiCheckCircleOutline } from '@mdi/js';
 import '@power-elements/json-viewer';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
+import '@shoelace-style/shoelace/dist/components/copy-button/copy-button.js';
+import '@shoelace-style/shoelace/dist/components/divider/divider.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import '@shoelace-style/shoelace/dist/components/tab-group/tab-group.js';
@@ -17,6 +19,7 @@ import '@tnesh-stack/elements/dist/elements/holo-identicon.js';
 import { CellMap, isHash } from '@tnesh-stack/utils';
 import { css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { join } from 'lit/directives/join.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { cloneDeepWith } from 'lodash-es';
 
@@ -167,7 +170,11 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 			? shortenStrRec(result.result.payload)
 			: undefined;
 		if (!result.result.payload || typeof payload === 'string')
-			return html`<span>${payload}</span>`;
+			return html`<div class="row" style="gap: 4px; align-items: center">
+				<span style="overflow: hidden; text-overflow: ellipsis; flex: 1"
+					>${payload}</span
+				><sl-copy-button .value=${payload}></sl-copy-button>
+			</div>`;
 		else
 			return html`
 				<expandable-line>
@@ -177,9 +184,11 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 	}
 
 	renderResults() {
-		const results = this.getActiveResults();
+		const results = this.getActiveResults().sort(
+			(r1, r2) => r2.timestamp - r1.timestamp,
+		);
 		return html`
-			<div class="column" style="flex: 1; margin: 16px">
+			<div class="column" style="flex: 1; margin-top: 16px; margin-left: 16px">
 				<span class="title row">Results </span>
 				${results.length === 0
 					? html`
@@ -192,48 +201,40 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 					: html` <div class="flex-scrollable-parent">
 							<div class="flex-scrollable-container">
 								<div class="flex-scrollable-y">
-									<div style="margin: 0 16px;">
-										${results.map(
-											(result, index) => html`
-												<div class="column" style="flex: 1;">
-													<div class="row" style="margin: 8px 0;">
-														${result.result
-															? html`
-																	<sl-icon
-																		style=${styleMap({
-																			color: result.result.success
-																				? 'green'
-																				: 'red',
-																			'align-self': 'start',
-																			'margin-top': '16px',
-																			'font-size': '36px',
-																		})}
-																		.src=${wrapPathInSvg(
-																			result.result.success
-																				? mdiCheckCircleOutline
-																				: mdiAlertOutline,
-																		)}
-																	></sl-icon>
-																`
-															: html`
-																	<sl-spinner
-																		style="align-self: center;"
-																	></sl-spinner>
-																`}
+									<div
+										class="column"
+										style="flex-direction: column-reverse; margin: 8px;"
+									>
+										${join(
+											results.map(
+												(result, index) => html`
+													<div class="column" style="flex: 1; gap: 4px">
 														<div
-															class="column"
-															style="flex: 1; margin: 12px; margin-right: 0;"
+															class="row"
+															style="align-items: center; gap: 8px"
 														>
+															${result.result
+																? html`
+																		<sl-icon
+																			style=${styleMap({
+																				color: result.result.success
+																					? 'green'
+																					: 'red',
+																				'font-size': '24px',
+																			})}
+																			.src=${wrapPathInSvg(
+																				result.result.success
+																					? mdiCheckCircleOutline
+																					: mdiAlertOutline,
+																			)}
+																		></sl-icon>
+																	`
+																: html` <sl-spinner></sl-spinner> `}
 															<div class="row" style="flex: 1;">
-																<span style="flex: 1; margin-bottom: 8px;">
+																<span style="flex: 1;">
 																	${result.fnName}
 																	<span class="placeholder">
 																		in ${result.zome}
-																		zome${result.result
-																			? result.result.success
-																				? ', result:'
-																				: ', error:'
-																			: ''}
 																	</span>
 																</span>
 																<span class="placeholder">
@@ -242,19 +243,12 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 																	).toLocaleTimeString()}
 																</span>
 															</div>
-															${this.renderResult(result)}
 														</div>
+														${this.renderResult(result)}
 													</div>
-													${index < results.length - 1
-														? html`
-																<span
-																	class="horizontal-divider"
-																	style="align-self: center;"
-																></span>
-															`
-														: html``}
-												</div>
-											`,
+												`,
+											),
+											html` <sl-divider></sl-divider> `,
 										)}
 									</div>
 								</div>
@@ -306,7 +300,10 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 																		<sl-tab slot="nav" .panel=${zome.name}
 																			>${zome.name}</sl-tab
 																		>
-																		<sl-tab-panel name=${zome.name}>
+																		<sl-tab-panel
+																			name=${zome.name}
+																			style="--padding: 0"
+																		>
 																			${this.renderActiveZomeFns(zome)}
 																		</sl-tab-panel>
 																	`,

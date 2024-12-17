@@ -99,11 +99,11 @@ export class CallFunctions extends LitElement {
 	}
 
 	renderCallableFunction(callableFunction: CallableFn) {
-		return html` <div class="column" style="flex: 1; margin: 16px;">
+		return html` <div class="column" style="flex: 1;">
 			<div class="flex-scrollable-parent">
 				<div class="flex-scrollable-container">
 					<div class="flex-scrollable-y">
-						<div class="column" style="flex: 1;">
+						<div class="column" style="flex: 1; margin: 0 16px;">
 							${callableFunction.args.length === 0
 								? html`<span class="placeholder" style="margin-top: 28px;"
 										>This function has no arguments</span
@@ -117,6 +117,7 @@ export class CallFunctions extends LitElement {
 			</div>
 			<sl-button
 				variant="primary"
+				style="margin: 0 8px"
 				@click=${() => this.callFunction(callableFunction)}
 				.disabled=${this.isExecuteDisabled(callableFunction)}
 				>Execute</sl-button
@@ -132,22 +133,16 @@ export class CallFunctions extends LitElement {
 			</div> `;
 
 		return html`
-			<div class="flex-scrollable-parent">
-				<div class="flex-scrollable-container">
-					<div class="flex-scrollable-y" style="height: 100%">
-						<sl-tab-group placement="start">
-							${this.callableFns.map(
-								fn => html`
-									<sl-tab slot="nav" .panel=${fn.name}>${fn.name}</sl-tab>
-									<sl-tab-panel .name=${fn.name}>
-										${this.renderCallableFunction(fn)}
-									</sl-tab-panel>
-								`,
-							)}
-						</sl-tab-group>
-					</div>
-				</div>
-			</div>
+			<sl-tab-group placement="start" style="flex: 1">
+				${this.callableFns.map(
+					fn => html`
+						<sl-tab slot="nav" .panel=${fn.name}>${fn.name}</sl-tab>
+						<sl-tab-panel .name=${fn.name} style="--padding: 0">
+							${this.renderCallableFunction(fn)}
+						</sl-tab-panel>
+					`,
+				)}
+			</sl-tab-group>
 		`;
 	}
 
