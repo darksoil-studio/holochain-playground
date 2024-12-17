@@ -111,7 +111,7 @@ export function summarizeDht(
 
 				if (dhtOpType === DhtOpType.StoreEntry) {
 					const entry_hash = (action as NewEntryAction).entry_hash;
-					const entry = getDhtOpEntry(dhtOp);
+					const entry = getDhtOpEntry(chainOp);
 					entries.set(entry_hash, entry);
 					appendToArray(actionsByEntry, entry_hash, actionHash);
 

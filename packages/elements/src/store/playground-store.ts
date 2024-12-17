@@ -104,7 +104,7 @@ export function getFromStore(
 				if (type === DhtOpType.StoreEntry || type === DhtOpType.StoreRecord) {
 					return {
 						status: 'completed',
-						value: getDhtOpEntry(op),
+						value: getDhtOpEntry(chainOp),
 					};
 				}
 			}

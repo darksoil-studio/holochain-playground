@@ -67,6 +67,3 @@ export class DockViewEl extends LitElement {
 		`,
 	];
 }
-
-@customElement('dock-view-panel')
-export class DockViewPanel extends LitElement {}
