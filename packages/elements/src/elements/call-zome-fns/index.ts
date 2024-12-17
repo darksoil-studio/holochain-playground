@@ -26,7 +26,7 @@ import {
 	SimulatedConductorStore,
 	SimulatedPlaygroundStore,
 } from '../../store/simulated-playground-store.js';
-import { CallFns, CallableFn } from '../helpers/call-functions.js';
+import { CallableFn } from '../helpers/call-functions.js';
 import '../helpers/call-functions.js';
 import '../helpers/expandable-line.js';
 import { shortenStrRec } from '../utils/hash.js';
@@ -45,10 +45,7 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 	@property({ type: Boolean, attribute: 'hide-agent-pub-key' })
 	hideAgentPubKey = false;
 	@property({ type: String })
-	selectedZomeFnName: string | undefined = undefined;
-
-	@state()
-	private _selectedZomeIndex: number = 0;
+	selectedZomeName: string | undefined = undefined;
 
 	// Arguments segmented by dnaHash/agentPubKey/zome/fn_name/arg_name
 	_arguments: CellMap<Dictionary<Dictionary<Dictionary<any>>>> = new CellMap();
@@ -274,52 +271,55 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 				${activeCell.status === 'completed' && activeCell.value
 					? html`
 							<div class="column" style="flex: 1">
-								<span class="title row" style="margin: 16px; margin-bottom: 0;"
-									>Call Zome
-									Fns${this.hideAgentPubKey
-										? html``
-										: html`<span class="placeholder row"
-												>, for agent
-												<holo-identicon
-													.hash=${activeCell.value.cellId[1]}
-													style="margin-left: 8px;"
-												></holo-identicon
-											></span> `}</span
-								>
-								<span
-									class="horizontal-divider"
-									style="margin-top: 16px"
-								></span>
-
-								<div class="row" style="flex: 1;">
-									<div class="column" style="flex: 1">
-										${this.hideZomeSelector
+								<div class="row title" style="align-items: center">
+									<span>Call Zome Fns</span> ${
+										this.hideAgentPubKey
 											? html``
-											: html`
-													<sl-tab-group
-														.activeIndex=${this._selectedZomeIndex}
-														@MDCTabBar:activated=${(e: CustomEvent) => {
-															this.selectedZomeFnName = undefined;
-															this._selectedZomeIndex = e.detail.index;
-														}}
-													>
-														${this.dna?.zomes.map(
-															zome => html`
-																<sl-tab slot="nav" .panel=${zome.name}
-																	>${zome.name}</sl-tab
-																>
-																<sl-tab-panel name=${zome.name}>
-																	${this.renderActiveZomeFns(zome)}
-																</sl-tab-panel>
-															`,
-														)}
-													</sl-tab-group>
-												`}
+											: html`<span class="placeholder row">, for agent</span>
+													<holo-identicon
+														.hash=${activeCell.value.cellId[1]}
+														style="margin-left: 8px;"
+													></holo-identicon>`
+									}
+											</div>
+
+									<span
+										class="horizontal-divider"
+										style="margin-top: 16px"
+									></span>
+
+									<div class="row" style="flex: 1;">
+										<div class="column" style="flex: 1">
+											${
+												this.hideZomeSelector
+													? this.dna &&
+														this.selectedZomeName &&
+														this.renderActiveZomeFns(
+															this.dna.zomes.find(
+																zome => zome.name === this.selectedZomeName,
+															)!,
+														)
+													: html`
+															<sl-tab-group style="flex: 1">
+																${this.dna?.zomes.map(
+																	zome => html`
+																		<sl-tab slot="nav" .panel=${zome.name}
+																			>${zome.name}</sl-tab
+																		>
+																		<sl-tab-panel name=${zome.name}>
+																			${this.renderActiveZomeFns(zome)}
+																		</sl-tab-panel>
+																	`,
+																)}
+															</sl-tab-group>
+														`
+											}
+										</div>
+
+										<span class="vertical-divider"></span>
+
+										${this.renderResults()}
 									</div>
-
-									<span class="vertical-divider"></span>
-
-									${this.renderResults()}
 								</div>
 							</div>
 						`

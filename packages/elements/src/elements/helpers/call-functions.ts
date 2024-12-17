@@ -29,8 +29,8 @@ export interface CallableFn {
 	call: (args: Dictionary<any>) => void;
 }
 
-@customElement('call-fns')
-export class CallFns extends LitElement {
+@customElement('call-functions')
+export class CallFunctions extends LitElement {
 	@property()
 	callableFns!: CallableFn[];
 
@@ -65,7 +65,7 @@ export class CallFns extends LitElement {
 
 	renderField(callableFn: CallableFn, arg: CallableFnArgument) {
 		if (arg.field === 'textfield')
-			return html`<sl-textfield
+			return html`<sl-input
 				style="margin-top: 12px"
 				label=${arg.name + ': ' + arg.type}
 				.value=${(this._arguments[callableFn.name] &&
@@ -73,7 +73,7 @@ export class CallFns extends LitElement {
 				''}
 				@sl-input=${(e: any) =>
 					this.setArgument(callableFn.name, arg.name, e.target.value)}
-			></sl-textfield>`;
+			></sl-input>`;
 		if (arg.field === 'custom')
 			return html`<div style="margin-top: 12px;" class="column">
 				${arg.render(this._arguments[callableFn.name] || {}, value =>
@@ -135,7 +135,7 @@ export class CallFns extends LitElement {
 			<div class="flex-scrollable-parent">
 				<div class="flex-scrollable-container">
 					<div class="flex-scrollable-y" style="height: 100%">
-						<sl-tab-group>
+						<sl-tab-group placement="start">
 							${this.callableFns.map(
 								fn => html`
 									<sl-tab slot="nav" .panel=${fn.name}>${fn.name}</sl-tab>

@@ -53,4 +53,25 @@ export const sharedStyles = css`
 		opacity: 0.3;
 		margin-bottom: 0;
 	}
+	sl-tab-group {
+		display: flex;
+	}
+	sl-tab-group::part(base) {
+		display: flex;
+		flex: 1;
+	}
+	sl-tab-group::part(body) {
+		display: flex;
+		flex: 1;
+	}
+	sl-tab-panel::part(base) {
+		display: flex;
+		flex: 1;
+		width: 100%;
+		height: 100%;
+	}
+	sl-tab-panel {
+		height: 100%;
+		width: 100%;
+	}
 `;
