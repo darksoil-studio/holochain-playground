@@ -211,7 +211,9 @@ export class SimulatedPlaygroundStore extends PlaygroundStore<SimulatedConductor
 			initialConductors.map(c => new SimulatedConductorStore(c)),
 		);
 		this.simulatedHapps = new Signal.State({ [initialHapp.name]: initialHapp });
-		this.activeDna.set(initialConductors[0].cells.cellIds()[0][0]);
+		if (initialConductors.length > 0) {
+			this.activeDna.set(initialConductors[0].cells.cellIds()[0][0]);
+		}
 	}
 
 	static async create(

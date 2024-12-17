@@ -33,84 +33,31 @@
 		</simulated-playground-context>
 
 		<script type="module">
+			import '@shoelace-style/shoelace/dist/themes/light.css';
+		</script>
+		<script type="module">
 			import {
 				GetStrategy,
 				NetworkRequestType,
 				WorkflowType,
 			} from '@holochain-playground/simulator';
 			import { html, render } from 'lit';
-			import { get } from 'svelte/store';
 
-			import {
-				CallZomeFns,
-				/*
-HolochainPlaygroundGoldenLayout,
-HolochainPlaygroundGoldenLayoutMenu,
-SelectActiveDna,
-RunSteps,
-HappsManager,
-conductorStore */
-				ConductorAdmin,
-				ConnectedPlaygroundContext,
-				DhtCells,
-				DhtEntries,
-				EntryContents,
-				SimulatedPlaygroundContext,
-				SourceChain,
-			} from '../src';
-
-			/*
-      import {
-        GoldenLayoutRoot,
-        GoldenLayoutRow,
-        GoldenLayoutColumn,
-        GoldenLayoutComponent,
-      } from '@scoped-elements/golden-layout'; */
-			customElements.define(
-				'simulated-playground-context',
-				SimulatedPlaygroundContext,
-			);
-			customElements.define(
-				'connected-playground-context',
-				ConnectedPlaygroundContext,
-			); /*
-      customElements.define(
-        'holochain-playground-golden-layout-menu',
-        HolochainPlaygroundGoldenLayoutMenu
-      );
-      customElements.define('golden-layout-root', GoldenLayoutRoot);
-      customElements.define('golden-layout-row', GoldenLayoutRow);
-      customElements.define('golden-layout-column', GoldenLayoutColumn);
-      customElements.define('golden-layout-component', GoldenLayoutComponent);
-      customElements.define('run-steps', RunSteps);
-      customElements.define('select-active-dna', SelectActiveDna);
-      customElements.define('zome-fns-results', ZomeFnsResults);
-      customElements.define('happs-manager', HappsManager);
-      */
-
-			customElements.define('dht-cells', DhtCells);
-			customElements.define('call-zome-fns', CallZomeFns);
-			customElements.define('conductor-admin', ConductorAdmin);
-			customElements.define('dht-entries', DhtEntries);
-			customElements.define('source-chain', SourceChain);
-			customElements.define('entry-contents', EntryContents);
+			import '../src/index.ts';
 
 			const context = document.getElementById('context');
 
 			// context.urls = ['ws://localhost:38023'];
 			context.addEventListener('playground-ready', e => {
 				const store = e.detail.store;
-				store.conductors.subscribe(c => {
-					c &&
-						c[0].cells.subscribe(cells => {
-							if (Array.from(cells.entries()).length > 0) {
-								store.activeAgentPubKey.set(
-									Array.from(cells.entries())[0][0][1],
-								);
-								store.activeDna.set(Array.from(cells.entries())[0][0][0]);
-							}
-						});
-				});
+				const c = store.conductors.get();
+				const cells = c[0].cells.get();
+				if (Array.from(cells.value.entries()).length > 0) {
+					store.activeAgentPubKey.set(
+						Array.from(cells.value.entries())[0][0][1],
+					);
+					store.activeDna.set(Array.from(cells.value.entries())[0][0][0]);
+				}
 			});
 		</script>
 	</body>

@@ -32,8 +32,4 @@ export class ConnectedPlaygroundContext extends BasePlaygroundContext<ConnectedP
 			(this.store as ConnectedPlaygroundStore).setConductors(this.urls);
 		}
 	}
-
-	render() {
-		return html`<slot></slot>`;
-	}
 }

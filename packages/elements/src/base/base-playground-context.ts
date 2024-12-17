@@ -25,6 +25,10 @@ export abstract class BasePlaygroundContext<
 		this.requestUpdate();
 	}
 
+	render() {
+		return html`<slot></slot>`;
+	}
+
 	static get styles() {
 		return [
 			sharedStyles,

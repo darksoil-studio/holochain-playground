@@ -5,8 +5,10 @@ import {
 } from '@holochain-playground/simulator';
 import { customElement, property } from 'lit/decorators.js';
 
-import { PlaygroundMode } from '../store/mode.js';
-import { SimulatedPlaygroundStore } from '../store/simulated-playground-store.js';
+import {
+	SimulatedConductorStore,
+	SimulatedPlaygroundStore,
+} from '../store/simulated-playground-store.js';
 import { BasePlaygroundContext } from './base-playground-context.js';
 
 @customElement('simulated-playground-context')
@@ -25,7 +27,9 @@ export class SimulatedPlaygroundContext extends BasePlaygroundContext<SimulatedP
 			this.numberOfSimulatedConductors,
 			[],
 			this.simulatedHapp,
-		).then(() => {
+		).then(conductors => {
+			store.conductors.set(conductors.map(c => new SimulatedConductorStore(c)));
+			store.activeDna.set(conductors[0].cells.cellIds()[0][0]);
 			this.dispatchEvent(
 				new CustomEvent('playground-ready', {
 					bubbles: true,
