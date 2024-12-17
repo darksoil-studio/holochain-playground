@@ -18,53 +18,48 @@ export class EntryContents extends PlaygroundElement {
 		const activeDhtHash = this.store.activeDhtHash.get();
 		const activeContent = this.store.activeContent.get();
 		return html`
-			<sl-card style="width: auto; min-height: 200px;" class="fill">
-				<div class="column fill">
-					<span
-						class="title row"
-						style="margin-bottom: 8px; align-items:center"
-					>
-						${activeContent.status === 'completed' &&
-						activeContent.value &&
-						activeContent.value.type
-							? 'Action'
-							: 'Entry'}
-						Contents${activeDhtHash
-							? html`<span class="row placeholder" style="align-items:center">
-									, with hash
-									<holo-identicon
-										.hash=${activeDhtHash}
-										style="margin-left: 8px;"
-									></holo-identicon
-								></span>`
-							: html``}</span
-					>
-					${activeContent.status === 'completed' && activeContent.value
-						? html`
-								<div class="column fill">
-									<div class="fill flex-scrollable-parent">
-										<div class="flex-scrollable-container">
-											<div class="flex-scrollable-y" style="height: 100%;">
-												<json-viewer
-													.object=${shortenStrRec(
-														activeContent.value.entry
-															? getEntryContents(activeContent.value)
-															: activeContent.value,
-													)}
-													class="fill"
-												></json-viewer>
-											</div>
+			<div class="column" style="flex: 1">
+				<span class="title row" style="margin-bottom: 8px; align-items:center">
+					${activeContent.status === 'completed' &&
+					activeContent.value &&
+					activeContent.value.type
+						? 'Action'
+						: 'Entry'}
+					Contents${activeDhtHash
+						? html`<span class="row placeholder" style="align-items:center">
+								, with hash
+								<holo-identicon
+									.hash=${activeDhtHash}
+									style="margin-left: 8px;"
+								></holo-identicon
+							></span>`
+						: html``}</span
+				>
+				${activeContent.status === 'completed' && activeContent.value
+					? html`
+							<div class="column fill">
+								<div class="fill flex-scrollable-parent">
+									<div class="flex-scrollable-container">
+										<div class="flex-scrollable-y" style="height: 100%;">
+											<json-viewer
+												.object=${shortenStrRec(
+													activeContent.value.entry
+														? getEntryContents(activeContent.value)
+														: activeContent.value,
+												)}
+												class="fill"
+											></json-viewer>
 										</div>
 									</div>
 								</div>
-							`
-						: html`
-								<div class="column fill center-content">
-									<span class="placeholder">Select entry to inspect</span>
-								</div>
-							`}
-				</div>
-			</sl-card>
+							</div>
+						`
+					: html`
+							<div class="column fill center-content">
+								<span class="placeholder">Select entry to inspect</span>
+							</div>
+						`}
+			</div>
 		`;
 	}
 

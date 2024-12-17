@@ -156,26 +156,24 @@ export class DhtEntries extends PlaygroundElement {
 	render() {
 		const activeDna = this.store.activeDna.get();
 		return html`
-			<sl-card class="block-card" style="position: relative;">
-				<div class="column fill">
-					<div class="block-title row" style="align-items: center">
-						<span>Dht Entries</span>
-						<div style="flex: 1"></div>
+			<div class="column fill">
+				<div class="block-title row" style="align-items: center">
+					<span>Dht Entries</span>
+					<div style="flex: 1"></div>
 
-						${this.renderHelp()}
-					</div>
-
-					<cytoscape-cose-bilkent
-						.elements=${this.elements}
-						.selectedNodesIds=${this.selectedNodesIds}
-						class="fill"
-						.options=${cytoscapeConfig}
-						@node-selected=${(e: any) =>
-							this.store.activeDhtHash.set(decodeHashFromBase64(e.detail.id()))}
-					></cytoscape-cose-bilkent>
-					${!this.hideFilter ? this.renderFilter() : html``}
+					${this.renderHelp()}
 				</div>
-			</sl-card>
+
+				<cytoscape-cose-bilkent
+					.elements=${this.elements}
+					.selectedNodesIds=${this.selectedNodesIds}
+					class="fill"
+					.options=${cytoscapeConfig}
+					@node-selected=${(e: any) =>
+						this.store.activeDhtHash.set(decodeHashFromBase64(e.detail.id()))}
+				></cytoscape-cose-bilkent>
+				${!this.hideFilter ? this.renderFilter() : html``}
+			</div>
 		`;
 	}
 

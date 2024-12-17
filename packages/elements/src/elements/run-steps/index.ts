@@ -102,22 +102,20 @@ export class RunSteps extends PlaygroundElement<SimulatedPlaygroundStore> {
 
 	render(): TemplateResult {
 		return html`
-			<sl-card class="block-card">
-				<div class="column" style="margin: 16px; flex: 1;">
-					<div class="row">
-						<span class="block-title" style="flex: 1;">Run Steps</span>
-						<sl-button
-							variant="primary"
-							.disabled=${this._running ||
-							this.store.cellsForActiveDna.get().status !== 'completed'}
-							@click=${() => this.runSteps()}
-						>
-							${this._running ? 'RUNNING...' : 'RUN'}
-						</sl-button>
-					</div>
-					${this.renderContent()}
+			<div class="column" style="margin: 16px; flex: 1;">
+				<div class="row">
+					<span class="block-title" style="flex: 1;">Run Steps</span>
+					<sl-button
+						variant="primary"
+						.disabled=${this._running ||
+						this.store.cellsForActiveDna.get().status !== 'completed'}
+						@click=${() => this.runSteps()}
+					>
+						${this._running ? 'RUNNING...' : 'RUN'}
+					</sl-button>
 				</div>
-			</sl-card>
+				${this.renderContent()}
+			</div>
 		`;
 	}
 

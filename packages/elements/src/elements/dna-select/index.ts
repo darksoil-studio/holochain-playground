@@ -30,18 +30,16 @@ export class SelectActiveDna extends PlaygroundElement {
 		const allDnas =
 			allDnasResult.status === 'completed' ? allDnasResult.value : [];
 		return html`
-			<sl-card class="block-card">
-				<div class="column" style="margin: 16px;">
-					<span class="block-title" style="margin-bottom: 16px;"
-						>Select Active Dna</span
-					>
-					<sl-select
-						@selected=${(e: any) => this.selectDNA(allDnas[e.detail.index])}
-					>
-						${allDnas.map(dna => this.renderDna(dna))}
-					</sl-select>
-				</div>
-			</sl-card>
+			<div class="column" style="margin: 16px;">
+				<span class="block-title" style="margin-bottom: 16px;"
+					>Select Active Dna</span
+				>
+				<sl-select
+					@selected=${(e: any) => this.selectDNA(allDnas[e.detail.index])}
+				>
+					${allDnas.map(dna => this.renderDna(dna))}
+				</sl-select>
+			</div>
 		`;
 	}
 

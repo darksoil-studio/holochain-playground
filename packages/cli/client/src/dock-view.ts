@@ -61,6 +61,9 @@ export class DockViewEl extends LitElement {
 			}
 			${unsafeCSS(styles)}
 
+			.content-container {
+				padding: 16px;
+			}
 			.groupview > .content-container {
 				display: flex;
 			}

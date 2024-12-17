@@ -263,7 +263,7 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 	render() {
 		const activeCell = this.store.activeCell.get();
 		return html`
-			<sl-card style="width: auto; flex: 1;">
+			<div class="column" style="flex: 1;">
 				${activeCell.status === 'completed' && activeCell.value
 					? html`
 							<div class="column" style="flex: 1">
@@ -327,7 +327,7 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 								>Select a cell to call its zome functions</span
 							>
 						</div>`}
-			</sl-card>
+			</div>
 		`;
 	}
 

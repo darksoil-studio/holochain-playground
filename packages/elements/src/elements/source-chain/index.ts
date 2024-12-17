@@ -87,52 +87,50 @@ export class SourceChain extends PlaygroundElement {
 		const activeAgent = this.store.activeAgentPubKey.get();
 		const activeCell = this.store.activeCell.get();
 		return html`
-			<sl-card class="block-card">
-				<div class="column fill">
-					<div class="block-title row" style="align-items: center">
-						<span>Source Chain</span>${activeAgent
-							? html`
-									<span class="placeholder row"> , for Agent </span>
-									<holo-identicon
-										.hash=${activeAgent}
-										style="margin-left: 8px; height: 32px"
-									></holo-identicon>
-								`
-							: html``}
-						<div style="flex: 1"></div>
-						${this.renderHelp()}
-					</div>
-					${activeCell.status === 'completed' && activeCell.value
-						? html``
-						: html`
-								<div style="flex: 1;" class="center-content placeholder">
-									<span>Select a cell to display its source chain</span>
-								</div>
-							`}
-
-					<cytoscape-dagre
-						.elements=${this.elements}
-						.selectedNodesIds=${this.selectedNodesIds}
-						.options=${this.cytoscapeOptions}
-						@node-selected=${(e: any) => {
-							let activeHash = e.detail.id();
-
-							if (activeHash.includes(':')) {
-								activeHash = activeHash.split(':')[1];
-							}
-
-							this.store.activeDhtHash.set(decodeHashFromBase64(activeHash));
-						}}
-						style=${styleMap({
-							display:
-								activeCell.status === 'completed' && activeCell.value
-									? ''
-									: 'none',
-							flex: '1',
-						})}
-					></cytoscape-dagre>
+			<div class="column fill">
+				<div class="block-title row" style="align-items: center">
+					<span>Source Chain</span>${activeAgent
+						? html`
+								<span class="placeholder row"> , for Agent </span>
+								<holo-identicon
+									.hash=${activeAgent}
+									style="margin-left: 8px; height: 32px"
+								></holo-identicon>
+							`
+						: html``}
+					<div style="flex: 1"></div>
+					${this.renderHelp()}
 				</div>
-			</sl-card>
+				${activeCell.status === 'completed' && activeCell.value
+					? html``
+					: html`
+							<div style="flex: 1;" class="center-content placeholder">
+								<span>Select a cell to display its source chain</span>
+							</div>
+						`}
+
+				<cytoscape-dagre
+					.elements=${this.elements}
+					.selectedNodesIds=${this.selectedNodesIds}
+					.options=${this.cytoscapeOptions}
+					@node-selected=${(e: any) => {
+						let activeHash = e.detail.id();
+
+						if (activeHash.includes(':')) {
+							activeHash = activeHash.split(':')[1];
+						}
+
+						this.store.activeDhtHash.set(decodeHashFromBase64(activeHash));
+					}}
+					style=${styleMap({
+						display:
+							activeCell.status === 'completed' && activeCell.value
+								? ''
+								: 'none',
+						flex: '1',
+					})}
+				></cytoscape-dagre>
+			</div>
 		`;
 	}
 

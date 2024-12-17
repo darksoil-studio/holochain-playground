@@ -30,11 +30,6 @@ export const sharedStyles = css`
 		max-width: 400px;
 	}
 
-	.block-card {
-		flex: 1;
-		display: flex;
-	}
-
 	.block-title {
 		font-size: 20px;
 	}

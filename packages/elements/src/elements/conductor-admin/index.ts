@@ -269,24 +269,22 @@ export class ConductorAdmin extends PlaygroundElement {
 	render() {
 		const activeConductor = this._activeConductor.get();
 		return html`
-			<sl-card class="block-card">
-				<div class="column fill">
-					<div class="row" style="padding: 16px">
-						<div class="column" style="flex: 1;">
-							<span class="title"
-								>Conductor
-								Admin${activeConductor.status === 'completed' &&
-								activeConductor.value
-									? html`<span class="placeholder"
-											>, for ${this.renderName()}</span
-										>`
-									: html``}</span
-							>
-						</div>
+			<div class="column fill">
+				<div class="row" style="padding: 16px">
+					<div class="column" style="flex: 1;">
+						<span class="title"
+							>Conductor
+							Admin${activeConductor.status === 'completed' &&
+							activeConductor.value
+								? html`<span class="placeholder"
+										>, for ${this.renderName()}</span
+									>`
+								: html``}</span
+						>
 					</div>
-					<div class="column fill">${this.renderContent()}</div>
 				</div>
-			</sl-card>
+				<div class="column fill">${this.renderContent()}</div>
+			</div>
 		`;
 	}
 
