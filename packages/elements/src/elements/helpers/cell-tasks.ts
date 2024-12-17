@@ -16,7 +16,7 @@ import {
 } from '@mdi/js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
-import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
+import '@shoelace-style/shoelace/dist/components/progress-bar/progress-bar.js';
 import { wrapPathInSvg } from '@tnesh-stack/elements';
 import { css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
@@ -243,11 +243,11 @@ export class CellTasks extends PlaygroundElement<SimulatedPlaygroundStore> {
 		if (!this.showTasks()) return html``;
 		const orderedTasks = this.sortTasks(Object.entries(this._runningTasks));
 		return html`
-			<sl-card class="tasks-card"
-				><div class="row" style=" align-items: center; gap: 16px">
+			<sl-card class="tasks-card" style="--padding: 0"
+				><div class="column">
 					<div
 						class="row"
-						style="max-height: 200px; overflow-y: auto; max-width: 180px;"
+						style="max-height: 200px; overflow-y: auto; max-width: 180px; margin: 8px"
 					>
 						${this._callZomeTasks.map(callZome =>
 							this.renderListItem(
@@ -289,7 +289,14 @@ export class CellTasks extends PlaygroundElement<SimulatedPlaygroundStore> {
 							this.renderListItem(mdiCogs, taskName, 'Cell Workflow'),
 						)}
 					</div>
-					${this.stepByStep ? html`` : html` <sl-spinner></sl-spinner> `}
+					${this.stepByStep
+						? html``
+						: html`
+								<sl-progress-bar
+									style="--height: 1px; "
+									indeterminate
+								></sl-progress-bar>
+							`}
 				</div>
 			</sl-card>
 		`;
