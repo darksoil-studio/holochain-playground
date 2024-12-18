@@ -21,7 +21,7 @@
     "@tnesh-stack/elements": "^0.400.0-rc",
     "@tnesh-stack/signals": "^0.400.0-rc",
     "@tnesh-stack/utils": "^0.400.0-rc",
-    "@holochain-playground/simulator": "workspace:^0.400.0-rc",
+    "@holochain-playground/simulator": "file:../simulator",
     "@holochain/client": "^0.18.0-rc",
     "@lit/context": "^1.0.0",
     "@mdi/js": "^7.4.47",

@@ -302,7 +302,7 @@ importers:
   packages/elements:
     dependencies:
       '@holochain-playground/simulator':
-        specifier: workspace:^0.400.0-rc
+        specifier: file:../simulator
         version: link:../simulator
       '@holochain/client':
         specifier: ^0.18.0-rc
