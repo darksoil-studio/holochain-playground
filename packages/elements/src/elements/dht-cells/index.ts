@@ -640,7 +640,7 @@ export class DhtCells extends PlaygroundElement {
 	render() {
 		return html`
 			${this.renderTasksTooltips()}
-			<div class="column fill">
+			<div class="column" style="flex: 1">
 				<div class="block-title row" style="align-items: center">
 					<span>Dht Cells</span>
 

@@ -231,7 +231,7 @@ export class CellTasks extends PlaygroundElement<SimulatedPlaygroundStore> {
 					.src=${wrapPathInSvg(icon)}
 					style=${styleMap({ color: color })}
 				></sl-icon>
-				<div class="column" style="gap: 4px">
+				<div class="column" style="gap: 2px">
 					<span>${primary}</span>
 					<span class="placeholder" style="font-size: 12px">${secondary}</span>
 				</div>
