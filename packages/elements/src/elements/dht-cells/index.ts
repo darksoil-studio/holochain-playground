@@ -95,6 +95,9 @@ export class DhtCells extends PlaygroundElement {
 		NetworkRequestType.WARRANT,
 	];
 
+	@property({ type: Boolean, attribute: 'hide-header' })
+	hideHeader: boolean = false;
+
 	@property({ type: Boolean, attribute: 'hide-time-controller' })
 	hideTimeController: boolean = false;
 
@@ -641,12 +644,16 @@ export class DhtCells extends PlaygroundElement {
 		return html`
 			${this.renderTasksTooltips()}
 			<div class="column" style="flex: 1">
-				<div class="block-title row" style="align-items: center">
-					<span>Dht Cells</span>
+				${this.hideHeader
+					? html``
+					: html`
+							<div class="block-title row" style="align-items: center">
+								<span>Dht Cells</span>
 
-					<div style="flex: 1"></div>
-					${this.renderHelp()}
-				</div>
+								<div style="flex: 1"></div>
+								${this.renderHelp()}
+							</div>
+						`}
 				<cytoscape-circle
 					id="graph"
 					class="fill ${classMap({

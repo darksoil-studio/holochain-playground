@@ -320,8 +320,8 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       '@scoped-elements/cytoscape':
-        specifier: ^0.2.1
-        version: 0.2.1
+        specifier: ^0.2.2
+        version: 0.2.2
       '@shoelace-style/shoelace':
         specifier: ^2.19.1
         version: 2.19.1(@floating-ui/utils@0.2.8)(@types/react@18.3.11)
@@ -1604,8 +1604,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@scoped-elements/cytoscape@0.2.1':
-    resolution: {integrity: sha512-IYeDqiSdYaSYs4jT8bQCFX1J7YJWCeYV9ZDR++KRrxpcDnqmb96SlYwZRp9AYxEJbE1kvGltRAE3ttu1hI5PFA==}
+  '@scoped-elements/cytoscape@0.2.2':
+    resolution: {integrity: sha512-Bhh4dF04M3vQU7O07YOG0ozfW4NQlyRSNYuRmryOO+xaiU4Y7PH77irnmPWJn3joOpf+Cwrdrr36yT/uwPzqUA==}
 
   '@shoelace-style/animations@1.2.0':
     resolution: {integrity: sha512-avvo1xxkLbv2dgtabdewBbqcJfV0e0zCwFqkPMnHFGbJbBHorRFfMAHh1NG9ymmXn0jW95ibUVH03E1NYXD6Gw==}
@@ -5656,7 +5656,7 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.28.1':
     optional: true
 
-  '@scoped-elements/cytoscape@0.2.1':
+  '@scoped-elements/cytoscape@0.2.2':
     dependencies:
       '@open-wc/scoped-elements': 2.2.4
       '@types/cytoscape': 3.21.8
