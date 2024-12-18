@@ -4,11 +4,11 @@ import {
 	ActionType,
 	AnyDhtHash,
 	ChainOp,
+	ChainOpType,
 	CreateLink,
 	Delete,
 	DeleteLink,
 	DhtOp,
-	DhtOpType,
 	EntryHash,
 	NewEntryAction,
 	SignedActionHashed,
@@ -106,9 +106,9 @@ export const putDhtOpMetadata = (dhtOp: DhtOp) => (state: CellState) => {
 	const action = getDhtOpAction(chainOp);
 	const actionHash = hashAction(action);
 
-	if (type === DhtOpType.StoreRecord) {
+	if (type === ChainOpType.StoreRecord) {
 		state.metadata.misc_meta.set(actionHash, 'StoreRecord');
-	} else if (type === DhtOpType.StoreEntry) {
+	} else if (type === ChainOpType.StoreEntry) {
 		const entryHash = (action as NewEntryAction).entry_hash;
 
 		if (action.type === ActionType.Update) {
@@ -118,7 +118,7 @@ export const putDhtOpMetadata = (dhtOp: DhtOp) => (state: CellState) => {
 
 		register_action_on_basis(entryHash, action, actionHash)(state);
 		update_entry_dht_status(entryHash)(state);
-	} else if (type === DhtOpType.RegisterAgentActivity) {
+	} else if (type === ChainOpType.RegisterAgentActivity) {
 		state.metadata.misc_meta.set(actionHash, {
 			ChainItem: action.timestamp,
 		});
@@ -127,8 +127,8 @@ export const putDhtOpMetadata = (dhtOp: DhtOp) => (state: CellState) => {
 			ChainStatus: ChainStatus.Valid,
 		});
 	} else if (
-		type === DhtOpType.RegisterUpdatedContent ||
-		type === DhtOpType.RegisterUpdatedRecord
+		type === ChainOpType.RegisterUpdatedContent ||
+		type === ChainOpType.RegisterUpdatedRecord
 	) {
 		register_action_on_basis(
 			(action as Update).original_action_address,
@@ -142,8 +142,8 @@ export const putDhtOpMetadata = (dhtOp: DhtOp) => (state: CellState) => {
 		)(state);
 		update_entry_dht_status((action as Update).original_entry_address)(state);
 	} else if (
-		type === DhtOpType.RegisterDeletedBy ||
-		type === DhtOpType.RegisterDeletedEntryAction
+		type === ChainOpType.RegisterDeletedBy ||
+		type === ChainOpType.RegisterDeletedEntryAction
 	) {
 		register_action_on_basis(
 			(action as Delete).deletes_address,
@@ -157,7 +157,7 @@ export const putDhtOpMetadata = (dhtOp: DhtOp) => (state: CellState) => {
 		)(state);
 
 		update_entry_dht_status((action as Delete).deletes_entry_address)(state);
-	} else if (type === DhtOpType.RegisterAddLink) {
+	} else if (type === ChainOpType.RegisterAddLink) {
 		const key: LinkMetaKey = {
 			base: (action as CreateLink).base_address,
 			action_hash: actionHash,
@@ -175,7 +175,7 @@ export const putDhtOpMetadata = (dhtOp: DhtOp) => (state: CellState) => {
 		};
 
 		state.metadata.link_meta.push({ key, value });
-	} else if (type === DhtOpType.RegisterRemoveLink) {
+	} else if (type === ChainOpType.RegisterRemoveLink) {
 		const val: SysMetaVal = {
 			DeleteLink: actionHash,
 		};

@@ -4,12 +4,12 @@ import {
 	AnyDhtHash,
 	AppEntryDef,
 	ChainOp,
+	ChainOpType,
 	Create,
 	CreateLink,
 	Delete,
 	DeleteLink,
 	DhtOp,
-	DhtOpType,
 	Entry,
 	EntryHash,
 	EntryType,
@@ -75,23 +75,23 @@ export function getChainOpBasis(dhtOp: ChainOp): AnyDhtHash {
 	const actionHash = hashAction(action);
 
 	switch (type) {
-		case DhtOpType.StoreRecord:
+		case ChainOpType.StoreRecord:
 			return actionHash;
-		case DhtOpType.StoreEntry:
+		case ChainOpType.StoreEntry:
 			return (action as Create).entry_hash;
-		case DhtOpType.RegisterUpdatedContent:
+		case ChainOpType.RegisterUpdatedContent:
 			return (action as Update).original_entry_address;
-		case DhtOpType.RegisterUpdatedRecord:
+		case ChainOpType.RegisterUpdatedRecord:
 			return (action as Update).original_action_address;
-		case DhtOpType.RegisterAgentActivity:
+		case ChainOpType.RegisterAgentActivity:
 			return action.author;
-		case DhtOpType.RegisterAddLink:
+		case ChainOpType.RegisterAddLink:
 			return (action as CreateLink).base_address;
-		case DhtOpType.RegisterRemoveLink:
+		case ChainOpType.RegisterRemoveLink:
 			return (action as DeleteLink).base_address;
-		case DhtOpType.RegisterDeletedBy:
+		case ChainOpType.RegisterDeletedBy:
 			return (action as Delete).deletes_address;
-		case DhtOpType.RegisterDeletedEntryAction:
+		case ChainOpType.RegisterDeletedEntryAction:
 			return (action as Delete).deletes_entry_address;
 		default:
 			return undefined as unknown as AnyDhtHash;
@@ -99,15 +99,15 @@ export function getChainOpBasis(dhtOp: ChainOp): AnyDhtHash {
 }
 
 export const DHT_SORT_PRIORITY = [
-	DhtOpType.RegisterAgentActivity,
-	DhtOpType.StoreEntry,
-	DhtOpType.StoreRecord,
-	DhtOpType.RegisterUpdatedContent,
-	DhtOpType.RegisterUpdatedRecord,
-	DhtOpType.RegisterDeletedEntryAction,
-	DhtOpType.RegisterDeletedBy,
-	DhtOpType.RegisterAddLink,
-	DhtOpType.RegisterRemoveLink,
+	ChainOpType.RegisterAgentActivity,
+	ChainOpType.StoreEntry,
+	ChainOpType.StoreRecord,
+	ChainOpType.RegisterUpdatedContent,
+	ChainOpType.RegisterUpdatedRecord,
+	ChainOpType.RegisterDeletedEntryAction,
+	ChainOpType.RegisterDeletedBy,
+	ChainOpType.RegisterAddLink,
+	ChainOpType.RegisterRemoveLink,
 ];
 
 export function recordToDhtOps(record: Record): DhtOp[] {
@@ -116,7 +116,7 @@ export function recordToDhtOps(record: Record): DhtOp[] {
 	// All hdk commands have these two DHT Ops
 	allDhtOps.push({
 		ChainOp: {
-			[DhtOpType.RegisterAgentActivity]: [
+			[ChainOpType.RegisterAgentActivity]: [
 				record.signed_action.signature,
 				record.signed_action.hashed.content,
 			],
@@ -124,7 +124,7 @@ export function recordToDhtOps(record: Record): DhtOp[] {
 	});
 	allDhtOps.push({
 		ChainOp: {
-			[DhtOpType.StoreRecord]: [
+			[ChainOpType.StoreRecord]: [
 				record.signed_action.signature,
 				record.signed_action.hashed.content,
 				extractEntry(record),
@@ -137,7 +137,7 @@ export function recordToDhtOps(record: Record): DhtOp[] {
 	if (record.signed_action.hashed.content.type === ActionType.Update) {
 		allDhtOps.push({
 			ChainOp: {
-				[DhtOpType.RegisterUpdatedContent]: [
+				[ChainOpType.RegisterUpdatedContent]: [
 					record.signed_action.signature,
 					record.signed_action.hashed.content,
 					extractEntry(record),
@@ -146,7 +146,7 @@ export function recordToDhtOps(record: Record): DhtOp[] {
 		});
 		allDhtOps.push({
 			ChainOp: {
-				[DhtOpType.RegisterUpdatedRecord]: [
+				[ChainOpType.RegisterUpdatedRecord]: [
 					record.signed_action.signature,
 					record.signed_action.hashed.content,
 					extractEntry(record),
@@ -156,7 +156,7 @@ export function recordToDhtOps(record: Record): DhtOp[] {
 		if (isPublic(record.signed_action.hashed.content.entry_type)) {
 			allDhtOps.push({
 				ChainOp: {
-					[DhtOpType.StoreEntry]: [
+					[ChainOpType.StoreEntry]: [
 						record.signed_action.signature,
 						record.signed_action.hashed.content,
 						extractEntry(record)!,
@@ -168,7 +168,7 @@ export function recordToDhtOps(record: Record): DhtOp[] {
 		if (isPublic(record.signed_action.hashed.content.entry_type)) {
 			allDhtOps.push({
 				ChainOp: {
-					[DhtOpType.StoreEntry]: [
+					[ChainOpType.StoreEntry]: [
 						record.signed_action.signature,
 						record.signed_action.hashed.content,
 						extractEntry(record)!,
@@ -179,7 +179,7 @@ export function recordToDhtOps(record: Record): DhtOp[] {
 	} else if (record.signed_action.hashed.content.type === ActionType.Delete) {
 		allDhtOps.push({
 			ChainOp: {
-				[DhtOpType.RegisterDeletedBy]: [
+				[ChainOpType.RegisterDeletedBy]: [
 					record.signed_action.signature,
 					record.signed_action.hashed.content,
 				],
@@ -187,7 +187,7 @@ export function recordToDhtOps(record: Record): DhtOp[] {
 		});
 		allDhtOps.push({
 			ChainOp: {
-				[DhtOpType.RegisterDeletedEntryAction]: [
+				[ChainOpType.RegisterDeletedEntryAction]: [
 					record.signed_action.signature,
 					record.signed_action.hashed.content,
 				],
@@ -198,7 +198,7 @@ export function recordToDhtOps(record: Record): DhtOp[] {
 	) {
 		allDhtOps.push({
 			ChainOp: {
-				[DhtOpType.RegisterRemoveLink]: [
+				[ChainOpType.RegisterRemoveLink]: [
 					record.signed_action.signature,
 					record.signed_action.hashed.content,
 				],
@@ -209,7 +209,7 @@ export function recordToDhtOps(record: Record): DhtOp[] {
 	) {
 		allDhtOps.push({
 			ChainOp: {
-				[DhtOpType.RegisterAddLink]: [
+				[ChainOpType.RegisterAddLink]: [
 					record.signed_action.signature,
 					record.signed_action.hashed.content,
 				],
@@ -232,8 +232,8 @@ export function getEntry(dhtOp: DhtOp): Entry | undefined {
 	const chainOp = (dhtOp as { ChainOp: ChainOp }).ChainOp;
 
 	const type = getDhtOpType(chainOp);
-	if (type === DhtOpType.StoreEntry) return getDhtOpEntry(chainOp);
-	else if (type === DhtOpType.StoreRecord) return getDhtOpEntry(chainOp);
+	if (type === ChainOpType.StoreEntry) return getDhtOpEntry(chainOp);
+	else if (type === ChainOpType.StoreRecord) return getDhtOpEntry(chainOp);
 	return undefined;
 }
 
@@ -247,8 +247,8 @@ export function isWarrantOp(op: DhtOp): boolean {
 	throw new Error(`Invalid DhtOp shape: ${JSON.stringify(op)}`);
 }
 
-export function getDhtOpType(op: ChainOp): DhtOpType {
-	return Object.keys(op)[0] as DhtOpType;
+export function getDhtOpType(op: ChainOp): ChainOpType {
+	return Object.keys(op)[0] as ChainOpType;
 }
 
 export function getDhtOpAction(op: ChainOp): Action {
@@ -256,15 +256,15 @@ export function getDhtOpAction(op: ChainOp): Action {
 
 	const action = Object.values(op)[0][1];
 
-	if (opType === DhtOpType.RegisterAddLink) {
+	if (opType === ChainOpType.RegisterAddLink) {
 		return {
 			type: 'CreateLink',
 			...action,
 		};
 	}
 	if (
-		opType === DhtOpType.RegisterUpdatedContent ||
-		opType === DhtOpType.RegisterUpdatedRecord
+		opType === ChainOpType.RegisterUpdatedContent ||
+		opType === ChainOpType.RegisterUpdatedRecord
 	) {
 		return {
 			type: 'Update',
@@ -272,8 +272,8 @@ export function getDhtOpAction(op: ChainOp): Action {
 		};
 	}
 	if (
-		opType === DhtOpType.RegisterDeletedBy ||
-		opType === DhtOpType.RegisterDeletedEntryAction
+		opType === ChainOpType.RegisterDeletedBy ||
+		opType === ChainOpType.RegisterDeletedEntryAction
 	) {
 		return {
 			type: 'Delete',

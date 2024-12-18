@@ -3,11 +3,11 @@ import {
 	ActionType,
 	EntryHash as AnyDhtHash,
 	ChainOp,
+	ChainOpType,
 	Create,
 	CreateLink,
 	Delete,
 	DeleteLink,
-	DhtOpType,
 	LinkType,
 	NewEntryAction,
 	SignedActionHashed,
@@ -188,7 +188,7 @@ export function getAllHeldEntries(state: CellState): AnyDhtHash[] {
 	const newEntryActions = Array.from(state.integratedDHTOps.values())
 		.filter(dhtOpValue => !isWarrantOp(dhtOpValue.op))
 		.map(dhtOpValue => (dhtOpValue.op as { ChainOp: ChainOp }).ChainOp)
-		.filter(chainOp => getDhtOpType(chainOp) === DhtOpType.StoreEntry)
+		.filter(chainOp => getDhtOpType(chainOp) === ChainOpType.StoreEntry)
 		.map(chainOp => getDhtOpAction(chainOp));
 
 	const allEntryHashes = newEntryActions.map(
@@ -202,7 +202,7 @@ export function getAllHeldActions(state: CellState): ActionHash[] {
 	const actions = Array.from(state.integratedDHTOps.values())
 		.filter(dhtOpValue => !isWarrantOp(dhtOpValue.op))
 		.map(dhtOpValue => (dhtOpValue.op as { ChainOp: ChainOp }).ChainOp)
-		.filter(chainOp => getDhtOpType(chainOp) === DhtOpType.StoreRecord)
+		.filter(chainOp => getDhtOpType(chainOp) === ChainOpType.StoreRecord)
 		.map(chainOp => getDhtOpAction(chainOp));
 
 	const allActionHashes = actions.map(h => hashAction(h));
