@@ -7,7 +7,7 @@ import '@scoped-elements/cytoscape';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@tnesh-stack/elements/dist/elements/holo-identicon.js';
 import { css, html } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import isEqual from 'lodash-es/isEqual.js';
 
@@ -22,6 +22,9 @@ import { sourceChainNodes } from './processors.js';
  */
 @customElement('source-chain')
 export class SourceChain extends PlaygroundElement {
+	@property({ type: Boolean, attribute: 'hide-header' })
+	hideHeader: boolean = false;
+
 	get elements() {
 		const activeCell = this.store.activeCell.get();
 		if (activeCell.status !== 'completed' || !activeCell.value) return [];
@@ -88,19 +91,23 @@ export class SourceChain extends PlaygroundElement {
 		const activeCell = this.store.activeCell.get();
 		return html`
 			<div class="column fill">
-				<div class="block-title row" style="align-items: center">
-					<span>Source Chain</span>${activeAgent
-						? html`
-								<span class="placeholder row"> , for Agent </span>
-								<holo-identicon
-									.hash=${activeAgent}
-									style="margin-left: 8px; height: 32px"
-								></holo-identicon>
-							`
-						: html``}
-					<div style="flex: 1"></div>
-					${this.renderHelp()}
-				</div>
+				${this.hideHeader
+					? html``
+					: html`
+							<div class="block-title row" style="align-items: center">
+								<span>Source Chain</span>${activeAgent
+									? html`
+											<span class="placeholder row"> , for Agent </span>
+											<holo-identicon
+												.hash=${activeAgent}
+												style="margin-left: 8px; height: 32px"
+											></holo-identicon>
+										`
+									: html``}
+								<div style="flex: 1"></div>
+								${this.renderHelp()}
+							</div>
+						`}
 				${activeCell.status === 'completed' && activeCell.value
 					? html``
 					: html`

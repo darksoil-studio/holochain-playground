@@ -312,7 +312,6 @@ export class DhtCells extends PlaygroundElement {
 
 			await sleep(delay / 2);
 		} else {
-			console.log(el);
 			el.animate(
 				{
 					position: toNode.position(),
