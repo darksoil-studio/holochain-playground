@@ -13,11 +13,11 @@ import {
 	AnyDhtHash,
 	AppEntryDef,
 	ChainOp,
+	ChainOpType,
 	CreateLink,
 	Delete,
 	DeleteLink,
 	DhtOp,
-	DhtOpType,
 	Entry,
 	EntryHash,
 	HoloHash,
@@ -109,7 +109,7 @@ export function summarizeDht(
 
 				actions.set(actionHash, action);
 
-				if (dhtOpType === DhtOpType.StoreEntry) {
+				if (dhtOpType === ChainOpType.StoreEntry) {
 					const entry_hash = (action as NewEntryAction).entry_hash;
 					const entry = getDhtOpEntry(chainOp);
 					entries.set(entry_hash, entry);
@@ -122,7 +122,7 @@ export function summarizeDht(
 							)
 						: getConnectedEntryType(action as NewEntryAction, entry!);
 					entryTypes.set(entry_hash, entryType);
-				} else if (dhtOpType === DhtOpType.RegisterAddLink) {
+				} else if (dhtOpType === ChainOpType.RegisterAddLink) {
 					const base_address = (action as CreateLink).base_address;
 					const target_address = (action as CreateLink).target_address;
 					const tag = (action as CreateLink).tag;
@@ -131,18 +131,18 @@ export function summarizeDht(
 						target_address,
 						add_link_hash: actionHash,
 					});
-				} else if (dhtOpType === DhtOpType.RegisterRemoveLink) {
+				} else if (dhtOpType === ChainOpType.RegisterRemoveLink) {
 					const add_link_hash = (action as DeleteLink).link_add_address;
 					appendToArray(deletedAddLinks, add_link_hash, actionHash);
 				} else if (
-					dhtOpType === DhtOpType.RegisterDeletedBy ||
-					dhtOpType === DhtOpType.RegisterDeletedEntryAction
+					dhtOpType === ChainOpType.RegisterDeletedBy ||
+					dhtOpType === ChainOpType.RegisterDeletedEntryAction
 				) {
 					const deletedAction = (action as Delete).deletes_address;
 					appendToArray(actionDeletes, deletedAction, actionHash);
 				} else if (
-					dhtOpType === DhtOpType.RegisterUpdatedContent ||
-					dhtOpType === DhtOpType.RegisterUpdatedRecord
+					dhtOpType === ChainOpType.RegisterUpdatedContent ||
+					dhtOpType === ChainOpType.RegisterUpdatedRecord
 				) {
 					const updatedAction = (action as Update).original_action_address;
 					appendToArray(actionUpdates, updatedAction, actionHash);

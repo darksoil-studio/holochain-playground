@@ -11,8 +11,8 @@ import {
 	AgentPubKey,
 	CellId,
 	ChainOp,
+	ChainOpType,
 	DhtOp,
-	DhtOpType,
 	EntryHash,
 	NewEntryAction,
 	encodeHashToBase64,
@@ -168,7 +168,7 @@ export function isHoldingEntry(dhtShard: DhtOp[], entryHash: EntryHash) {
 		}
 		const chainOp = (dhtOp as { ChainOp: ChainOp }).ChainOp;
 		if (
-			getDhtOpType(chainOp) === DhtOpType.StoreEntry &&
+			getDhtOpType(chainOp) === ChainOpType.StoreEntry &&
 			isEqual(entryHash, (getDhtOpAction(chainOp) as NewEntryAction).entry_hash)
 		) {
 			return true;
@@ -186,7 +186,7 @@ export function isHoldingElement(dhtShard: DhtOp[], actionHash: ActionHash) {
 		const chainOp = (dhtOp as { ChainOp: ChainOp }).ChainOp;
 		const dhtOpactionHash = hashAction(getDhtOpAction(chainOp));
 		if (
-			getDhtOpType(chainOp) === DhtOpType.StoreRecord &&
+			getDhtOpType(chainOp) === ChainOpType.StoreRecord &&
 			isEqual(dhtOpactionHash, actionHash)
 		) {
 			return true;

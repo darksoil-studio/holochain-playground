@@ -11,8 +11,8 @@ import {
 	AppInfo,
 	CellId,
 	ChainOp,
+	ChainOpType,
 	DhtOp,
-	DhtOpType,
 	DnaHash,
 	NewEntryAction,
 	Record,
@@ -102,7 +102,10 @@ export function getFromStore(
 				isEqual((action as NewEntryAction).entry_hash, dhtHash)
 			) {
 				const type = getDhtOpType(chainOp);
-				if (type === DhtOpType.StoreEntry || type === DhtOpType.StoreRecord) {
+				if (
+					type === ChainOpType.StoreEntry ||
+					type === ChainOpType.StoreRecord
+				) {
 					return {
 						status: 'completed',
 						value: getDhtOpEntry(chainOp),

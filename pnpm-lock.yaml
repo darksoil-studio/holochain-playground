@@ -303,18 +303,18 @@ importers:
     dependencies:
       '@holochain-playground/simulator':
         specifier: file:/home/guillem/projects/darksoil/holochain-playground/packages/simulator
-        version: file:packages/simulator(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        version: link:../simulator
       '@holochain/client':
-        specifier: ^0.18.0-rc
-        version: 0.18.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: 0.18.0-rc.2
+        version: 0.18.0-rc.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@lit/context':
-        specifier: ^1.0.0
+        specifier: ^1.1.3
         version: 1.1.3
       '@mdi/js':
         specifier: ^7.4.47
         version: 7.4.47
       '@msgpack/msgpack':
-        specifier: ^2.7.1
+        specifier: ^2.8.0
         version: 2.8.0
       '@power-elements/json-viewer':
         specifier: ^2.1.1
@@ -323,31 +323,31 @@ importers:
         specifier: ^0.2.1
         version: 0.2.1
       '@shoelace-style/shoelace':
-        specifier: ^2.16.0
-        version: 2.17.1(@types/react@18.3.11)
+        specifier: ^2.19.1
+        version: 2.19.1(@floating-ui/utils@0.2.8)(@types/react@18.3.11)
       '@tnesh-stack/core-types':
-        specifier: ^0.400.0-rc
+        specifier: 0.400.0-rc.0
         version: 0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@tnesh-stack/elements':
-        specifier: ^0.400.0-rc
-        version: 0.400.0-rc.0(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: 0.400.0-rc.1
+        version: 0.400.0-rc.1(@floating-ui/utils@0.2.8)(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@tnesh-stack/signals':
-        specifier: ^0.400.0-rc
+        specifier: 0.400.0-rc.0
         version: 0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@tnesh-stack/utils':
-        specifier: ^0.400.0-rc
+        specifier: 0.400.0-rc.0
         version: 0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@vaadin/grid':
-        specifier: ^23.3.2
-        version: 23.5.6
+        specifier: ^23.5.11
+        version: 23.5.11
       cytoscape:
-        specifier: ^3.17.0
-        version: 3.30.2
+        specifier: ^3.30.4
+        version: 3.30.4
       js-base64:
-        specifier: ^3.7.2
+        specifier: ^3.7.7
         version: 3.7.7
       lit:
-        specifier: ^3.0.0
+        specifier: ^3.2.1
         version: 3.2.1
       lodash-es:
         specifier: ^4.17.21
@@ -357,23 +357,23 @@ importers:
         specifier: ^3.21.8
         version: 3.21.8
       '@types/lodash-es':
-        specifier: ^4.17.3
+        specifier: ^4.17.12
         version: 4.17.12
       eslint:
-        specifier: ^8.0.0
+        specifier: ^8.57.1
         version: 8.57.1
       prettier:
-        specifier: ^3.2.5
-        version: 3.3.3
+        specifier: ^3.4.2
+        version: 3.4.2
       typescript:
-        specifier: ^5.4.0
-        version: 5.6.3
+        specifier: ^5.7.2
+        version: 5.7.2
       vite:
-        specifier: ^4.1.2
+        specifier: ^4.5.5
         version: 4.5.5(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1)
       vite-plugin-checker:
         specifier: ^0.5.6
-        version: 0.5.6(eslint@8.57.1)(optionator@0.9.4)(typescript@5.6.3)(vite@4.5.5(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1))
+        version: 0.5.6(eslint@8.57.1)(optionator@0.9.4)(typescript@5.7.2)(vite@4.5.5(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1))
 
   packages/simulator:
     dependencies:
@@ -1354,6 +1354,9 @@ packages:
   '@floating-ui/dom@1.6.11':
     resolution: {integrity: sha512-qkMCxSR24v2vGkhYDo/UzxfJN3D4syqSjyuTFz6C7XcpU1pASPRieNI0Kj5VP3/503mOfYiGY891ugBX1GlABQ==}
 
+  '@floating-ui/dom@1.6.12':
+    resolution: {integrity: sha512-NP83c0HjokcGVEMeoStg317VD9W7eDlGK7457dMBANbKA6GJZdc7rjujdgqzTaz93jkGgc5P/jeWbaCHnMNc+w==}
+
   '@floating-ui/utils@0.2.8':
     resolution: {integrity: sha512-kym7SodPp8/wloecOpcmSnWJsK7M0E5Wg8UcFA+uO4B9s5d0ywXOEro/8HM9x0rW+TljRzul/14UYz3TleT3ig==}
 
@@ -1362,13 +1365,6 @@ packages:
 
   '@holo-host/identicon@0.1.0':
     resolution: {integrity: sha512-Dn5pTV/m3XaK1Zvq3liw/vQUt7goM7Y84x2zUyH8cb9CNMs4kPCNHs3kalbJZ/ymzFvwcdiLwwNW8AKk+WWN5A==}
-
-  '@holochain-playground/simulator@file:packages/simulator':
-    resolution: {directory: packages/simulator, type: directory}
-
-  '@holochain/client@0.18.0-rc.0':
-    resolution: {integrity: sha512-y9dfvrnUL4OeIhW+yHUnsjsBMoWvL1HnvUKGjfoBQDBsqJGpanmysV6ALScNErF5axPVZ30/m0nmQ9NgpFzUGg==}
-    engines: {node: '>=18.0.0 || >=20.0.0'}
 
   '@holochain/client@0.18.0-rc.2':
     resolution: {integrity: sha512-L/CXz5JsShddfQt9H3aHmqQ/hgreOAoXWSeLYSELd3lRMB49vOpJ25pO1riVoTd2e3n6T8Kgfuy9/EaOtkaE0A==}
@@ -1621,6 +1617,10 @@ packages:
     resolution: {integrity: sha512-fB9+bPHLg5zVwPbBKEqY3ghyttkJq9RuUzFMTZKweKrNKKDMUACtI8DlMYUqNwpdZMJhf7a0xeak6vFVBSxcbQ==}
     engines: {node: '>=14.17.0'}
 
+  '@shoelace-style/shoelace@2.19.1':
+    resolution: {integrity: sha512-aRwf9Bh9g+x206/pNN9Ty6DUZA4NQJuK9ET0zUA10223aoxhB+p6/GG01vmhB9DU53Nukj5nMBy5AxJQ/6vmLQ==}
+    engines: {node: '>=14.17.0'}
+
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
 
@@ -1632,6 +1632,9 @@ packages:
 
   '@tnesh-stack/elements@0.400.0-rc.0':
     resolution: {integrity: sha512-JpEZRRaQsi66ZoqYCCC6eAmBwpEqJOVCNJc0TNItmgBN5gd1JxdIIM96JItHab7k6L5d4SVGQV6cT+PeKL11LA==}
+
+  '@tnesh-stack/elements@0.400.0-rc.1':
+    resolution: {integrity: sha512-Y9BgDIOP/M4WNyWP4fbaEL98Vd9sTmUm7g9RfV53PHiNn37dWeAUnYikzQnIkjNvu8MfK5+QK1D9k8/QnRpwug==}
 
   '@tnesh-stack/signals@0.400.0-rc.0':
     resolution: {integrity: sha512-YuC75wjWvy6U5skTtmULMHaqegFgopci/KdSSrmCjR9B94qZOAdFgHBEG9K98A0pIdwyollYeI3pkvyYkH4Vgg==}
@@ -1768,41 +1771,41 @@ packages:
   '@ungap/structured-clone@1.2.0':
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
 
-  '@vaadin/checkbox@23.5.6':
-    resolution: {integrity: sha512-sArJIfoqwhQyJ4jnOYOOrgaxX8Wkz1WDlOixP3o79iSx2mZuyLfRGLCT4SFLDgq+5Qe5/6+zngawhrzruBhY2Q==}
+  '@vaadin/checkbox@23.5.11':
+    resolution: {integrity: sha512-KVlH1hL016rYnFH7gMp4L+i+/bgbYKPuyILH3QJ44CUbgQ3erXkAX5h/7JwH6w8qU9KJaVTpSpKOxVMiQ5pdKA==}
 
-  '@vaadin/component-base@23.5.6':
-    resolution: {integrity: sha512-qZ7jp/XjSd+Ncw8WhQ60SLygyIjRngHo0teoAXro5WHorGXqR4U7fi7irCA7uyTyMstcO/zrM3QnUZ1MPE4dKw==}
+  '@vaadin/component-base@23.5.11':
+    resolution: {integrity: sha512-Z+Guif2F/rbRluln8mFLbfX9tzLA44/56w7j6uWYQFirpH28RVDJIAcaCwUMRqHPwW6IIsx3ymOhgA9dLhPlwA==}
 
-  '@vaadin/field-base@23.5.6':
-    resolution: {integrity: sha512-9Uzq3t8imp+FGXOOZl7DCmbzsFsa6/APRm9qJadgciHukwXX0W8KH6b2p4ZboHpPPyOAxIGCNGwIlpxyPLQrdA==}
+  '@vaadin/field-base@23.5.11':
+    resolution: {integrity: sha512-TMHe+hzzNPFvBziITECFD+WHy+05QyDxE/zSAAH/sjjAjT6jCXs4pP+ZvUs42x+PFrpGYXjdYB2EY6E2X6ufpg==}
 
-  '@vaadin/grid@23.5.6':
-    resolution: {integrity: sha512-Yj4rvKz8OYYLZBr/X6j7dRmI5xHeln17ejfTZqKe92lzorQFbDXw0bwM1vRBhOLjTCk+tEAB2CZLXulA3tZRVw==}
+  '@vaadin/grid@23.5.11':
+    resolution: {integrity: sha512-jfFOWNNGoFqkOFgSsz6ABY/GFlil8uhe/7O2oJcH0lRaP+SnBevOIaTcxxbOFQn/TntiCBP++jPRhtrbJS84hg==}
 
-  '@vaadin/icon@23.5.6':
-    resolution: {integrity: sha512-2OgwGFmriH2yQ+TTXcqx0QLZtOXPTNBPTBe8Tt4andR1b/fPmg5DGpmU/Iu2lxQGDa9gvP/ijWAek/GaS0v3FA==}
+  '@vaadin/icon@23.5.11':
+    resolution: {integrity: sha512-QSBLVVlhpc34/xTtsnDG4sUnai0Ff+bhiDb/xfTUmoZvWB00dF/P+bRCXt+C0nO3ki31vSCNyZhtxRrjpu+6+Q==}
 
-  '@vaadin/input-container@23.5.6':
-    resolution: {integrity: sha512-/e7E+utkFN3czwxhNKRL1O+IoEznI6qiUXOH6gSj+EfYol8HJA1aecrxX6k3ejVYTyFNc1N1jW0onz5rQarsLg==}
+  '@vaadin/input-container@23.5.11':
+    resolution: {integrity: sha512-NyChIX4808vnEMep5eshgfVjd8L4jAQOqda2xZOS5/VOHP6p/G9yfUJ+P5Kv5Nr62PvUn/05a5q98S/yyH4OIw==}
 
-  '@vaadin/lit-renderer@23.5.6':
-    resolution: {integrity: sha512-sGDQKR5O9m83N5y2Qyj7xY+BKj32cRMCi+R8/ua5QfqY8kPm+U9bDun7UC3SVWZbOI5sMcu9crm1btL0p4jAow==}
+  '@vaadin/lit-renderer@23.5.11':
+    resolution: {integrity: sha512-PKCiVh4Uhq2g/gJIlLwmIlHUpA5tlmsT2r8f+4KkI8Kl5ReuG09K6mz69Ljqim7zRlfIeDOmhXF6BX8UHGr0SQ==}
 
-  '@vaadin/text-field@23.5.6':
-    resolution: {integrity: sha512-nuAduUiNq+X61HYfofoJNWxFLkaCaC7HmRmEYS0JtLrKys0ePqU0YHxU+fDAL+y4UE7nWSGhueTiPzFPHVJb2w==}
+  '@vaadin/text-field@23.5.11':
+    resolution: {integrity: sha512-zXqiDD4my6yK84YXBLHNlvEUEWYncdN3eSKE7DS0n25jjqpRHFT7rf5kSjaEgJeYN3aBqE0BA5ZtCmTjkl6acA==}
 
   '@vaadin/vaadin-development-mode-detector@2.0.7':
     resolution: {integrity: sha512-9FhVhr0ynSR3X2ao+vaIEttcNU5XfzCbxtmYOV8uIRnUCtNgbvMOIcyGBvntsX9I5kvIP2dV3cFAOG9SILJzEA==}
 
-  '@vaadin/vaadin-lumo-styles@23.5.6':
-    resolution: {integrity: sha512-mvKLxApMKzbZuHLdVLvvPMh5Hly8hZOxp/DnqokQSf7ujO5SnWOejlupY87FiL4k6Ndw8q4/2FbrVabxzhZWDA==}
+  '@vaadin/vaadin-lumo-styles@23.5.11':
+    resolution: {integrity: sha512-L0i6/mqEuSY5zJzSuw574wiW1ZRp6T0MbxvnGwJqlOLRHtwGHCJi39ywUtuVDH6sIOTHxLTiXjAD3ZgTU0bx5g==}
 
-  '@vaadin/vaadin-material-styles@23.5.6':
-    resolution: {integrity: sha512-OwBTarDgVrRGe8zl7Tcq6BzxVhtijSwFH+IHTJJvo20rLVT0OzB7tKJ5bSacTSwaZ4ljOMS6yQxDLWZPKLT7Sw==}
+  '@vaadin/vaadin-material-styles@23.5.11':
+    resolution: {integrity: sha512-O5+V1QxdGCpPrUzx/6X8m+rEFnzf8a/XrZ1rhp6zEFb3mvF09HEmjos6O/YQEONhbJaFXXMAulnOv79mEXYxMw==}
 
-  '@vaadin/vaadin-themable-mixin@23.5.6':
-    resolution: {integrity: sha512-ZzjYti4ScvuQXoi8962iXPWwvSgu/T+qehf5i4/4kR+YdMiKFRqE7PDdj7I1AABVPsgHyLWQtMZt7NrLybb02w==}
+  '@vaadin/vaadin-themable-mixin@23.5.11':
+    resolution: {integrity: sha512-JKppMAjJv0aDbmk0vTdo1MEwTQ0ULLYMGMJJy5xaIyoKQ7pzpSXW5Ue+XhYjsnyZ7m9TKQsllplGLln0WWRRvQ==}
 
   '@vaadin/vaadin-usage-statistics@2.1.3':
     resolution: {integrity: sha512-8r4TNknD7OJQADe3VygeofFR7UNAXZ2/jjBFP5dgI8+2uMfnuGYgbuHivasKr9WSQ64sPej6m8rDoM1uSllXjQ==}
@@ -2204,6 +2207,11 @@ packages:
   composed-offset-position@0.0.4:
     resolution: {integrity: sha512-vMlvu1RuNegVE0YsCDSV/X4X10j56mq7PCIyOKK74FxkXzGLwhOUmdkJLSdOBOMwWycobGUMgft2lp+YgTe8hw==}
 
+  composed-offset-position@0.0.6:
+    resolution: {integrity: sha512-Q7dLompI6lUwd7LWyIcP66r4WcS9u7AL2h8HaeipiRfCRPLMWqRx8fYsjb4OHi6UQFifO7XtNC2IlEJ1ozIFxw==}
+    peerDependencies:
+      '@floating-ui/utils': ^0.2.5
+
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
@@ -2307,8 +2315,8 @@ packages:
     peerDependencies:
       cytoscape: ^3.2.0
 
-  cytoscape@3.30.2:
-    resolution: {integrity: sha512-oICxQsjW8uSaRmn4UK/jkczKOqTrVqt5/1WL0POiJUT2EKNc9STM4hYFHv917yu55aTBMFNRzymlJhVAiWPCxw==}
+  cytoscape@3.30.4:
+    resolution: {integrity: sha512-OxtlZwQl1WbwMmLiyPSEBuzeTIQnwZhJYYWFzZ2PhEHVFwpeaqNIkUzSiso00D98qk60l8Gwon2RP304d3BJ1A==}
     engines: {node: '>=0.10'}
 
   d3-dispatch@1.0.6:
@@ -5422,40 +5430,16 @@ snapshots:
       '@floating-ui/core': 1.6.8
       '@floating-ui/utils': 0.2.8
 
+  '@floating-ui/dom@1.6.12':
+    dependencies:
+      '@floating-ui/core': 1.6.8
+      '@floating-ui/utils': 0.2.8
+
   '@floating-ui/utils@0.2.8': {}
 
   '@gar/promisify@1.1.3': {}
 
   '@holo-host/identicon@0.1.0': {}
-
-  '@holochain-playground/simulator@file:packages/simulator(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@holochain/client': 0.18.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@msgpack/msgpack': 2.8.0
-      '@tnesh-stack/core-types': 0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@tnesh-stack/utils': 0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      blakejs: 1.2.1
-      js-base64: 3.7.7
-      lodash-es: 4.17.21
-      unique-names-generator: 4.7.1
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-
-  '@holochain/client@0.18.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@bitgo/blake2b': 3.2.4
-      '@holochain/serialization': 0.1.0-beta-rc.3
-      '@msgpack/msgpack': 2.8.0
-      emittery: 1.0.3
-      isomorphic-ws: 5.0.0(ws@8.18.0)
-      js-base64: 3.7.7
-      libsodium-wrappers: 0.7.15
-      lodash-es: 4.17.21
-      ws: 8.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
 
   '@holochain/client@0.18.0-rc.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
@@ -5676,11 +5660,11 @@ snapshots:
     dependencies:
       '@open-wc/scoped-elements': 2.2.4
       '@types/cytoscape': 3.21.8
-      cytoscape: 3.30.2
-      cytoscape-cola: 2.5.1(cytoscape@3.30.2)
-      cytoscape-cose-bilkent: 4.1.0(cytoscape@3.30.2)
-      cytoscape-dagre: 2.5.0(cytoscape@3.30.2)
-      cytoscape-klay: 3.1.4(cytoscape@3.30.2)
+      cytoscape: 3.30.4
+      cytoscape-cola: 2.5.1(cytoscape@3.30.4)
+      cytoscape-cose-bilkent: 4.1.0(cytoscape@3.30.4)
+      cytoscape-dagre: 2.5.0(cytoscape@3.30.4)
+      cytoscape-klay: 3.1.4(cytoscape@3.30.4)
       lit: 2.8.0
       lodash-es: 4.17.21
 
@@ -5699,6 +5683,20 @@ snapshots:
       lit: 3.2.1
       qr-creator: 1.0.0
     transitivePeerDependencies:
+      - '@types/react'
+
+  '@shoelace-style/shoelace@2.19.1(@floating-ui/utils@0.2.8)(@types/react@18.3.11)':
+    dependencies:
+      '@ctrl/tinycolor': 4.1.0
+      '@floating-ui/dom': 1.6.12
+      '@lit/react': 1.0.6(@types/react@18.3.11)
+      '@shoelace-style/animations': 1.2.0
+      '@shoelace-style/localize': 3.2.1
+      composed-offset-position: 0.0.6(@floating-ui/utils@0.2.8)
+      lit: 3.2.1
+      qr-creator: 1.0.0
+    transitivePeerDependencies:
+      - '@floating-ui/utils'
       - '@types/react'
 
   '@sinclair/typebox@0.27.8': {}
@@ -5726,9 +5724,25 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
+  '@tnesh-stack/elements@0.400.0-rc.1(@floating-ui/utils@0.2.8)(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+    dependencies:
+      '@holo-host/identicon': 0.1.0
+      '@holochain/client': 0.18.0-rc.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@lit-labs/router': 0.1.3
+      '@lit/context': 1.1.3
+      '@lit/localize': 0.12.2
+      '@mdi/js': 7.4.47
+      '@shoelace-style/shoelace': 2.19.1(@floating-ui/utils@0.2.8)(@types/react@18.3.11)
+      lit: 3.2.1
+    transitivePeerDependencies:
+      - '@floating-ui/utils'
+      - '@types/react'
+      - bufferutil
+      - utf-8-validate
+
   '@tnesh-stack/signals@0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
-      '@holochain/client': 0.18.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@holochain/client': 0.18.0-rc.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@msgpack/msgpack': 2.8.0
       '@tnesh-stack/utils': 0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       async-signals: 0.1.11
@@ -5741,7 +5755,7 @@ snapshots:
 
   '@tnesh-stack/utils@0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
-      '@holochain/client': 0.18.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@holochain/client': 0.18.0-rc.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@msgpack/msgpack': 2.8.0
       blakejs: 1.2.1
       emittery: 1.0.3
@@ -5925,16 +5939,16 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@vaadin/checkbox@23.5.6':
+  '@vaadin/checkbox@23.5.11':
     dependencies:
       '@polymer/polymer': 3.5.2
-      '@vaadin/component-base': 23.5.6
-      '@vaadin/field-base': 23.5.6
-      '@vaadin/vaadin-lumo-styles': 23.5.6
-      '@vaadin/vaadin-material-styles': 23.5.6
-      '@vaadin/vaadin-themable-mixin': 23.5.6
+      '@vaadin/component-base': 23.5.11
+      '@vaadin/field-base': 23.5.11
+      '@vaadin/vaadin-lumo-styles': 23.5.11
+      '@vaadin/vaadin-material-styles': 23.5.11
+      '@vaadin/vaadin-themable-mixin': 23.5.11
 
-  '@vaadin/component-base@23.5.6':
+  '@vaadin/component-base@23.5.11':
     dependencies:
       '@open-wc/dedupe-mixin': 1.4.0
       '@polymer/polymer': 3.5.2
@@ -5942,71 +5956,71 @@ snapshots:
       '@vaadin/vaadin-usage-statistics': 2.1.3
       lit: 2.8.0
 
-  '@vaadin/field-base@23.5.6':
+  '@vaadin/field-base@23.5.11':
     dependencies:
       '@open-wc/dedupe-mixin': 1.4.0
       '@polymer/polymer': 3.5.2
-      '@vaadin/component-base': 23.5.6
+      '@vaadin/component-base': 23.5.11
       lit: 2.8.0
 
-  '@vaadin/grid@23.5.6':
+  '@vaadin/grid@23.5.11':
     dependencies:
       '@open-wc/dedupe-mixin': 1.4.0
       '@polymer/polymer': 3.5.2
-      '@vaadin/checkbox': 23.5.6
-      '@vaadin/component-base': 23.5.6
-      '@vaadin/lit-renderer': 23.5.6
-      '@vaadin/text-field': 23.5.6
-      '@vaadin/vaadin-lumo-styles': 23.5.6
-      '@vaadin/vaadin-material-styles': 23.5.6
-      '@vaadin/vaadin-themable-mixin': 23.5.6
+      '@vaadin/checkbox': 23.5.11
+      '@vaadin/component-base': 23.5.11
+      '@vaadin/lit-renderer': 23.5.11
+      '@vaadin/text-field': 23.5.11
+      '@vaadin/vaadin-lumo-styles': 23.5.11
+      '@vaadin/vaadin-material-styles': 23.5.11
+      '@vaadin/vaadin-themable-mixin': 23.5.11
 
-  '@vaadin/icon@23.5.6':
+  '@vaadin/icon@23.5.11':
     dependencies:
       '@polymer/polymer': 3.5.2
-      '@vaadin/component-base': 23.5.6
-      '@vaadin/vaadin-lumo-styles': 23.5.6
-      '@vaadin/vaadin-themable-mixin': 23.5.6
+      '@vaadin/component-base': 23.5.11
+      '@vaadin/vaadin-lumo-styles': 23.5.11
+      '@vaadin/vaadin-themable-mixin': 23.5.11
       lit: 2.8.0
 
-  '@vaadin/input-container@23.5.6':
+  '@vaadin/input-container@23.5.11':
     dependencies:
       '@polymer/polymer': 3.5.2
-      '@vaadin/component-base': 23.5.6
-      '@vaadin/vaadin-lumo-styles': 23.5.6
-      '@vaadin/vaadin-material-styles': 23.5.6
-      '@vaadin/vaadin-themable-mixin': 23.5.6
+      '@vaadin/component-base': 23.5.11
+      '@vaadin/vaadin-lumo-styles': 23.5.11
+      '@vaadin/vaadin-material-styles': 23.5.11
+      '@vaadin/vaadin-themable-mixin': 23.5.11
 
-  '@vaadin/lit-renderer@23.5.6':
+  '@vaadin/lit-renderer@23.5.11':
     dependencies:
       lit: 2.8.0
 
-  '@vaadin/text-field@23.5.6':
+  '@vaadin/text-field@23.5.11':
     dependencies:
       '@polymer/polymer': 3.5.2
-      '@vaadin/component-base': 23.5.6
-      '@vaadin/field-base': 23.5.6
-      '@vaadin/input-container': 23.5.6
-      '@vaadin/vaadin-lumo-styles': 23.5.6
-      '@vaadin/vaadin-material-styles': 23.5.6
-      '@vaadin/vaadin-themable-mixin': 23.5.6
+      '@vaadin/component-base': 23.5.11
+      '@vaadin/field-base': 23.5.11
+      '@vaadin/input-container': 23.5.11
+      '@vaadin/vaadin-lumo-styles': 23.5.11
+      '@vaadin/vaadin-material-styles': 23.5.11
+      '@vaadin/vaadin-themable-mixin': 23.5.11
 
   '@vaadin/vaadin-development-mode-detector@2.0.7': {}
 
-  '@vaadin/vaadin-lumo-styles@23.5.6':
+  '@vaadin/vaadin-lumo-styles@23.5.11':
     dependencies:
       '@polymer/iron-icon': 3.0.1
       '@polymer/iron-iconset-svg': 3.0.1
       '@polymer/polymer': 3.5.2
-      '@vaadin/icon': 23.5.6
-      '@vaadin/vaadin-themable-mixin': 23.5.6
+      '@vaadin/icon': 23.5.11
+      '@vaadin/vaadin-themable-mixin': 23.5.11
 
-  '@vaadin/vaadin-material-styles@23.5.6':
+  '@vaadin/vaadin-material-styles@23.5.11':
     dependencies:
       '@polymer/polymer': 3.5.2
-      '@vaadin/vaadin-themable-mixin': 23.5.6
+      '@vaadin/vaadin-themable-mixin': 23.5.11
 
-  '@vaadin/vaadin-themable-mixin@23.5.6':
+  '@vaadin/vaadin-themable-mixin@23.5.11':
     dependencies:
       '@open-wc/dedupe-mixin': 1.4.0
       lit: 2.8.0
@@ -6490,6 +6504,10 @@ snapshots:
 
   composed-offset-position@0.0.4: {}
 
+  composed-offset-position@0.0.6(@floating-ui/utils@0.2.8):
+    dependencies:
+      '@floating-ui/utils': 0.2.8
+
   concat-map@0.0.1: {}
 
   concurrently@5.3.0:
@@ -6587,27 +6605,27 @@ snapshots:
 
   custom-elements-manifest@1.0.0: {}
 
-  cytoscape-cola@2.5.1(cytoscape@3.30.2):
+  cytoscape-cola@2.5.1(cytoscape@3.30.4):
     dependencies:
-      cytoscape: 3.30.2
+      cytoscape: 3.30.4
       webcola: 3.4.0
 
-  cytoscape-cose-bilkent@4.1.0(cytoscape@3.30.2):
+  cytoscape-cose-bilkent@4.1.0(cytoscape@3.30.4):
     dependencies:
       cose-base: 1.0.3
-      cytoscape: 3.30.2
+      cytoscape: 3.30.4
 
-  cytoscape-dagre@2.5.0(cytoscape@3.30.2):
+  cytoscape-dagre@2.5.0(cytoscape@3.30.4):
     dependencies:
-      cytoscape: 3.30.2
+      cytoscape: 3.30.4
       dagre: 0.8.5
 
-  cytoscape-klay@3.1.4(cytoscape@3.30.2):
+  cytoscape-klay@3.1.4(cytoscape@3.30.4):
     dependencies:
-      cytoscape: 3.30.2
+      cytoscape: 3.30.4
       klayjs: 0.4.1
 
-  cytoscape@3.30.2: {}
+  cytoscape@3.30.4: {}
 
   d3-dispatch@1.0.6: {}
 
@@ -8479,7 +8497,7 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-checker@0.5.6(eslint@8.57.1)(optionator@0.9.4)(typescript@5.6.3)(vite@4.5.5(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1)):
+  vite-plugin-checker@0.5.6(eslint@8.57.1)(optionator@0.9.4)(typescript@5.7.2)(vite@4.5.5(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1)):
     dependencies:
       '@babel/code-frame': 7.25.7
       ansi-escapes: 4.3.2
@@ -8501,7 +8519,7 @@ snapshots:
     optionalDependencies:
       eslint: 8.57.1
       optionator: 0.9.4
-      typescript: 5.6.3
+      typescript: 5.7.2
 
   vite-plugin-checker@0.5.6(eslint@9.14.0)(optionator@0.9.4)(typescript@5.6.3)(vite@4.5.5(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1)):
     dependencies:
