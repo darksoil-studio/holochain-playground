@@ -2,7 +2,7 @@
   description = "Template for Holochain app development";
 
   inputs = {
-    nixpkgs.follows = "holonix/nixpkgs";
+    nixpkgs.follows = "tnesh-stack/nixpkgs";
     holonix.url = "github:holochain/holonix/main-0.4";
 
     p2p-shipyard.url = "github:darksoil-studio/p2p-shipyard/main-0.4";
@@ -40,17 +40,12 @@
               # (inputs.tnesh-stack.outputs.lib.cleanPnpmDepsSource { inherit lib; })
               ./.;
 
-            nativeBuildInputs =
-              with inputs.tnesh-stack.inputs.pnpmnixpkgs.outputs.legacyPackages.${system}; [
-                nodejs
-                pnpm.configHook
-              ];
-            pnpmDeps =
-              inputs.tnesh-stack.inputs.pnpmnixpkgs.outputs.legacyPackages.${system}.pnpm.fetchDeps {
-                inherit (finalAttrs) version pname src;
+            nativeBuildInputs = [ pkgs.nodejs pkgs.pnpm.configHook ];
+            pnpmDeps = pkgs.pnpm.fetchDeps {
+              inherit (finalAttrs) version pname src;
 
-                hash = "sha256-Wv26xFz1gtA+mWaAYq7RQ59hNGRrQ6xqGK10OvRbiyc=";
-              };
+              hash = "sha256-8BbVkl/6o0jrywpElJ84iovywCLs3hoaJcfg3m5e028=";
+            };
             buildPhase = ''
               runHook preBuild
 

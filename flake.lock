@@ -789,7 +789,7 @@
       "inputs": {
         "holonix": "holonix",
         "nixpkgs": [
-          "holonix",
+          "tnesh-stack",
           "nixpkgs"
         ],
         "p2p-shipyard": "p2p-shipyard",
