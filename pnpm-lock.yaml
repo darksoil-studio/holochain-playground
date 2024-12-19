@@ -42,10 +42,10 @@ importers:
   packages/cli/client:
     dependencies:
       '@holochain-playground/elements':
-        specifier: workspace:^0.400.0-rc
+        specifier: workspace:^0.400.0
         version: link:../../elements
       '@holochain-playground/simulator':
-        specifier: workspace:^0.400.0-rc
+        specifier: workspace:^0.400.0
         version: link:../../simulator
       '@mdi/js':
         specifier: ^7.4.47
@@ -54,14 +54,14 @@ importers:
         specifier: ^2.16.0
         version: 2.17.1(@types/react@18.3.11)
       '@tnesh-stack/core-types':
-        specifier: ^0.400.0-rc
-        version: 0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.400.0
+        version: 0.400.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@tnesh-stack/elements':
-        specifier: ^0.400.0-rc
-        version: 0.400.0-rc.0(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.400.0
+        version: 0.400.0(@floating-ui/utils@0.2.8)(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@tnesh-stack/signals':
-        specifier: ^0.400.0-rc
-        version: 0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.400.0
+        version: 0.400.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       dockview-core:
         specifier: ^1.17.1
         version: 1.17.1
@@ -118,7 +118,7 @@ importers:
         specifier: ^7.15.6
         version: 7.25.8(@babel/core@7.25.8)
       '@holochain-playground/cli-client':
-        specifier: workspace:^0.400.0-rc
+        specifier: workspace:^0.400.0
         version: link:../client
       '@mdi/font':
         specifier: 5.9.55
@@ -140,7 +140,7 @@ importers:
         version: 2.4.9
       babel-loader:
         specifier: ^8.2.2
-        version: 8.4.1(@babel/core@7.25.8)(webpack@5.95.0(webpack-cli@5.1.4))
+        version: 8.4.1(@babel/core@7.25.8)(webpack@5.95.0)
       babel-polyfill:
         specifier: ^6.26.0
         version: 6.26.0
@@ -161,7 +161,7 @@ importers:
         version: 5.3.0
       copy-webpack-plugin:
         specifier: ^6.4.1
-        version: 6.4.1(webpack@5.95.0(webpack-cli@5.1.4))
+        version: 6.4.1(webpack@5.95.0)
       core-js:
         specifier: ^3.6.5
         version: 3.38.1
@@ -212,7 +212,7 @@ importers:
         version: 1.32.13
       sass-loader:
         specifier: ^10.0.0
-        version: 10.5.2(sass@1.32.13)(webpack@5.95.0(webpack-cli@5.1.4))
+        version: 10.5.2(sass@1.32.13)(webpack@5.95.0)
       semver:
         specifier: ^7.3.5
         version: 7.6.3
@@ -224,7 +224,7 @@ importers:
         version: 0.0.2
       ts-loader:
         specifier: ^8.0.0
-        version: 8.4.0(typescript@5.6.3)(webpack@5.95.0(webpack-cli@5.1.4))
+        version: 8.4.0(typescript@5.6.3)(webpack@5.95.0)
       ts-node:
         specifier: ^8.10.2
         version: 8.10.2(typescript@5.6.3)
@@ -247,7 +247,7 @@ importers:
   packages/demo:
     dependencies:
       '@holochain-playground/simulator':
-        specifier: workspace:^0.400.0-rc
+        specifier: workspace:^0.400.0
         version: link:../simulator
       '@mdi/js':
         specifier: ^7.4.47
@@ -256,11 +256,11 @@ importers:
         specifier: ^2.16.0
         version: 2.17.1(@types/react@18.3.11)
       '@tnesh-stack/core-types':
-        specifier: ^0.400.0-rc
-        version: 0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.400.0
+        version: 0.400.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@tnesh-stack/elements':
-        specifier: ^0.400.0-rc
-        version: 0.400.0-rc.0(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.400.0
+        version: 0.400.0(@floating-ui/utils@0.2.8)(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       lit:
         specifier: ^3.0.0
         version: 3.2.1
@@ -302,11 +302,11 @@ importers:
   packages/elements:
     dependencies:
       '@holochain-playground/simulator':
-        specifier: file:/home/guillem/projects/darksoil/holochain-playground/packages/simulator
+        specifier: workspace:^0.400.0
         version: link:../simulator
       '@holochain/client':
-        specifier: 0.18.0-rc.2
-        version: 0.18.0-rc.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: 0.18.0
+        version: 0.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@lit/context':
         specifier: ^1.1.3
         version: 1.1.3
@@ -326,17 +326,17 @@ importers:
         specifier: ^2.19.1
         version: 2.19.1(@floating-ui/utils@0.2.8)(@types/react@18.3.11)
       '@tnesh-stack/core-types':
-        specifier: 0.400.0-rc.0
-        version: 0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.400.0
+        version: 0.400.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@tnesh-stack/elements':
-        specifier: 0.400.0-rc.1
-        version: 0.400.0-rc.1(@floating-ui/utils@0.2.8)(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.400.0
+        version: 0.400.0(@floating-ui/utils@0.2.8)(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@tnesh-stack/signals':
-        specifier: 0.400.0-rc.0
-        version: 0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.400.0
+        version: 0.400.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@tnesh-stack/utils':
-        specifier: 0.400.0-rc.0
-        version: 0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.400.0
+        version: 0.400.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@vaadin/grid':
         specifier: ^23.5.11
         version: 23.5.11
@@ -378,17 +378,17 @@ importers:
   packages/simulator:
     dependencies:
       '@holochain/client':
-        specifier: 0.18.0-rc.2
-        version: 0.18.0-rc.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.18.0
+        version: 0.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@msgpack/msgpack':
         specifier: ^2.8.0
         version: 2.8.0
       '@tnesh-stack/core-types':
-        specifier: 0.400.0-rc.0
-        version: 0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.400.0
+        version: 0.400.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@tnesh-stack/utils':
-        specifier: 0.400.0-rc.0
-        version: 0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.400.0
+        version: 0.400.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       blakejs:
         specifier: ^1.2.1
         version: 1.2.1
@@ -1366,8 +1366,8 @@ packages:
   '@holo-host/identicon@0.1.0':
     resolution: {integrity: sha512-Dn5pTV/m3XaK1Zvq3liw/vQUt7goM7Y84x2zUyH8cb9CNMs4kPCNHs3kalbJZ/ymzFvwcdiLwwNW8AKk+WWN5A==}
 
-  '@holochain/client@0.18.0-rc.2':
-    resolution: {integrity: sha512-L/CXz5JsShddfQt9H3aHmqQ/hgreOAoXWSeLYSELd3lRMB49vOpJ25pO1riVoTd2e3n6T8Kgfuy9/EaOtkaE0A==}
+  '@holochain/client@0.18.0':
+    resolution: {integrity: sha512-I+YIJ2ZeDS8HeUdRvV1Ti9O8m3YPHti8mpUoqg9GZ0A77y+3NIihsB1X8vQBRBFKwNUyZ14U/ZgWQ8/2Y0/T5w==}
     engines: {node: '>=18.0.0 || >=20.0.0'}
 
   '@holochain/serialization@0.1.0-beta-rc.3':
@@ -1627,20 +1627,17 @@ packages:
   '@socket.io/component-emitter@3.1.2':
     resolution: {integrity: sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==}
 
-  '@tnesh-stack/core-types@0.400.0-rc.0':
-    resolution: {integrity: sha512-qhnK7u7nqyA4lRYRoawSllAa/2iU8oH6XpMbA4HIdjVBWei+NMgV8yoExfu/L+kK/P7olZJ6X7vXc2ppSqQHbA==}
+  '@tnesh-stack/core-types@0.400.0':
+    resolution: {integrity: sha512-jt9ujEL+C1B5sCiG3LncuqvtAt9KrIRcMVQXZ9ZG0boZ47t0lMgwd24hz8RFREjyAvNv0KGfi+luB23bMVllNQ==}
 
-  '@tnesh-stack/elements@0.400.0-rc.0':
-    resolution: {integrity: sha512-JpEZRRaQsi66ZoqYCCC6eAmBwpEqJOVCNJc0TNItmgBN5gd1JxdIIM96JItHab7k6L5d4SVGQV6cT+PeKL11LA==}
+  '@tnesh-stack/elements@0.400.0':
+    resolution: {integrity: sha512-6IfO9BKzptjBlovp3KW55nBonjrLsSnoSOV7WCHJ+7xhl37GvvOT3hE0GqYNkoL94LF6V0c1BhdAjLTo05QBVA==}
 
-  '@tnesh-stack/elements@0.400.0-rc.1':
-    resolution: {integrity: sha512-Y9BgDIOP/M4WNyWP4fbaEL98Vd9sTmUm7g9RfV53PHiNn37dWeAUnYikzQnIkjNvu8MfK5+QK1D9k8/QnRpwug==}
+  '@tnesh-stack/signals@0.400.0':
+    resolution: {integrity: sha512-xG2+t9IHQ3tSD+Pa8BGwpk60BY6HKNqJ08wYCn3JMFLDxDzC1mJdHbjE2eg9vgq/PYxwcH8XbGUBdmCutcpSPQ==}
 
-  '@tnesh-stack/signals@0.400.0-rc.0':
-    resolution: {integrity: sha512-YuC75wjWvy6U5skTtmULMHaqegFgopci/KdSSrmCjR9B94qZOAdFgHBEG9K98A0pIdwyollYeI3pkvyYkH4Vgg==}
-
-  '@tnesh-stack/utils@0.400.0-rc.0':
-    resolution: {integrity: sha512-N69oS3YXDCTHz5Zl57SjoJtC9nikfzsjFjDy4nEnuMGpYSvMxwWjEwIp1Jx+doPoMMEfrSv2LDqLR6qKXCZ3xQ==}
+  '@tnesh-stack/utils@0.400.0':
+    resolution: {integrity: sha512-M03HRTPdXWZJNAl9JIS42WWkZLVb4Au/yZnijdrrq0L/swjU515rOAefTPljKzn7CmU7uH6uXmGFIob0/eE0kA==}
 
   '@trivago/prettier-plugin-sort-imports@4.3.0':
     resolution: {integrity: sha512-r3n0onD3BTOVUNPhR4lhVK4/pABGpbA7bW3eumZnYdKaHkf1qEC+Mag6DPbGNuuh0eG8AaYj+YqmVHSiGslaTQ==}
@@ -5441,7 +5438,7 @@ snapshots:
 
   '@holo-host/identicon@0.1.0': {}
 
-  '@holochain/client@0.18.0-rc.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@holochain/client@0.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
       '@bitgo/blake2b': 3.2.4
       '@holochain/serialization': 0.1.0-beta-rc.3
@@ -5703,31 +5700,17 @@ snapshots:
 
   '@socket.io/component-emitter@3.1.2': {}
 
-  '@tnesh-stack/core-types@0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@tnesh-stack/core-types@0.400.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
-      '@holochain/client': 0.18.0-rc.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@holochain/client': 0.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  '@tnesh-stack/elements@0.400.0-rc.0(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@tnesh-stack/elements@0.400.0(@floating-ui/utils@0.2.8)(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
       '@holo-host/identicon': 0.1.0
-      '@holochain/client': 0.18.0-rc.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@lit-labs/router': 0.1.3
-      '@lit/localize': 0.12.2
-      '@mdi/js': 7.4.47
-      '@shoelace-style/shoelace': 2.17.1(@types/react@18.3.11)
-      lit: 3.2.1
-    transitivePeerDependencies:
-      - '@types/react'
-      - bufferutil
-      - utf-8-validate
-
-  '@tnesh-stack/elements@0.400.0-rc.1(@floating-ui/utils@0.2.8)(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@holo-host/identicon': 0.1.0
-      '@holochain/client': 0.18.0-rc.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@holochain/client': 0.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@lit-labs/router': 0.1.3
       '@lit/context': 1.1.3
       '@lit/localize': 0.12.2
@@ -5740,11 +5723,11 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@tnesh-stack/signals@0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@tnesh-stack/signals@0.400.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
-      '@holochain/client': 0.18.0-rc.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@holochain/client': 0.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@msgpack/msgpack': 2.8.0
-      '@tnesh-stack/utils': 0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@tnesh-stack/utils': 0.400.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       async-signals: 0.1.11
       lit-signal-watcher: 0.1.1
       lodash-es: 4.17.21
@@ -5753,9 +5736,9 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@tnesh-stack/utils@0.400.0-rc.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@tnesh-stack/utils@0.400.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
-      '@holochain/client': 0.18.0-rc.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@holochain/client': 0.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@msgpack/msgpack': 2.8.0
       blakejs: 1.2.1
       emittery: 1.0.3
@@ -6140,17 +6123,17 @@ snapshots:
 
   '@webcomponents/shadycss@1.11.2': {}
 
-  '@webpack-cli/configtest@2.1.1(webpack-cli@5.1.4(webpack@5.95.0))(webpack@5.95.0(webpack-cli@5.1.4))':
+  '@webpack-cli/configtest@2.1.1(webpack-cli@5.1.4)(webpack@5.95.0)':
     dependencies:
       webpack: 5.95.0(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack@5.95.0)
 
-  '@webpack-cli/info@2.0.2(webpack-cli@5.1.4(webpack@5.95.0))(webpack@5.95.0(webpack-cli@5.1.4))':
+  '@webpack-cli/info@2.0.2(webpack-cli@5.1.4)(webpack@5.95.0)':
     dependencies:
       webpack: 5.95.0(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack@5.95.0)
 
-  '@webpack-cli/serve@2.0.5(webpack-cli@5.1.4(webpack@5.95.0))(webpack@5.95.0(webpack-cli@5.1.4))':
+  '@webpack-cli/serve@2.0.5(webpack-cli@5.1.4)(webpack@5.95.0)':
     dependencies:
       webpack: 5.95.0(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack@5.95.0)
@@ -6252,7 +6235,7 @@ snapshots:
     dependencies:
       lodash: 4.17.21
 
-  babel-loader@8.4.1(@babel/core@7.25.8)(webpack@5.95.0(webpack-cli@5.1.4)):
+  babel-loader@8.4.1(@babel/core@7.25.8)(webpack@5.95.0):
     dependencies:
       '@babel/core': 7.25.8
       find-cache-dir: 3.3.2
@@ -6549,7 +6532,7 @@ snapshots:
 
   cookie@0.7.2: {}
 
-  copy-webpack-plugin@6.4.1(webpack@5.95.0(webpack-cli@5.1.4)):
+  copy-webpack-plugin@6.4.1(webpack@5.95.0):
     dependencies:
       cacache: 15.3.0
       fast-glob: 3.3.2
@@ -8042,7 +8025,7 @@ snapshots:
 
   safer-buffer@2.1.2: {}
 
-  sass-loader@10.5.2(sass@1.32.13)(webpack@5.95.0(webpack-cli@5.1.4)):
+  sass-loader@10.5.2(sass@1.32.13)(webpack@5.95.0):
     dependencies:
       klona: 2.0.6
       loader-utils: 2.0.4
@@ -8311,7 +8294,7 @@ snapshots:
       mkdirp: 1.0.4
       yallist: 4.0.0
 
-  terser-webpack-plugin@5.3.10(webpack@5.95.0(webpack-cli@5.1.4)):
+  terser-webpack-plugin@5.3.10(webpack@5.95.0):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
       jest-worker: 27.5.1
@@ -8357,7 +8340,7 @@ snapshots:
     dependencies:
       typescript: 5.7.2
 
-  ts-loader@8.4.0(typescript@5.6.3)(webpack@5.95.0(webpack-cli@5.1.4)):
+  ts-loader@8.4.0(typescript@5.6.3)(webpack@5.95.0):
     dependencies:
       chalk: 4.1.2
       enhanced-resolve: 4.5.0
@@ -8641,9 +8624,9 @@ snapshots:
   webpack-cli@5.1.4(webpack@5.95.0):
     dependencies:
       '@discoveryjs/json-ext': 0.5.7
-      '@webpack-cli/configtest': 2.1.1(webpack-cli@5.1.4(webpack@5.95.0))(webpack@5.95.0(webpack-cli@5.1.4))
-      '@webpack-cli/info': 2.0.2(webpack-cli@5.1.4(webpack@5.95.0))(webpack@5.95.0(webpack-cli@5.1.4))
-      '@webpack-cli/serve': 2.0.5(webpack-cli@5.1.4(webpack@5.95.0))(webpack@5.95.0(webpack-cli@5.1.4))
+      '@webpack-cli/configtest': 2.1.1(webpack-cli@5.1.4)(webpack@5.95.0)
+      '@webpack-cli/info': 2.0.2(webpack-cli@5.1.4)(webpack@5.95.0)
+      '@webpack-cli/serve': 2.0.5(webpack-cli@5.1.4)(webpack@5.95.0)
       colorette: 2.0.20
       commander: 10.0.1
       cross-spawn: 7.0.3
@@ -8695,7 +8678,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 3.3.0
       tapable: 2.2.1
-      terser-webpack-plugin: 5.3.10(webpack@5.95.0(webpack-cli@5.1.4))
+      terser-webpack-plugin: 5.3.10(webpack@5.95.0)
       watchpack: 2.4.2
       webpack-sources: 3.2.3
     optionalDependencies:

@@ -29,11 +29,7 @@
             inputs.holonix.devShells.${system}.default
             inputs'.tnesh-stack.devShells.synchronized-pnpm
           ];
-          packages = [
-            pkgs.nodejs_20
-            inputs'.p2p-shipyard.packages.hc-pilot
-            pkgs.mprocs
-          ];
+          packages = [ pkgs.nodejs_20 inputs'.p2p-shipyard.packages.hc-pilot ];
         };
 
         packages.hc-playground = let
@@ -53,7 +49,7 @@
               inputs.tnesh-stack.inputs.pnpmnixpkgs.outputs.legacyPackages.${system}.pnpm.fetchDeps {
                 inherit (finalAttrs) version pname src;
 
-                hash = "sha256-Wv26xFz1gtA+mWaAYq7RQ59hNGRrQ6xqGK10OvRbGyc=";
+                hash = "sha256-Wv26xFz1gtA+mWaAYq7RQ59hNGRrQ6xqGK10OvRbiyc=";
               };
             buildPhase = ''
               runHook preBuild

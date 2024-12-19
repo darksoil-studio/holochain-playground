@@ -52,7 +52,7 @@ export function getFromStore(
 	cellStore: CellStore,
 	dhtHash: AnyDhtHash,
 ): AsyncSignal<any | undefined> {
-	return new AsyncComputed(() => {
+	return new AsyncComputed<any | undefined>(() => {
 		const sourceChainResult = cellStore.sourceChain.get();
 		const dhtShardResult = cellStore.dhtShard.get();
 		if (sourceChainResult.status !== 'completed') return sourceChainResult;
@@ -92,7 +92,7 @@ export function getFromStore(
 
 			if (isEqual(actionHash, dhtHash)) {
 				return {
-					status: 'completed',
+					status: 'completed' as const,
 					value: action,
 				};
 			}
@@ -107,14 +107,14 @@ export function getFromStore(
 					type === ChainOpType.StoreRecord
 				) {
 					return {
-						status: 'completed',
+						status: 'completed' as const,
 						value: getDhtOpEntry(chainOp),
 					};
 				}
 			}
 		}
 		return {
-			status: 'completed',
+			status: 'completed' as const,
 			value: undefined,
 		};
 	});

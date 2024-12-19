@@ -17,6 +17,7 @@ export class EntryContents extends PlaygroundElement {
 	render() {
 		const activeDhtHash = this.store.activeDhtHash.get();
 		const activeContent = this.store.activeContent.get();
+
 		return html`
 			<div class="column" style="flex: 1">
 				<span class="title row" style="margin-bottom: 8px; align-items:center">

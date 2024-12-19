@@ -292,7 +292,11 @@ export function getDhtOpAction(op: ChainOp): Action {
 }
 
 export function getDhtOpEntry(op: ChainOp): Entry | undefined {
-	return Object.values(op)[0][2];
+	const entry = Object.values(op)[0][2];
+	if ('Present' in entry) {
+		return entry.Present;
+	}
+	return entry;
 }
 
 export function getDhtOpSignature(op: ChainOp): Signature {

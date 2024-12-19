@@ -1,6 +1,6 @@
 {
   "name": "@holochain-playground/simulator",
-  "version": "0.400.0-rc.0",
+  "version": "0.400.0",
   "description": "",
   "author": "guillem.cordoba@gmail.com",
   "license": "MIT",
@@ -20,10 +20,10 @@
     "prepare": "tsc"
   },
   "dependencies": {
-    "@holochain/client": "0.18.0-rc.2",
+    "@holochain/client": "^0.18.0",
     "@msgpack/msgpack": "^2.8.0",
-    "@tnesh-stack/core-types": "0.400.0-rc.0",
-    "@tnesh-stack/utils": "0.400.0-rc.0",
+    "@tnesh-stack/core-types": "^0.400.0",
+    "@tnesh-stack/utils": "^0.400.0",
     "blakejs": "^1.2.1",
     "js-base64": "^3.7.7",
     "lodash-es": "^4.17.21",
