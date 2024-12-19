@@ -2,7 +2,7 @@
   description = "Template for Holochain app development";
 
   inputs = {
-    nixpkgs.follows = "tnesh-stack/nixpkgs";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
     holonix.url = "github:holochain/holonix/main-0.4";
 
     p2p-shipyard.url = "github:darksoil-studio/p2p-shipyard/main-0.4";
@@ -36,9 +36,9 @@
           cliDist = pkgs.stdenv.mkDerivation (finalAttrs: {
             version = "0.400.0";
             pname = "holochain-playground-cli";
-            src =
-              # (inputs.tnesh-stack.outputs.lib.cleanPnpmDepsSource { inherit lib; })
-              ./.;
+            src = (inputs.tnesh-stack.outputs.lib.cleanPnpmDepsSource {
+              inherit lib;
+            }) ./.;
 
             nativeBuildInputs = [ pkgs.nodejs pkgs.pnpm.configHook ];
             pnpmDeps = pkgs.pnpm.fetchDeps {
