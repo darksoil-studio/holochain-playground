@@ -13,6 +13,7 @@ import {
 	mdiCallMade,
 	mdiCheckCircleOutline,
 	mdiCogs,
+	mdiInformationOutline,
 } from '@mdi/js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
@@ -229,7 +230,7 @@ export class CellTasks extends PlaygroundElement<SimulatedPlaygroundStore> {
 			<div class="row" style="gap: 8px; align-items: center">
 				<sl-icon
 					.src=${wrapPathInSvg(icon)}
-					style=${styleMap({ color: color })}
+					style=${styleMap({ color: color, width: '24px', height: '24px' })}
 				></sl-icon>
 				<div class="column" style="gap: 2px">
 					<span>${primary}</span>
@@ -247,7 +248,7 @@ export class CellTasks extends PlaygroundElement<SimulatedPlaygroundStore> {
 				><div class="column">
 					<div
 						class="row"
-						style="max-height: 200px; overflow-y: auto; max-width: 180px; margin: 8px"
+						style="max-height: 200px; overflow-y: auto; max-width: 300px; margin: 8px"
 					>
 						${this._callZomeTasks.map(callZome =>
 							this.renderListItem(
@@ -259,7 +260,7 @@ export class CellTasks extends PlaygroundElement<SimulatedPlaygroundStore> {
 						)}
 						${this._workflowErrors.map(errorInfo =>
 							this.renderListItem(
-								mdiAlertOutline,
+								mdiInformationOutline,
 								errorInfo.error.message,
 								errorInfo.task.type === WorkflowType.CALL_ZOME
 									? `${
@@ -271,7 +272,7 @@ export class CellTasks extends PlaygroundElement<SimulatedPlaygroundStore> {
 						)}
 						${this._networkRequestErrors.map(errorInfo =>
 							this.renderListItem(
-								mdiAlertOutline,
+								mdiInformationOutline,
 								errorInfo.error.message,
 								errorInfo.networkRequest.type,
 								'red',
