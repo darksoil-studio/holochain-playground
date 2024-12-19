@@ -293,7 +293,7 @@ export function getDhtOpAction(op: ChainOp): Action {
 
 export function getDhtOpEntry(op: ChainOp): Entry | undefined {
 	const entry = Object.values(op)[0][2];
-	if ('Present' in entry) {
+	if (entry && 'Present' in entry) {
 		return entry.Present;
 	}
 	return entry;
