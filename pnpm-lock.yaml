@@ -260,7 +260,7 @@ importers:
         version: 0.400.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@tnesh-stack/elements':
         specifier: ^0.400.0
-        version: 0.400.0(@floating-ui/utils@0.2.8)(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        version: 0.400.0(@types/react@18.3.11)
       lit:
         specifier: ^3.0.0
         version: 3.2.1
@@ -5708,6 +5708,22 @@ snapshots:
       - utf-8-validate
 
   '@tnesh-stack/elements@0.400.0(@floating-ui/utils@0.2.8)(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+    dependencies:
+      '@holo-host/identicon': 0.1.0
+      '@holochain/client': 0.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@lit-labs/router': 0.1.3
+      '@lit/context': 1.1.3
+      '@lit/localize': 0.12.2
+      '@mdi/js': 7.4.47
+      '@shoelace-style/shoelace': 2.19.1(@floating-ui/utils@0.2.8)(@types/react@18.3.11)
+      lit: 3.2.1
+    transitivePeerDependencies:
+      - '@floating-ui/utils'
+      - '@types/react'
+      - bufferutil
+      - utf-8-validate
+
+  '@tnesh-stack/elements@0.400.0(@types/react@18.3.11)':
     dependencies:
       '@holo-host/identicon': 0.1.0
       '@holochain/client': 0.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
