@@ -413,12 +413,18 @@ export class DhtCells extends PlaygroundElement {
 								circle
 								.disabled=${!this._paused.get()}
 								@click=${() => store.paused.resume()}
+								style=${styleMap({
+									opacity: this.stepByStep ? '1' : '',
+								})}
 							>
 								<sl-icon .src=${wrapPathInSvg(mdiPlay)}></sl-icon
 							></sl-button>
 						`
 					: html`
-							<div class="row" style="gap: 8px; align-items: center">
+							<div
+								class="row"
+								style="gap: 8px; align-items: center; height: 40px "
+							>
 								<sl-icon .src=${wrapPathInSvg(mdiSpeedometer)}></sl-icon>
 								<sl-range
 									style="--track-color-active: var(--sl-color-primary-600);"
