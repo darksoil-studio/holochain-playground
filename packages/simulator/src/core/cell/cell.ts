@@ -122,6 +122,11 @@ export class Cell {
 		return cell;
 	}
 
+	async shutdown() {
+		await this.p2p.leave();
+		this.conductor.network.removeP2pCell(this.cellId);
+	}
+
 	/** Workflows */
 
 	callZomeFn(args: {

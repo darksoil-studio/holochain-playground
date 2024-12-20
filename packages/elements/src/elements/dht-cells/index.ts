@@ -15,13 +15,7 @@ import {
 	decodeHashFromBase64,
 	encodeHashToBase64,
 } from '@holochain/client';
-import {
-	mdiCog,
-	mdiCogClockwise,
-	mdiLanConnect,
-	mdiPlay,
-	mdiSpeedometer,
-} from '@mdi/js';
+import { mdiCog, mdiLanConnect, mdiPlay, mdiSpeedometer } from '@mdi/js';
 import '@scoped-elements/cytoscape';
 import { CytoscapeCircle } from '@scoped-elements/cytoscape';
 import SlButton from '@shoelace-style/shoelace/dist/components/button/button.js';
@@ -44,9 +38,9 @@ import { wrapPathInSvg } from '@tnesh-stack/elements';
 import '@tnesh-stack/elements/dist/elements/holo-identicon.js';
 import { AsyncComputed, Signal } from '@tnesh-stack/signals';
 import { CellMap, HoloHashMap } from '@tnesh-stack/utils';
-import { NodeSingular } from 'cytoscape';
+import { ElementDefinition, NodeDefinition, NodeSingular } from 'cytoscape';
 import { PropertyValues, css, html } from 'lit';
-import { customElement, property, query } from 'lit/decorators.js';
+import { customElement, property, query, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import uniq from 'lodash-es/uniq.js';
@@ -122,12 +116,15 @@ export class DhtCells extends PlaygroundElement {
 	@query('#graph')
 	private _graph!: CytoscapeCircle;
 
-	_paused = new Signal.Computed(() =>
+	@state()
+	private ghostNodes: NodeDefinition[] = [];
+
+	private _paused = new Signal.Computed(() =>
 		this.store instanceof SimulatedPlaygroundStore
 			? this.store?.paused.get()
 			: false,
 	);
-	_badAgents = new AsyncComputed(() => {
+	private _badAgents = new AsyncComputed(() => {
 		if (!(this.store instanceof SimulatedPlaygroundStore))
 			return {
 				status: 'completed',
@@ -271,15 +268,21 @@ export class DhtCells extends PlaygroundElement {
 		}
 		await sleep(10);
 
-		const el = this._graph.cy.add({
+		const id = `${Math.random()}`;
+
+		const elementDefinition: NodeDefinition = {
 			group: 'nodes',
 			data: {
+				id,
 				networkRequest,
 				label,
 			},
 			position: { x: fromPosition.x + 1, y: fromPosition.y + 1 },
 			classes: 'network-request',
-		});
+		};
+
+		const el = this._graph.cy.add(elementDefinition);
+		this.ghostNodes = [...this.ghostNodes, elementDefinition];
 
 		const delay = this.animationDelay * 1000;
 		if (this.stepByStep) {
@@ -323,6 +326,7 @@ export class DhtCells extends PlaygroundElement {
 
 			await sleep(delay);
 		}
+		this.ghostNodes = this.ghostNodes.filter(el => el.data.id !== id);
 		this._graph.cy.remove(el);
 	}
 
@@ -659,6 +663,7 @@ export class DhtCells extends PlaygroundElement {
 						paused: this._paused.get(),
 					})}"
 					.elements=${this.elements}
+					.ghostNodes=${this.ghostNodes}
 					.options=${cytoscapeOptions}
 					.circleOptions=${layoutConfig}
 					@node-selected=${(e: CustomEvent) =>

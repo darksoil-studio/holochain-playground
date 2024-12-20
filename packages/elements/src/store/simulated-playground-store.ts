@@ -70,6 +70,7 @@ export class SimulatedCellStore implements CellStore {
 		public cell: Cell,
 	) {
 		cell.workflowExecutor.success(async () => this.update());
+		cell.p2p.networkRequestsExecutor.success(async () => this.update());
 	}
 
 	get dna() {

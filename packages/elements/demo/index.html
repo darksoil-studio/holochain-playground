@@ -24,6 +24,7 @@
 		<simulated-playground-context id="context" style="flex: 1; display: flex">
 			<div style="display: flex; flex-direction: column; flex: 1">
 				<dht-cells style="widht: 400px"></dht-cells>
+				<sl-button>Remove Agent</sl-button>
 				<entry-contents style="flex: 1"></entry-contents>
 			</div>
 			<div style="display: flex; flex-direction: column; flex: 1">
@@ -126,6 +127,18 @@
 					disable_validation_before_publish: true,
 					pretend_invalid_records_are_valid: true,
 				});
+			});
+			document.querySelector('sl-button').addEventListener('click', e => {
+				const playgroundContext = document.querySelector(
+					'simulated-playground-context',
+				);
+				const playgroundStore = playgroundContext.store;
+
+				const cellStore = playgroundStore.activeCell.get();
+
+				if (!cellStore) return;
+
+				cellStore.value.conductorStore.conductor.uninstallHapp('demo-happ');
 			});
 		</script>
 	</body>

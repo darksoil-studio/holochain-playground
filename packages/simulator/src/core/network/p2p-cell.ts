@@ -109,7 +109,23 @@ export class P2pCell {
 		await this.syncNeighbors();
 	}
 
-	async leave(): Promise<void> {}
+	async leave(): Promise<void> {
+		this.network.bootstrapService.removeCell(this.cellId);
+		this._gossipLoop.gossip_on = false;
+
+		for (const peer of Array.from(this.neighborConnections.keys())) {
+			if (this.neighborConnections.has(peer)) {
+				const connection = this.neighborConnections.get(peer) as Connection;
+				connection.close();
+
+				this.neighborConnections.delete(peer);
+
+				connection
+					.getPeer(this.cellId[1])
+					.p2p.handleLeave(this.cell.agentPubKey);
+			}
+		}
+	}
 
 	async publish(
 		dht_hash: AnyDhtHash,
@@ -227,8 +243,17 @@ export class P2pCell {
 		this.neighborConnections.set(from.agentPubKey, connection);
 	}
 
-	handleCloseNeighborConnection(from: Cell) {
-		this.neighborConnections.delete(from.agentPubKey);
+	handleLeave(peer: AgentPubKey) {
+		if (this.neighborConnections.has(peer)) {
+			this.handleCloseNeighborConnection(peer);
+		}
+		this.farKnownPeers = this.farKnownPeers.filter(
+			n => n.toString() !== peer.toString(),
+		);
+	}
+
+	handleCloseNeighborConnection(peer: AgentPubKey) {
+		this.neighborConnections.delete(peer);
 
 		this.syncNeighbors();
 	}
@@ -256,17 +281,19 @@ export class P2pCell {
 		return this.neighborConnections.get(withPeer.agentPubKey) as Connection;
 	}
 
-	closeNeighborConnection(withPeer: AgentPubKey) {
+	disconnectAndForgetNeighbor(withPeer: AgentPubKey) {
 		if (this.neighborConnections.has(withPeer)) {
 			const connection = this.neighborConnections.get(withPeer) as Connection;
 			connection.close();
 
 			this.neighborConnections.delete(withPeer);
 
-			connection
-				.getPeer(this.cellId[1])
-				.p2p.handleCloseNeighborConnection(this.cell);
+			const peerp2p = connection.getPeer(this.cellId[1]).p2p;
+			if (peerp2p) peerp2p.handleCloseNeighborConnection(this.cell.agentPubKey);
 		}
+		this.farKnownPeers = this.farKnownPeers.filter(
+			n => n.toString() !== withPeer.toString(),
+		);
 	}
 
 	async syncNeighbors() {
@@ -277,7 +304,7 @@ export class P2pCell {
 
 		for (const badAgent of badAgents) {
 			if (this.neighborConnections.get(badAgent)) {
-				this.closeNeighborConnection(badAgent);
+				this.disconnectAndForgetNeighbor(badAgent);
 			}
 		}
 
@@ -297,7 +324,7 @@ export class P2pCell {
 			n => !neighbors.find(c => areEqual(c.agentPubKey, n)),
 		);
 
-		neighborsToForget.forEach(n => this.closeNeighborConnection(n));
+		neighborsToForget.forEach(n => this.disconnectAndForgetNeighbor(n));
 
 		const promises = newNeighbors.map(async neighbor => {
 			try {
@@ -340,6 +367,8 @@ export class P2pCell {
 		warrant: boolean = false,
 	): Promise<void> {
 		// TODO: remove peer discovery?
+		if (!this.network.bootstrapService.cells.get([this.cellId[0], to_agent]))
+			return;
 		await this.network.kitsune.rpc_single(
 			this.cellId[0],
 			this.cellId[1],

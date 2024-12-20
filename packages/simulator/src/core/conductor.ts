@@ -239,6 +239,29 @@ export class Conductor {
 		}
 	}
 
+	public async uninstallHapp(appId: string) {
+		const happ = this.installedHapps[appId];
+		for (const [roleName, appRole] of Object.entries(happ.roles)) {
+			if (appRole.is_provisioned) {
+				const cell = this.cells.get(appRole.base_cell_id);
+				if (cell) {
+					await cell.shutdown();
+					this.cells.delete(appRole.base_cell_id);
+				}
+			}
+
+			for (const cloneCell of appRole.clones) {
+				const cell = this.cells.get(cloneCell);
+				if (cell) {
+					await cell.shutdown();
+					this.cells.delete(cloneCell);
+				}
+			}
+		}
+		delete this.installedHapps[appId];
+		this.emit(ConductorSignalType.CellsChanged);
+	}
+
 	private async createCell(
 		dna: SimulatedDna,
 		agentPubKey: AgentPubKey,

@@ -70,17 +70,21 @@ export function simulatedNeighbors(
 
 	for (const [cellId, info] of farPeers.entries()) {
 		for (const farPeer of info) {
-			if (!doTheyHaveBeef(badAgents, cellId, farPeer)) {
-				const pubKey = encodeHashToBase64(cellId[1]);
-				normalEdges.push({
-					data: {
-						id: `${pubKey}->${encodeHashToBase64(farPeer)}`,
-						source: pubKey,
-						target: encodeHashToBase64(farPeer),
-					},
-					classes: ['far-neighbor-edge'],
-				});
+			if (doTheyHaveBeef(badAgents, cellId, farPeer)) {
+				continue;
 			}
+			if (!cells.has([cellId[0], farPeer])) {
+				continue;
+			}
+			const pubKey = encodeHashToBase64(cellId[1]);
+			normalEdges.push({
+				data: {
+					id: `${pubKey}->${encodeHashToBase64(farPeer)}`,
+					source: pubKey,
+					target: encodeHashToBase64(farPeer),
+				},
+				classes: ['far-neighbor-edge'],
+			});
 		}
 	}
 
@@ -112,16 +116,23 @@ export function allPeersEdges(
 					visited.get(cellNeighbor).has(cellAgentPubKey)
 				)
 			) {
-				edges.push({
-					data: {
-						id: `${encodeHashToBase64(cellAgentPubKey)}->${encodeHashToBase64(
-							cellNeighbor,
-						)}`,
-						source: encodeHashToBase64(cellAgentPubKey),
-						target: encodeHashToBase64(cellNeighbor),
-					},
-					classes: ['neighbor-edge'],
-				});
+				const neighborNeighbors = cellsNeighbors.get([cellId[0], cellNeighbor]);
+				if (
+					neighborNeighbors?.find(
+						n => encodeHashToBase64(n) === encodeHashToBase64(cellAgentPubKey),
+					)
+				) {
+					edges.push({
+						data: {
+							id: `${encodeHashToBase64(cellAgentPubKey)}->${encodeHashToBase64(
+								cellNeighbor,
+							)}`,
+							source: encodeHashToBase64(cellAgentPubKey),
+							target: encodeHashToBase64(cellNeighbor),
+						},
+						classes: ['neighbor-edge'],
+					});
+				}
 
 				if (!cells.has([cellId[0], cellNeighbor])) {
 					neighborsNotConnected.set([cellId[0], cellNeighbor], true);

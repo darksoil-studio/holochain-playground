@@ -15,6 +15,10 @@ export class BootstrapService {
 		this.cells.set(cellId, cell);
 	}
 
+	removeCell(cellId: CellId) {
+		this.cells.delete(cellId);
+	}
+
 	getNeighborhood(
 		dnaHash: DnaHash,
 		basis_dht_hash: AnyDhtHash,

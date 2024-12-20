@@ -302,7 +302,7 @@ importers:
   packages/elements:
     dependencies:
       '@holochain-playground/simulator':
-        specifier: workspace:^0.400.0
+        specifier: file:/home/guillem/projects/darksoil/holochain-playground/packages/simulator
         version: link:../simulator
       '@holochain/client':
         specifier: 0.18.0
@@ -320,8 +320,8 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       '@scoped-elements/cytoscape':
-        specifier: ^0.2.2
-        version: 0.2.2
+        specifier: ^0.2.3
+        version: 0.2.3
       '@shoelace-style/shoelace':
         specifier: ^2.19.1
         version: 2.19.1(@floating-ui/utils@0.2.8)(@types/react@18.3.11)
@@ -1604,8 +1604,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@scoped-elements/cytoscape@0.2.2':
-    resolution: {integrity: sha512-Bhh4dF04M3vQU7O07YOG0ozfW4NQlyRSNYuRmryOO+xaiU4Y7PH77irnmPWJn3joOpf+Cwrdrr36yT/uwPzqUA==}
+  '@scoped-elements/cytoscape@0.2.3':
+    resolution: {integrity: sha512-6ZD/zdRfntnBPXnFq6IYzFqJQH2FSD/7YeSM5X9M/+MiSRfwQvcbpWuMaEqjt4pGcXc18lb8p2C4lVmyaDsLgw==}
 
   '@shoelace-style/animations@1.2.0':
     resolution: {integrity: sha512-avvo1xxkLbv2dgtabdewBbqcJfV0e0zCwFqkPMnHFGbJbBHorRFfMAHh1NG9ymmXn0jW95ibUVH03E1NYXD6Gw==}
@@ -1685,8 +1685,8 @@ packages:
   '@types/lodash-es@4.17.12':
     resolution: {integrity: sha512-0NgftHUcV4v34VhXm8QBSftKVXtbkBG3ViCjs6+eJ5a6y6Mi/jiFGPc1sC7QK+9BFhWrURE3EOggmWaSxL9OzQ==}
 
-  '@types/lodash@4.17.10':
-    resolution: {integrity: sha512-YpS0zzoduEhuOWjAotS6A5AVCva7X4lVlYLF0FYHAY9sdraBfnatttHItlWeZdGhuEkf+OzMNg2ZYAx8t+52uQ==}
+  '@types/lodash@4.17.13':
+    resolution: {integrity: sha512-lfx+dftrEZcdBPczf9d0Qv0x+j/rfNCMuC6OcfXmO8gkfeNAY88PgKUbvG56whcN23gc27yenwF6oJZXGFpYxg==}
 
   '@types/mime@1.3.5':
     resolution: {integrity: sha512-/pyBZWSLD2n0dcHE3hq8s8ZvcETHtEuF+3E7XVt0Ig2nvsVQXdghHVcEkIWjy9A0wKfTn97a/PSDYohKIlnP/w==}
@@ -3272,11 +3272,6 @@ packages:
   nanoassert@2.0.0:
     resolution: {integrity: sha512-7vO7n28+aYO4J+8w96AzhmU8G+Y/xpPDJz/se19ICsqj/momRbb9mh9ZUtkoJ5X3nTnPdhEJyc0qnM6yAsHBaA==}
 
-  nanoid@3.3.7:
-    resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
-    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
-    hasBin: true
-
   nanoid@3.3.8:
     resolution: {integrity: sha512-WNLf5Sd8oZxOm+TzppcYk8gVOgP+l58xNy58D0nbUnOxOWRWvlcCV4kUF7ltmI6PsrLl/BgKEyS4mqsGChFN0w==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
@@ -3476,10 +3471,6 @@ packages:
 
   pkg-types@1.2.1:
     resolution: {integrity: sha512-sQoqa8alT3nHjGuTjuKgOnvjo4cljkufdtLMnO2LBP/wRwuDlo1tkaEdMxCRhyGRPacv/ztlZgDPm2b7FAmEvw==}
-
-  postcss@8.4.47:
-    resolution: {integrity: sha512-56rxCq7G/XfB4EkXq9Egn5GCqugWvDFjafDOThIdMBsI15iqPqR5r15TfSr1YPYeEI19YeaXMCbY6u88Y76GLQ==}
-    engines: {node: ^10 || ^12 || >=14}
 
   postcss@8.4.49:
     resolution: {integrity: sha512-OCVPnIObs4N29kxTjzLfUryOkvZEq+pf8jTF0lg8E7uETuWHA+v7j3c/xJmiqpX450191LlmZfUKkXxkTry7nA==}
@@ -4633,7 +4624,7 @@ snapshots:
 
   '@babel/highlight@7.25.7':
     dependencies:
-      '@babel/helper-validator-identifier': 7.25.7
+      '@babel/helper-validator-identifier': 7.25.9
       chalk: 2.4.2
       js-tokens: 4.0.0
       picocolors: 1.1.0
@@ -5653,7 +5644,7 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.28.1':
     optional: true
 
-  '@scoped-elements/cytoscape@0.2.2':
+  '@scoped-elements/cytoscape@0.2.3':
     dependencies:
       '@open-wc/scoped-elements': 2.2.4
       '@types/cytoscape': 3.21.8
@@ -5820,9 +5811,9 @@ snapshots:
 
   '@types/lodash-es@4.17.12':
     dependencies:
-      '@types/lodash': 4.17.10
+      '@types/lodash': 4.17.13
 
-  '@types/lodash@4.17.10': {}
+  '@types/lodash@4.17.13': {}
 
   '@types/mime@1.3.5': {}
 
@@ -7669,8 +7660,6 @@ snapshots:
 
   nanoassert@2.0.0: {}
 
-  nanoid@3.3.7: {}
-
   nanoid@3.3.8: {}
 
   natural-compare@1.4.0: {}
@@ -7849,12 +7838,6 @@ snapshots:
       confbox: 0.1.8
       mlly: 1.7.3
       pathe: 1.1.2
-
-  postcss@8.4.47:
-    dependencies:
-      nanoid: 3.3.7
-      picocolors: 1.1.0
-      source-map-js: 1.2.1
 
   postcss@8.4.49:
     dependencies:
@@ -8498,7 +8481,7 @@ snapshots:
 
   vite-plugin-checker@0.5.6(eslint@8.57.1)(optionator@0.9.4)(typescript@5.7.2)(vite@4.5.5(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1)):
     dependencies:
-      '@babel/code-frame': 7.25.7
+      '@babel/code-frame': 7.26.2
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       chokidar: 3.6.0
@@ -8522,7 +8505,7 @@ snapshots:
 
   vite-plugin-checker@0.5.6(eslint@9.14.0)(optionator@0.9.4)(typescript@5.6.3)(vite@4.5.5(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1)):
     dependencies:
-      '@babel/code-frame': 7.25.7
+      '@babel/code-frame': 7.26.2
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       chokidar: 3.6.0
@@ -8547,7 +8530,7 @@ snapshots:
   vite@4.5.5(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1):
     dependencies:
       esbuild: 0.18.20
-      postcss: 8.4.47
+      postcss: 8.4.49
       rollup: 3.29.5
     optionalDependencies:
       '@types/node': 22.7.5

@@ -1,4 +1,4 @@
-import { AgentPubKey, DnaHash } from '@holochain/client';
+import { AgentPubKey, CellId, DnaHash } from '@holochain/client';
 import { CellMap } from '@tnesh-stack/utils';
 
 import { BootstrapService } from '../../bootstrap/bootstrap-service.js';
@@ -68,6 +68,10 @@ export class Network {
 		this.p2pCells.set(cellId, p2pCell);
 
 		return p2pCell;
+	}
+
+	removeP2pCell(cellId: CellId) {
+		this.p2pCells.delete(cellId);
 	}
 
 	public sendRequest<T>(
