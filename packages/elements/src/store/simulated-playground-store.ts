@@ -83,6 +83,7 @@ export class SimulatedCellStore implements CellStore {
 
 	update() {
 		const state = this.cell._state;
+		if (!this.cell.p2p) return;
 		const p2pstate = this.cell.p2p.getState();
 
 		this._sourceChain.set(selectSourceChain(state));

@@ -121,7 +121,7 @@ export class P2pCell {
 				this.neighborConnections.delete(peer);
 
 				connection
-					.getPeer(this.cellId[1])
+					.getPeer(this.cell.agentPubKey)
 					.p2p.handleLeave(this.cell.agentPubKey);
 			}
 		}
@@ -250,6 +250,9 @@ export class P2pCell {
 		this.farKnownPeers = this.farKnownPeers.filter(
 			n => n.toString() !== peer.toString(),
 		);
+		setTimeout(() => {
+			this.syncNeighbors();
+		}, 10);
 	}
 
 	handleCloseNeighborConnection(peer: AgentPubKey) {
@@ -282,6 +285,14 @@ export class P2pCell {
 	}
 
 	disconnectAndForgetNeighbor(withPeer: AgentPubKey) {
+		this.closeNeighborConnection(withPeer);
+
+		this.farKnownPeers = this.farKnownPeers.filter(
+			n => n.toString() !== withPeer.toString(),
+		);
+	}
+
+	closeNeighborConnection(withPeer: AgentPubKey) {
 		if (this.neighborConnections.has(withPeer)) {
 			const connection = this.neighborConnections.get(withPeer) as Connection;
 			connection.close();
@@ -291,9 +302,6 @@ export class P2pCell {
 			const peerp2p = connection.getPeer(this.cellId[1]).p2p;
 			if (peerp2p) peerp2p.handleCloseNeighborConnection(this.cell.agentPubKey);
 		}
-		this.farKnownPeers = this.farKnownPeers.filter(
-			n => n.toString() !== withPeer.toString(),
-		);
 	}
 
 	async syncNeighbors() {
@@ -324,7 +332,7 @@ export class P2pCell {
 			n => !neighbors.find(c => areEqual(c.agentPubKey, n)),
 		);
 
-		neighborsToForget.forEach(n => this.disconnectAndForgetNeighbor(n));
+		neighborsToForget.forEach(n => this.closeNeighborConnection(n));
 
 		const promises = newNeighbors.map(async neighbor => {
 			try {
