@@ -2,8 +2,8 @@
   description = "Template for Holochain app development";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
     holonix.url = "github:holochain/holonix/main-0.4";
+    nixpkgs.follows = "holonix/nixpkgs";
 
     p2p-shipyard.url = "github:darksoil-studio/p2p-shipyard/main-0.4";
     tnesh-stack.url = "github:darksoil-studio/tnesh-stack/main-0.4";

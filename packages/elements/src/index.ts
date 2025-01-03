@@ -13,6 +13,7 @@ export * from './elements/conductor-admin/index.js';
 export * from './elements/entry-contents/index.js';
 export * from './elements/source-chain/index.js';
 export * from './elements/dht-entries/index.js';
+export * from './elements/conductor-happs/index.js';
 
 export * from './elements/helpers/call-functions.js';
 export * from './elements/helpers/cell-tasks.js';

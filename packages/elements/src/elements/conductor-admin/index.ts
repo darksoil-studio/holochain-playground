@@ -17,9 +17,7 @@ import { createRef, ref } from 'lit/directives/ref.js';
 import isEqual from 'lodash-es/isEqual.js';
 
 import { PlaygroundElement } from '../../base/playground-element.js';
-import { selectCell } from '../../base/selectors.js';
 import {
-	ConnectedCellStore,
 	ConnectedConductorStore,
 	ConnectedPlaygroundStore,
 } from '../../store/connected-playground-store.js';
