@@ -8,6 +8,7 @@ import '@power-elements/json-viewer';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/details/details.js';
+import '@shoelace-style/shoelace/dist/components/divider/divider.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/tab-group/tab-group.js';
 import '@shoelace-style/shoelace/dist/components/tab-panel/tab-panel.js';
@@ -15,13 +16,9 @@ import '@shoelace-style/shoelace/dist/components/tab/tab.js';
 import '@shoelace-style/shoelace/dist/components/tag/tag.js';
 import '@tnesh-stack/elements/dist/elements/holo-identicon.js';
 import { AsyncComputed } from '@tnesh-stack/signals';
-import '@vaadin/grid/vaadin-grid-column.js';
-import '@vaadin/grid/vaadin-grid.js';
-import { Grid, GridColumn } from '@vaadin/grid/vaadin-grid.js';
 import { PropertyValues, css, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
-import { createRef, ref } from 'lit/directives/ref.js';
-import isEqual from 'lodash-es/isEqual.js';
+import { join } from 'lit/directives/join.js';
 
 import { PlaygroundElement } from '../../base/playground-element.js';
 import {
@@ -34,6 +31,7 @@ import {
 	SimulatedConductorStore,
 	SimulatedPlaygroundStore,
 } from '../../store/simulated-playground-store.js';
+import { cellCount, cellName, dnaHash } from '../../utils.js';
 import '../helpers/call-functions.js';
 import '../helpers/help-button.js';
 import { sharedStyles } from '../utils/shared-styles.js';
@@ -89,47 +87,46 @@ export class ConductorHapps extends PlaygroundElement {
 
 	renderCell(cellInfo: CellInfo) {
 		const activeDna = this.store.activeDna.get();
-		if (CellType.Provisioned in cellInfo) {
-			const dnaHash = cellInfo[CellType.Provisioned].cell_id[0];
-			return html`<div class="row" style="gap: 16px; align-items: center">
-				<span> ${cellInfo[CellType.Provisioned].name} </span>
-				<span style="flex: 1"> </span>
+		const cellDnaHash = dnaHash(cellInfo);
+		const name = cellName(cellInfo);
+		const isActive =
+			activeDna &&
+			encodeHashToBase64(activeDna) === encodeHashToBase64(cellDnaHash);
 
-				<sl-button
-					variant="primary"
-					.disabled=${!activeDna ||
-					encodeHashToBase64(activeDna) === encodeHashToBase64(dnaHash)}
-					@click=${() => {
-						this.store.activeDna.set(dnaHash);
-					}}
-					>Select
-				</sl-button>
-			</div>`;
-		}
-		if (CellType.Cloned in cellInfo) {
-			const dnaHash = cellInfo[CellType.Cloned].cell_id[0];
-			return html`<div class="row" style="gap: 16px; align-items: center">
-				<span> ${cellInfo[CellType.Cloned].name} </span>
-				<span style="flex: 1"> </span>
+		return html`<div class="row" style="gap: 16px; align-items: center">
+			<span> ${name} </span>
+			<span style="flex: 1"> </span>
 
-				<sl-button
-					variant="primary"
-					.disabled=${!activeDna ||
-					encodeHashToBase64(activeDna) === encodeHashToBase64(dnaHash)}
-					@click=${() => {
-						this.store.activeDna.set(dnaHash);
-					}}
-					>Select
-				</sl-button>
-			</div>`;
-		}
+			<div class="row" style="gap: 8px; align-items: center">
+				<span class="placeholder">Dna Hash:</span>
+				<holo-identicon
+					.hash=${cellDnaHash}
+					style="height: 32px"
+				></holo-identicon>
+			</div>
+
+			${isActive
+				? html`<sl-tag variant="primary">Active Dna</sl-tag>`
+				: html`
+						<sl-button
+							variant="primary"
+							@click=${() => {
+								this.store.activeDna.set(cellDnaHash);
+							}}
+							>Select
+						</sl-button>
+					`}
+		</div>`;
 	}
 
 	renderCells(cells: Record<string, CellInfo[]>) {
 		return html`
 			<div class="column" style="gap: 8px">
-				${Object.values(cells).map(cellInfos =>
-					cellInfos.map(cellInfo => this.renderCell(cellInfo)),
+				${join(
+					Object.values(cells).map(cellInfos =>
+						cellInfos.map(cellInfo => this.renderCell(cellInfo)),
+					),
+					html`<sl-divider></sl-divider>`,
 				)}
 			</div>
 		`;
@@ -175,12 +172,20 @@ export class ConductorHapps extends PlaygroundElement {
 
 												<span style="flex: 1"></span>
 
-												<holo-identicon
-													.hash=${appInfo.agent_pub_key}
-													style="height: 32px"
-												></holo-identicon>
+												<div class="row" style="gap: 8px; align-items: center">
+													<span class="placeholder">Agent:</span>
+													<holo-identicon
+														.hash=${appInfo.agent_pub_key}
+														style="height: 32px"
+													></holo-identicon>
+												</div>
 
 												${this.renderHappStatus(appInfo.status)}
+
+												<span class="placeholder"
+													>${cellCount(appInfo)}
+													${cellCount(appInfo) === 1 ? 'cell' : 'cells'}</span
+												>
 											</div>
 
 											${this.renderCells(appInfo.cell_info)}
