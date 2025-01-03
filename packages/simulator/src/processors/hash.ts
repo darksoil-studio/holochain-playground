@@ -1,20 +1,17 @@
-import { HoloHash } from '@holochain/client';
-import { HoloHashMap } from '@tnesh-stack/utils';
-// @ts-ignore
+import { HoloHash, HoloHashB64 } from '@holochain/client';
 import blake from 'blakejs';
 
-const hashLocationCache: HoloHashMap<HoloHash, Uint8Array> = new HoloHashMap();
+const hashLocationCache: Record<HoloHashB64, number> = {};
 
 export function location(bytesHash: HoloHash): number {
-	let bytes: Uint8Array;
-	if (hashLocationCache.has(bytesHash)) {
-		bytes = hashLocationCache.get(bytesHash);
-	} else {
-		bytes = locationBytes(bytesHash);
-		hashLocationCache.set(bytesHash, bytes);
+	let bytesStr = bytesHash.toString();
+	if (hashLocationCache[bytesStr]) {
+		return hashLocationCache[bytesStr];
 	}
+	const bytes = locationBytes(bytesHash);
 	const view = new DataView(bytes.buffer, 0);
 	const location = wrap(view.getUint32(0, false));
+	hashLocationCache[bytesStr] = location;
 
 	return location;
 }
@@ -33,17 +30,34 @@ function locationBytes(bytesHash: HoloHash): Uint8Array {
 	return new Uint8Array(out);
 }
 
+const distanceCache: Record<HoloHashB64, Record<HoloHashB64, number>> = {};
+
 // We return the distance as the shortest distance between two hashes in the circle
 export function distance(hash1: HoloHash, hash2: HoloHash): number {
+	const hash1Str = hash1.toString();
+	const hash2Str = hash2.toString();
+	const firstHash = hash1Str > hash2Str ? hash1Str : hash2Str;
+	const secondHash = hash1Str > hash2Str ? hash2Str : hash1Str;
+
+	if (distanceCache[firstHash] && distanceCache[firstHash][secondHash]) {
+		return distanceCache[firstHash][secondHash];
+	}
+
 	const location1 = location(hash1);
 	const location2 = location(hash2);
 
-	return shortest_arc_distance(location1, location2) + 1;
+	const distance = shortest_arc_distance(location1, location2) + 1;
+
+	if (!distanceCache[firstHash]) {
+		distanceCache[firstHash] = {};
+	}
+	distanceCache[firstHash][secondHash] = distance;
+
+	return distance;
 }
 
 export function areEqual(b1: Uint8Array, b2: Uint8Array): boolean {
-	if (b1.length !== b2.length) return false;
-	return hashToString(b1) === hashToString(b2);
+	return b1.toString() === b2.toString();
 }
 
 export function hashToString(holoHash: HoloHash): string {

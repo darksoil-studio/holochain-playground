@@ -34,7 +34,7 @@ export class SelectActiveDna extends PlaygroundElement {
 					);
 					this.store.activeDna.set(dna);
 				}}
-				style="width: 50em"
+				style="flex: 1"
 			>
 				<span slot="prefix">DNA</span>
 				${allDnas.map(
@@ -63,7 +63,6 @@ export class SelectActiveDna extends PlaygroundElement {
 			css`
 				:host {
 					display: flex;
-					flex: 1;
 				}
 			`,
 			sharedStyles,

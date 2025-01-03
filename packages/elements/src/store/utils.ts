@@ -1,7 +1,6 @@
 import { CellId } from '@holochain/client';
 import { AsyncResult, JoinAsyncOptions, joinAsync } from '@tnesh-stack/signals';
 import { CellMap } from '@tnesh-stack/utils';
-import isEqual from 'lodash-es/isEqual.js';
 
 export function cellChanges(
 	currentCellIds: CellId[],
@@ -22,6 +21,10 @@ export function cellChanges(
 
 export function contains(cellIds: CellId[], lookingForCellId: CellId) {
 	return cellIds.find(c => isEqual(c, lookingForCellId));
+}
+
+function isEqual(cellId1: CellId, cellId2: CellId): boolean {
+	return cellId1.toString() === cellId2.toString();
 }
 
 /**

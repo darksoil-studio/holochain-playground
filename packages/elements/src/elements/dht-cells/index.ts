@@ -36,7 +36,7 @@ import '@shoelace-style/shoelace/dist/components/switch/switch.js';
 import { DhtOpHash } from '@tnesh-stack/core-types';
 import { wrapPathInSvg } from '@tnesh-stack/elements';
 import '@tnesh-stack/elements/dist/elements/holo-identicon.js';
-import { AsyncComputed, Signal } from '@tnesh-stack/signals';
+import { AsyncComputed, Signal, watch } from '@tnesh-stack/signals';
 import { CellMap, HoloHashMap } from '@tnesh-stack/utils';
 import { ElementDefinition, NodeDefinition, NodeSingular } from 'cytoscape';
 import { PropertyValues, css, html } from 'lit';
@@ -63,7 +63,9 @@ import {
 	isHoldingElement,
 	isHoldingEntry,
 	simulatedNeighbors,
+	stringifyCellId,
 } from './processors.js';
+import { effect } from './utils.js';
 
 const MIN_ANIMATION_DELAY = 1;
 const MAX_ANIMATION_DELAY = 7;
@@ -200,6 +202,13 @@ export class DhtCells extends PlaygroundElement {
 
 	_middlewares!: MiddlewareController;
 
+	firstUpdated() {
+		effect(() => {
+			this.store.activeDna.get();
+			this.ghostNodes = [];
+		});
+	}
+
 	highlightNodesWithEntry() {
 		if (!this._graph || !this._graph.cy) return;
 		const cellsForActiveDna = this.store.cellsForActiveDna.get();
@@ -243,11 +252,11 @@ export class DhtCells extends PlaygroundElement {
 		if (!this._graph.cy) return;
 
 		const fromNode = this._graph.cy.getElementById(
-			encodeHashToBase64(networkRequest.fromAgent),
+			stringifyCellId([networkRequest.dnaHash, networkRequest.fromAgent]),
 		);
 		if (!fromNode.position()) return;
 		const toNode = this._graph.cy.getElementById(
-			encodeHashToBase64(networkRequest.toAgent),
+			stringifyCellId([networkRequest.dnaHash, networkRequest.toAgent]),
 		);
 
 		const fromPosition = fromNode.position();
@@ -344,25 +353,31 @@ export class DhtCells extends PlaygroundElement {
 			this.store &&
 			this.store instanceof SimulatedPlaygroundStore
 		) {
-			const cellsForActiveDna = this.store.cellsForActiveDna.get();
-			if (
-				cellsForActiveDna.status === 'completed' &&
-				Array.from(cellsForActiveDna.value.entries()).length > 0
-			) {
-				this._middlewares = new MiddlewareController(
-					this,
-					() => cellsForActiveDna.value.map((s: SimulatedCellStore) => s.cell),
-					{
-						networkRequests: {
-							before: n => this.beforeNetworkRequest(n),
-						},
+			const store = this.store;
+			this._middlewares = new MiddlewareController(
+				this,
+				() => {
+					const cellsForActiveDna = store.cellsForActiveDna.get();
+					if (
+						cellsForActiveDna.status === 'completed' &&
+						Array.from(cellsForActiveDna.value.entries()).length > 0
+					) {
+						return cellsForActiveDna.value.map(
+							(s: SimulatedCellStore) => s.cell,
+						);
+					}
+					return undefined;
+				},
+				{
+					networkRequests: {
+						before: n => this.beforeNetworkRequest(n),
 					},
-				);
-			}
+				},
+			);
 		}
 	}
 
-	get elements() {
+	get elements(): ElementDefinition[] {
 		const cellsForActiveDna = this.store.cellsForActiveDna.get();
 		const badAgents = this._badAgents.get();
 		if (cellsForActiveDna.status !== 'completed') return [];
@@ -505,14 +520,14 @@ export class DhtCells extends PlaygroundElement {
 			if (node.data().networkRequest) return false;
 			if (!activeDna) return false;
 
-			const agentPubKey = node.id();
+			const agentPubKey = node.id().split('/')[1];
 			return cellsForActiveDna.value.has([
 				activeDna,
 				decodeHashFromBase64(agentPubKey),
 			]);
 		});
 		const cellsWithPosition = nodes.map(node => {
-			const agentPubKey = node.id();
+			const agentPubKey = node.id().split('/')[1];
 
 			const cellStore = cellsForActiveDna.value.get([
 				activeDna,

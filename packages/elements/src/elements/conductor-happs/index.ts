@@ -93,8 +93,14 @@ export class ConductorHapps extends PlaygroundElement {
 			activeDna &&
 			encodeHashToBase64(activeDna) === encodeHashToBase64(cellDnaHash);
 
-		return html`<div class="row" style="gap: 16px; align-items: center">
-			<span> ${name} </span>
+		return html`<div
+			class="row"
+			style="gap: 16px; align-items: center; height: 40px"
+		>
+			<div class="row" style="align-items: center">
+				<span class="placeholder">Role:&nbsp;</span>
+				<span>${name}</span>
+			</div>
 			<span style="flex: 1"> </span>
 
 			<div class="row" style="gap: 8px; align-items: center">
@@ -121,11 +127,13 @@ export class ConductorHapps extends PlaygroundElement {
 
 	renderCells(cells: Record<string, CellInfo[]>) {
 		return html`
-			<div class="column" style="gap: 8px">
+			<div class="column">
 				${join(
-					Object.values(cells).map(cellInfos =>
-						cellInfos.map(cellInfo => this.renderCell(cellInfo)),
-					),
+					Object.values(cells)
+						.filter(cellInfos => cellInfos.length > 0)
+						.map(cellInfos =>
+							cellInfos.map(cellInfo => this.renderCell(cellInfo)),
+						),
 					html`<sl-divider></sl-divider>`,
 				)}
 			</div>
@@ -201,13 +209,11 @@ export class ConductorHapps extends PlaygroundElement {
 	renderContent() {
 		const activeConductor = this._activeConductor.get();
 
-		// TODO: add spinner on loading
-
 		if (activeConductor.status !== 'completed' || !activeConductor.value)
 			return html`
 				<div class="column fill center-content">
 					<span class="placeholder"
-						>Select a cell to inspect its conductor</span
+						>Select a cell to inspect its conductor.</span
 					>
 				</div>
 			`;
@@ -231,18 +237,13 @@ export class ConductorHapps extends PlaygroundElement {
 		const activeConductor = this._activeConductor.get();
 		return html`
 			<div class="column fill" style="gap: 8px">
-				<div class="row" style="align-items: center">
-					<div class="column" style="flex: 1;">
-						<span class="title"
-							>Conductor
-							hApps${activeConductor.status === 'completed' &&
-							activeConductor.value
-								? html`<span class="placeholder"
-										>, for ${this.renderName()}</span
-									>`
-								: html``}</span
-						>
-					</div>
+				<div class="row" style="align-items: center;">
+					<span class="title">Conductor hApps</span>
+					${activeConductor.status === 'completed' && activeConductor.value
+						? html`<span class="placeholder">, for ${this.renderName()}</span>`
+						: html``}
+
+					<div style="flex: 1;"></div>
 					${this.renderHelp()}
 				</div>
 				${this.renderContent()}

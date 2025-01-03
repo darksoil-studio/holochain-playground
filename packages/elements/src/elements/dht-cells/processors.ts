@@ -29,6 +29,10 @@ import isEqual from 'lodash-es/isEqual.js';
 import { CellStore } from '../../store/playground-store.js';
 import { SimulatedCellStore } from '../../store/simulated-playground-store.js';
 
+export function stringifyCellId(cellId: CellId): string {
+	return `${encodeHashToBase64(cellId[0])}/${encodeHashToBase64(cellId[1])}`;
+}
+
 export function dhtCellsNodes(
 	cells: CellMap<CellStore>,
 	badAgents?: CellMap<BadAgent | undefined>,
@@ -49,7 +53,7 @@ export function dhtCellsNodes(
 
 		return {
 			data: {
-				id: encodeHashToBase64(cellId[1]),
+				id: stringifyCellId(cellId),
 				label,
 			},
 			classes: ['cell'],
@@ -76,12 +80,13 @@ export function simulatedNeighbors(
 			if (!cells.has([cellId[0], farPeer])) {
 				continue;
 			}
-			const pubKey = encodeHashToBase64(cellId[1]);
+			const myCellIdStr = stringifyCellId(cellId);
+			const farPeerCellIdStr = stringifyCellId([cellId[0], farPeer]);
 			normalEdges.push({
 				data: {
-					id: `${pubKey}->${encodeHashToBase64(farPeer)}`,
-					source: pubKey,
-					target: encodeHashToBase64(farPeer),
+					id: `${myCellIdStr}->${farPeerCellIdStr}`,
+					source: myCellIdStr,
+					target: farPeerCellIdStr,
 				},
 				classes: ['far-neighbor-edge'],
 			});
@@ -122,13 +127,13 @@ export function allPeersEdges(
 						n => encodeHashToBase64(n) === encodeHashToBase64(cellAgentPubKey),
 					)
 				) {
+					const cellIdStr = stringifyCellId(cellId);
+					const cellNeighborStr = stringifyCellId([cellId[0], cellNeighbor]);
 					edges.push({
 						data: {
-							id: `${encodeHashToBase64(cellAgentPubKey)}->${encodeHashToBase64(
-								cellNeighbor,
-							)}`,
-							source: encodeHashToBase64(cellAgentPubKey),
-							target: encodeHashToBase64(cellNeighbor),
+							id: `${cellIdStr}->${cellNeighborStr}`,
+							source: cellIdStr,
+							target: cellNeighborStr,
 						},
 						classes: ['neighbor-edge'],
 					});
@@ -144,9 +149,10 @@ export function allPeersEdges(
 	}
 
 	for (const [cellId, _] of neighborsNotConnected.entries()) {
+		const cellIdStr = stringifyCellId(cellId);
 		edges.push({
 			data: {
-				id: encodeHashToBase64(cellId[1]),
+				id: cellIdStr,
 				label: `${encodeHashToBase64(cellId[1]).slice(
 					0,
 					7,
