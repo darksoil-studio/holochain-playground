@@ -1,7 +1,7 @@
 import '@power-elements/json-viewer';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@tnesh-stack/elements/dist/elements/holo-identicon.js';
-import { html } from 'lit';
+import { css, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
 import { PlaygroundElement } from '../../base/playground-element.js';
@@ -64,5 +64,12 @@ export class EntryContents extends PlaygroundElement {
 		`;
 	}
 
-	static styles = [sharedStyles];
+	static styles = [
+		css`
+			:host {
+				flex: 1;
+			}
+		`,
+		sharedStyles,
+	];
 }

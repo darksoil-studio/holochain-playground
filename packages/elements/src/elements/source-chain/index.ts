@@ -149,6 +149,7 @@ export class SourceChain extends PlaygroundElement {
 					min-height: 350px;
 					min-width: 100px;
 					display: flex;
+					flex: 1;
 				}
 				#source-chain-graph {
 					width: 100%;

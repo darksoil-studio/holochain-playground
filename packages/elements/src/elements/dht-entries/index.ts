@@ -185,6 +185,7 @@ export class DhtEntries extends PlaygroundElement {
 					display: flex;
 					min-height: 300px;
 					min-width: 300px;
+					flex: 1;
 				}
 			`,
 		];

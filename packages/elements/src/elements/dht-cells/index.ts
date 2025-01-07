@@ -661,7 +661,10 @@ export class DhtCells extends PlaygroundElement {
 
 	get selectedNodesIds() {
 		if (!this.store.activeAgentPubKey.get()) return [];
-		return [encodeHashToBase64(this.store.activeAgentPubKey.get()!)];
+		if (!this.store.activeDna.get()) return [];
+		return [
+			`${encodeHashToBase64(this.store.activeDna.get()!)}/${encodeHashToBase64(this.store.activeAgentPubKey.get()!)}`,
+		];
 	}
 
 	render() {
@@ -689,7 +692,7 @@ export class DhtCells extends PlaygroundElement {
 					.circleOptions=${layoutConfig}
 					@node-selected=${(e: CustomEvent) =>
 						this.store.activeAgentPubKey.set(
-							decodeHashFromBase64(e.detail.id()),
+							decodeHashFromBase64(e.detail.id().split('/')[1]),
 						)}
 					.selectedNodesIds=${this.selectedNodesIds}
 				></cytoscape-circle>
@@ -707,6 +710,7 @@ export class DhtCells extends PlaygroundElement {
 					min-width: 400px;
 					display: flex;
 					position: relative;
+					flex: 1;
 				}
 
 				.paused {

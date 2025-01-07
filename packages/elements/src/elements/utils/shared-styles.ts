@@ -5,7 +5,6 @@ export const sharedStyles = css`
 	${unsafeCSS(nativeSharedStyles)}
 	:host {
 		display: flex;
-		flex: 1;
 	}
 
 	.center-content {
