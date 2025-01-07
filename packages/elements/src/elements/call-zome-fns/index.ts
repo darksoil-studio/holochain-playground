@@ -51,6 +51,9 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 	@property({ type: String })
 	selectedZomeName: string | undefined = undefined;
 
+	@property({ type: Boolean, attribute: 'hide-header' })
+	hideHeader: boolean = false;
+
 	// Arguments segmented by dnaHash/agentPubKey/zome/fn_name/arg_name
 	_arguments: CellMap<Dictionary<Dictionary<Dictionary<any>>>> = new CellMap();
 	// Results segmented by dnaHash/agentPubKey/timestamp
@@ -267,60 +270,67 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 				${activeCell.status === 'completed' && activeCell.value
 					? html`
 							<div class="column" style="flex: 1">
-								<div class="row title" style="align-items: center">
-									<span>Call Zome Fns</span> ${
-										this.hideAgentPubKey
-											? html``
-											: html`<span class="placeholder row">, for agent</span>
-													<holo-identicon
-														.hash=${activeCell.value.cellId[1]}
-														style="margin-left: 8px;"
-													></holo-identicon>`
-									}
+
+							${
+								this.hideHeader
+									? html``
+									: html`
+											<div class="row title" style="align-items: center">
+												<span>Call Zome Fns</span> ${this.hideAgentPubKey
+													? html``
+													: html`<span class="placeholder row"
+																>, for agent</span
+															>
+															<holo-identicon
+																.hash=${activeCell.value.cellId[1]}
+																style="margin-left: 8px;"
+															></holo-identicon>`}
 											</div>
+										`
+							}
 
-									<span
-										class="horizontal-divider"
-										style="margin-top: 16px"
-									></span>
+								<span
+									class="horizontal-divider"
+									style="margin-top: 16px"
+								></span>
 
-									<div class="row" style="flex: 1;">
-										<div class="column" style="flex: 1">
-											${
-												this.hideZomeSelector
-													? this.dna &&
-														this.selectedZomeName &&
-														this.renderActiveZomeFns(
-															this.dna.zomes.find(
-																zome => zome.name === this.selectedZomeName,
-															)!,
-														)
-													: html`
-															<sl-tab-group style="flex: 1">
-																${this.dna?.zomes.map(
-																	zome => html`
-																		<sl-tab slot="nav" .panel=${zome.name}
-																			>${zome.name}</sl-tab
-																		>
-																		<sl-tab-panel
-																			name=${zome.name}
-																			style="--padding: 0"
-																		>
-																			${this.renderActiveZomeFns(zome)}
-																		</sl-tab-panel>
-																	`,
-																)}
-															</sl-tab-group>
-														`
-											}
-										</div>
-
-										<span class="vertical-divider"></span>
-
-										${this.renderResults()}
+								<div class="row" style="flex: 1;">
+									<div class="column" style="flex: 1">
+										${
+											this.hideZomeSelector
+												? this.dna &&
+													this.selectedZomeName &&
+													this.renderActiveZomeFns(
+														this.dna.zomes.find(
+															zome => zome.name === this.selectedZomeName,
+														)!,
+													)
+												: html`
+														<sl-tab-group style="flex: 1">
+															${this.dna?.zomes.map(
+																zome => html`
+																	<sl-tab slot="nav" .panel=${zome.name}
+																		>${zome.name}</sl-tab
+																	>
+																	<sl-tab-panel
+																		name=${zome.name}
+																		style="--padding: 0"
+																	>
+																		${this.renderActiveZomeFns(zome)}
+																	</sl-tab-panel>
+																`,
+															)}
+														</sl-tab-group>
+													`
+										}
 									</div>
+
+									<span class="vertical-divider"></span>
+
+									${this.renderResults()}
 								</div>
 							</div>
+						</div>
 						`
 					: html`<div class="fill center-content placeholder">
 							<span style="padding: 24px;"

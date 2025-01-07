@@ -34,6 +34,9 @@ export class DhtEntries extends PlaygroundElement {
 	@property({ type: Boolean, attribute: 'hide-filter' })
 	hideFilter: boolean = false;
 
+	@property({ type: Boolean, attribute: 'hide-header' })
+	hideHeader: boolean = false;
+
 	@property({ type: Boolean, attribute: 'show-entry-contents' })
 	showEntryContents: boolean = false;
 
@@ -157,21 +160,37 @@ export class DhtEntries extends PlaygroundElement {
 		const activeDna = this.store.activeDna.get();
 		return html`
 			<div class="column fill">
-				<div class="block-title row" style="align-items: center">
-					<span>Dht Entries</span>
-					<div style="flex: 1"></div>
+				${this.hideHeader
+					? html``
+					: html`
+							<div class="block-title row" style="align-items: center">
+								<span>Dht Entries</span>
+								<div style="flex: 1"></div>
 
-					${this.renderHelp()}
-				</div>
-
-				<cytoscape-cose-bilkent
-					.elements=${this.elements}
-					.selectedNodesIds=${this.selectedNodesIds}
-					class="fill"
-					.options=${cytoscapeConfig}
-					@node-selected=${(e: any) =>
-						this.store.activeDhtHash.set(decodeHashFromBase64(e.detail.id()))}
-				></cytoscape-cose-bilkent>
+								${this.renderHelp()}
+							</div>
+						`}
+				${this.elements.length > 0
+					? html`
+							<cytoscape-cose-bilkent
+								.elements=${this.elements}
+								.selectedNodesIds=${this.selectedNodesIds}
+								class="fill"
+								.options=${cytoscapeConfig}
+								@node-selected=${(e: any) =>
+									this.store.activeDhtHash.set(
+										decodeHashFromBase64(e.detail.id()),
+									)}
+							></cytoscape-cose-bilkent>
+						`
+					: html`
+							<div
+								class="column"
+								style="flex: 1; align-items: center; justify-content: center;"
+							>
+								<span class="placeholder">No entries match this filter</span>
+							</div>
+						`}
 				${!this.hideFilter ? this.renderFilter() : html``}
 			</div>
 		`;

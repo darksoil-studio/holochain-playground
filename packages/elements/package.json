@@ -23,7 +23,7 @@
 		"@mdi/js": "^7.4.47",
 		"@msgpack/msgpack": "^2.8.0",
 		"@power-elements/json-viewer": "^2.1.1",
-		"@scoped-elements/cytoscape": "^0.2.3",
+		"@scoped-elements/cytoscape": "^0.2.5",
 		"@shoelace-style/shoelace": "^2.19.1",
 		"@tnesh-stack/core-types": "^0.400.0",
 		"@tnesh-stack/elements": "^0.400.0",

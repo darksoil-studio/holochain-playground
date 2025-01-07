@@ -25,7 +25,13 @@ export const commonGraphStyles = `
   background-color: purple;
 }
 .DeleteLink {
-  background-color: purple;
+  background-color: #fc0388;
+}
+.OpenChain {
+  background-color: #03fc66;
+}
+.CloseChain {
+  background-color: black;
 }
 
 .embedded-reference {

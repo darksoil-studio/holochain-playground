@@ -36,6 +36,10 @@ export const graphStyles = `
   .network-request {
     target-arrow-shape: triangle;
     label: data(label);
+    width: 10px;
+    height: 10px;
+    background-color: grey;
+    border-width: 0px;
   }
 
   .neighbor-edge {
@@ -46,14 +50,6 @@ export const graphStyles = `
     line-style: dotted;
     opacity: 0.2;
   }
-
-  .network-request {
-    width: 10px;
-    height: 10px;
-    background-color: grey;
-    border-width: 0px;
-  }
-
 
   .not-held {
     height: 10px;

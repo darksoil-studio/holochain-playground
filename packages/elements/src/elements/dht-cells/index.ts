@@ -118,9 +118,6 @@ export class DhtCells extends PlaygroundElement {
 	@query('#graph')
 	private _graph!: CytoscapeCircle;
 
-	@state()
-	private ghostNodes: NodeDefinition[] = [];
-
 	private _paused = new Signal.Computed(() =>
 		this.store instanceof SimulatedPlaygroundStore
 			? this.store?.paused.get()
@@ -205,7 +202,10 @@ export class DhtCells extends PlaygroundElement {
 	firstUpdated() {
 		effect(() => {
 			this.store.activeDna.get();
-			this.ghostNodes = [];
+			const collection = this._graph.cy
+				.elements()
+				.filter((el: any) => el.data('ghost') === true);
+			this._graph.cy.remove(collection);
 		});
 	}
 
@@ -258,6 +258,7 @@ export class DhtCells extends PlaygroundElement {
 		const toNode = this._graph.cy.getElementById(
 			stringifyCellId([networkRequest.dnaHash, networkRequest.toAgent]),
 		);
+		if (!toNode.position()) return;
 
 		const fromPosition = fromNode.position();
 		const toPosition = toNode.position();
@@ -285,13 +286,13 @@ export class DhtCells extends PlaygroundElement {
 				id,
 				networkRequest,
 				label,
+				ghost: true,
 			},
 			position: { x: fromPosition.x + 1, y: fromPosition.y + 1 },
 			classes: 'network-request',
 		};
 
 		const el = this._graph.cy.add(elementDefinition);
-		this.ghostNodes = [...this.ghostNodes, elementDefinition];
 
 		const delay = this.animationDelay * 1000;
 		if (this.stepByStep) {
@@ -335,7 +336,6 @@ export class DhtCells extends PlaygroundElement {
 
 			await sleep(delay);
 		}
-		this.ghostNodes = this.ghostNodes.filter(el => el.data.id !== id);
 		this._graph.cy.remove(el);
 	}
 
@@ -687,7 +687,6 @@ export class DhtCells extends PlaygroundElement {
 						paused: this._paused.get(),
 					})}"
 					.elements=${this.elements}
-					.ghostNodes=${this.ghostNodes}
 					.options=${cytoscapeOptions}
 					.circleOptions=${layoutConfig}
 					@node-selected=${(e: CustomEvent) =>
