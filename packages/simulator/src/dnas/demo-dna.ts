@@ -172,8 +172,51 @@ export const demoPathsZome: SimulatedZome = {
 	validation_functions: {},
 };
 
+export const demoMigrationZome: SimulatedZome = {
+	name: 'demo_migration',
+	entry_defs: [],
+	zome_functions: {
+		open_chain: {
+			call:
+				({ open_chain }) =>
+				({ prev_target, close_hash }) => {
+					return open_chain({
+						prev_target: {
+							type: 'Dna',
+							content: prev_target,
+						},
+						close_hash,
+					});
+				},
+			arguments: [
+				{ name: 'prev_target', type: 'DnaHash' },
+				{ name: 'close_hash', type: 'ActionHash' },
+			],
+		},
+		close_chain: {
+			call:
+				({ close_chain }) =>
+				({ new_target }) => {
+					return close_chain({
+						new_target: {
+							type: 'Dna',
+							content: new_target,
+						},
+					});
+				},
+			arguments: [{ name: 'new_target', type: 'DnaHash' }],
+		},
+	},
+	validation_functions: {},
+};
+
 export function demoDna(): SimulatedDna {
-	const zomes = [demoEntriesZome, demoLinksZome, demoPathsZome];
+	const zomes = [
+		demoEntriesZome,
+		demoLinksZome,
+		demoPathsZome,
+		demoMigrationZome,
+	];
 	return {
 		properties: {},
 		networkSeed: '',

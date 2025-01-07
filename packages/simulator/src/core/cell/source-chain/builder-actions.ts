@@ -16,9 +16,10 @@ import {
 	EntryType,
 	LinkType,
 	SignedActionHashed,
+	Timestamp,
 	Update,
 } from '@holochain/client';
-import { HashType, hash, hashAction } from '@tnesh-stack/utils';
+import { hashAction } from '@tnesh-stack/utils';
 
 import { CellState } from '../state.js';
 import { hashEntry } from '../utils.js';
@@ -158,6 +159,61 @@ export function buildDeleteLink(
 	};
 	return deleteAction;
 }
+
+export type MigrationTarget =
+	| {
+			type: 'Dna';
+			content: DnaHash;
+	  }
+	| {
+			type: 'Agent';
+			content: AgentPubKey;
+	  };
+export interface OpenChain {
+	type: ActionType.OpenChain;
+	author: AgentPubKey;
+	timestamp: Timestamp;
+	action_seq: number;
+	prev_action: ActionHash;
+	prev_target: MigrationTarget;
+	close_hash: ActionHash;
+}
+
+export function buildOpenChain(
+	state: CellState,
+	prev_target: MigrationTarget,
+	close_hash: ActionHash,
+): OpenChain {
+	const open_chain: OpenChain = {
+		type: ActionType.OpenChain,
+		...buildCommon(state),
+		prev_target,
+		close_hash,
+	};
+	return open_chain;
+}
+
+export interface CloseChain {
+	type: ActionType.CloseChain;
+	author: AgentPubKey;
+	timestamp: Timestamp;
+	action_seq: number;
+	prev_action: ActionHash;
+	new_target: MigrationTarget;
+}
+
+export function buildCloseChain(
+	state: CellState,
+	new_target: MigrationTarget,
+): CloseChain {
+	const close_chain: CloseChain = {
+		type: ActionType.CloseChain,
+		...buildCommon(state),
+		new_target,
+	};
+	return close_chain;
+}
+
 /** Helpers */
 
 function buildCommon(state: CellState) {

@@ -216,9 +216,9 @@ export class DhtCells extends PlaygroundElement {
 		if (cellsForActiveDna.status !== 'completed') return;
 		if (dhtShards.status !== 'completed') return;
 
-		cellsForActiveDna.value.cellIds().forEach(([_, agentPubKey]) => {
+		cellsForActiveDna.value.cellIds().forEach(cellId => {
 			this._graph.cy
-				.getElementById(encodeHashToBase64(agentPubKey))
+				.getElementById(stringifyCellId(cellId))
 				.removeClass('highlighted');
 		});
 
@@ -231,9 +231,9 @@ export class DhtCells extends PlaygroundElement {
 					isHoldingElement(dhtShard, activeDhtHash),
 			);
 
-			for (const [_, agentPubKey] of holdingCells.cellIds()) {
+			for (const cellId of holdingCells.cellIds()) {
 				this._graph.cy
-					.getElementById(encodeHashToBase64(agentPubKey))
+					.getElementById(stringifyCellId(cellId))
 					.addClass('highlighted');
 			}
 		}
