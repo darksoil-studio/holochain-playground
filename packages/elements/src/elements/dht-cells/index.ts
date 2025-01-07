@@ -202,6 +202,7 @@ export class DhtCells extends PlaygroundElement {
 	firstUpdated() {
 		effect(() => {
 			this.store.activeDna.get();
+			if (!this._graph.cy) return;
 			const collection = this._graph.cy
 				.elements()
 				.filter((el: any) => el.data('ghost') === true);

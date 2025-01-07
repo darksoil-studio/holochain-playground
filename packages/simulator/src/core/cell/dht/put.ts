@@ -126,6 +126,12 @@ export const putDhtOpMetadata = (dhtOp: DhtOp) => (state: CellState) => {
 		state.metadata.misc_meta.set(action.author, {
 			ChainStatus: ChainStatus.Valid,
 		});
+
+		const previousActivity = state.metadata.activity.get(action.author) || [];
+		state.metadata.activity.set(action.author, [
+			...previousActivity,
+			actionHash,
+		]);
 	} else if (
 		type === ChainOpType.RegisterUpdatedContent ||
 		type === ChainOpType.RegisterUpdatedRecord

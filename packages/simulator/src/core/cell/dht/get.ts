@@ -1,6 +1,7 @@
 import {
 	ActionHash,
 	ActionType,
+	AgentPubKey,
 	EntryHash as AnyDhtHash,
 	ChainOp,
 	ChainOpType,
@@ -25,6 +26,11 @@ import { HashType, hash } from '@tnesh-stack/utils';
 import { uniqWith } from 'lodash-es';
 
 import { areEqual } from '../../../processors/hash.js';
+import {
+	ActivityRequest,
+	AgentActivity,
+	ChainQueryFilter,
+} from '../../hdk/host-fn/get_agent_activity.js';
 import { GetLinksResponse, Link } from '../cascade/types.js';
 import {
 	CellState,
@@ -33,7 +39,12 @@ import {
 	ValidationLimboStatus,
 	ValidationLimboValue,
 } from '../state.js';
-import { LinkMetaVal, getSysMetaValActionHash } from '../state/metadata.js';
+import {
+	ChainStatus,
+	HighestObserved,
+	LinkMetaVal,
+	getSysMetaValActionHash,
+} from '../state/metadata.js';
 import { getDhtOpAction, getDhtOpType, isWarrantOp } from '../utils.js';
 
 export function getValidationLimboDhtOps(
@@ -293,6 +304,35 @@ export function getLinksForHash(
 	return {
 		link_adds,
 		link_removes,
+	};
+}
+
+export function getAgentActivity(
+	state: CellState,
+	agent: AgentPubKey,
+	query: ChainQueryFilter, // TODO: use this
+	request: ActivityRequest,
+): AgentActivity {
+	const miscMeta = state.metadata.misc_meta.get(agent);
+
+	const status = (miscMeta as { ChainStatus: ChainStatus }).ChainStatus;
+
+	const activity = state.metadata.activity.get(agent) || [];
+	const valid_activity = activity.map((a, i) => [i, a] as [number, ActionHash]);
+
+	const highest_observed: HighestObserved | undefined =
+		valid_activity.length > 0
+			? {
+					hash: [valid_activity[valid_activity.length - 1][1]],
+					action_seq: valid_activity.length - 1,
+				}
+			: undefined;
+	return {
+		highest_observed,
+		rejected_activity: [], // TODO: fix this
+		status,
+		valid_activity,
+		warrants: [], // TODO: fix this
 	};
 }
 

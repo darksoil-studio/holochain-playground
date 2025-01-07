@@ -1,5 +1,6 @@
 import {
 	ActionHash,
+	AgentPubKey,
 	AnyDhtHash,
 	Entry,
 	EntryHash,
@@ -18,6 +19,11 @@ import { HashType, getHashType } from '@tnesh-stack/utils';
 
 import { areEqual } from '../../../processors/hash.js';
 import { GetLinksOptions, GetOptions, GetStrategy } from '../../../types.js';
+import {
+	ActivityRequest,
+	AgentActivity,
+	ChainQueryFilter,
+} from '../../hdk/host-fn/get_agent_activity.js';
 import { P2pCell } from '../../network/p2p-cell.js';
 import { computeDhtStatus, getLiveLinks } from '../dht/get.js';
 import { CellState } from '../state.js';
@@ -194,6 +200,16 @@ export class Cascade {
 			options,
 		);
 		return getLiveLinks(linksResponses);
+	}
+
+	public async dht_get_agent_activity(
+		agent: AgentPubKey,
+		query: ChainQueryFilter,
+		request: ActivityRequest,
+	): Promise<AgentActivity> {
+		const activities = await this.p2p.get_agent_activity(agent, query, request);
+		// TODO: merge agent activities
+		return activities[0];
 	}
 
 	async getEntryDetails(

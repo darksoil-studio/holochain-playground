@@ -17,6 +17,11 @@ import { cloneDeep, isEqual, uniqWith } from 'lodash-es';
 import { MiddlewareExecutor } from '../../executor/middleware-executor.js';
 import { Dictionary, GetLinksOptions, GetOptions } from '../../types.js';
 import { Conductor } from '../conductor.js';
+import {
+	ActivityRequest,
+	AgentActivity,
+	ChainQueryFilter,
+} from '../hdk/host-fn/get_agent_activity.js';
 import { DhtArc } from '../network/dht_arc.js';
 import { GossipData } from '../network/gossip/types.js';
 import { P2pCell } from '../network/p2p-cell.js';
@@ -102,6 +107,7 @@ export class Cell {
 				link_meta: [],
 				misc_meta: new HoloHashMap(),
 				system_meta: new HoloHashMap(),
+				activity: new HoloHashMap(),
 			},
 			validationLimbo: new HoloHashMap(),
 			integratedDHTOps: new HoloHashMap(),
@@ -181,6 +187,15 @@ export class Cell {
 	): Promise<GetLinksResponse> {
 		const authority = new Authority(this._state, this.p2p);
 		return authority.handle_get_links(base_address, link_type, options);
+	}
+
+	public async handle_get_agent_activity(
+		agent: AgentPubKey,
+		query: ChainQueryFilter,
+		request: ActivityRequest,
+	): Promise<AgentActivity> {
+		const authority = new Authority(this._state, this.p2p);
+		return authority.handle_get_agent_activity(agent, query, request);
 	}
 
 	public async handle_call_remote(

@@ -17,6 +17,10 @@ import { UpdateEntryFn, update_entry } from './host-fn/actions/update_entry.js';
 import { AgentInfoFn, agent_info } from './host-fn/agent_info.js';
 import { CallRemoteFn, call_remote } from './host-fn/call_remote.js';
 import { GetFn, get } from './host-fn/get.js';
+import {
+	GetAgentActivityFn,
+	get_agent_activity,
+} from './host-fn/get_agent_activity.js';
 import { GetDetailsFn, get_details } from './host-fn/get_details.js';
 import { GetLinksFn, get_links } from './host-fn/get_links.js';
 import { HashEntryFn, hash_entry } from './host-fn/hash_entry.js';
@@ -42,6 +46,7 @@ export interface Hdk extends SimulatedValidateFunctionContext {
 	query: QueryFn;
 	open_chain: OpenChainFn;
 	close_chain: CloseChainFn;
+	get_agent_activity: GetAgentActivityFn;
 }
 
 export interface SimulatedZomeFunctionContext extends Hdk {
@@ -78,6 +83,7 @@ export function buildZomeFunctionContext(
 		query: query(workspace, zome_index),
 		open_chain: open_chain(workspace, zome_index),
 		close_chain: close_chain(workspace, zome_index),
+		get_agent_activity: get_agent_activity(workspace, zome_index),
 	};
 
 	return {
