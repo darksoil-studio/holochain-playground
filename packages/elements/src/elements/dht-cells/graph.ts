@@ -43,12 +43,11 @@ export const graphStyles = `
   }
 
   .neighbor-edge {
-    line-style: dotted;
+    line-style: solid;
   }
 
   .far-neighbor-edge {
-    line-style: dotted;
-    opacity: 0.2;
+    line-style: dashed;
   }
 
   .not-held {
