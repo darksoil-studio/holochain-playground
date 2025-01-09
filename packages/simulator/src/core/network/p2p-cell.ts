@@ -342,13 +342,14 @@ export class P2pCell {
 			}
 		}
 
-		this.farKnownPeers = this.network.bootstrapService
-			.getFarKnownPeers(dnaHash, myPubKey, badAgents)
-			.map(p => p.agentPubKey);
-
 		const neighbors = this.network.bootstrapService
 			.getNeighborhood(dnaHash, myPubKey, this.neighborNumber, badAgents)
-			.filter(cell => !isEqual(cell.agentPubKey, myPubKey));
+			.filter(cell => !areEqual(cell.agentPubKey, myPubKey));
+
+		this.farKnownPeers = this.network.bootstrapService
+			.getFarKnownPeers(dnaHash, myPubKey, badAgents)
+			.map(p => p.agentPubKey)
+			.filter(a => !neighbors.find(cell => areEqual(cell.agentPubKey, a)));
 
 		const newNeighbors = neighbors.filter(
 			cell => !this.neighbors.find(a => areEqual(a, cell.agentPubKey)),
