@@ -121,8 +121,10 @@ export function allPeersEdges(
 					visited.get(cellNeighbor).has(cellAgentPubKey)
 				)
 			) {
+				const neighborNotConnected = !cells.has([cellId[0], cellNeighbor]);
 				const neighborNeighbors = cellsNeighbors.get([cellId[0], cellNeighbor]);
 				if (
+					neighborNotConnected ||
 					neighborNeighbors?.find(
 						n => encodeHashToBase64(n) === encodeHashToBase64(cellAgentPubKey),
 					)
@@ -139,7 +141,7 @@ export function allPeersEdges(
 					});
 				}
 
-				if (!cells.has([cellId[0], cellNeighbor])) {
+				if (neighborNotConnected) {
 					neighborsNotConnected.set([cellId[0], cellNeighbor], true);
 				}
 			}
