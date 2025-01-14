@@ -54,6 +54,9 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 	@property({ type: Boolean, attribute: 'hide-header' })
 	hideHeader: boolean = false;
 
+	@property({ type: Boolean, attribute: 'hide-results' })
+	hideResults: boolean = false;
+
 	// Arguments segmented by dnaHash/agentPubKey/zome/fn_name/arg_name
 	_arguments: CellMap<Dictionary<Dictionary<Dictionary<any>>>> = new CellMap();
 	// Results segmented by dnaHash/agentPubKey/timestamp
@@ -208,7 +211,7 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 								<div class="flex-scrollable-y">
 									<div
 										class="column"
-										style="flex-direction: column-reverse; margin: 8px;"
+										style="flex-direction: column; margin: 8px;"
 									>
 										${join(
 											results.map(
@@ -286,13 +289,13 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 																style="margin-left: 8px;"
 															></holo-identicon>`}
 											</div>
+
+											<span
+												class="horizontal-divider"
+												style="margin-top: 16px"
+											></span>
 										`
 							}
-
-								<span
-									class="horizontal-divider"
-									style="margin-top: 16px"
-								></span>
 
 								<div class="row" style="flex: 1;">
 									<div class="column" style="flex: 1">
@@ -325,9 +328,15 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 										}
 									</div>
 
-									<span class="vertical-divider"></span>
+									${
+										this.hideResults
+											? html``
+											: html`
+													<span class="vertical-divider"></span>
 
-									${this.renderResults()}
+													${this.renderResults()}
+												`
+									}
 								</div>
 							</div>
 						</div>

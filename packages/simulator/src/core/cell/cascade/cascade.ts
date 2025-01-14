@@ -151,8 +151,12 @@ export class Cascade {
 				signed_action: (result as GetRecordResponse).signed_action,
 			};
 		} else {
+			const liveActions = (result as GetEntryResponse).live_actions;
+			const oldestLiveAction = liveActions.sort(
+				(a1, a2) => a2.hashed.content.timestamp - a1.hashed.content.timestamp,
+			)[0];
 			return {
-				signed_action: (result as GetEntryResponse).live_actions[0],
+				signed_action: oldestLiveAction,
 				entry: {
 					Present: (result as GetEntryResponse).entry,
 				},
