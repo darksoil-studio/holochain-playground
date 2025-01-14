@@ -142,7 +142,7 @@ export function allEntries(
 
 					edges.push({
 						data: {
-							id: `${strBaseHash}->${target}`,
+							id: `${encodeHashToBase64(link.add_link_hash)}`,
 							source: strBaseHash,
 							target,
 							label: tag,

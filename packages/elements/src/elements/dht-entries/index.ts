@@ -181,6 +181,11 @@ export class DhtEntries extends PlaygroundElement {
 									this.store.activeDhtHash.set(
 										decodeHashFromBase64(e.detail.id()),
 									)}
+								@edge-selected=${(e: any) => {
+									this.store.activeDhtHash.set(
+										decodeHashFromBase64(e.detail.id()),
+									);
+								}}
 							></cytoscape-cose-bilkent>
 						`
 					: html`

@@ -183,8 +183,17 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 				>
 				<sl-copy-button .value=${payload}></sl-copy-button>
 			</div>`;
-		else
+		else {
+			if (typeof payload === 'object' && Object.keys(payload).length === 0)
+				return html`
+					<sl-tag style="overflow: hidden; text-overflow: ellipsis; flex: 1">
+						${Array.isArray(payload)
+							? '<Empty array>'
+							: '<Empty object>'}</sl-tag
+					>
+				`;
 			return html` <json-viewer .data=${payload} class="fill"></json-viewer> `;
+		}
 	}
 
 	renderResults() {
