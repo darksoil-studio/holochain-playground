@@ -63,7 +63,7 @@ export class Authority {
 			entry_type: entry_type as EntryType,
 			deletes: entryDetails.deletes as SignedActionHashed<Delete>[],
 			updates: entryDetails.updates as SignedActionHashed<Update>[],
-			live_actions: entryDetails.actions as SignedActionHashed<Create>[],
+			actions: entryDetails.actions as SignedActionHashed<Create>[],
 		};
 	}
 

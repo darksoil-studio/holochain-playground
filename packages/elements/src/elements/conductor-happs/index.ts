@@ -1,10 +1,10 @@
+import '@alenaksu/json-viewer';
 import {
 	CellInfo,
 	CellType,
 	InstalledAppInfoStatus,
 	encodeHashToBase64,
 } from '@holochain/client';
-import '@power-elements/json-viewer';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/details/details.js';

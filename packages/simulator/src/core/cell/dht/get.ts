@@ -122,7 +122,7 @@ export function getEntryDetails(
 	const allActions = getActionsForEntry(state, entry_hash);
 	const dhtStatus = getEntryDhtStatus(state, entry_hash);
 
-	const live_actions: HoloHashMap<
+	const createActions: HoloHashMap<
 		ActionHash,
 		SignedActionHashed<Create>
 	> = new HoloHashMap();
@@ -147,7 +147,7 @@ export function getEntryDetails(
 			(actionContent as Create).entry_hash &&
 			areEqual((actionContent as Create).entry_hash, entry_hash)
 		) {
-			live_actions.set(
+			createActions.set(
 				action.hashed.hash,
 				action as SignedActionHashed<Create>,
 			);
@@ -160,7 +160,7 @@ export function getEntryDetails(
 
 	return {
 		entry,
-		actions: allActions,
+		actions: Array.from(createActions.values()),
 		entry_dht_status: dhtStatus as EntryDhtStatus,
 		updates: Array.from(updates.values()),
 		deletes: Array.from(deletes.values()),

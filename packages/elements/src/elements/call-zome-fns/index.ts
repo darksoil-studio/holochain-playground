@@ -1,3 +1,4 @@
+import '@alenaksu/json-viewer';
 import {
 	Cell,
 	SimulatedDna,
@@ -5,7 +6,6 @@ import {
 } from '@holochain-playground/simulator';
 import { decodeHashFromBase64, encodeHashToBase64 } from '@holochain/client';
 import { mdiAlertOutline, mdiCheckCircleOutline } from '@mdi/js';
-import '@power-elements/json-viewer';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/copy-button/copy-button.js';
 import '@shoelace-style/shoelace/dist/components/details/details.js';
@@ -179,16 +179,12 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 		if (!result.result.payload || typeof payload === 'string')
 			return html`<div class="row" style="gap: 4px; align-items: center">
 				<sl-tag style="overflow: hidden; text-overflow: ellipsis; flex: 1">
-					${payload}</sl-tag
+					${!payload ? 'None' : payload}</sl-tag
 				>
 				<sl-copy-button .value=${payload}></sl-copy-button>
 			</div>`;
 		else
-			return html`
-				<sl-details summary="Expand to see result">
-					<json-viewer .object=${payload} class="fill"></json-viewer>
-				</sl-details>
-			`;
+			return html` <json-viewer .data=${payload} class="fill"></json-viewer> `;
 	}
 
 	renderResults() {

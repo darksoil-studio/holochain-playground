@@ -1,4 +1,4 @@
-import '@power-elements/json-viewer';
+import '@alenaksu/json-viewer';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@tnesh-stack/elements/dist/elements/holo-identicon.js';
 import { css, html } from 'lit';
@@ -56,7 +56,7 @@ export class EntryContents extends PlaygroundElement {
 									<div class="flex-scrollable-container">
 										<div class="flex-scrollable-y" style="height: 100%;">
 											<json-viewer
-												.object=${shortenStrRec(
+												.data=${shortenStrRec(
 													activeContent.value.entry
 														? getEntryContents(activeContent.value)
 														: activeContent.value,

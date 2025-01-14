@@ -151,9 +151,16 @@ export class Cascade {
 				signed_action: (result as GetRecordResponse).signed_action,
 			};
 		} else {
-			const liveActions = (result as GetEntryResponse).live_actions;
+			const response = result as GetEntryResponse;
+			const liveActions = response.actions.filter(
+				a =>
+					!response.deletes.find(d =>
+						areEqual(a.hashed.hash, d.hashed.content.deletes_address),
+					),
+			);
+			if (liveActions.length === 0) return undefined;
 			const oldestLiveAction = liveActions.sort(
-				(a1, a2) => a2.hashed.content.timestamp - a1.hashed.content.timestamp,
+				(a1, a2) => a1.hashed.content.timestamp - a2.hashed.content.timestamp,
 			)[0];
 			return {
 				signed_action: oldestLiveAction,
@@ -224,7 +231,7 @@ export class Cascade {
 		const result = await this.p2p.get(entryHash, options);
 
 		if (!result) return undefined;
-		if ((result as GetEntryResponse).live_actions === undefined)
+		if ((result as GetEntryResponse).actions === undefined)
 			throw new Error('Unreachable');
 
 		const getEntryFull = result as GetEntryResponse;
@@ -232,14 +239,14 @@ export class Cascade {
 		const allActions = [
 			...getEntryFull.deletes,
 			...getEntryFull.updates,
-			...getEntryFull.live_actions,
+			...getEntryFull.actions,
 		];
 
 		const { rejected_actions, entry_dht_status } = computeDhtStatus(allActions);
 
 		return {
 			entry: getEntryFull.entry,
-			actions: getEntryFull.live_actions,
+			actions: getEntryFull.actions,
 			deletes: getEntryFull.deletes,
 			updates: getEntryFull.updates,
 			rejected_actions,
