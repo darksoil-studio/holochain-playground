@@ -16,7 +16,7 @@ import {
 	EntryDetails,
 	RecordDetails,
 } from '@tnesh-stack/core-types';
-import { HashType, getHashType } from '@tnesh-stack/utils';
+import { HashType, HoloHashMap, getHashType } from '@tnesh-stack/utils';
 
 import { areEqual } from '../../../processors/hash.js';
 import { GetLinksOptions, GetOptions, GetStrategy } from '../../../types.js';
@@ -25,6 +25,7 @@ import {
 	AgentActivity,
 	ChainQueryFilter,
 } from '../../hdk/host-fn/get_agent_activity.js';
+import { LinkDetails } from '../../hdk/host-fn/get_link_details.js';
 import { P2pCell } from '../../network/p2p-cell.js';
 import { computeDhtStatus, getLiveLinks } from '../dht/get.js';
 import { CellState } from '../state.js';
@@ -200,7 +201,7 @@ export class Cascade {
 	}
 
 	public async dht_get_links(
-		base_address: EntryHash,
+		base_address: AnyDhtHash,
 		link_type: LinkType,
 		options: GetLinksOptions,
 	): Promise<Link[]> {
@@ -212,6 +213,53 @@ export class Cascade {
 			options,
 		);
 		return getLiveLinks(linksResponses);
+	}
+
+	public async dht_get_link_details(
+		base_address: AnyDhtHash,
+		link_type: LinkType,
+		options: GetLinksOptions,
+	): Promise<LinkDetails> {
+		// TODO: check if we are an authority
+
+		const linksResponses = await this.p2p.get_links(
+			base_address,
+			link_type,
+			options,
+		);
+		const createLinks = new HoloHashMap<
+			ActionHash,
+			{ create: SignedActionHashed; deletes: Array<SignedActionHashed> }
+		>();
+
+		for (const response of linksResponses) {
+			for (const linkAdd of response.link_adds) {
+				if (!createLinks.has(linkAdd.hashed.hash)) {
+					createLinks.set(linkAdd.hashed.hash, {
+						create: linkAdd,
+						deletes: [],
+					});
+				}
+			}
+		}
+
+		for (const response of linksResponses) {
+			for (const linkDelete of response.link_removes) {
+				const linkAddHash = linkDelete.hashed.content.link_add_address;
+				const existing = createLinks.get(linkAddHash);
+				if (existing) {
+					createLinks.set(linkAddHash, {
+						create: existing.create,
+						deletes: [...existing.deletes, linkDelete],
+					});
+				}
+			}
+		}
+
+		return Array.from(createLinks.values()).map(({ create, deletes }) => [
+			create,
+			deletes,
+		]);
 	}
 
 	public async dht_get_agent_activity(

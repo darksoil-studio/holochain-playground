@@ -22,6 +22,10 @@ import {
 	get_agent_activity,
 } from './host-fn/get_agent_activity.js';
 import { GetDetailsFn, get_details } from './host-fn/get_details.js';
+import {
+	GetLinkDetailsFn,
+	get_link_details,
+} from './host-fn/get_link_details.js';
 import { GetLinksFn, get_links } from './host-fn/get_links.js';
 import { HashEntryFn, hash_entry } from './host-fn/hash_entry.js';
 import { QueryFn, query } from './host-fn/query.js';
@@ -32,6 +36,7 @@ export interface SimulatedValidateFunctionContext {
 	get_details: GetDetailsFn;
 	hash_entry: HashEntryFn;
 	get_links: GetLinksFn;
+	get_link_details: GetLinkDetailsFn;
 }
 export interface Hdk extends SimulatedValidateFunctionContext {
 	create_entry: CreateEntryFn;
@@ -62,6 +67,7 @@ export function buildValidationFunctionContext(
 		get: get(workspace, zome_index),
 		get_details: get_details(workspace, zome_index),
 		get_links: get_links(workspace, zome_index),
+		get_link_details: get_link_details(workspace, zome_index),
 	};
 }
 
