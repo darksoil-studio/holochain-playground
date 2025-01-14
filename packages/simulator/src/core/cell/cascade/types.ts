@@ -38,9 +38,3 @@ export interface GetLinksResponse {
 	link_adds: SignedActionHashed<CreateLink>[];
 	link_removes: SignedActionHashed<DeleteLink>[];
 }
-
-export interface Link {
-	base: EntryHash;
-	target: EntryHash;
-	tag: any;
-}

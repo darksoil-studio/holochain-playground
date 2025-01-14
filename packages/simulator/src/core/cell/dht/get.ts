@@ -9,6 +9,7 @@ import {
 	CreateLink,
 	Delete,
 	DeleteLink,
+	Link,
 	LinkType,
 	NewEntryAction,
 	SignedActionHashed,
@@ -31,7 +32,7 @@ import {
 	AgentActivity,
 	ChainQueryFilter,
 } from '../../hdk/host-fn/get_agent_activity.js';
-import { GetLinksResponse, Link } from '../cascade/types.js';
+import { GetLinksResponse } from '../cascade/types.js';
 import {
 	CellState,
 	IntegratedDhtOpsValue,
@@ -387,12 +388,17 @@ export function getLiveLinks(
 
 	const resultingLinks: Link[] = [];
 
-	for (const liveLink of linkAdds.values()) {
+	for (const [linkHash, liveLink] of Array.from(linkAdds.entries())) {
 		if (liveLink)
 			resultingLinks.push({
 				base: liveLink.base_address,
 				target: liveLink.target_address,
 				tag: liveLink.tag,
+				author: liveLink.author,
+				create_link_hash: linkHash,
+				link_type: liveLink.link_type,
+				timestamp: liveLink.timestamp,
+				zome_index: liveLink.zome_index,
 			});
 	}
 

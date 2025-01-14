@@ -138,7 +138,7 @@ export const demoLinksZome: SimulatedZome = {
 				({ create_link_hash }) => {
 					return delete_link(create_link_hash);
 				},
-			arguments: [{ name: 'add_link_action', type: 'ActionHash' }],
+			arguments: [{ name: 'create_link_hash', type: 'ActionHash' }],
 		},
 	},
 	validation_functions: {},

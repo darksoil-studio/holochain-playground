@@ -4,6 +4,7 @@ import {
 	AnyDhtHash,
 	Entry,
 	EntryHash,
+	Link,
 	LinkType,
 	NewEntryAction,
 	Record,
@@ -27,7 +28,7 @@ import {
 import { P2pCell } from '../../network/p2p-cell.js';
 import { computeDhtStatus, getLiveLinks } from '../dht/get.js';
 import { CellState } from '../state.js';
-import { GetEntryResponse, GetRecordResponse, Link } from './types.js';
+import { GetEntryResponse, GetRecordResponse } from './types.js';
 
 // From https://github.com/holochain/holochain/blob/develop/crates/holochain_cascade/src/lib.rs#L1523
 
