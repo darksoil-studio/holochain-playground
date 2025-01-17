@@ -45,9 +45,9 @@ node > node {
 `;
 
 export const cytoscapeConfig = {
-  boxSelectionEnabled: false,
-  autoungrabify: false,
-  userZoomingEnabled: true,
-  userPanningEnabled: true,
-  style: graphStyles,
+	boxSelectionEnabled: false,
+	autoungrabify: false,
+	userZoomingEnabled: true,
+	userPanningEnabled: true,
+	style: graphStyles,
 };

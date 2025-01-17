@@ -29,6 +29,7 @@ import {
 import { GetLinksFn, get_links } from './host-fn/get_links.js';
 import { HashEntryFn, hash_entry } from './host-fn/hash_entry.js';
 import { QueryFn, query } from './host-fn/query.js';
+import { SysTimeFn, sys_time } from './host-fn/sys_time.js';
 import { Path, ensure } from './path.js';
 
 export interface SimulatedValidateFunctionContext {
@@ -52,6 +53,7 @@ export interface Hdk extends SimulatedValidateFunctionContext {
 	open_chain: OpenChainFn;
 	close_chain: CloseChainFn;
 	get_agent_activity: GetAgentActivityFn;
+	sys_time: SysTimeFn;
 }
 
 export interface SimulatedZomeFunctionContext extends Hdk {
@@ -90,6 +92,7 @@ export function buildZomeFunctionContext(
 		open_chain: open_chain(workspace, zome_index),
 		close_chain: close_chain(workspace, zome_index),
 		get_agent_activity: get_agent_activity(workspace, zome_index),
+		sys_time: sys_time(workspace, zome_index),
 	};
 
 	return {

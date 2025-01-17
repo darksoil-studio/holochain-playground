@@ -172,7 +172,7 @@ export class DhtEntries extends PlaygroundElement {
 						`}
 				${this.elements.length > 0
 					? html`
-							<cytoscape-cose-bilkent
+							<cytoscape-klay
 								.elements=${this.elements}
 								.selectedNodesIds=${this.selectedNodesIds}
 								class="fill"
@@ -186,7 +186,7 @@ export class DhtEntries extends PlaygroundElement {
 										decodeHashFromBase64(e.detail.id()),
 									);
 								}}
-							></cytoscape-cose-bilkent>
+							></cytoscape-klay>
 						`
 					: html`
 							<div
