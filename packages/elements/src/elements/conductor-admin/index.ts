@@ -8,9 +8,10 @@ import '@shoelace-style/shoelace/dist/components/tab-panel/tab-panel.js';
 import '@shoelace-style/shoelace/dist/components/tab/tab.js';
 import '@tnesh-stack/elements/dist/elements/holo-identicon.js';
 import { AsyncComputed } from '@tnesh-stack/signals';
+import { Grid } from '@vaadin/grid';
+import { GridColumn } from '@vaadin/grid/vaadin-grid-column.js';
 import '@vaadin/grid/vaadin-grid-column.js';
 import '@vaadin/grid/vaadin-grid.js';
-import { Grid, GridColumn } from '@vaadin/grid/vaadin-grid.js';
 import { PropertyValues, css, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { createRef, ref } from 'lit/directives/ref.js';
@@ -80,7 +81,7 @@ export class ConductorAdmin extends PlaygroundElement {
 			const dnaColumn = this.shadowRoot!.querySelector(
 				'#dna-column',
 			) as GridColumn;
-			dnaColumn.renderer = (root: any, column, model) => {
+			dnaColumn.renderer = (root: any, column: any, model: any) => {
 				const cell = model.item as any as CellStore;
 				root.innerHTML = `<holo-identicon hash="${encodeHashToBase64(
 					cell.cellId[0],
@@ -90,7 +91,7 @@ export class ConductorAdmin extends PlaygroundElement {
 			const agentPubKeyColumn = this.shadowRoot!.querySelector(
 				'#agent-pub-key-column',
 			) as GridColumn;
-			agentPubKeyColumn.renderer = (root: any, column, model) => {
+			agentPubKeyColumn.renderer = (root: any, column: any, model: any) => {
 				const cell = model.item as any as CellStore;
 				root.innerHTML = `<holo-identicon hash="${encodeHashToBase64(
 					cell.cellId[1],
@@ -124,7 +125,11 @@ export class ConductorAdmin extends PlaygroundElement {
 				const detailsToggleColumn = this.shadowRoot!.querySelector(
 					'#details',
 				) as GridColumn;
-				detailsToggleColumn.renderer = function (root: any, column, model) {
+				detailsToggleColumn.renderer = function (
+					root: any,
+					column: any,
+					model: any,
+				) {
 					if (!root.firstElementChild) {
 						root.innerHTML = '<sl-button>Details</sl-button>';
 						let opened = false;
@@ -144,7 +149,7 @@ export class ConductorAdmin extends PlaygroundElement {
 			const selectColumn = this.shadowRoot!.querySelector(
 				'#select',
 			) as GridColumn;
-			selectColumn.renderer = (root: any, column, model) => {
+			selectColumn.renderer = (root: any, column: any, model: any) => {
 				const cell = model.item as any as CellStore;
 
 				const isSelected =

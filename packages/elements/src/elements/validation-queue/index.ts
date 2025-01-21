@@ -1,9 +1,13 @@
 import {
 	ValidationLimboStatus,
+	areEqual,
 	getDhtOpAction,
 	getDhtOpBasis,
 } from '@holochain-playground/simulator';
 import {
+	Action,
+	ActionHashB64,
+	AnyDhtHashB64,
 	ChainOp,
 	DhtOp,
 	WarrantOp,
@@ -23,7 +27,7 @@ import { hashAction } from '@tnesh-stack/utils';
 import '@vaadin/grid/vaadin-grid-column.js';
 import '@vaadin/grid/vaadin-grid-sort-column.js';
 import '@vaadin/grid/vaadin-grid.js';
-import { css, html, render } from 'lit';
+import { PropertyValues, css, html, render } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
 import { PlaygroundElement } from '../../base/playground-element.js';
@@ -63,35 +67,24 @@ export class ValidationQueue extends PlaygroundElement {
 	@property({ type: Boolean, attribute: 'hide-header' })
 	hideHeader: boolean = false;
 
-	renderValidationLimbo(
-		ops: Array<{ op: DhtOp; status: ValidationLimboStatus | undefined }>,
+	renderGrid(
+		items: Array<{
+			type: string;
+			basis: AnyDhtHashB64;
+			actionHash?: ActionHashB64;
+			status: string;
+		}>,
 	) {
-		const items = ops.map(op => {
-			if ((op.op as { WarrantOp: WarrantOp }).WarrantOp) {
-				return {
-					type: 'Warrant',
-					basis: getDhtOpBasis(op.op),
-					status:
-						op.status !== undefined
-							? getValidationLimboStatus(op.status)
-							: 'Unknown',
-				};
-			} else {
-				return {
-					type: Object.keys((op.op as { ChainOp: ChainOp }).ChainOp)[0],
-					basis: getDhtOpBasis(op.op),
-					actionHash: hashAction(
-						getDhtOpAction((op.op as { ChainOp: ChainOp }).ChainOp),
-					),
-					status:
-						op.status !== undefined
-							? getValidationLimboStatus(op.status)
-							: 'Unknown',
-				};
-			}
-		});
+		const selectedDhtHash = this.store.activeDhtHash.get();
 		return html`
-			<vaadin-grid .items=${items} multi-sort>
+			<vaadin-grid
+				.items=${items}
+				.cellPartNameGenerator=${(root: any, model: any) =>
+					selectedDhtHash &&
+					encodeHashToBase64(selectedDhtHash) === model.item.actionHash
+						? 'selected'
+						: ''}
+			>
 				<vaadin-grid-sort-column
 					path="type"
 					header="Type"
@@ -102,24 +95,16 @@ export class ValidationQueue extends PlaygroundElement {
 					header="Basis"
 					width="5em"
 					.renderer=${(root: HTMLElement, _: any, model: any) => {
-						render(
-							html`<holo-identicon .hash=${model.item.basis}>
-							</holo-identicon>`,
-							root,
-						);
+						root.innerHTML = `<holo-identicon hash="${model.item.basis}"></holo-identicon>`;
 					}}
 				></vaadin-grid-column>
-				<vaadin-grid-column
-					header="ActionHash"
+				<vaadin-grid-sort-column
+					header="Action"
 					width="5em"
 					.renderer=${(root: HTMLElement, _: any, model: any) => {
-						render(
-							html`<holo-identicon .hash=${model.item.actionHash}>
-							</holo-identicon>`,
-							root,
-						);
+						root.innerHTML = `<holo-identicon hash="${model.item.actionHash}"></holo-identicon>`;
 					}}
-				></vaadin-grid-column>
+				></vaadin-grid-sort-column>
 				<vaadin-grid-sort-column
 					path="status"
 					header="Status"
@@ -128,6 +113,36 @@ export class ValidationQueue extends PlaygroundElement {
 				></vaadin-grid-sort-column>
 			</vaadin-grid>
 		`;
+	}
+
+	renderValidationLimbo(
+		ops: Array<{ op: DhtOp; status: ValidationLimboStatus | undefined }>,
+	) {
+		const items = ops.map(op => {
+			if ((op.op as { WarrantOp: WarrantOp }).WarrantOp) {
+				return {
+					type: 'Warrant',
+					basis: encodeHashToBase64(getDhtOpBasis(op.op)),
+					status:
+						op.status !== undefined
+							? getValidationLimboStatus(op.status)
+							: 'Unknown',
+				};
+			} else {
+				return {
+					type: Object.keys((op.op as { ChainOp: ChainOp }).ChainOp)[0],
+					basis: encodeHashToBase64(getDhtOpBasis(op.op)),
+					actionHash: encodeHashToBase64(
+						hashAction(getDhtOpAction((op.op as { ChainOp: ChainOp }).ChainOp)),
+					),
+					status:
+						op.status !== undefined
+							? getValidationLimboStatus(op.status)
+							: 'Unknown',
+				};
+			}
+		});
+		return this.renderGrid(items);
 	}
 
 	renderIntegrationLimbo(
@@ -137,15 +152,15 @@ export class ValidationQueue extends PlaygroundElement {
 			if ((op.op as { WarrantOp: WarrantOp }).WarrantOp) {
 				return {
 					type: 'Warrant',
-					basis: getDhtOpBasis(op.op),
+					basis: encodeHashToBase64(getDhtOpBasis(op.op)),
 					status: op.status ? getValidationStatus(op.status) : 'Unknown',
 				};
 			} else {
 				return {
 					type: Object.keys((op.op as { ChainOp: ChainOp }).ChainOp)[0],
-					basis: getDhtOpBasis(op.op),
-					actionHash: hashAction(
-						getDhtOpAction((op.op as { ChainOp: ChainOp }).ChainOp),
+					basis: encodeHashToBase64(getDhtOpBasis(op.op)),
+					actionHash: encodeHashToBase64(
+						hashAction(getDhtOpAction((op.op as { ChainOp: ChainOp }).ChainOp)),
 					),
 					status:
 						op.status !== undefined
@@ -154,44 +169,7 @@ export class ValidationQueue extends PlaygroundElement {
 				};
 			}
 		});
-		return html`
-			<vaadin-grid .items=${items} multi-sort>
-				<vaadin-grid-sort-column
-					path="type"
-					header="Type"
-					width="12em"
-					flex-grow="1"
-				></vaadin-grid-sort-column>
-				<vaadin-grid-column
-					header="Basis"
-					width="5em"
-					.renderer=${(root: HTMLElement, _: any, model: any) => {
-						render(
-							html`<holo-identicon .hash=${model.item.basis}>
-							</holo-identicon>`,
-							root,
-						);
-					}}
-				></vaadin-grid-column>
-				<vaadin-grid-column
-					header="ActionHash"
-					width="5em"
-					.renderer=${(root: HTMLElement, _: any, model: any) => {
-						render(
-							html`<holo-identicon .hash=${model.item.actionHash}>
-							</holo-identicon>`,
-							root,
-						);
-					}}
-				></vaadin-grid-column>
-				<vaadin-grid-sort-column
-					path="status"
-					header="Status"
-					width="8em"
-					.textAlign=${'center'}
-				></vaadin-grid-sort-column>
-			</vaadin-grid>
-		`;
+		return this.renderGrid(items);
 	}
 
 	renderIntegrated(
@@ -201,15 +179,15 @@ export class ValidationQueue extends PlaygroundElement {
 			if ((op.op as { WarrantOp: WarrantOp }).WarrantOp) {
 				return {
 					type: 'Warrant',
-					basis: getDhtOpBasis(op.op),
+					basis: encodeHashToBase64(getDhtOpBasis(op.op)),
 					status: op.status ? getValidationStatus(op.status) : 'Unknown',
 				};
 			} else {
 				return {
 					type: Object.keys((op.op as { ChainOp: ChainOp }).ChainOp)[0],
-					basis: getDhtOpBasis(op.op),
-					actionHash: hashAction(
-						getDhtOpAction((op.op as { ChainOp: ChainOp }).ChainOp),
+					basis: encodeHashToBase64(getDhtOpBasis(op.op)),
+					actionHash: encodeHashToBase64(
+						hashAction(getDhtOpAction((op.op as { ChainOp: ChainOp }).ChainOp)),
 					),
 					status:
 						op.status !== undefined
@@ -218,44 +196,7 @@ export class ValidationQueue extends PlaygroundElement {
 				};
 			}
 		});
-		return html`
-			<vaadin-grid .items=${items} multi-sort>
-				<vaadin-grid-sort-column
-					path="type"
-					header="Type"
-					width="12em"
-					flex-grow="1"
-				></vaadin-grid-sort-column>
-				<vaadin-grid-column
-					header="Basis"
-					width="5em"
-					.renderer=${(root: HTMLElement, _: any, model: any) => {
-						render(
-							html`<holo-identicon .hash=${model.item.basis}>
-							</holo-identicon>`,
-							root,
-						);
-					}}
-				></vaadin-grid-column>
-				<vaadin-grid-column
-					header="ActionHash"
-					width="5em"
-					.renderer=${(root: HTMLElement, _: any, model: any) => {
-						render(
-							html`<holo-identicon .hash=${model.item.actionHash}>
-							</holo-identicon>`,
-							root,
-						);
-					}}
-				></vaadin-grid-column>
-				<vaadin-grid-sort-column
-					path="status"
-					header="Status"
-					width="8em"
-					.textAlign=${'center'}
-				></vaadin-grid-sort-column>
-			</vaadin-grid>
-		`;
+		return this.renderGrid(items);
 	}
 
 	renderValidationQueue(activeCell: CellStore) {
@@ -283,14 +224,23 @@ export class ValidationQueue extends PlaygroundElement {
 			case 'completed':
 				return html`
 					<sl-tab-group>
-						<sl-tab style="flex: 1" slot="nav" panel="validation_limbo"
+						<sl-tab
+							style="flex: 1; text-align: center"
+							slot="nav"
+							panel="validation_limbo"
 							>Validation Limbo (${queue.value.validationLimbo.length})</sl-tab
 						>
-						<sl-tab style="flex: 1" slot="nav" panel="integration_limbo"
+						<sl-tab
+							style="flex: 1; text-align: center"
+							slot="nav"
+							panel="integration_limbo"
 							>Integration Limbo
 							(${queue.value.integrationLimbo.length})</sl-tab
 						>
-						<sl-tab style="flex: 1" slot="nav" panel="integrated"
+						<sl-tab
+							style="flex: 1; text-align: center"
+							slot="nav"
+							panel="integrated"
 							>Integrated (${queue.value.integrated.length})</sl-tab
 						>
 
@@ -375,6 +325,9 @@ export class ValidationQueue extends PlaygroundElement {
 				#source-chain-graph {
 					width: 100%;
 					height: 100%;
+				}
+				vaadin-grid::part(selected) {
+					background-color: #e1fa73;
 				}
 			`,
 		];

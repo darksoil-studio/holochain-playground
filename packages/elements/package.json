@@ -29,7 +29,7 @@
     "@tnesh-stack/elements": "^0.400.0",
     "@tnesh-stack/signals": "^0.400.0",
     "@tnesh-stack/utils": "^0.400.0",
-    "@vaadin/grid": "^23.5.11",
+    "@vaadin/grid": "^24.0.0",
     "cytoscape": "^3.30.4",
     "js-base64": "^3.7.7",
     "lit": "^3.2.1",
