@@ -348,8 +348,6 @@ export function mustGetAgentActivity(
 		};
 	}
 
-	// TODO: take into account all filter options
-
 	const activity: RegisterAgentActivity[] = [
 		{
 			action: chainTop,
@@ -360,6 +358,29 @@ export function mustGetAgentActivity(
 		const firstAction = activity[0].action.hashed.content;
 
 		const prevHash = (firstAction as { prev_action: ActionHash }).prev_action;
+
+		const takeFilters = filter.filters
+			.map(f => (f as { Take: number }).Take)
+			.filter(n => n !== undefined);
+		if (takeFilters.find(n => n >= activity.length)) return undefined;
+
+		const untilFilters = filter.filters
+			.map(f => (f as { Until: ActionHash[] }).Until)
+			.filter(n => n !== undefined);
+		if (untilFilters.find(hashes => hashes.find(h => areEqual(h, prevHash))))
+			return undefined;
+
+		const bothFilters = filter.filters
+			.map(f => (f as { Both: [number, ActionHash[]] }).Both)
+			.filter(n => n !== undefined);
+		if (
+			bothFilters.find(
+				([n, hashes]) =>
+					n >= activity.length || hashes.find(h => areEqual(h, prevHash)),
+			)
+		)
+			return undefined;
+
 		return prevHash;
 	};
 
