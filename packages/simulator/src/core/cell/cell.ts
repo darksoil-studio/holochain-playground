@@ -15,12 +15,16 @@ import { HoloHashMap } from '@tnesh-stack/utils';
 import { cloneDeep, isEqual, uniqWith } from 'lodash-es';
 
 import { MiddlewareExecutor } from '../../executor/middleware-executor.js';
-import { Dictionary, GetLinksOptions, GetOptions } from '../../types.js';
+import {
+	ChainQueryFilter,
+	Dictionary,
+	GetLinksOptions,
+	GetOptions,
+} from '../../types.js';
 import { Conductor } from '../conductor.js';
 import {
 	ActivityRequest,
 	AgentActivity,
-	ChainQueryFilter,
 } from '../hdk/host-fn/get_agent_activity.js';
 import { DhtArc } from '../network/dht_arc.js';
 import { GossipData } from '../network/gossip/types.js';

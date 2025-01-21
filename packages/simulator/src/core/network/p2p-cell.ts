@@ -13,7 +13,7 @@ import { isEqual } from 'lodash-es';
 
 import { MiddlewareExecutor } from '../../executor/middleware-executor.js';
 import { areEqual, location } from '../../processors/hash.js';
-import { GetLinksOptions, GetOptions } from '../../types.js';
+import { ChainQueryFilter, GetLinksOptions, GetOptions } from '../../types.js';
 import {
 	GetEntryResponse,
 	GetLinksResponse,
@@ -24,7 +24,6 @@ import { getSourceChainRecords } from '../cell/index.js';
 import {
 	ActivityRequest,
 	AgentActivity,
-	ChainQueryFilter,
 } from '../hdk/host-fn/get_agent_activity.js';
 import { Connection } from './connection.js';
 import { DhtArc } from './dht_arc.js';

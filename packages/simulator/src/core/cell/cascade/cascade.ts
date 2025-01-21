@@ -19,11 +19,15 @@ import {
 import { HashType, HoloHashMap, getHashType } from '@tnesh-stack/utils';
 
 import { areEqual } from '../../../processors/hash.js';
-import { GetLinksOptions, GetOptions, GetStrategy } from '../../../types.js';
+import {
+	ChainQueryFilter,
+	GetLinksOptions,
+	GetOptions,
+	GetStrategy,
+} from '../../../types.js';
 import {
 	ActivityRequest,
 	AgentActivity,
-	ChainQueryFilter,
 } from '../../hdk/host-fn/get_agent_activity.js';
 import { LinkDetails } from '../../hdk/host-fn/get_link_details.js';
 import { P2pCell } from '../../network/p2p-cell.js';

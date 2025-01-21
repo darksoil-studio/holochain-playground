@@ -7,12 +7,9 @@ import {
 	encodeHashToBase64,
 } from '@holochain/client';
 
-import { GetOptions, GetStrategy } from '../../../types.js';
+import { ChainQueryFilter, GetOptions, GetStrategy } from '../../../types.js';
 import { ChainStatus, HighestObserved } from '../../cell/state/metadata.js';
 import { HostFn, HostFnWorkspace } from '../host-fn.js';
-
-// TODO: implement
-export interface ChainQueryFilter {}
 
 // TODO: implement
 export interface ActivityRequest {}

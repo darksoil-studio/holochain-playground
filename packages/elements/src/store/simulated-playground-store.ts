@@ -6,7 +6,9 @@ import {
 	ConductorSignalType,
 	Dictionary,
 	InstalledHapp,
+	IntegrationLimboValue,
 	SimulatedHappBundle,
+	ValidationLimboStatus,
 	createConductors,
 	selectDhtShard,
 	selectSourceChain,
@@ -24,6 +26,7 @@ import {
 	Record,
 } from '@holochain/client';
 import { encode } from '@msgpack/msgpack';
+import { ValidationStatus } from '@tnesh-stack/core-types';
 import {
 	AsyncComputed,
 	AsyncSignal,
@@ -55,10 +58,41 @@ export class SimulatedCellStore implements CellStore {
 		value: this._peers.get(),
 	}));
 
-	private _dhtShard = new Signal.State<DhtOp[]>([]);
-	dhtShard: AsyncSignal<DhtOp[]> = new AsyncComputed(() => ({
+	dhtShard: AsyncSignal<Array<DhtOp>> = new AsyncComputed(() => {
+		const queue = this.validationQueue.get();
+		if (queue.status !== 'completed') return queue;
+
+		const value = queue.value.integrated
+			.filter(
+				op => true, // TODO: change when the conductor returns the validation status in dump full state
+			)
+			.map(op => op.op);
+		return {
+			status: 'completed',
+			value,
+		};
+	});
+	private _validationQueue = new Signal.State<{
+		integrationLimbo: Array<{
+			op: DhtOp;
+			status: ValidationStatus | undefined;
+		}>;
+		validationLimbo: Array<{
+			op: DhtOp;
+			status: ValidationLimboStatus | undefined;
+		}>;
+		integrated: Array<{
+			op: DhtOp;
+			status: ValidationStatus | undefined;
+		}>;
+	}>({
+		integrationLimbo: [],
+		validationLimbo: [],
+		integrated: [],
+	});
+	validationQueue = new AsyncComputed(() => ({
 		status: 'completed',
-		value: this._dhtShard.get(),
+		value: this._validationQueue.get(),
 	}));
 
 	badAgents = new Signal.State<AgentPubKey[]>([]);
@@ -88,7 +122,20 @@ export class SimulatedCellStore implements CellStore {
 
 		this._sourceChain.set(selectSourceChain(state));
 		this._peers.set(p2pstate.neighbors);
-		this._dhtShard.set(selectDhtShard(state));
+		this._validationQueue.set({
+			integrationLimbo: Array.from(state.integrationLimbo.values()).map(v => ({
+				op: v.op,
+				status: v.validation_status,
+			})),
+			validationLimbo: Array.from(state.validationLimbo.values()).map(v => ({
+				op: v.op,
+				status: v.status,
+			})),
+			integrated: Array.from(state.integratedDHTOps.values()).map(v => ({
+				op: v.op,
+				status: v.validation_status,
+			})),
+		});
 		this.badAgents.set(p2pstate.badAgents);
 		this.farPeers.set(p2pstate.farKnownPeers);
 	}

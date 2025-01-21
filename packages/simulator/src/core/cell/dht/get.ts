@@ -24,13 +24,13 @@ import {
 } from '@tnesh-stack/core-types';
 import { HoloHashMap, hashAction } from '@tnesh-stack/utils';
 import { HashType, hash } from '@tnesh-stack/utils';
-import { uniqWith } from 'lodash-es';
+import { isEqual, uniqWith } from 'lodash-es';
 
 import { areEqual } from '../../../processors/hash.js';
+import { ChainQueryFilter } from '../../../types.js';
 import {
 	ActivityRequest,
 	AgentActivity,
-	ChainQueryFilter,
 } from '../../hdk/host-fn/get_agent_activity.js';
 import { GetLinksResponse } from '../cascade/types.js';
 import {
@@ -311,7 +311,7 @@ export function getLinksForHash(
 export function getAgentActivity(
 	state: CellState,
 	agent: AgentPubKey,
-	query: ChainQueryFilter, // TODO: use this
+	filter: ChainQueryFilter, // TODO: use this
 	request: ActivityRequest,
 ): AgentActivity {
 	const miscMeta = state.metadata.misc_meta.get(agent);
@@ -319,7 +319,46 @@ export function getAgentActivity(
 	const status = (miscMeta as { ChainStatus: ChainStatus }).ChainStatus;
 
 	const activity = state.metadata.activity.get(agent) || [];
-	const valid_activity = activity.map((a, i) => [i, a] as [number, ActionHash]);
+
+	let actions: SignedActionHashed[] = activity.map(actionHash =>
+		state.CAS.get(actionHash),
+	);
+
+	if (filter.action_type) {
+		actions = actions.filter(action => {
+			const actionType = action.hashed.content.type;
+			return filter.action_type!.find(
+				wantedActionType => wantedActionType === actionType,
+			);
+		});
+	}
+
+	if (filter.entry_hashes) {
+		actions = actions.filter(action => {
+			const entryHash = (action.hashed.content as NewEntryAction).entry_hash;
+			if (!entryHash) return false;
+			return filter.entry_hashes!.find(wantedEntryHash =>
+				areEqual(wantedEntryHash, entryHash),
+			);
+		});
+	}
+
+	if (filter.entry_type) {
+		actions = actions.filter(action => {
+			const entryType = (action.hashed.content as NewEntryAction).entry_type;
+			if (!entryType) return false;
+			return filter.entry_type!.find(wantedEntryType =>
+				isEqual(wantedEntryType, entryType),
+			);
+		});
+	}
+
+	const valid_activity = actions.map(action => {
+		const content = action.hashed.content;
+		const sequenceNumber = (content as { action_seq: number }).action_seq || 0;
+
+		return [sequenceNumber, action.hashed.hash] as [number, ActionHash];
+	});
 
 	const highest_observed: HighestObserved | undefined =
 		valid_activity.length > 0

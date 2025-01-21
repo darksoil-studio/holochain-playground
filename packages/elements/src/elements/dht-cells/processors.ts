@@ -197,7 +197,7 @@ export function isHoldingEntry(dhtShard: DhtOp[], entryHash: EntryHash) {
 	return false;
 }
 
-export function isHoldingElement(dhtShard: DhtOp[], actionHash: ActionHash) {
+export function isHoldingRecord(dhtShard: DhtOp[], actionHash: ActionHash) {
 	for (const dhtOp of dhtShard) {
 		if (isWarrantOp(dhtOp)) {
 			continue;

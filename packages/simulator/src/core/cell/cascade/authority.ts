@@ -12,11 +12,14 @@ import {
 	Update,
 } from '@holochain/client';
 
-import { GetLinksOptions, GetOptions } from '../../../types.js';
+import {
+	ChainQueryFilter,
+	GetLinksOptions,
+	GetOptions,
+} from '../../../types.js';
 import {
 	ActivityRequest,
 	AgentActivity,
-	ChainQueryFilter,
 } from '../../hdk/host-fn/get_agent_activity.js';
 import { P2pCell } from '../../network/p2p-cell.js';
 import {
