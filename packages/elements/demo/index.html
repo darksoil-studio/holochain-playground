@@ -50,69 +50,6 @@
 
 			import '../src/index.ts';
 
-			const demoEntriesZome = {
-				name: 'demo_entries',
-				entry_defs: [
-					{
-						id: 'demo_entry',
-						visibility: 'Public',
-					},
-					{
-						id: 'invalid_entry',
-						visibility: 'Public',
-					},
-				],
-				zome_functions: {
-					create_entry: {
-						call:
-							({ create_entry }) =>
-							async ({ content }) => {
-								return create_entry({ content, entry_def_id: 'demo_entry' });
-							},
-						arguments: [{ name: 'content', type: 'any' }],
-					},
-					create_invalid_entry: {
-						call:
-							({ create_entry }) =>
-							async ({ content }) => {
-								return create_entry({ content, entry_def_id: 'invalid_entry' });
-							},
-						arguments: [{ name: 'content', type: 'any' }],
-					},
-				},
-				validation_functions: {
-					validate_create_entry_invalid_entry: hdk => async () => {
-						return { valid: false, resolved: true };
-					},
-				},
-			};
-
-			function demoDna(networkSeed = '') {
-				const zomes = [demoEntriesZome];
-				return {
-					properties: {},
-					networkSeed,
-					zomes,
-				};
-			}
-
-			function demoHapp() {
-				return {
-					name: 'demo-happ',
-					description: '',
-					roles: {
-						default: {
-							dna: demoDna(),
-							deferred: false,
-						},
-						default2: {
-							dna: demoDna('2'),
-							deferred: false,
-						},
-					},
-				};
-			}
-
 			const context = document.getElementById('context');
 			const dhtCells = document.querySelector('dht-cells');
 			dhtCells.networkRequestsToDisplay = [

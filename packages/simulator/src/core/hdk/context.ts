@@ -28,18 +28,32 @@ import {
 } from './host-fn/get_link_details.js';
 import { GetLinksFn, get_links } from './host-fn/get_links.js';
 import { HashEntryFn, hash_entry } from './host-fn/hash_entry.js';
+import { MustGetActionFn, must_get_action } from './host-fn/must_get_action.js';
+import {
+	MustGetAgentActivityFn,
+	must_get_agent_activity,
+} from './host-fn/must_get_agent_activity.js';
+import { MustGetEntryFn, must_get_entry } from './host-fn/must_get_entry.js';
+import {
+	MustGetValidRecordFn,
+	must_get_valid_record,
+} from './host-fn/must_get_valid_record.js';
 import { QueryFn, query } from './host-fn/query.js';
 import { SysTimeFn, sys_time } from './host-fn/sys_time.js';
 import { Path, ensure } from './path.js';
 
 export interface SimulatedValidateFunctionContext {
-	get: GetFn;
-	get_details: GetDetailsFn;
+	must_get_entry: MustGetEntryFn;
+	must_get_action: MustGetActionFn;
+	must_get_valid_record: MustGetValidRecordFn;
+	must_get_agent_activity: MustGetAgentActivityFn;
 	hash_entry: HashEntryFn;
-	get_links: GetLinksFn;
-	get_link_details: GetLinkDetailsFn;
 }
 export interface Hdk extends SimulatedValidateFunctionContext {
+	get: GetFn;
+	get_details: GetDetailsFn;
+	get_links: GetLinksFn;
+	get_link_details: GetLinkDetailsFn;
 	create_entry: CreateEntryFn;
 	delete_entry: DeleteEntryFn;
 	update_entry: UpdateEntryFn;
@@ -66,10 +80,10 @@ export function buildValidationFunctionContext(
 ): SimulatedValidateFunctionContext {
 	return {
 		hash_entry: hash_entry(workspace, zome_index),
-		get: get(workspace, zome_index),
-		get_details: get_details(workspace, zome_index),
-		get_links: get_links(workspace, zome_index),
-		get_link_details: get_link_details(workspace, zome_index),
+		must_get_entry: must_get_entry(workspace, zome_index),
+		must_get_action: must_get_action(workspace, zome_index),
+		must_get_valid_record: must_get_valid_record(workspace, zome_index),
+		must_get_agent_activity: must_get_agent_activity(workspace, zome_index),
 	};
 }
 
@@ -79,6 +93,10 @@ export function buildZomeFunctionContext(
 ): SimulatedZomeFunctionContext {
 	const hdk: Hdk = {
 		...buildValidationFunctionContext(workspace, zome_index),
+		get: get(workspace, zome_index),
+		get_details: get_details(workspace, zome_index),
+		get_links: get_links(workspace, zome_index),
+		get_link_details: get_link_details(workspace, zome_index),
 		create_entry: create_entry(workspace, zome_index),
 		delete_entry: delete_entry(workspace, zome_index),
 		update_entry: update_entry(workspace, zome_index),

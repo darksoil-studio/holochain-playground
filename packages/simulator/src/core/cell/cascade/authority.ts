@@ -8,6 +8,7 @@ import {
 	EntryType,
 	LinkType,
 	NewEntryAction,
+	RegisterAgentActivity,
 	SignedActionHashed,
 	Update,
 } from '@holochain/client';
@@ -21,14 +22,18 @@ import {
 	ActivityRequest,
 	AgentActivity,
 } from '../../hdk/host-fn/get_agent_activity.js';
+import { ChainFilter } from '../../hdk/host-fn/must_get_agent_activity.js';
 import { P2pCell } from '../../network/p2p-cell.js';
 import {
+	MustGetAgentActivityResponse,
 	getActionModifiers,
 	getActionsForEntry,
 	getAgentActivity,
 	getEntryDetails,
 	getLinksForHash,
+	mustGetAgentActivity,
 } from '../dht/get.js';
+import { DepsMissing } from '../index.js';
 import { CellState, ValidationStatus } from '../state.js';
 import {
 	GetEntryResponse,
@@ -119,5 +124,12 @@ export class Authority {
 		request: ActivityRequest,
 	): Promise<AgentActivity> {
 		return getAgentActivity(this.state, agent, query, request);
+	}
+
+	public async handle_must_get_agent_activity(
+		agent: AgentPubKey,
+		filter: ChainFilter,
+	): Promise<MustGetAgentActivityResponse> {
+		return mustGetAgentActivity(this.state, agent, filter);
 	}
 }

@@ -26,13 +26,17 @@ import {
 	ActivityRequest,
 	AgentActivity,
 } from '../hdk/host-fn/get_agent_activity.js';
+import { ChainFilter } from '../hdk/host-fn/must_get_agent_activity.js';
 import { DhtArc } from '../network/dht_arc.js';
 import { GossipData } from '../network/gossip/types.js';
 import { P2pCell } from '../network/p2p-cell.js';
 import { getBadAgents } from '../network/utils.js';
 import { Authority } from './cascade/authority.js';
 import { GetLinksResponse, GetResult } from './cascade/types.js';
-import { hasDhtOpBeenProcessed } from './dht/get.js';
+import {
+	MustGetAgentActivityResponse,
+	hasDhtOpBeenProcessed,
+} from './dht/get.js';
 import { putValidationReceipt } from './dht/put.js';
 import { CellState, query_dht_ops } from './state.js';
 import { getDhtOpBasis } from './utils.js';
@@ -200,6 +204,14 @@ export class Cell {
 	): Promise<AgentActivity> {
 		const authority = new Authority(this._state, this.p2p);
 		return authority.handle_get_agent_activity(agent, query, request);
+	}
+
+	public async handle_must_get_agent_activity(
+		agent: AgentPubKey,
+		filter: ChainFilter,
+	): Promise<MustGetAgentActivityResponse> {
+		const authority = new Authority(this._state, this.p2p);
+		return authority.handle_must_get_agent_activity(agent, filter);
 	}
 
 	public async handle_call_remote(

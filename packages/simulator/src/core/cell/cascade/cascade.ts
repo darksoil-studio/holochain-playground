@@ -8,7 +8,9 @@ import {
 	LinkType,
 	NewEntryAction,
 	Record,
+	RegisterAgentActivity,
 	SignedActionHashed,
+	WarrantOp,
 } from '@holochain/client';
 import {
 	Details,
@@ -30,6 +32,7 @@ import {
 	AgentActivity,
 } from '../../hdk/host-fn/get_agent_activity.js';
 import { LinkDetails } from '../../hdk/host-fn/get_link_details.js';
+import { ChainFilter } from '../../hdk/host-fn/must_get_agent_activity.js';
 import { P2pCell } from '../../network/p2p-cell.js';
 import { computeDhtStatus, getLiveLinks } from '../dht/get.js';
 import { CellState } from '../state.js';
@@ -274,6 +277,37 @@ export class Cascade {
 		const activities = await this.p2p.get_agent_activity(agent, query, request);
 		// TODO: merge agent activities
 		return activities[0];
+	}
+
+	public async dht_must_get_agent_activity(
+		agent: AgentPubKey,
+		filter: ChainFilter,
+	): Promise<Array<RegisterAgentActivity>> {
+		const activities = await this.p2p.must_get_agent_activity(agent, filter);
+		const succesful = activities.find(
+			a =>
+				(
+					a as {
+						Activity: {
+							activity: RegisterAgentActivity[];
+							warrants: WarrantOp[];
+						};
+					}
+				).Activity,
+		);
+		if (succesful) {
+			return (
+				succesful as {
+					Activity: {
+						activity: RegisterAgentActivity[];
+						warrants: WarrantOp[];
+					};
+				}
+			).Activity.activity;
+		}
+		throw new Error(
+			`Error getting agent activity: ${Object.keys(activities[0])[0]}`,
+		);
 	}
 
 	async getEntryDetails(

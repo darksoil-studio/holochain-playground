@@ -6,6 +6,7 @@ import {
 	DhtOp,
 	EntryHash,
 	LinkType,
+	RegisterAgentActivity,
 } from '@holochain/client';
 import { DhtOpHash } from '@tnesh-stack/core-types';
 import { HoloHashMap } from '@tnesh-stack/utils';
@@ -20,11 +21,15 @@ import {
 	GetRecordResponse,
 } from '../cell/cascade/types.js';
 import { Cell } from '../cell/cell.js';
-import { getSourceChainRecords } from '../cell/index.js';
+import {
+	MustGetAgentActivityResponse,
+	getSourceChainRecords,
+} from '../cell/index.js';
 import {
 	ActivityRequest,
 	AgentActivity,
 } from '../hdk/host-fn/get_agent_activity.js';
+import { ChainFilter } from '../hdk/host-fn/must_get_agent_activity.js';
 import { Connection } from './connection.js';
 import { DhtArc } from './dht_arc.js';
 import { SimpleBloomMod } from './gossip/bloom/index.js';
@@ -212,6 +217,26 @@ export class P2pCell {
 					NetworkRequestType.GET_REQUEST,
 					{ agent },
 					(cell: Cell) => cell.handle_get_agent_activity(agent, query, request),
+				),
+		);
+	}
+
+	async must_get_agent_activity(
+		agent: AgentPubKey,
+		filter: ChainFilter,
+	): Promise<Array<MustGetAgentActivityResponse>> {
+		return this.network.kitsune.rpc_multi(
+			this.cellId[0],
+			this.cellId[1],
+			agent,
+			1, // TODO: what about this?
+			this.badAgents,
+			(cell: Cell) =>
+				this._executeNetworkRequest(
+					cell,
+					NetworkRequestType.GET_REQUEST,
+					{ agent },
+					(cell: Cell) => cell.handle_must_get_agent_activity(agent, filter),
 				),
 		);
 	}

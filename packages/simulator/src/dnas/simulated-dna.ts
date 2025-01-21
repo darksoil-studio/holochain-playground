@@ -36,15 +36,7 @@ export interface SimulatedZome {
 	name: string;
 	entry_defs: Array<EntryDef>;
 	zome_functions: Dictionary<SimulatedZomeFunction>;
-	validation_functions: {
-		validate_create_agent?: (
-			context: SimulatedValidateFunctionContext,
-		) => (args: {
-			record: Record;
-			agent_pub_key: AgentPubKeyB64;
-			membrane_proof: any;
-		}) => Promise<ValidationOutcome>;
-	} & Dictionary<SimulatedValidateFunction>;
+	validate?: SimulatedValidateFunction;
 	blocklyCode?: string;
 }
 

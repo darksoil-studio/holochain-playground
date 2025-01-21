@@ -1,5 +1,9 @@
 import { Update } from '@holochain/client';
 
+import {
+	Op,
+	RegisterUpdate,
+} from '../core/cell/workflows/app_validation/types.js';
 import { areEqual } from '../processors/hash.js';
 import { GetStrategy } from '../types.js';
 import {
@@ -72,35 +76,29 @@ export const demoEntriesZome: SimulatedZome = {
 			arguments: [{ name: 'deletes_address', type: 'ActionHash' }],
 		},
 	},
-	validation_functions: {
-		validate_update_entry_demo_entry:
-			hdk =>
-			async ({ record }) => {
-				const update = record.signed_action.hashed.content as Update;
-				const updateAuthor = update.author;
+	validate: hdk => async (op: Op) => {
+		const registerUpdate = (op as { RegisterUpdate: RegisterUpdate })
+			.RegisterUpdate;
+		if (registerUpdate) {
+			const update = registerUpdate.update.hashed.content as Update;
+			const updateAuthor = update.author;
 
-				const originalAction = await hdk.get(update.original_action_address);
+			const originalAction = await hdk.must_get_action(
+				update.original_action_address,
+			);
 
-				if (!originalAction)
-					return {
-						resolved: false,
-						depsHashes: [update.original_action_address],
-					};
+			if (!areEqual(originalAction.hashed.content.author, updateAuthor)) {
+				return {
+					valid: false,
+					resolved: true,
+				};
+			}
+		}
 
-				if (
-					!areEqual(
-						originalAction.signed_action.hashed.content.author,
-						updateAuthor,
-					)
-				) {
-					return {
-						valid: false,
-						resolved: true,
-					};
-				}
-
-				return { valid: true, resolved: true };
-			},
+		return {
+			resolved: true,
+			valid: true,
+		};
 	},
 };
 
@@ -141,7 +139,6 @@ export const demoLinksZome: SimulatedZome = {
 			arguments: [{ name: 'create_link_hash', type: 'ActionHash' }],
 		},
 	},
-	validation_functions: {},
 };
 export const demoPathsZome: SimulatedZome = {
 	name: 'demo_paths',
@@ -169,7 +166,6 @@ export const demoPathsZome: SimulatedZome = {
 			],
 		},
 	},
-	validation_functions: {},
 };
 
 export const demoMigrationZome: SimulatedZome = {
@@ -207,7 +203,6 @@ export const demoMigrationZome: SimulatedZome = {
 			arguments: [{ name: 'new_target', type: 'DnaHash' }],
 		},
 	},
-	validation_functions: {},
 };
 
 export function demoDna(): SimulatedDna {

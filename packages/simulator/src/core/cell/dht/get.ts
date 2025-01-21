@@ -12,8 +12,10 @@ import {
 	Link,
 	LinkType,
 	NewEntryAction,
+	RegisterAgentActivity,
 	SignedActionHashed,
 	Update,
+	WarrantOp,
 	encodeHashToBase64,
 } from '@holochain/client';
 import {
@@ -32,7 +34,9 @@ import {
 	ActivityRequest,
 	AgentActivity,
 } from '../../hdk/host-fn/get_agent_activity.js';
+import { ChainFilter } from '../../hdk/host-fn/must_get_agent_activity.js';
 import { GetLinksResponse } from '../cascade/types.js';
+import { DepsMissing } from '../index.js';
 import {
 	CellState,
 	IntegratedDhtOpsValue,
@@ -47,6 +51,7 @@ import {
 	getSysMetaValActionHash,
 } from '../state/metadata.js';
 import { getDhtOpAction, getDhtOpType, isWarrantOp } from '../utils.js';
+import { MissingDependenciesError } from '../workflows/app_validation/types.js';
 
 export function getValidationLimboDhtOps(
 	state: CellState,
@@ -305,6 +310,78 @@ export function getLinksForHash(
 	return {
 		link_adds,
 		link_removes,
+	};
+}
+
+export type MustGetAgentActivityResponse =
+	| {
+			Activity: {
+				activity: Array<RegisterAgentActivity>;
+				warrants: Array<WarrantOp>;
+			};
+	  }
+	| {
+			IncompleteChain: void;
+	  }
+	| {
+			ChainTopNotFound: ActionHash;
+	  }
+	| {
+			EmptyRange: void;
+	  };
+
+export function mustGetAgentActivity(
+	state: CellState,
+	agent: AgentPubKey,
+	filter: ChainFilter,
+): MustGetAgentActivityResponse {
+	const agentActivity = state.metadata.activity.get(agent) || [];
+
+	const chainTop: SignedActionHashed = state.CAS.get(filter.chain_top);
+
+	if (
+		!agentActivity.find(actionHash => areEqual(actionHash, filter.chain_top)) ||
+		!chainTop
+	) {
+		return {
+			ChainTopNotFound: filter.chain_top,
+		};
+	}
+
+	// TODO: take into account all filter options
+
+	const activity: RegisterAgentActivity[] = [
+		{
+			action: chainTop,
+		},
+	];
+
+	const getNextActionHash = () => {
+		const firstAction = activity[0].action.hashed.content;
+
+		const prevHash = (firstAction as { prev_action: ActionHash }).prev_action;
+		return prevHash;
+	};
+
+	let nextActionHash: ActionHash | undefined = getNextActionHash();
+
+	while (nextActionHash) {
+		const action: SignedActionHashed = state.CAS.get(filter.chain_top);
+		if (!action)
+			return {
+				IncompleteChain: undefined,
+			};
+		activity.unshift({
+			action,
+		});
+		nextActionHash = getNextActionHash();
+	}
+
+	return {
+		Activity: {
+			activity,
+			warrants: [], // TODO: implement warrants
+		},
 	};
 }
 

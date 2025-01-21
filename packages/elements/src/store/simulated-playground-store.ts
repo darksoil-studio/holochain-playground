@@ -10,7 +10,6 @@ import {
 	SimulatedHappBundle,
 	ValidationLimboStatus,
 	createConductors,
-	selectDhtShard,
 	selectSourceChain,
 	simulatedRolesToCellInfo,
 } from '@holochain-playground/simulator';

@@ -1,6 +1,7 @@
 import {
 	ActionType,
 	AgentPubKey,
+	ChainOp,
 	NewEntryAction,
 	Record,
 	SignedActionHashed,
@@ -10,19 +11,13 @@ import { cloneDeep } from 'lodash-es';
 
 import { SimulatedZome } from '../../../dnas/simulated-dna.js';
 import { areEqual } from '../../../processors/hash.js';
-import { GetStrategy } from '../../../types.js';
 import { BadAgentConfig } from '../../bad-agent.js';
 import { buildZomeFunctionContext } from '../../hdk/context.js';
 import { HostFnWorkspace } from '../../hdk/host-fn.js';
 import { Cascade } from '../cascade/cascade.js';
 import { getTipOfChain, valid_cap_grant } from '../source-chain/utils.js';
-import { CellState } from '../state.js';
 import { ValidationOutcome } from '../sys_validate/types.js';
-import {
-	run_create_link_validation_callback,
-	run_delete_link_validation_callback,
-	run_validation_callback_direct,
-} from './app_validation.js';
+import { run_validation_callback_direct } from './app_validation.js';
 import { produce_dht_ops_task } from './produce_dht_ops.js';
 import { sys_validate_record } from './sys_validation.js';
 import { Workflow, WorkflowType, Workspace } from './workflows.js';
@@ -173,25 +168,5 @@ async function run_app_validation(
 	record: Record,
 	workspace: Workspace,
 ): Promise<ValidationOutcome> {
-	const action = record.signed_action.hashed.content;
-	if (action.type === ActionType.CreateLink) {
-		return run_create_link_validation_callback(zome, action, workspace);
-	} else if (action.type === ActionType.DeleteLink) {
-		return run_delete_link_validation_callback(zome, action, workspace);
-	} else if (
-		action.type === ActionType.Create ||
-		action.type === ActionType.Update ||
-		action.type === ActionType.Delete
-	) {
-		return run_validation_callback_direct(
-			zome,
-			workspace.dna,
-			record,
-			workspace,
-		);
-	}
-	return {
-		valid: true,
-		resolved: true,
-	};
+	return run_validation_callback_direct(zome, workspace.dna, record, workspace);
 }
