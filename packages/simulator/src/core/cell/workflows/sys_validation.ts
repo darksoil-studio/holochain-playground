@@ -76,8 +76,6 @@ export function sys_validation_task(): SysValidationWorkflow {
 	};
 }
 
-function validate_op() {}
-
 export async function sys_validate_record(
 	record: Record,
 	workspace: Workspace,

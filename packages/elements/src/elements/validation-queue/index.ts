@@ -34,6 +34,7 @@ import { PlaygroundElement } from '../../base/playground-element.js';
 import { CellStore } from '../../store/playground-store.js';
 import '../helpers/help-button.js';
 import { sharedStyles } from '../utils/shared-styles.js';
+import './vaadin-grid-template-renderer-column.js';
 
 function getValidationLimboStatus(status: ValidationLimboStatus): string {
 	switch (status) {
@@ -67,6 +68,18 @@ export class ValidationQueue extends PlaygroundElement {
 	@property({ type: Boolean, attribute: 'hide-header' })
 	hideHeader: boolean = false;
 
+	@property({ type: Boolean, attribute: 'hide-validation-limbo' })
+	hideValidationLimbo: boolean = false;
+
+	@property({ type: Boolean, attribute: 'hide-integration-limbo' })
+	hideIntegrationLimbo: boolean = false;
+
+	@property({ type: Boolean, attribute: 'hide-integrated' })
+	hideIntegrated: boolean = false;
+
+	@property({ type: Boolean, attribute: 'filter-basis-by-active-dht-hash' })
+	filterBasisByActiveDhtHash: boolean = false;
+
 	renderGrid(
 		items: Array<{
 			type: string;
@@ -76,14 +89,21 @@ export class ValidationQueue extends PlaygroundElement {
 		}>,
 	) {
 		const selectedDhtHash = this.store.activeDhtHash.get();
+		const hashB64 = selectedDhtHash
+			? encodeHashToBase64(selectedDhtHash)
+			: undefined;
+		const filteredItems = this.filterBasisByActiveDhtHash
+			? items.filter(i => i.basis === hashB64)
+			: items;
 		return html`
 			<vaadin-grid
-				.items=${items}
-				.cellPartNameGenerator=${(root: any, model: any) =>
-					selectedDhtHash &&
-					encodeHashToBase64(selectedDhtHash) === model.item.actionHash
-						? 'selected'
-						: ''}
+				.items=${filteredItems}
+				.cellPartNameGenerator=${(column: any, model: any) => {
+					if (this.filterBasisByActiveDhtHash) return '';
+					if (!hashB64) return '';
+					if (hashB64 === model.item.basis) return 'basis';
+					if (hashB64 === model.item.actionHash) return 'action';
+				}}
 			>
 				<vaadin-grid-sort-column
 					path="type"
@@ -91,20 +111,20 @@ export class ValidationQueue extends PlaygroundElement {
 					width="12em"
 					flex-grow="1"
 				></vaadin-grid-sort-column>
-				<vaadin-grid-column
+				<vaadin-grid-template-renderer-column
 					header="Basis"
 					width="5em"
-					.renderer=${(root: HTMLElement, _: any, model: any) => {
-						root.innerHTML = `<holo-identicon hash="${model.item.basis}"></holo-identicon>`;
-					}}
-				></vaadin-grid-column>
-				<vaadin-grid-sort-column
+					.getId=${(item: any) => `${item.type}${item.actionHash}`}
+					.templateRenderer=${(item: any) =>
+						html`<holo-identicon hash="${item.basis}"></holo-identicon>`}
+				></vaadin-grid-template-renderer-column>
+				<vaadin-grid-template-renderer-column
 					header="Action"
 					width="5em"
-					.renderer=${(root: HTMLElement, _: any, model: any) => {
-						root.innerHTML = `<holo-identicon hash="${model.item.actionHash}"></holo-identicon>`;
-					}}
-				></vaadin-grid-sort-column>
+					.getId=${(item: any) => `${item.type}${item.actionHash}`}
+					.templateRenderer=${(item: any) =>
+						html`<holo-identicon hash="${item.actionHash}"></holo-identicon>`}
+				></vaadin-grid-template-renderer-column>
 				<vaadin-grid-sort-column
 					path="status"
 					header="Status"
@@ -199,6 +219,70 @@ export class ValidationQueue extends PlaygroundElement {
 		return this.renderGrid(items);
 	}
 
+	renderTabs(
+		validationLimbo: Array<{
+			op: DhtOp;
+			status: ValidationLimboStatus | undefined;
+		}>,
+		integrationLimbo: Array<{
+			op: DhtOp;
+			status: ValidationStatus | undefined;
+		}>,
+		integrated: Array<{ op: DhtOp; status: ValidationStatus | undefined }>,
+	) {
+		if (this.hideIntegrationLimbo && this.hideIntegrated)
+			return this.renderValidationLimbo(validationLimbo);
+		if (this.hideValidationLimbo && this.hideIntegrationLimbo)
+			return this.renderIntegrated(integrated);
+		if (this.hideValidationLimbo && this.hideIntegrated)
+			return this.renderIntegrationLimbo(integrationLimbo);
+
+		return html`
+			<sl-tab-group>
+				${this.hideValidationLimbo
+					? html``
+					: html`
+							<sl-tab
+								style="flex: 1; text-align: center"
+								slot="nav"
+								panel="validation_limbo"
+								>Validation Limbo (${validationLimbo.length})</sl-tab
+							>
+						`}
+				${this.hideIntegrationLimbo
+					? html``
+					: html`
+							<sl-tab
+								style="flex: 1; text-align: center"
+								slot="nav"
+								panel="integration_limbo"
+								>Integration Limbo (${integrationLimbo.length})</sl-tab
+							>
+						`}
+				${this.hideIntegrated
+					? html``
+					: html`
+							<sl-tab
+								style="flex: 1; text-align: center"
+								slot="nav"
+								panel="integrated"
+								>Integrated (${integrated.length})</sl-tab
+							>
+						`}
+
+				<sl-tab-panel name="validation_limbo"
+					>${this.renderValidationLimbo(validationLimbo)}</sl-tab-panel
+				>
+				<sl-tab-panel name="integration_limbo"
+					>${this.renderIntegrationLimbo(integrationLimbo)}</sl-tab-panel
+				>
+				<sl-tab-panel name="integrated"
+					>${this.renderIntegrated(integrated)}</sl-tab-panel
+				>
+			</sl-tab-group>
+		`;
+	}
+
 	renderValidationQueue(activeCell: CellStore) {
 		const queue = activeCell.validationQueue.get();
 		switch (queue.status) {
@@ -222,43 +306,11 @@ export class ValidationQueue extends PlaygroundElement {
 					</div>
 				`;
 			case 'completed':
-				return html`
-					<sl-tab-group>
-						<sl-tab
-							style="flex: 1; text-align: center"
-							slot="nav"
-							panel="validation_limbo"
-							>Validation Limbo (${queue.value.validationLimbo.length})</sl-tab
-						>
-						<sl-tab
-							style="flex: 1; text-align: center"
-							slot="nav"
-							panel="integration_limbo"
-							>Integration Limbo
-							(${queue.value.integrationLimbo.length})</sl-tab
-						>
-						<sl-tab
-							style="flex: 1; text-align: center"
-							slot="nav"
-							panel="integrated"
-							>Integrated (${queue.value.integrated.length})</sl-tab
-						>
-
-						<sl-tab-panel name="validation_limbo"
-							>${this.renderValidationLimbo(
-								queue.value.validationLimbo,
-							)}</sl-tab-panel
-						>
-						<sl-tab-panel name="integration_limbo"
-							>${this.renderIntegrationLimbo(
-								queue.value.integrationLimbo,
-							)}</sl-tab-panel
-						>
-						<sl-tab-panel name="integrated"
-							>${this.renderIntegrated(queue.value.integrated)}</sl-tab-panel
-						>
-					</sl-tab-group>
-				`;
+				return this.renderTabs(
+					queue.value.validationLimbo,
+					queue.value.integrationLimbo,
+					queue.value.integrated,
+				);
 		}
 	}
 
@@ -326,8 +378,14 @@ export class ValidationQueue extends PlaygroundElement {
 					width: 100%;
 					height: 100%;
 				}
-				vaadin-grid::part(selected) {
-					background-color: #e1fa73;
+				vaadin-grid::part(basis) {
+					background-color: yellow;
+				}
+				vaadin-grid::part(action) {
+					background-color: lightgrey;
+				}
+				vaadin-grid::part(row) {
+					height: 46px;
 				}
 			`,
 		];

@@ -72,10 +72,9 @@ export function getChainOpBasis(dhtOp: ChainOp): AnyDhtHash {
 	const type = getDhtOpType(dhtOp);
 	const action = getDhtOpAction(dhtOp);
 
-	const actionHash = hashAction(action);
-
 	switch (type) {
 		case ChainOpType.StoreRecord:
+			const actionHash = hashAction(action);
 			return actionHash;
 		case ChainOpType.StoreEntry:
 			return (action as Create).entry_hash;
