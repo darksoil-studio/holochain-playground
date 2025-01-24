@@ -62,6 +62,7 @@ export const callZomeFn =
 			state: contextState,
 			dna: workspace.dna,
 			p2p: workspace.p2p,
+			conductor_handle: workspace.conductor_handle,
 		};
 		const zomeFnContext = buildZomeFunctionContext(hostFnWorkspace, zomeIndex);
 

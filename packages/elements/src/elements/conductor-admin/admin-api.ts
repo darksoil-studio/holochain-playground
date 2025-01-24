@@ -194,7 +194,7 @@ export function adminApi(
 			],
 			call: async args => {
 				try {
-					const cell = await conductorStore.conductor.cloneCell(
+					const cell = await conductorStore.conductor.createCloneCell(
 						args.installedAppId,
 						args.cellRole,
 						args.networkSeed,

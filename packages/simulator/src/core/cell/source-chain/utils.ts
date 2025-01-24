@@ -182,8 +182,7 @@ function isCapGrantValid(
 	)
 		return false;
 
-	if (CapAccessType.Unrestricted in capGrant.access) return true;
-	else if (
+	if (
 		(
 			capGrant.access as {
 				Assigned: { assignees: AgentPubKey[]; secret: CapSecret };
@@ -198,7 +197,13 @@ function isCapGrantValid(
 				};
 			}
 		).Assigned.assignees.find(a => areEqual(a, check_agent));
-	} else {
+	} else if (
+		(
+			capGrant.access as {
+				Transferable: { secret: CapSecret };
+			}
+		).Transferable
+	) {
 		return (
 			(
 				capGrant.access as {
@@ -206,6 +211,8 @@ function isCapGrantValid(
 				}
 			).Transferable.secret === check_secret
 		);
+	} else {
+		return true;
 	}
 }
 

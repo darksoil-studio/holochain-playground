@@ -30,15 +30,14 @@ export function simulatedRolesToCellInfo(
 				]
 			: [];
 
-		for (let i = 0; i < role.clones.length; i++) {
-			const clone = role.clones[i];
+		for (const [cloneName, clone] of Object.entries(role.clones)) {
 			cellInfo[roleName].push({
 				[CellType.Cloned]: {
 					cell_id: clone,
 					enabled: true,
 					original_dna_hash: role.base_cell_id[0],
 					dna_modifiers: mockDnaModifiers,
-					clone_id: `${roleName}.${i}`,
+					clone_id: cloneName,
 					name: roleName,
 				},
 			});

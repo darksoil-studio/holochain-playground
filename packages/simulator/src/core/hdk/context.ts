@@ -15,6 +15,7 @@ import { DeleteLinkFn, delete_link } from './host-fn/actions/delete_link.js';
 import { OpenChainFn, open_chain } from './host-fn/actions/open_chain.js';
 import { UpdateEntryFn, update_entry } from './host-fn/actions/update_entry.js';
 import { AgentInfoFn, agent_info } from './host-fn/agent_info.js';
+import { CallFn, call } from './host-fn/call.js';
 import { CallRemoteFn, call_remote } from './host-fn/call_remote.js';
 import { GetFn, get } from './host-fn/get.js';
 import {
@@ -61,6 +62,7 @@ export interface Hdk extends SimulatedValidateFunctionContext {
 	create_cap_grant: CreateCapGrantFn;
 	delete_cap_grant: DeleteCapGrantFn;
 	delete_link: DeleteLinkFn;
+	call: CallFn;
 	call_remote: CallRemoteFn;
 	agent_info: AgentInfoFn;
 	query: QueryFn;
@@ -105,6 +107,7 @@ export function buildZomeFunctionContext(
 		create_cap_grant: create_cap_grant(workspace, zome_index),
 		delete_cap_grant: delete_cap_grant(workspace, zome_index),
 		call_remote: call_remote(workspace, zome_index),
+		call: call(workspace, zome_index),
 		agent_info: agent_info(workspace, zome_index),
 		query: query(workspace, zome_index),
 		open_chain: open_chain(workspace, zome_index),

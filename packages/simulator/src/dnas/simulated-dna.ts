@@ -59,7 +59,7 @@ export interface SimulatedHappBundle {
 export interface AppRole {
 	base_cell_id: CellId;
 	is_provisioned: boolean;
-	clones: CellId[];
+	clones: Dictionary<CellId>;
 }
 
 export interface InstalledHapp {

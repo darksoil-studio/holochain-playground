@@ -1,4 +1,10 @@
-import { AgentPubKey, CapSecret, CellId, DnaHash } from '@holochain/client';
+import {
+	AgentPubKey,
+	CapSecret,
+	CellId,
+	DnaHash,
+	encodeHashToBase64,
+} from '@holochain/client';
 import { CellMap, HashType, HoloHashMap, hash } from '@tnesh-stack/utils';
 import isEqual from 'lodash-es/isEqual.js';
 
@@ -143,7 +149,7 @@ export class Conductor {
     return templateHash;
   } */
 
-	async cloneCell(
+	async createCloneCell(
 		installedAppId: string,
 		cellRole: string,
 		networkSeed?: string,
@@ -186,10 +192,17 @@ export class Conductor {
 			installedApp.agent_pub_key,
 			membraneProof,
 		);
-		this.installedHapps[installedAppId].roles[cellRole].clones.push(
-			cell.cellId,
-		);
 
+		const cloneId = Object.keys(
+			this.installedHapps[installedAppId].roles[cellRole].clones,
+		)
+			.map(cloneName => parseInt(cloneName.split('.')[1]))
+			.sort((a, b) => b - a)[0];
+
+		const cloneName = `${cellRole}.${cloneId !== undefined ? cloneId : 0}`;
+
+		this.installedHapps[installedAppId].roles[cellRole].clones[cloneName] =
+			cell.cellId;
 		return cell;
 	}
 
@@ -226,7 +239,7 @@ export class Conductor {
 			this.installedHapps[happ.name].roles[cellRole] = {
 				base_cell_id: [dnaHash, agentId],
 				is_provisioned: !dna.deferred,
-				clones: [],
+				clones: {},
 			};
 
 			if (!dna.deferred) {
@@ -250,7 +263,7 @@ export class Conductor {
 				}
 			}
 
-			for (const cloneCell of appRole.clones) {
+			for (const [cloneName, cloneCell] of Object.entries(appRole.clones)) {
 				const cell = this.cells.get(cloneCell);
 				if (cell) {
 					await cell.shutdown();
@@ -293,7 +306,9 @@ export class Conductor {
 		const cell = this.cells.get(args.cellId);
 
 		if (!cell)
-			throw new Error(`No cells existst with cellId ${dnaHash}:${agentPubKey}`);
+			throw new Error(
+				`No cells exists with cellId ${encodeHashToBase64(dnaHash)}:${encodeHashToBase64(agentPubKey)}`,
+			);
 
 		return cell.callZomeFn({
 			zome: args.zome,

@@ -121,7 +121,9 @@ export const app_validation = async (
 
 	let triggers = [integrate_dht_ops_task()];
 
-	if (!workComplete) triggers.push(app_validation_task());
+	if (!workComplete) {
+		triggers.push(app_validation_task());
+	}
 
 	return {
 		result: undefined,
@@ -417,6 +419,7 @@ async function invoke_validation_fns(
 		state: workspace.state,
 		dna: workspace.dna,
 		p2p: workspace.p2p,
+		conductor_handle: workspace.conductor_handle,
 	};
 
 	for (const zome of zomes_to_invoke) {

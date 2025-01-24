@@ -378,6 +378,7 @@ export class Cell {
 		}
 
 		return {
+			conductor_handle: this.conductor,
 			state: this._state,
 			p2p: this.p2p,
 			dna,
