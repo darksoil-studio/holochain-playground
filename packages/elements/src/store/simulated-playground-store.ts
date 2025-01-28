@@ -189,7 +189,10 @@ export class SimulatedConductorStore
 						agent_pub_key: h.agent_pub_key,
 						installed_app_id: h.app_id,
 						status: 'running',
-						cell_info: simulatedRolesToCellInfo(h.roles),
+						cell_info: simulatedRolesToCellInfo(
+							h.roles,
+							this.conductor.registeredDnas,
+						),
 					}) as AppInfo,
 			);
 		});

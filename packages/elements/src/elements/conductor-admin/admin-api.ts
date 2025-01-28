@@ -93,7 +93,7 @@ export function adminApi(
 			call: async args => {
 				const happ = args['hAppId'];
 
-				await conductorStore.conductor.installHapp(
+				await conductorStore.conductor.installApp(
 					happ,
 					args['membraneProofs'] || {},
 				);

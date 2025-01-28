@@ -24,8 +24,10 @@ export class VaadinGridTemplateRendererColumn extends mixin(
 			render(this.templateRenderer(model.item), div);
 			this.instances[id] = div;
 		}
-		root.innerHTML = '';
-		root.appendChild(this.instances[id]);
+		if (root.firstChild !== this.instances[id]) {
+			root.innerHTML = '';
+			root.appendChild(this.instances[id]);
+		}
 	};
 
 	instances: { [key: string]: HTMLElement } = {};

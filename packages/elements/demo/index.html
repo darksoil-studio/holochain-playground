@@ -27,8 +27,7 @@
 				<sl-button>Remove Agent</sl-button>
 				<select-active-dna> </select-active-dna>
 				<div style="display: flex; flex-direction: row; flex: 1">
-					<entry-contents style="flex: 1"></entry-contents>
-					<validation-queue style="flex: 1"></validation-queue>
+					<conductor-happs style="flex: 1"></conductor-happs>
 				</div>
 			</div>
 			<div style="display: flex; flex-direction: column; flex: 1">
@@ -87,7 +86,7 @@
 
 				if (!cellStore) return;
 
-				cellStore.value.conductorStore.conductor.uninstallHapp('demo-happ');
+				cellStore.value.conductorStore.conductor.uninstallApp('demo-happ');
 			});
 		</script>
 	</body>

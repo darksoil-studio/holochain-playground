@@ -228,6 +228,14 @@ export function demoHapp(): SimulatedHappBundle {
 				dna: demoDna(),
 				deferred: false,
 			},
+			deiault: {
+				dna: {
+					zomes: demoDna().zomes,
+					networkSeed: 'a',
+					properties: {},
+				},
+				deferred: false,
+			},
 		},
 	};
 }

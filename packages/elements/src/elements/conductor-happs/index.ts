@@ -2,9 +2,13 @@ import '@alenaksu/json-viewer';
 import {
 	CellInfo,
 	CellType,
+	DnaHash,
+	DnaHashB64,
 	InstalledAppInfoStatus,
+	decodeHashFromBase64,
 	encodeHashToBase64,
 } from '@holochain/client';
+import { decode } from '@msgpack/msgpack';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/details/details.js';
@@ -16,8 +20,10 @@ import '@shoelace-style/shoelace/dist/components/tab/tab.js';
 import '@shoelace-style/shoelace/dist/components/tag/tag.js';
 import '@tnesh-stack/elements/dist/elements/holo-identicon.js';
 import { AsyncComputed } from '@tnesh-stack/signals';
+import '@vaadin/grid';
+import '@vaadin/grid/vaadin-grid-column.js';
 import { PropertyValues, css, html } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { join } from 'lit/directives/join.js';
 
 import { PlaygroundElement } from '../../base/playground-element.js';
@@ -31,13 +37,21 @@ import {
 	SimulatedConductorStore,
 	SimulatedPlaygroundStore,
 } from '../../store/simulated-playground-store.js';
-import { cellCount, cellName, dnaHash } from '../../utils.js';
+import { cellCount, cellName, dnaHash, dnaModifiers } from '../../utils.js';
 import '../helpers/call-functions.js';
 import '../helpers/help-button.js';
+import { shortenStrRec } from '../utils/hash.js';
 import { sharedStyles } from '../utils/shared-styles.js';
+import '../validation-queue/vaadin-grid-template-renderer-column.js';
 
 @customElement('conductor-happs')
 export class ConductorHapps extends PlaygroundElement {
+	@property({ type: Boolean, attribute: 'hide-header' })
+	hideHeader: boolean = false;
+
+	@property({ type: Boolean, attribute: 'hide-dna-modifiers' })
+	hideDnaModifiers: boolean = false;
+
 	_activeConductor = new AsyncComputed(() => {
 		const activeCell = this.store.activeCell.get();
 		if (activeCell.status !== 'completed') return activeCell;
@@ -85,58 +99,80 @@ export class ConductorHapps extends PlaygroundElement {
 		}
 	}
 
-	renderCell(cellInfo: CellInfo) {
-		const activeDna = this.store.activeDna.get();
-		const cellDnaHash = dnaHash(cellInfo);
-		const name = cellName(cellInfo);
-		const isActive =
-			activeDna &&
-			encodeHashToBase64(activeDna) === encodeHashToBase64(cellDnaHash);
-
-		return html`<div
-			class="row"
-			style="gap: 16px; align-items: center; height: 40px"
-		>
-			<div class="row" style="align-items: center">
-				<span class="placeholder">Role:&nbsp;</span>
-				<span>${name}</span>
-			</div>
-			<span style="flex: 1"> </span>
-
-			<div class="row" style="gap: 8px; align-items: center">
-				<span class="placeholder">Dna Hash:</span>
-				<holo-identicon
-					.hash=${cellDnaHash}
-					style="height: 32px"
-				></holo-identicon>
-			</div>
-
-			${isActive
-				? html`<sl-tag variant="primary">Active Dna</sl-tag>`
-				: html`
-						<sl-button
-							variant="primary"
-							@click=${() => {
-								this.store.activeDna.set(cellDnaHash);
-							}}
-							>Select
-						</sl-button>
-					`}
-		</div>`;
-	}
-
 	renderCells(cells: Record<string, CellInfo[]>) {
+		const cellInfos = ([] as CellInfo[]).concat(...Object.values(cells));
+		const activeDna = this.store.activeDna.get();
+		const items = cellInfos.map(cellInfo => ({
+			role: cellName(cellInfo),
+			dnaHash: encodeHashToBase64(dnaHash(cellInfo)),
+			networkSeed: dnaModifiers(cellInfo).network_seed,
+			properties: decode(dnaModifiers(cellInfo).properties),
+			isActive:
+				activeDna &&
+				encodeHashToBase64(activeDna) === encodeHashToBase64(dnaHash(cellInfo)),
+		}));
 		return html`
-			<div class="column">
-				${join(
-					Object.values(cells)
-						.filter(cellInfos => cellInfos.length > 0)
-						.map(cellInfos =>
-							cellInfos.map(cellInfo => this.renderCell(cellInfo)),
-						),
-					html`<sl-divider></sl-divider>`,
-				)}
-			</div>
+			<vaadin-grid .items=${items} .allRowsVisible=${true}>
+				<vaadin-grid-sort-column
+					path="role"
+					header="Role"
+					width="12em"
+					flex-grow="0"
+				></vaadin-grid-sort-column>
+				${this.hideDnaModifiers
+					? html``
+					: html`
+							<vaadin-grid-column
+								path="networkSeed"
+								header="Net.Seed"
+								flex-grow="0"
+							></vaadin-grid-column>
+							<vaadin-grid-template-renderer-column
+								header="Properties"
+								flex-grow="1"
+								.getId=${(item: any) => `${item.dnaHash}`}
+								.templateRenderer=${(item: any) => html`
+									<json-viewer .data=${shortenStrRec(item.properties)}>
+									</json-viewer>
+								`}
+							></vaadin-grid-template-renderer-column>
+						`}
+				<vaadin-grid-template-renderer-column
+					header="DNA Hash"
+					flex-grow="0"
+					.getId=${(item: any) => item.dnaHash}
+					.templateRenderer=${(item: any) =>
+						html`<div
+							style="display: flex; flex-direction: row; align-items: center; justify-content: center"
+						>
+							<holo-identicon hash="${item.dnaHash}"></holo-identicon>
+						</div>`}
+				></vaadin-grid-template-renderer-column>
+				<vaadin-grid-template-renderer-column
+					.autoWidth=${true}
+					flex-grow="0"
+					.getId=${(item: any) => `${item.isActive}${item.dnaHash}`}
+					.templateRenderer=${(item: any) =>
+						item.isActive
+							? html`
+									<sl-button disabled style="width: 6em" variant="primary"
+										>Active Dna
+									</sl-button>
+								`
+							: html`
+									<sl-button
+										style="width: 6em"
+										variant="primary"
+										@click=${() => {
+											this.store.activeDna.set(
+												decodeHashFromBase64(item.dnaHash),
+											);
+										}}
+										>Select
+									</sl-button>
+								`}
+				></vaadin-grid-template-renderer-column>
+			</vaadin-grid>
 		`;
 	}
 
@@ -257,9 +293,13 @@ export class ConductorHapps extends PlaygroundElement {
 			css`
 				:host {
 					display: flex;
+					min-height: 300px;
 				}
 				.bottom-border {
 					border-bottom: 1px solid lightgrey;
+				}
+				sl-details::part(content) {
+					padding: 0;
 				}
 			`,
 		];

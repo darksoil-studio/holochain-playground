@@ -47,7 +47,7 @@ export interface SimulatedDna {
 }
 
 export interface SimulatedDnaRole {
-	dna: SimulatedDna | DnaHash;
+	dna: SimulatedDna;
 	deferred: boolean;
 }
 export interface SimulatedHappBundle {
@@ -59,7 +59,11 @@ export interface SimulatedHappBundle {
 export interface AppRole {
 	base_cell_id: CellId;
 	is_provisioned: boolean;
-	clones: Dictionary<CellId>;
+	clones: Dictionary<{
+		cell_id: CellId;
+		network_seed: string;
+		properties: any;
+	}>;
 }
 
 export interface InstalledHapp {

@@ -4,6 +4,7 @@ import {
 	CellInfo,
 	CellType,
 	DnaHash,
+	DnaModifiers,
 } from '@holochain/client';
 
 export function cellCount(appInfo: AppInfo): number {
@@ -30,5 +31,15 @@ export function cellName(cellInfo: CellInfo): string {
 		return cellInfo[CellType.Cloned].name;
 	} else {
 		return cellInfo[CellType.Stem].name!;
+	}
+}
+
+export function dnaModifiers(cellInfo: CellInfo): DnaModifiers {
+	if (CellType.Provisioned in cellInfo) {
+		return cellInfo[CellType.Provisioned].dna_modifiers;
+	} else if (CellType.Cloned in cellInfo) {
+		return cellInfo[CellType.Cloned].dna_modifiers;
+	} else {
+		return cellInfo[CellType.Stem].dna_modifiers!;
 	}
 }
