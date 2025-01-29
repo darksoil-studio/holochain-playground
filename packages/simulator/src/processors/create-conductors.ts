@@ -13,6 +13,20 @@ export async function createConductors(
 	currentConductors: Conductor[],
 	happ: SimulatedHappBundle,
 ): Promise<Conductor[]> {
+	const newConductors = await createConductorsWithoutHapp(
+		conductorsToCreate,
+		currentConductors,
+	);
+
+	await Promise.all(newConductors.map(async c => c.installApp(happ, {})));
+
+	return newConductors;
+}
+
+export async function createConductorsWithoutHapp(
+	conductorsToCreate: number,
+	currentConductors: Conductor[],
+): Promise<Conductor[]> {
 	const bootstrapService =
 		currentConductors.length === 0
 			? new BootstrapService()
@@ -27,9 +41,5 @@ export async function createConductors(
 
 	const newConductors = await Promise.all(newConductorsPromises);
 
-	const allConductors = [...currentConductors, ...newConductors];
-
-	await Promise.all(allConductors.map(async c => c.installApp(happ, {})));
-
-	return allConductors;
+	return newConductors;
 }

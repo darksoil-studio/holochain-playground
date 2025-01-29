@@ -286,7 +286,6 @@ export abstract class PlaygroundStore<
 		const activeDna = this.activeDna.get();
 		const allCells = this.allCells.get();
 		if (allCells.status !== 'completed') return allCells;
-
 		const map = new CellMap<CellStoreForConductorStore<T>>();
 
 		for (const [cellId, value] of allCells.value.entries()) {

@@ -10,6 +10,7 @@ import {
 	SimulatedHappBundle,
 	ValidationLimboStatus,
 	createConductors,
+	createConductorsWithoutHapp,
 	selectSourceChain,
 	simulatedRolesToCellInfo,
 } from '@holochain-playground/simulator';
@@ -256,7 +257,7 @@ export class SimulatedPlaygroundStore extends PlaygroundStore<SimulatedConductor
 
 	constructor(
 		initialConductors: Conductor[],
-		initialHapp: SimulatedHappBundle,
+		protected initialHapp: SimulatedHappBundle,
 	) {
 		super();
 		this.conductors = new Signal.State(
@@ -279,5 +280,18 @@ export class SimulatedPlaygroundStore extends PlaygroundStore<SimulatedConductor
 		);
 
 		return new SimulatedPlaygroundStore(initialConductors, simulatedHapp);
+	}
+
+	async createConductors(conductorsToCreate: number) {
+		const conductors = this.conductors.get();
+		const newConductors = await createConductorsWithoutHapp(
+			conductorsToCreate,
+			conductors.map(c => c.conductor),
+		);
+		const newConductorsStores = newConductors.map(
+			c => new SimulatedConductorStore(c),
+		);
+		this.conductors.set([...conductors, ...newConductorsStores]);
+		return newConductorsStores;
 	}
 }

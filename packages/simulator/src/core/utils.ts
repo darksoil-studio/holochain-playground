@@ -39,12 +39,12 @@ export function simulatedRolesToCellInfo(
 		for (const [cloneName, clone] of Object.entries(role.clones)) {
 			cellInfo[roleName].push({
 				[CellType.Cloned]: {
-					cell_id: clone.cell_id,
+					cell_id: clone,
 					enabled: true,
 					original_dna_hash: role.base_cell_id[0],
 					dna_modifiers: {
-						network_seed: clone.network_seed,
-						properties: encode(clone.properties),
+						network_seed: registeredDnas.get(clone[0]).networkSeed,
+						properties: encode(registeredDnas.get(clone[0]).properties),
 						origin_time,
 						quantum_time,
 					},

@@ -44,6 +44,7 @@
 				GetStrategy,
 				NetworkRequestType,
 				WorkflowType,
+				demoHapp,
 			} from '@holochain-playground/simulator';
 			import { html, render } from 'lit';
 
@@ -54,7 +55,14 @@
 			dhtCells.networkRequestsToDisplay = [
 				...dhtCells.networkRequestsToDisplay,
 				'Get Request',
+				'Connect',
 			];
+
+			setTimeout(async () => {
+				const [conductor] = await context.store.createConductors(1);
+
+				await conductor.conductor.installApp(demoHapp(), {});
+			}, 5000);
 
 			// context.urls = ['ws://localhost:38023'];
 			context.addEventListener('playground-ready', e => {
@@ -70,6 +78,9 @@
 
 				const conductors = store.conductors.get();
 				const conductorStore = conductors[0];
+				conductorStore.conductor.createCloneCell('demo-happ', 'default', 'hi', {
+					members: [],
+				});
 
 				//	conductorStore.conductor.setBadAgent({
 				//		disable_validation_before_publish: true,

@@ -36,7 +36,7 @@ export function getAuthor(cellState: CellState): AgentPubKey {
 }
 
 export function getDnaHash(state: CellState): DnaHash {
-	const firstActionHash = state.sourceChain[state.sourceChain.length - 1];
+	const firstActionHash = state.sourceChain[0];
 
 	const dna: SignedActionHashed<Dna> = state.CAS.get(firstActionHash);
 	return dna.hashed.content.hash;

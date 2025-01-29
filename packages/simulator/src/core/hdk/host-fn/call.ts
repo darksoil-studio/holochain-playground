@@ -39,7 +39,7 @@ function getCellId(
 
 		if (isClone) {
 			const roleWithoutClone = role.split('.')[0];
-			return happ.roles[roleWithoutClone].clones[role].cell_id;
+			return happ.roles[roleWithoutClone].clones[role];
 		} else {
 			return happ.roles[role].base_cell_id;
 		}

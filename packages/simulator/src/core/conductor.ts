@@ -202,11 +202,8 @@ export class Conductor {
 
 		const cloneName = `${cellRole}.${cloneId !== undefined ? cloneId : 0}`;
 
-		this.installedHapps[installedAppId].roles[cellRole].clones[cloneName] = {
-			cell_id: cell.cellId,
-			network_seed: networkSeed,
-			properties,
-		};
+		this.installedHapps[installedAppId].roles[cellRole].clones[cloneName] =
+			cell.cellId;
 		return cell;
 	}
 
@@ -269,10 +266,10 @@ export class Conductor {
 			}
 
 			for (const [cloneName, cloneCell] of Object.entries(appRole.clones)) {
-				const cell = this.cells.get(cloneCell.cell_id);
+				const cell = this.cells.get(cloneCell);
 				if (cell) {
 					await cell.shutdown();
-					this.cells.delete(cloneCell.cell_id);
+					this.cells.delete(cloneCell);
 				}
 			}
 		}
@@ -302,6 +299,8 @@ export class Conductor {
 		this.cells.set(cellId, cell);
 
 		this.emit(ConductorSignalType.CellsChanged);
+
+		await cell.p2p.join(cell);
 
 		return cell;
 	}

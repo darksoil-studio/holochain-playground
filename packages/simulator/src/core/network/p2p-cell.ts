@@ -7,11 +7,13 @@ import {
 	EntryHash,
 	LinkType,
 	RegisterAgentActivity,
+	encodeHashToBase64,
 } from '@holochain/client';
 import { DhtOpHash } from '@tnesh-stack/core-types';
 import { HoloHashMap } from '@tnesh-stack/utils';
 import { isEqual } from 'lodash-es';
 
+import { sleep } from '../../executor/delay-middleware.js';
 import { MiddlewareExecutor } from '../../executor/middleware-executor.js';
 import { areEqual, location } from '../../processors/hash.js';
 import { ChainQueryFilter, GetLinksOptions, GetOptions } from '../../types.js';
@@ -110,12 +112,17 @@ export class P2pCell {
 	}
 
 	/** P2p actions */
-
+	joining!: Promise<void>;
+	joined = false;
 	async join(containerCell: Cell): Promise<void> {
-		this.network.bootstrapService.announceCell(this.cellId, containerCell);
-		this._gossipLoop = new SimpleBloomMod(this);
-
-		await this.syncNeighbors();
+		this.joining = new Promise(async resolve => {
+			this._gossipLoop = new SimpleBloomMod(this);
+			this.network.bootstrapService.announceCell(this.cellId, containerCell);
+			await this.syncNeighbors();
+			resolve();
+		});
+		await this.joining;
+		this.joined = true;
 	}
 
 	async leave(): Promise<void> {
@@ -140,6 +147,7 @@ export class P2pCell {
 		dht_hash: AnyDhtHash,
 		ops: HoloHashMap<DhtOpHash, DhtOp>,
 	): Promise<void> {
+		await this.joining;
 		await this.network.kitsune.rpc_multi(
 			this.cellId[0],
 			this.cellId[1],
@@ -311,24 +319,39 @@ export class P2pCell {
 		this.syncNeighbors();
 	}
 
+	connecting: HoloHashMap<AgentPubKey, Promise<void>> = new HoloHashMap();
+
 	async openNeighborConnection(withPeer: Cell): Promise<Connection> {
 		if (!this.neighborConnections.has(withPeer.agentPubKey)) {
-			// Try to connect: can fail due to validation
-			await this._executeNetworkRequest(
-				withPeer,
-				NetworkRequestType.CONNECT,
-				{},
-				peer =>
-					Promise.all([
-						this.check_agent_valid(withPeer),
-						withPeer.p2p.check_agent_valid(this.cell),
-					]),
-			);
+			if (this.connecting.has(withPeer.agentPubKey)) {
+				await this.connecting.get(withPeer.agentPubKey);
+			} else if (withPeer.p2p.connecting.has(this.cellId[1])) {
+				await withPeer.p2p.connecting.get(withPeer.agentPubKey);
+			} else {
+				const connectTask = async () => {
+					// Try to connect: can fail due to validation
+					await this._executeNetworkRequest(
+						withPeer,
+						NetworkRequestType.CONNECT,
+						{},
+						peer =>
+							Promise.all([
+								this.check_agent_valid(withPeer),
+								withPeer.p2p.check_agent_valid(this.cell),
+							]),
+					);
 
-			const connection = await this.connectWith(withPeer);
-			this.neighborConnections.set(withPeer.agentPubKey, connection);
+					const connection = await this.connectWith(withPeer);
+					this.neighborConnections.set(withPeer.agentPubKey, connection);
 
-			withPeer.p2p.handleOpenNeighborConnection(this.cell, connection);
+					withPeer.p2p.handleOpenNeighborConnection(this.cell, connection);
+				};
+
+				const promise = connectTask();
+				this.connecting.set(withPeer.agentPubKey, promise);
+				await promise;
+				this.connecting.delete(withPeer.agentPubKey);
+			}
 		}
 		return this.neighborConnections.get(withPeer.agentPubKey) as Connection;
 	}
@@ -367,7 +390,18 @@ export class P2pCell {
 
 		const neighbors = this.network.bootstrapService
 			.getNeighborhood(dnaHash, myPubKey, this.neighborNumber, badAgents)
-			.filter(cell => !areEqual(cell.agentPubKey, myPubKey));
+			.filter(cell => !areEqual(cell.agentPubKey, myPubKey))
+			.filter(neighbor => {
+				const theirNeighborhood = this.network.bootstrapService.getNeighborhood(
+					dnaHash,
+					neighbor.agentPubKey,
+					this.neighborNumber,
+					badAgents,
+				);
+				return theirNeighborhood.find(cell =>
+					areEqual(cell.agentPubKey, myPubKey),
+				);
+			});
 
 		this.farKnownPeers = this.network.bootstrapService
 			.getFarKnownPeers(dnaHash, myPubKey, badAgents)
@@ -456,7 +490,6 @@ export class P2pCell {
 			type,
 			details,
 		};
-
 		const connection = await this.connectWith(toCell);
 
 		const result = await this.networkRequestsExecutor.execute(

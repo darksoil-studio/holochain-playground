@@ -273,15 +273,22 @@ export class ConductorHapps extends PlaygroundElement {
 		const activeConductor = this._activeConductor.get();
 		return html`
 			<div class="column fill" style="gap: 8px">
-				<div class="row" style="align-items: center;">
-					<span class="title">Conductor hApps</span>
-					${activeConductor.status === 'completed' && activeConductor.value
-						? html`<span class="placeholder">, for ${this.renderName()}</span>`
-						: html``}
+				${this.hideHeader
+					? html``
+					: html`
+							<div class="row" style="align-items: center;">
+								<span class="title">Conductor hApps</span>
+								${activeConductor.status === 'completed' &&
+								activeConductor.value
+									? html`<span class="placeholder"
+											>, for ${this.renderName()}</span
+										>`
+									: html``}
 
-					<div style="flex: 1;"></div>
-					${this.renderHelp()}
-				</div>
+								<div style="flex: 1;"></div>
+								${this.renderHelp()}
+							</div>
+						`}
 				${this.renderContent()}
 			</div>
 		`;

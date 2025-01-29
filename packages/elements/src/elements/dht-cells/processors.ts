@@ -41,7 +41,7 @@ export function dhtCellsNodes(
 		.entries()
 		.sort(
 			(a: [CellId, CellStore], b: [CellId, CellStore]) =>
-				location(a[0][1]) - location(b[0][1]),
+				location(b[0][1]) - location(a[0][1]),
 		);
 	const cellNodes = sortedCells.map(([cellId, cellStore]) => {
 		const simulated = cellStore instanceof SimulatedCellStore;
@@ -71,6 +71,10 @@ export function simulatedNeighbors(
 	const normalEdges = allPeersEdges(cells, peers);
 
 	// Add the far peers
+	const visitedFarPeers: HoloHashMap<
+		AgentPubKey,
+		HoloHashMap<AgentPubKey, boolean>
+	> = new HoloHashMap();
 
 	for (const [cellId, info] of farPeers.entries()) {
 		for (const farPeer of info) {
@@ -80,6 +84,13 @@ export function simulatedNeighbors(
 			if (!cells.has([cellId[0], farPeer])) {
 				continue;
 			}
+			if (visitedFarPeers.get(farPeer)?.get(cellId[1])) {
+				continue;
+			}
+			if (!visitedFarPeers.get(cellId[1])) {
+				visitedFarPeers.set(cellId[1], new HoloHashMap());
+			}
+			visitedFarPeers.get(cellId[1]).set(farPeer, true);
 			const myCellIdStr = stringifyCellId(cellId);
 			const farPeerCellIdStr = stringifyCellId([cellId[0], farPeer]);
 			normalEdges.push({

@@ -205,12 +205,29 @@ export const demoMigrationZome: SimulatedZome = {
 	},
 };
 
+export const demoInfoZome: SimulatedZome = {
+	name: 'demo_info',
+	entry_defs: [],
+	zome_functions: {
+		dna_info: {
+			call:
+				({ dna_info }) =>
+				async () => {
+					const info = await dna_info();
+					return info;
+				},
+			arguments: [],
+		},
+	},
+};
+
 export function demoDna(): SimulatedDna {
 	const zomes = [
 		demoEntriesZome,
 		demoLinksZome,
 		demoPathsZome,
 		demoMigrationZome,
+		demoInfoZome,
 	];
 	return {
 		properties: {},
@@ -226,14 +243,6 @@ export function demoHapp(): SimulatedHappBundle {
 		roles: {
 			default: {
 				dna: demoDna(),
-				deferred: false,
-			},
-			deiault: {
-				dna: {
-					zomes: demoDna().zomes,
-					networkSeed: 'a',
-					properties: {},
-				},
 				deferred: false,
 			},
 		},

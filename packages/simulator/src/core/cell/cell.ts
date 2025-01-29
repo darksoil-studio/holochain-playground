@@ -14,6 +14,7 @@ import { HashType, getHashType, hash } from '@tnesh-stack/utils';
 import { HoloHashMap } from '@tnesh-stack/utils';
 import { cloneDeep, isEqual, uniqWith } from 'lodash-es';
 
+import { sleep } from '../../executor/delay-middleware.js';
 import { MiddlewareExecutor } from '../../executor/middleware-executor.js';
 import {
 	ChainQueryFilter,
@@ -130,8 +131,6 @@ export class Cell {
 		conductor.network.createP2pCell(cell);
 
 		await cell._runWorkflow(genesis_task(cellId, membrane_proof));
-
-		await cell.p2p.join(cell);
 
 		return cell;
 	}

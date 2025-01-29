@@ -17,6 +17,7 @@ import { UpdateEntryFn, update_entry } from './host-fn/actions/update_entry.js';
 import { AgentInfoFn, agent_info } from './host-fn/agent_info.js';
 import { CallFn, call } from './host-fn/call.js';
 import { CallRemoteFn, call_remote } from './host-fn/call_remote.js';
+import { DnaInfoFn, dna_info } from './host-fn/dna_info.js';
 import { GetFn, get } from './host-fn/get.js';
 import {
 	GetAgentActivityFn,
@@ -49,6 +50,7 @@ export interface SimulatedValidateFunctionContext {
 	must_get_valid_record: MustGetValidRecordFn;
 	must_get_agent_activity: MustGetAgentActivityFn;
 	hash_entry: HashEntryFn;
+	dna_info: DnaInfoFn;
 }
 export interface Hdk extends SimulatedValidateFunctionContext {
 	get: GetFn;
@@ -86,6 +88,7 @@ export function buildValidationFunctionContext(
 		must_get_action: must_get_action(workspace, zome_index),
 		must_get_valid_record: must_get_valid_record(workspace, zome_index),
 		must_get_agent_activity: must_get_agent_activity(workspace, zome_index),
+		dna_info: dna_info(workspace, zome_index),
 	};
 }
 
