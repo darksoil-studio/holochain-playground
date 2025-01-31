@@ -20,17 +20,17 @@ Add it to your `flake.nix` with:
     holonix.url = "github:holochain/holonix/main-0.4";
     nixpkgs.follows = "holonix/nixpkgs";
 
-+    holochain-playground.url = "github:darksoil-studio/holochain-playground/main-0.4";
++   holochain-playground.url = "github:darksoil-studio/holochain-playground/main-0.4";
   };
 
   nixConfig = {
     extra-substituters = [
       "https://holochain-ci.cachix.org"
-+      "https://darksoil-studio.cachix.org"
++     "https://darksoil-studio.cachix.org"
     ];
     extra-trusted-public-keys = [
       "holochain-ci.cachix.org-1:5IUSkZc0aoRS53rfkvH9Kid40NpyjwCMCzwRTXy+QN8="
-+      "darksoil-studio.cachix.org-1:UEi+aujy44s41XL/pscLw37KEVpTEIn8N/kn7jO8rkc="
++     "darksoil-studio.cachix.org-1:UEi+aujy44s41XL/pscLw37KEVpTEIn8N/kn7jO8rkc="
     ];
   };
 
@@ -43,7 +43,7 @@ Add it to your `flake.nix` with:
             inputs.holonix.devShells.${system}.default
           ];
           packages = [
-+            inputs'.holochain-playground.packages.hc-playground
++           inputs'.holochain-playground.packages.hc-playground
           ];
         };
       };
