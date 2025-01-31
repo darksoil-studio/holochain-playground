@@ -1,52 +1,52 @@
 {
-	"name": "@holochain-playground/elements",
-	"version": "0.400.0",
-	"description": "Holochain playground elements for visual introspection and simulator interaction",
-	"author": "guillem.cordoba@gmail.com",
-	"license": "MIT",
-	"main": "dist/index.js",
-	"module": "dist/index.js",
-	"exports": {
-		".": "./dist/index.js",
-		"./dist/*": "./dist/*"
-	},
-	"scripts": {
-		"start": "vite --clearScreen false --open",
-		"build": "tsc",
-		"prepare": "tsc",
-		"build:watch": "tsc --watch"
-	},
-	"dependencies": {
-		"@alenaksu/json-viewer": "^2.1.2",
-		"@holochain-playground/simulator": "workspace:^0.400.1",
-		"@holochain/client": "0.18.0",
-		"@lit/context": "^1.1.3",
-		"@mdi/js": "^7.4.47",
-		"@msgpack/msgpack": "^2.8.0",
-		"@scoped-elements/cytoscape": "^0.2.7",
-		"@shoelace-style/shoelace": "^2.19.1",
-		"@tnesh-stack/core-types": "^0.400.0",
-		"@tnesh-stack/elements": "^0.400.1",
-		"@tnesh-stack/signals": "^0.400.0",
-		"@tnesh-stack/utils": "^0.400.0",
-		"@vaadin/grid": "^24.6.2",
-		"@vaadin/component-base": "^24.0.0",
-		"cytoscape": "^3.31.0",
-		"js-base64": "^3.7.7",
-		"lit": "^3.2.1",
-		"lodash-es": "^4.17.21"
-	},
-	"devDependencies": {
-		"@types/cytoscape": "^3.21.8",
-		"@types/lodash-es": "^4.17.12",
-		"eslint": "^8.57.1",
-		"prettier": "^3.4.2",
-		"typescript": "^5.7.3",
-		"vite": "^4.5.9",
-		"vite-plugin-checker": "^0.5.6"
-	},
-	"publishConfig": {
-		"access": "public"
-	},
-	"type": "module"
+  "name": "@holochain-playground/elements",
+  "version": "0.400.0",
+  "description": "Holochain playground elements for visual introspection and simulator interaction",
+  "author": "guillem.cordoba@gmail.com",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./dist/*": "./dist/*"
+  },
+  "scripts": {
+    "start": "vite --clearScreen false --open",
+    "build": "tsc",
+    "prepare": "tsc",
+    "build:watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@alenaksu/json-viewer": "^2.1.2",
+    "@holochain-playground/simulator": "workspace:^0.400.1",
+    "@holochain/client": "0.18.0",
+    "@lit/context": "^1.1.3",
+    "@mdi/js": "^7.4.47",
+    "@msgpack/msgpack": "^2.8.0",
+    "@scoped-elements/cytoscape": "^0.2.7",
+    "@shoelace-style/shoelace": "^2.19.1",
+    "@tnesh-stack/core-types": "^0.400.0",
+    "@tnesh-stack/elements": "^0.400.1",
+    "@tnesh-stack/signals": "^0.400.0",
+    "@tnesh-stack/utils": "^0.400.0",
+    "@vaadin/grid": "^24.6.2",
+    "@vaadin/component-base": "^24.0.0",
+    "cytoscape": "^3.31.0",
+    "js-base64": "^3.7.7",
+    "lit": "^3.2.1",
+    "lodash-es": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/cytoscape": "^3.21.8",
+    "@types/lodash-es": "^4.17.12",
+    "eslint": "^8.57.1",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.3",
+    "vite": "^4.5.9",
+    "vite-plugin-checker": "^0.5.6"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module"
 }
