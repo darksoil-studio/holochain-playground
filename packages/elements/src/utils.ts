@@ -28,7 +28,7 @@ export function cellName(cellInfo: CellInfo): string {
 	if (CellType.Provisioned in cellInfo) {
 		return cellInfo[CellType.Provisioned].name;
 	} else if (CellType.Cloned in cellInfo) {
-		return cellInfo[CellType.Cloned].name;
+		return cellInfo[CellType.Cloned].clone_id;
 	} else {
 		return cellInfo[CellType.Stem].name!;
 	}

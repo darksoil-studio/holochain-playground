@@ -194,13 +194,12 @@ export class Conductor {
 			membraneProof,
 		);
 
-		const cloneId = Object.keys(
+		const clonesIds = Object.keys(
 			this.installedHapps[installedAppId].roles[cellRole].clones,
-		)
-			.map(cloneName => parseInt(cloneName.split('.')[1]))
-			.sort((a, b) => b - a)[0];
+		).map(cloneName => parseInt(cloneName.split('.')[1]));
+		const cloneId = clonesIds.sort((a, b) => b - a)[0];
 
-		const cloneName = `${cellRole}.${cloneId !== undefined ? cloneId : 0}`;
+		const cloneName = `${cellRole}.${cloneId !== undefined ? cloneId + 1 : 0}`;
 
 		this.installedHapps[installedAppId].roles[cellRole].clones[cloneName] =
 			cell.cellId;

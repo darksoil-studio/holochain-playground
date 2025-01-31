@@ -148,20 +148,24 @@ export class P2pCell {
 		ops: HoloHashMap<DhtOpHash, DhtOp>,
 	): Promise<void> {
 		await this.joining;
-		await this.network.kitsune.rpc_multi(
-			this.cellId[0],
-			this.cellId[1],
-			dht_hash,
-			this.redundancyFactor,
-			this.badAgents,
-			(cell: Cell) =>
-				this._executeNetworkRequest(
-					cell,
-					NetworkRequestType.PUBLISH_REQUEST,
-					{ dhtOps: ops },
-					(cell: Cell) => cell.handle_publish(this.cellId[1], true, ops),
-				),
-		);
+		if (this.neighbors.length > 0) {
+			// In the case of a failed join by a bad actor,
+			// publishing makes the page freeze
+			await this.network.kitsune.rpc_multi(
+				this.cellId[0],
+				this.cellId[1],
+				dht_hash,
+				this.redundancyFactor,
+				this.badAgents,
+				(cell: Cell) =>
+					this._executeNetworkRequest(
+						cell,
+						NetworkRequestType.PUBLISH_REQUEST,
+						{ dhtOps: ops },
+						(cell: Cell) => cell.handle_publish(this.cellId[1], true, ops),
+					),
+			);
+		}
 	}
 
 	async get(
@@ -293,7 +297,7 @@ export class P2pCell {
 			if (!this.cell._state.badAgents.find(a => areEqual(a, peer.agentPubKey)))
 				this.cell._state.badAgents.push(peer.agentPubKey);
 
-			throw new Error('Invalid agent');
+			// throw new Error('Invalid agent');
 		}
 	}
 
@@ -334,11 +338,7 @@ export class P2pCell {
 						withPeer,
 						NetworkRequestType.CONNECT,
 						{},
-						peer =>
-							Promise.all([
-								this.check_agent_valid(withPeer),
-								withPeer.p2p.check_agent_valid(this.cell),
-							]),
+						peer => Promise.all([withPeer.p2p.check_agent_valid(this.cell)]),
 					);
 
 					const connection = await this.connectWith(withPeer);
@@ -420,7 +420,8 @@ export class P2pCell {
 
 		const promises = newNeighbors.map(async neighbor => {
 			try {
-				await this.openNeighborConnection(neighbor);
+				if (!neighbor._state.badAgents.find(a => areEqual(a, this.cellId[1])))
+					await this.openNeighborConnection(neighbor);
 			} catch (e) {
 				// Couldn't open connection
 			}
@@ -429,7 +430,10 @@ export class P2pCell {
 		await Promise.all(promises);
 
 		if (
-			Array.from(this.neighborConnections.keys()).length < this.neighborNumber
+			Array.from(this.neighborConnections.keys()).length <
+				this.neighborNumber / 2 &&
+			this.network.bootstrapService.cells.agentsForDna(dnaHash).length >
+				this.neighborNumber / 2
 		) {
 			setTimeout(() => this.syncNeighbors(), 400);
 		}

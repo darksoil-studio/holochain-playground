@@ -46,9 +46,12 @@
 				WorkflowType,
 				demoHapp,
 			} from '@holochain-playground/simulator';
+			import { decode } from '@msgpack/msgpack';
 			import { html, render } from 'lit';
 
 			import '../src/index.ts';
+
+			window.decode = decode;
 
 			const context = document.getElementById('context');
 			const dhtCells = document.querySelector('dht-cells');
@@ -63,41 +66,215 @@
 
 				await conductor.conductor.installApp(demoHapp(), {});
 			}, 5000);
+			export const postsZome = {
+				name: 'posts',
+				entry_defs: [{ entry_def_id: 'post', visibility: 'Public' }],
+				zome_functions: {
+					create_post: {
+						call:
+							({ create_entry }) =>
+							async ({ title, body }) => {
+								return create_entry({
+									content: { title, body },
+									entry_def_id: 'post',
+								});
+							},
+						arguments: [
+							{ name: 'title', type: 'String', required: true },
+							{ name: 'body', type: 'String' },
+						],
+					},
+					get_post: {
+						call:
+							({ get }) =>
+							async ({ post_hash }) => {
+								const record = await get(post_hash, { strategy: 'Latest' });
+								if (!record) return undefined;
+								return window.decode(record.entry.Present.entry);
+							},
+						arguments: [
+							{ name: 'post_hash', type: 'AnyDhtHash', required: true },
+						],
+					},
+				},
+			};
+			export const draftsZome = {
+				name: 'drafts',
+				entry_defs: [{ entry_def_id: 'draft', visibility: 'Public' }],
+				zome_functions: {
+					create_draft: {
+						call:
+							({ create_entry }) =>
+							async ({ title, body }) => {
+								return create_entry({
+									content: { title, body },
+									entry_def_id: 'draft',
+								});
+							},
+						arguments: [
+							{ name: 'title', type: 'String', required: true },
+							{ name: 'body', type: 'String' },
+						],
+					},
+					get_draft: {
+						call:
+							({ get }) =>
+							async ({ draft_hash }) => {
+								const record = await get(post_hash, { strategy: 'Latest' });
+								if (!record) return undefined;
+								return window.decode(record.entry.Present.entry);
+							},
+						arguments: [
+							{ name: 'draft_hash', type: 'AnyDhtHash', required: true },
+						],
+					},
+				},
+				validate: hdk => async op => {
+					const registerAgentActivity = op.RegisterAgentActivity;
+					if (registerAgentActivity) {
+						const info = await hdk.dna_info();
+						const members = window.decode(info.modifiers.properties).members;
+						if (
+							!members.find(
+								member =>
+									registerAgentActivity.action.hashed.content.author.toString() ===
+									member.toString(),
+							)
+						) {
+							return {
+								valid: false,
+								resolved: true,
+							};
+						}
+					}
+
+					return {
+						resolved: true,
+						valid: true,
+					};
+				},
+			};
+			export function forumHapp() {
+				return {
+					name: 'forum',
+					description: '',
+					roles: {
+						main: {
+							dna: {
+								properties: {},
+								networkSeed: '',
+								zomes: [postsZome],
+							},
+							deferred: false,
+						},
+						private_drafts: {
+							dna: {
+								properties: {},
+								networkSeed: '',
+								zomes: [draftsZome],
+							},
+							deferred: true,
+						},
+					},
+				};
+			}
+			context.simulatedHapp = forumHapp();
 
 			// context.urls = ['ws://localhost:38023'];
 			context.addEventListener('playground-ready', e => {
 				const store = e.detail.store;
-				const c = store.conductors.get();
-				const cells = c[0].cells.get();
-				if (Array.from(cells.value.entries()).length > 0) {
-					store.activeAgentPubKey.set(
-						Array.from(cells.value.entries())[0][0][1],
-					);
-					store.activeDna.set(Array.from(cells.value.entries())[0][0][0]);
-				}
 
 				const conductors = store.conductors.get();
-				const conductorStore = conductors[0];
-				conductorStore.conductor.createCloneCell('demo-happ', 'default', 'hi', {
-					members: [],
-				});
 
-				//	conductorStore.conductor.setBadAgent({
+				for (let i = 0; i < 4; i += 2) {
+					const conductorStore1 = conductors[i];
+					const conductorStore2 = conductors[i + 1];
+					const members = [
+						Array.from(conductorStore1.conductor.cells.cellIds())[0][1],
+						Array.from(conductorStore2.conductor.cells.cellIds())[0][1],
+					];
+					conductorStore1.conductor.createCloneCell(
+						'forum',
+						'private_drafts',
+						'',
+						{
+							members,
+						},
+					);
+					const originalName =
+						conductorStore1.name.length < conductorStore2.name.length
+							? conductorStore1.name
+							: conductorStore2.name;
+					conductorStore1.conductor.name = `${originalName}'s Laptop`;
+					conductorStore2.conductor.createCloneCell(
+						'forum',
+						'private_drafts',
+						'',
+						{
+							members,
+						},
+					);
+					conductorStore2.conductor.name = `${originalName}'s Phone`;
+				}
+
+				for (let i = 4; i < conductors.length; i++) {
+					const conductorStore1 = conductors[i];
+					const members = [
+						Array.from(conductorStore1.conductor.cells.cellIds())[0][1],
+					];
+					conductorStore1.conductor.createCloneCell(
+						'forum',
+						'private_drafts',
+						'',
+						{
+							members,
+						},
+					);
+				} //	conductorStore.conductor.setBadAgent({
 				//		disable_validation_before_publish: true,
 				//		pretend_invalid_records_are_valid: true,
 				//	});
 			});
-			document.querySelector('sl-button').addEventListener('click', e => {
-				const playgroundContext = document.querySelector(
+			document.querySelector('sl-button').addEventListener('click', async e => {
+				const playgroundStore = document.querySelector(
 					'simulated-playground-context',
-				);
-				const playgroundStore = playgroundContext.store;
+				).store;
+				const [conductorStore] = await playgroundStore.createConductors(1);
+				await conductorStore.conductor.installApp(forumHapp(), {});
 
-				const cellStore = playgroundStore.activeCell.get();
-
-				if (!cellStore) return;
-
-				cellStore.value.conductorStore.conductor.uninstallApp('demo-happ');
+				const cells = playgroundStore.cellsForActiveDna.get();
+				if (cells.value.cellIds().length === 2) {
+					conductorStore.conductor.setBadAgent({
+						disable_validation_before_publish: true,
+						pretend_invalid_records_are_valid: true,
+					});
+					const members = [
+						Array.from(cells.value.cellIds())[0][1],
+						Array.from(cells.value.cellIds())[1][1],
+					];
+					conductorStore.conductor.createCloneCell(
+						'forum',
+						'private_drafts',
+						'',
+						{
+							members,
+						},
+					);
+				} else if (cells.value.cellIds().length === 1) {
+					conductorStore.conductor.setBadAgent({
+						disable_validation_before_publish: true,
+						pretend_invalid_records_are_valid: true,
+					});
+					const members = [Array.from(cells.value.cellIds())[0][1]];
+					conductorStore.conductor.createCloneCell(
+						'forum',
+						'private_drafts',
+						'',
+						{
+							members,
+						},
+					);
+				}
 			});
 		</script>
 	</body>
