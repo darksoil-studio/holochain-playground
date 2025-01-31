@@ -305,7 +305,7 @@ importers:
         specifier: ^2.1.2
         version: 2.1.2
       '@holochain-playground/simulator':
-        specifier: file:/home/guillem/projects/darksoil/holochain-playground/packages/simulator
+        specifier: workspace:^0.400.1
         version: link:../simulator
       '@holochain/client':
         specifier: 0.18.0
