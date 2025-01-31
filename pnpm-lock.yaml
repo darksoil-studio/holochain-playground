@@ -58,7 +58,7 @@ importers:
         version: 0.400.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@tnesh-stack/elements':
         specifier: ^0.400.0
-        version: 0.400.0(@floating-ui/utils@0.2.9)(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        version: 0.400.0(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@tnesh-stack/signals':
         specifier: ^0.400.0
         version: 0.400.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -260,7 +260,7 @@ importers:
         version: 0.400.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@tnesh-stack/elements':
         specifier: ^0.400.0
-        version: 0.400.0(@types/react@18.3.11)
+        version: 0.400.0(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       lit:
         specifier: ^3.0.0
         version: 3.2.1
@@ -301,8 +301,11 @@ importers:
 
   packages/elements:
     dependencies:
+      '@alenaksu/json-viewer':
+        specifier: ^2.1.2
+        version: 2.1.2
       '@holochain-playground/simulator':
-        specifier: workspace:^0.400.0
+        specifier: workspace:^0.400.1
         version: link:../simulator
       '@holochain/client':
         specifier: 0.18.0
@@ -316,12 +319,9 @@ importers:
       '@msgpack/msgpack':
         specifier: ^2.8.0
         version: 2.8.0
-      '@power-elements/json-viewer':
-        specifier: ^2.1.1
-        version: 2.1.1
       '@scoped-elements/cytoscape':
-        specifier: ^0.2.5
-        version: 0.2.5
+        specifier: ^0.2.7
+        version: 0.2.7
       '@shoelace-style/shoelace':
         specifier: ^2.19.1
         version: 2.19.1(@floating-ui/utils@0.2.9)(@types/react@18.3.11)
@@ -329,20 +329,23 @@ importers:
         specifier: ^0.400.0
         version: 0.400.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@tnesh-stack/elements':
-        specifier: ^0.400.0
-        version: 0.400.0(@floating-ui/utils@0.2.9)(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.400.1
+        version: 0.400.1(@floating-ui/utils@0.2.9)(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@tnesh-stack/signals':
         specifier: ^0.400.0
         version: 0.400.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@tnesh-stack/utils':
         specifier: ^0.400.0
         version: 0.400.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@vaadin/component-base':
+        specifier: ^24.0.0
+        version: 24.6.2
       '@vaadin/grid':
-        specifier: ^23.5.11
-        version: 23.5.11
+        specifier: ^24.6.2
+        version: 24.6.2
       cytoscape:
-        specifier: ^3.30.4
-        version: 3.30.4
+        specifier: ^3.31.0
+        version: 3.31.0
       js-base64:
         specifier: ^3.7.7
         version: 3.7.7
@@ -366,14 +369,14 @@ importers:
         specifier: ^3.4.2
         version: 3.4.2
       typescript:
-        specifier: ^5.7.2
-        version: 5.7.2
+        specifier: ^5.7.3
+        version: 5.7.3
       vite:
-        specifier: ^4.5.5
-        version: 4.5.5(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1)
+        specifier: ^4.5.9
+        version: 4.5.9(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1)
       vite-plugin-checker:
         specifier: ^0.5.6
-        version: 0.5.6(eslint@8.57.1)(optionator@0.9.4)(typescript@5.7.2)(vite@4.5.5(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1))
+        version: 0.5.6(eslint@8.57.1)(optionator@0.9.4)(typescript@5.7.3)(vite@4.5.9(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1))
 
   packages/simulator:
     dependencies:
@@ -431,6 +434,9 @@ importers:
         version: 1.6.0(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1)
 
 packages:
+
+  '@alenaksu/json-viewer@2.1.2':
+    resolution: {integrity: sha512-hyR5EUc0GZMTjlSULJZlMzEYB896ICbCf1+5YLQRSAczGRWy42UWac5PcXM4spuyTkrEHHlOZBTVEq34f9+JVQ==}
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -1444,6 +1450,9 @@ packages:
   '@lit-labs/ssr-dom-shim@1.2.1':
     resolution: {integrity: sha512-wx4aBmgeGvFmOKucFKY+8VFJSYZxs9poN3SDNQFF6lT6NrQUnHiPB2PWz2sc4ieEcAaYYzN+1uWahEeTq2aRIQ==}
 
+  '@lit-labs/ssr-dom-shim@1.3.0':
+    resolution: {integrity: sha512-nQIWonJ6eFAvUUrSlwyHDm/aE8PBDu5kRpL0vHMg6K8fK3Diq1xdPjTnsJSwxABhaZ+5eBi1btQB5ShUTKo4nQ==}
+
   '@lit/context@1.1.3':
     resolution: {integrity: sha512-Auh37F4S0PZM93HTDfZWs97mmzaQ7M3vnTc9YvxAGyP3UItSK/8Fs0vTOGT+njuvOwbKio/l8Cx/zWL4vkutpQ==}
 
@@ -1454,6 +1463,11 @@ packages:
     resolution: {integrity: sha512-QIss8MPh6qUoFJmuaF4dSHts3qCsA36S3HcOLiNPShxhgYPr4XJRnCBKPipk85sR9xr6TQrOcDMfexwbNdJHYA==}
     peerDependencies:
       '@types/react': 17 || 18
+
+  '@lit/react@1.0.7':
+    resolution: {integrity: sha512-cencnwwLXQKiKxjfFzSgZRngcWJzUDZi/04E0fSaF86wZgchMdvTyu+lE36DrUfvuus3bH8+xLPrhM1cTjwpzw==}
+    peerDependencies:
+      '@types/react': 17 || 18 || 19
 
   '@lit/reactive-element@1.6.3':
     resolution: {integrity: sha512-QuTgnG52Poic7uM1AN5yJ09QMe0O28e10XzSvWDz02TJiiKee4stsiownEIadWm8nYzyDAyT+gKzUoZmiWQtsQ==}
@@ -1497,23 +1511,8 @@ packages:
   '@open-wc/scoped-elements@2.2.4':
     resolution: {integrity: sha512-12X4F4QGPWcvPbxAiJ4v8wQFCOu+laZHRGfTrkoj+3JzACCtuxHG49YbuqVzQ135QPKCuhP9wA0kpGGEfUegyg==}
 
-  '@polymer/iron-flex-layout@3.0.1':
-    resolution: {integrity: sha512-7gB869czArF+HZcPTVSgvA7tXYFze9EKckvM95NB7SqYF+NnsQyhoXgKnpFwGyo95lUjUW9TFDLUwDXnCYFtkw==}
-
-  '@polymer/iron-icon@3.0.1':
-    resolution: {integrity: sha512-QLPwirk+UPZNaLnMew9VludXA4CWUCenRewgEcGYwdzVgDPCDbXxy6vRJjmweZobMQv/oVLppT2JZtJFnPxX6g==}
-
-  '@polymer/iron-iconset-svg@3.0.1':
-    resolution: {integrity: sha512-XNwURbNHRw6u2fJe05O5fMYye6GSgDlDqCO+q6K1zAnKIrpgZwf2vTkBd5uCcZwsN0FyCB3mvNZx4jkh85dRDw==}
-
-  '@polymer/iron-meta@3.0.1':
-    resolution: {integrity: sha512-pWguPugiLYmWFV9UWxLWzZ6gm4wBwQdDy4VULKwdHCqR7OP7u98h+XDdGZsSlDPv6qoryV/e3tGHlTIT0mbzJA==}
-
   '@polymer/polymer@3.5.2':
     resolution: {integrity: sha512-fWwImY/UH4bb2534DVSaX+Azs2yKg8slkMBHOyGeU2kKx7Xmxp6Lee0jP8p6B3d7c1gFUPB2Z976dTUtX81pQA==}
-
-  '@power-elements/json-viewer@2.1.1':
-    resolution: {integrity: sha512-uQWqhlc1huWMnYycf5ltgU1hStancWyMt7g8bJ0jCZ3QrOlZmHWUdPt55i4I6L7bDKJLbO1J6oB+O4QWj4Nlew==}
 
   '@rollup/rollup-android-arm-eabi@4.28.1':
     resolution: {integrity: sha512-2aZp8AES04KI2dy3Ss6/MDjXbwBzj+i0GqKtWXgw2/Ma6E4jJvujryO6gJAghIRVz7Vwr9Gtl/8na3nDUKpraQ==}
@@ -1610,8 +1609,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@scoped-elements/cytoscape@0.2.5':
-    resolution: {integrity: sha512-mns1PztzcwA2SiY1RyWVBj8F2Vc7f/q6GZCGlHkTz25XKm/BmRnfXvKdYOC2+H3GgKz2PNpvUFvp7TAjo+fCvA==}
+  '@scoped-elements/cytoscape@0.2.7':
+    resolution: {integrity: sha512-hvb33z021Jg01oTyWfsvOf6LK5SAqh8u8iJVCyeC4zCoro6CBfwNjbLCLgUMRtXnkVkQQkD979vAu8E+hCojJQ==}
 
   '@shoelace-style/animations@1.2.0':
     resolution: {integrity: sha512-avvo1xxkLbv2dgtabdewBbqcJfV0e0zCwFqkPMnHFGbJbBHorRFfMAHh1NG9ymmXn0jW95ibUVH03E1NYXD6Gw==}
@@ -1638,6 +1637,9 @@ packages:
 
   '@tnesh-stack/elements@0.400.0':
     resolution: {integrity: sha512-6IfO9BKzptjBlovp3KW55nBonjrLsSnoSOV7WCHJ+7xhl37GvvOT3hE0GqYNkoL94LF6V0c1BhdAjLTo05QBVA==}
+
+  '@tnesh-stack/elements@0.400.1':
+    resolution: {integrity: sha512-kKD4G1KjzqUNjlOY8xjIH7/zRyYztJZgBTv3FhMRQ1DKoB6pCXPpuKuuxY85wFIioeCX1aegwbGaFJCLMzqsXQ==}
 
   '@tnesh-stack/signals@0.400.0':
     resolution: {integrity: sha512-xG2+t9IHQ3tSD+Pa8BGwpk60BY6HKNqJ08wYCn3JMFLDxDzC1mJdHbjE2eg9vgq/PYxwcH8XbGUBdmCutcpSPQ==}
@@ -1774,41 +1776,44 @@ packages:
   '@ungap/structured-clone@1.2.0':
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
 
-  '@vaadin/checkbox@23.5.11':
-    resolution: {integrity: sha512-KVlH1hL016rYnFH7gMp4L+i+/bgbYKPuyILH3QJ44CUbgQ3erXkAX5h/7JwH6w8qU9KJaVTpSpKOxVMiQ5pdKA==}
+  '@vaadin/a11y-base@24.6.2':
+    resolution: {integrity: sha512-j9Wm3oltbvgCx8mdssNzSXXjbvKvLPuFWtlRpf1vw1uK9OsAOClDdRSpBtOy3aS5eTrMjS+vVbGF+5n6WXddQw==}
 
-  '@vaadin/component-base@23.5.11':
-    resolution: {integrity: sha512-Z+Guif2F/rbRluln8mFLbfX9tzLA44/56w7j6uWYQFirpH28RVDJIAcaCwUMRqHPwW6IIsx3ymOhgA9dLhPlwA==}
+  '@vaadin/checkbox@24.6.2':
+    resolution: {integrity: sha512-T4wYKKxIJ2K6SIuOdPLzeUwhzUWBcLv3lV7N4dKVeBapBAcKa4GT667quuQqK6/VIk7tWe0B423kWCigWxI7Jg==}
 
-  '@vaadin/field-base@23.5.11':
-    resolution: {integrity: sha512-TMHe+hzzNPFvBziITECFD+WHy+05QyDxE/zSAAH/sjjAjT6jCXs4pP+ZvUs42x+PFrpGYXjdYB2EY6E2X6ufpg==}
+  '@vaadin/component-base@24.6.2':
+    resolution: {integrity: sha512-nJD0Sl+DxCFRrER+n4jQiJuWdDjPnvLBQL3C7Ph3DxGVszlFWoYa8Y+Kt7G4nxcu9Fni11jQDlD/zsVMMHDgTg==}
 
-  '@vaadin/grid@23.5.11':
-    resolution: {integrity: sha512-jfFOWNNGoFqkOFgSsz6ABY/GFlil8uhe/7O2oJcH0lRaP+SnBevOIaTcxxbOFQn/TntiCBP++jPRhtrbJS84hg==}
+  '@vaadin/field-base@24.6.2':
+    resolution: {integrity: sha512-lxYbXr40x9jVD9hSL9mGHL6DySjhFiStjGaDwsBMvlsj8lN6u1S0N0BIKILdhZ/Fy8c6ucwLq6So3zN8OaitaQ==}
 
-  '@vaadin/icon@23.5.11':
-    resolution: {integrity: sha512-QSBLVVlhpc34/xTtsnDG4sUnai0Ff+bhiDb/xfTUmoZvWB00dF/P+bRCXt+C0nO3ki31vSCNyZhtxRrjpu+6+Q==}
+  '@vaadin/grid@24.6.2':
+    resolution: {integrity: sha512-B5lfHGXeNiVZ2ndaVO/qgN0BovlvbErjEulKyqOuKsD9JLh/4n9fO9AWJsrMfAVPSdY08GEbDgbfhToaSundqw==}
 
-  '@vaadin/input-container@23.5.11':
-    resolution: {integrity: sha512-NyChIX4808vnEMep5eshgfVjd8L4jAQOqda2xZOS5/VOHP6p/G9yfUJ+P5Kv5Nr62PvUn/05a5q98S/yyH4OIw==}
+  '@vaadin/icon@24.6.2':
+    resolution: {integrity: sha512-FfleXMt7p2jxan1DK8gMQpISgy+FWQkLCJp7rZ9AnwF0jZwgX+9Fc92EIPbyMFkXVbdlnljYTNFsRjG3e58hqw==}
 
-  '@vaadin/lit-renderer@23.5.11':
-    resolution: {integrity: sha512-PKCiVh4Uhq2g/gJIlLwmIlHUpA5tlmsT2r8f+4KkI8Kl5ReuG09K6mz69Ljqim7zRlfIeDOmhXF6BX8UHGr0SQ==}
+  '@vaadin/input-container@24.6.2':
+    resolution: {integrity: sha512-IG0Fc+uwwfYfh9r/QJg/cfxqtDpY0AL6HVldLzt2aJQIgZtxGbRTsxiaMYvPe2oaSJ/hH7unZwnWP3z6z+I3wg==}
 
-  '@vaadin/text-field@23.5.11':
-    resolution: {integrity: sha512-zXqiDD4my6yK84YXBLHNlvEUEWYncdN3eSKE7DS0n25jjqpRHFT7rf5kSjaEgJeYN3aBqE0BA5ZtCmTjkl6acA==}
+  '@vaadin/lit-renderer@24.6.2':
+    resolution: {integrity: sha512-Nxctoy0R+MPh3ixjb8O3nYxsMslfMxNi2h7vkVFwF6PZ54sVwMOP9sLmuRYwwJIzQ45ykERIGh4YxwUewONwAQ==}
+
+  '@vaadin/text-field@24.6.2':
+    resolution: {integrity: sha512-LFp4O3DUHHsqleT0PxIOzL5TOchavMYC06jgU0anktIqJtIzVZOvXyOKPXxNmFT2tlrevc3J/kgfJN9DXczXkw==}
 
   '@vaadin/vaadin-development-mode-detector@2.0.7':
     resolution: {integrity: sha512-9FhVhr0ynSR3X2ao+vaIEttcNU5XfzCbxtmYOV8uIRnUCtNgbvMOIcyGBvntsX9I5kvIP2dV3cFAOG9SILJzEA==}
 
-  '@vaadin/vaadin-lumo-styles@23.5.11':
-    resolution: {integrity: sha512-L0i6/mqEuSY5zJzSuw574wiW1ZRp6T0MbxvnGwJqlOLRHtwGHCJi39ywUtuVDH6sIOTHxLTiXjAD3ZgTU0bx5g==}
+  '@vaadin/vaadin-lumo-styles@24.6.2':
+    resolution: {integrity: sha512-2jyZ6z0gNqhf+A0jKq0eG5mv1YHy6kBY7Dj6dHWKm/ZsFZKF7CEWk8uaBe2a3UT7J35zpdGjodXhVYxoxuGTLQ==}
 
-  '@vaadin/vaadin-material-styles@23.5.11':
-    resolution: {integrity: sha512-O5+V1QxdGCpPrUzx/6X8m+rEFnzf8a/XrZ1rhp6zEFb3mvF09HEmjos6O/YQEONhbJaFXXMAulnOv79mEXYxMw==}
+  '@vaadin/vaadin-material-styles@24.6.2':
+    resolution: {integrity: sha512-P/UzYyUrMBm4d+B/I4nbAGiihnmj10SPRpSbYR0p3/ZVsAFQKQBratkeIwEt1ITPBI05Bc9xspGVQE/lGk8DFw==}
 
-  '@vaadin/vaadin-themable-mixin@23.5.11':
-    resolution: {integrity: sha512-JKppMAjJv0aDbmk0vTdo1MEwTQ0ULLYMGMJJy5xaIyoKQ7pzpSXW5Ue+XhYjsnyZ7m9TKQsllplGLln0WWRRvQ==}
+  '@vaadin/vaadin-themable-mixin@24.6.2':
+    resolution: {integrity: sha512-8guodNN2l8GlgkWGdM87rB+a7UTW6n+eXok2vmyzurD6oGbAZ/ywxFfKLdoNKgz2viMWBDo+Wwh80A7tazvgcQ==}
 
   '@vaadin/vaadin-usage-statistics@2.1.3':
     resolution: {integrity: sha512-8r4TNknD7OJQADe3VygeofFR7UNAXZ2/jjBFP5dgI8+2uMfnuGYgbuHivasKr9WSQ64sPej6m8rDoM1uSllXjQ==}
@@ -2318,8 +2323,8 @@ packages:
     peerDependencies:
       cytoscape: ^3.2.0
 
-  cytoscape@3.30.4:
-    resolution: {integrity: sha512-OxtlZwQl1WbwMmLiyPSEBuzeTIQnwZhJYYWFzZ2PhEHVFwpeaqNIkUzSiso00D98qk60l8Gwon2RP304d3BJ1A==}
+  cytoscape@3.31.0:
+    resolution: {integrity: sha512-zDGn1K/tfZwEnoGOcHc0H4XazqAAXAuDpcYw9mUnUjATjqljyCNGJv8uEvbvxGaGHaVshxMecyl6oc6uKzRfbw==}
     engines: {node: '>=0.10'}
 
   d3-dispatch@1.0.6:
@@ -3482,6 +3487,10 @@ packages:
     resolution: {integrity: sha512-OCVPnIObs4N29kxTjzLfUryOkvZEq+pf8jTF0lg8E7uETuWHA+v7j3c/xJmiqpX450191LlmZfUKkXxkTry7nA==}
     engines: {node: ^10 || ^12 || >=14}
 
+  postcss@8.5.1:
+    resolution: {integrity: sha512-6oz2beyjc5VMn/KV1pPw8fliQkhBXrVn1Z3TVyqZxU8kZpzEKhBdmCFqI6ZbmGtamQvQGuU1sgPTk8ZrXDD7jQ==}
+    engines: {node: ^10 || ^12 || >=14}
+
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
@@ -4040,6 +4049,11 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
+  typescript@5.7.3:
+    resolution: {integrity: sha512-84MVSjMEHP+FQRPy3pX9sTVV/INIex71s9TL2Gm5FG/WG1SqXeKyZ0k7/blY/4FdOzI12CBy1vGc4og/eus0fw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
   typical@4.0.0:
     resolution: {integrity: sha512-VAH4IvQ7BDFYglMd7BPRDfLgxZZX4O4TFcRDA6EN5X7erNJJq+McIEp8np9aVtxrCJ6qx4GTYVfOWNjcqwZgRw==}
     engines: {node: '>=8'}
@@ -4185,8 +4199,36 @@ packages:
       terser:
         optional: true
 
-  vite@5.4.11:
-    resolution: {integrity: sha512-c7jFQRklXua0mTzneGW9QVyxFjUgwcihC4bXEtujIo2ouWCe1Ajt/amn2PCxYnhYfd5k09JX3SB7OYWFKYqj8Q==}
+  vite@4.5.9:
+    resolution: {integrity: sha512-qK9W4xjgD3gXbC0NmdNFFnVFLMWSNiR3swj957yutwzzN16xF/E7nmtAyp1rT9hviDroQANjE4HK3H4WqWdFtw==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': '>= 14'
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+
+  vite@5.4.14:
+    resolution: {integrity: sha512-EK5cY7Q1D8JNhSaPKVK4pwBFvaTmZxEnoKXLG/U9gmdDcihQGNzFlgIvaxezFR4glP1LsuiedwMBqCXH3wZccA==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -4416,6 +4458,10 @@ packages:
     engines: {node: '>=12.20'}
 
 snapshots:
+
+  '@alenaksu/json-viewer@2.1.2':
+    dependencies:
+      lit: 3.2.1
 
   '@ampproject/remapping@2.3.0':
     dependencies:
@@ -5519,6 +5565,8 @@ snapshots:
 
   '@lit-labs/ssr-dom-shim@1.2.1': {}
 
+  '@lit-labs/ssr-dom-shim@1.3.0': {}
+
   '@lit/context@1.1.3':
     dependencies:
       '@lit/reactive-element': 2.0.4
@@ -5531,13 +5579,17 @@ snapshots:
     dependencies:
       '@types/react': 18.3.11
 
+  '@lit/react@1.0.7(@types/react@18.3.11)':
+    dependencies:
+      '@types/react': 18.3.11
+
   '@lit/reactive-element@1.6.3':
     dependencies:
-      '@lit-labs/ssr-dom-shim': 1.2.1
+      '@lit-labs/ssr-dom-shim': 1.3.0
 
   '@lit/reactive-element@2.0.4':
     dependencies:
-      '@lit-labs/ssr-dom-shim': 1.2.1
+      '@lit-labs/ssr-dom-shim': 1.3.0
 
   '@mdi/font@5.9.55': {}
 
@@ -5574,30 +5626,9 @@ snapshots:
       '@lit/reactive-element': 2.0.4
       '@open-wc/dedupe-mixin': 1.4.0
 
-  '@polymer/iron-flex-layout@3.0.1':
-    dependencies:
-      '@polymer/polymer': 3.5.2
-
-  '@polymer/iron-icon@3.0.1':
-    dependencies:
-      '@polymer/iron-flex-layout': 3.0.1
-      '@polymer/iron-meta': 3.0.1
-      '@polymer/polymer': 3.5.2
-
-  '@polymer/iron-iconset-svg@3.0.1':
-    dependencies:
-      '@polymer/iron-meta': 3.0.1
-      '@polymer/polymer': 3.5.2
-
-  '@polymer/iron-meta@3.0.1':
-    dependencies:
-      '@polymer/polymer': 3.5.2
-
   '@polymer/polymer@3.5.2':
     dependencies:
       '@webcomponents/shadycss': 1.11.2
-
-  '@power-elements/json-viewer@2.1.1': {}
 
   '@rollup/rollup-android-arm-eabi@4.28.1':
     optional: true
@@ -5656,15 +5687,15 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.28.1':
     optional: true
 
-  '@scoped-elements/cytoscape@0.2.5':
+  '@scoped-elements/cytoscape@0.2.7':
     dependencies:
       '@open-wc/scoped-elements': 2.2.4
       '@types/cytoscape': 3.21.8
-      cytoscape: 3.30.4
-      cytoscape-cola: 2.5.1(cytoscape@3.30.4)
-      cytoscape-cose-bilkent: 4.1.0(cytoscape@3.30.4)
-      cytoscape-dagre: 2.5.0(cytoscape@3.30.4)
-      cytoscape-klay: 3.1.4(cytoscape@3.30.4)
+      cytoscape: 3.31.0
+      cytoscape-cola: 2.5.1(cytoscape@3.31.0)
+      cytoscape-cose-bilkent: 4.1.0(cytoscape@3.31.0)
+      cytoscape-dagre: 2.5.0(cytoscape@3.31.0)
+      cytoscape-klay: 3.1.4(cytoscape@3.31.0)
       lit: 2.8.0
       lodash-es: 4.17.21
 
@@ -5689,7 +5720,7 @@ snapshots:
     dependencies:
       '@ctrl/tinycolor': 4.1.0
       '@floating-ui/dom': 1.6.13
-      '@lit/react': 1.0.6(@types/react@18.3.11)
+      '@lit/react': 1.0.7(@types/react@18.3.11)
       '@shoelace-style/animations': 1.2.0
       '@shoelace-style/localize': 3.2.1
       composed-offset-position: 0.0.6(@floating-ui/utils@0.2.9)
@@ -5710,7 +5741,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@tnesh-stack/elements@0.400.0(@floating-ui/utils@0.2.9)(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@tnesh-stack/elements@0.400.0(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
       '@holo-host/identicon': 0.1.0
       '@holochain/client': 0.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -5726,7 +5757,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@tnesh-stack/elements@0.400.0(@types/react@18.3.11)':
+  '@tnesh-stack/elements@0.400.1(@floating-ui/utils@0.2.9)(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
       '@holo-host/identicon': 0.1.0
       '@holochain/client': 0.18.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -5735,6 +5766,7 @@ snapshots:
       '@lit/localize': 0.12.2
       '@mdi/js': 7.4.47
       '@shoelace-style/shoelace': 2.19.1(@floating-ui/utils@0.2.9)(@types/react@18.3.11)
+      '@tnesh-stack/utils': 0.400.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       lit: 3.2.1
     transitivePeerDependencies:
       - '@floating-ui/utils'
@@ -5941,91 +5973,109 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@vaadin/checkbox@23.5.11':
+  '@vaadin/a11y-base@24.6.2':
     dependencies:
+      '@open-wc/dedupe-mixin': 1.4.0
       '@polymer/polymer': 3.5.2
-      '@vaadin/component-base': 23.5.11
-      '@vaadin/field-base': 23.5.11
-      '@vaadin/vaadin-lumo-styles': 23.5.11
-      '@vaadin/vaadin-material-styles': 23.5.11
-      '@vaadin/vaadin-themable-mixin': 23.5.11
+      '@vaadin/component-base': 24.6.2
+      lit: 3.2.1
 
-  '@vaadin/component-base@23.5.11':
+  '@vaadin/checkbox@24.6.2':
+    dependencies:
+      '@open-wc/dedupe-mixin': 1.4.0
+      '@polymer/polymer': 3.5.2
+      '@vaadin/a11y-base': 24.6.2
+      '@vaadin/component-base': 24.6.2
+      '@vaadin/field-base': 24.6.2
+      '@vaadin/vaadin-lumo-styles': 24.6.2
+      '@vaadin/vaadin-material-styles': 24.6.2
+      '@vaadin/vaadin-themable-mixin': 24.6.2
+      lit: 3.2.1
+
+  '@vaadin/component-base@24.6.2':
     dependencies:
       '@open-wc/dedupe-mixin': 1.4.0
       '@polymer/polymer': 3.5.2
       '@vaadin/vaadin-development-mode-detector': 2.0.7
       '@vaadin/vaadin-usage-statistics': 2.1.3
-      lit: 2.8.0
+      lit: 3.2.1
 
-  '@vaadin/field-base@23.5.11':
+  '@vaadin/field-base@24.6.2':
     dependencies:
       '@open-wc/dedupe-mixin': 1.4.0
       '@polymer/polymer': 3.5.2
-      '@vaadin/component-base': 23.5.11
-      lit: 2.8.0
+      '@vaadin/a11y-base': 24.6.2
+      '@vaadin/component-base': 24.6.2
+      lit: 3.2.1
 
-  '@vaadin/grid@23.5.11':
+  '@vaadin/grid@24.6.2':
     dependencies:
       '@open-wc/dedupe-mixin': 1.4.0
       '@polymer/polymer': 3.5.2
-      '@vaadin/checkbox': 23.5.11
-      '@vaadin/component-base': 23.5.11
-      '@vaadin/lit-renderer': 23.5.11
-      '@vaadin/text-field': 23.5.11
-      '@vaadin/vaadin-lumo-styles': 23.5.11
-      '@vaadin/vaadin-material-styles': 23.5.11
-      '@vaadin/vaadin-themable-mixin': 23.5.11
+      '@vaadin/a11y-base': 24.6.2
+      '@vaadin/checkbox': 24.6.2
+      '@vaadin/component-base': 24.6.2
+      '@vaadin/lit-renderer': 24.6.2
+      '@vaadin/text-field': 24.6.2
+      '@vaadin/vaadin-lumo-styles': 24.6.2
+      '@vaadin/vaadin-material-styles': 24.6.2
+      '@vaadin/vaadin-themable-mixin': 24.6.2
+      lit: 3.2.1
 
-  '@vaadin/icon@23.5.11':
+  '@vaadin/icon@24.6.2':
+    dependencies:
+      '@open-wc/dedupe-mixin': 1.4.0
+      '@polymer/polymer': 3.5.2
+      '@vaadin/component-base': 24.6.2
+      '@vaadin/vaadin-lumo-styles': 24.6.2
+      '@vaadin/vaadin-themable-mixin': 24.6.2
+      lit: 3.2.1
+
+  '@vaadin/input-container@24.6.2':
     dependencies:
       '@polymer/polymer': 3.5.2
-      '@vaadin/component-base': 23.5.11
-      '@vaadin/vaadin-lumo-styles': 23.5.11
-      '@vaadin/vaadin-themable-mixin': 23.5.11
-      lit: 2.8.0
+      '@vaadin/component-base': 24.6.2
+      '@vaadin/vaadin-lumo-styles': 24.6.2
+      '@vaadin/vaadin-material-styles': 24.6.2
+      '@vaadin/vaadin-themable-mixin': 24.6.2
+      lit: 3.2.1
 
-  '@vaadin/input-container@23.5.11':
+  '@vaadin/lit-renderer@24.6.2':
     dependencies:
+      lit: 3.2.1
+
+  '@vaadin/text-field@24.6.2':
+    dependencies:
+      '@open-wc/dedupe-mixin': 1.4.0
       '@polymer/polymer': 3.5.2
-      '@vaadin/component-base': 23.5.11
-      '@vaadin/vaadin-lumo-styles': 23.5.11
-      '@vaadin/vaadin-material-styles': 23.5.11
-      '@vaadin/vaadin-themable-mixin': 23.5.11
-
-  '@vaadin/lit-renderer@23.5.11':
-    dependencies:
-      lit: 2.8.0
-
-  '@vaadin/text-field@23.5.11':
-    dependencies:
-      '@polymer/polymer': 3.5.2
-      '@vaadin/component-base': 23.5.11
-      '@vaadin/field-base': 23.5.11
-      '@vaadin/input-container': 23.5.11
-      '@vaadin/vaadin-lumo-styles': 23.5.11
-      '@vaadin/vaadin-material-styles': 23.5.11
-      '@vaadin/vaadin-themable-mixin': 23.5.11
+      '@vaadin/a11y-base': 24.6.2
+      '@vaadin/component-base': 24.6.2
+      '@vaadin/field-base': 24.6.2
+      '@vaadin/input-container': 24.6.2
+      '@vaadin/vaadin-lumo-styles': 24.6.2
+      '@vaadin/vaadin-material-styles': 24.6.2
+      '@vaadin/vaadin-themable-mixin': 24.6.2
+      lit: 3.2.1
 
   '@vaadin/vaadin-development-mode-detector@2.0.7': {}
 
-  '@vaadin/vaadin-lumo-styles@23.5.11':
-    dependencies:
-      '@polymer/iron-icon': 3.0.1
-      '@polymer/iron-iconset-svg': 3.0.1
-      '@polymer/polymer': 3.5.2
-      '@vaadin/icon': 23.5.11
-      '@vaadin/vaadin-themable-mixin': 23.5.11
-
-  '@vaadin/vaadin-material-styles@23.5.11':
+  '@vaadin/vaadin-lumo-styles@24.6.2':
     dependencies:
       '@polymer/polymer': 3.5.2
-      '@vaadin/vaadin-themable-mixin': 23.5.11
+      '@vaadin/component-base': 24.6.2
+      '@vaadin/icon': 24.6.2
+      '@vaadin/vaadin-themable-mixin': 24.6.2
 
-  '@vaadin/vaadin-themable-mixin@23.5.11':
+  '@vaadin/vaadin-material-styles@24.6.2':
+    dependencies:
+      '@polymer/polymer': 3.5.2
+      '@vaadin/component-base': 24.6.2
+      '@vaadin/vaadin-themable-mixin': 24.6.2
+
+  '@vaadin/vaadin-themable-mixin@24.6.2':
     dependencies:
       '@open-wc/dedupe-mixin': 1.4.0
-      lit: 2.8.0
+      lit: 3.2.1
 
   '@vaadin/vaadin-usage-statistics@2.1.3':
     dependencies:
@@ -6607,27 +6657,27 @@ snapshots:
 
   custom-elements-manifest@1.0.0: {}
 
-  cytoscape-cola@2.5.1(cytoscape@3.30.4):
+  cytoscape-cola@2.5.1(cytoscape@3.31.0):
     dependencies:
-      cytoscape: 3.30.4
+      cytoscape: 3.31.0
       webcola: 3.4.0
 
-  cytoscape-cose-bilkent@4.1.0(cytoscape@3.30.4):
+  cytoscape-cose-bilkent@4.1.0(cytoscape@3.31.0):
     dependencies:
       cose-base: 1.0.3
-      cytoscape: 3.30.4
+      cytoscape: 3.31.0
 
-  cytoscape-dagre@2.5.0(cytoscape@3.30.4):
+  cytoscape-dagre@2.5.0(cytoscape@3.31.0):
     dependencies:
-      cytoscape: 3.30.4
+      cytoscape: 3.31.0
       dagre: 0.8.5
 
-  cytoscape-klay@3.1.4(cytoscape@3.30.4):
+  cytoscape-klay@3.1.4(cytoscape@3.31.0):
     dependencies:
-      cytoscape: 3.30.4
+      cytoscape: 3.31.0
       klayjs: 0.4.1
 
-  cytoscape@3.30.4: {}
+  cytoscape@3.31.0: {}
 
   d3-dispatch@1.0.6: {}
 
@@ -7499,7 +7549,7 @@ snapshots:
 
   lit-element@3.3.3:
     dependencies:
-      '@lit-labs/ssr-dom-shim': 1.2.1
+      '@lit-labs/ssr-dom-shim': 1.3.0
       '@lit/reactive-element': 1.6.3
       lit-html: 2.8.0
 
@@ -7852,6 +7902,12 @@ snapshots:
       pathe: 1.1.2
 
   postcss@8.4.49:
+    dependencies:
+      nanoid: 3.3.8
+      picocolors: 1.1.1
+      source-map-js: 1.2.1
+
+  postcss@8.5.1:
     dependencies:
       nanoid: 3.3.8
       picocolors: 1.1.1
@@ -8409,6 +8465,8 @@ snapshots:
 
   typescript@5.7.2: {}
 
+  typescript@5.7.3: {}
+
   typical@4.0.0: {}
 
   ufo@1.5.4: {}
@@ -8479,7 +8537,7 @@ snapshots:
       debug: 4.4.0
       pathe: 1.1.2
       picocolors: 1.1.1
-      vite: 5.4.11(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1)
+      vite: 5.4.14(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -8491,7 +8549,7 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-checker@0.5.6(eslint@8.57.1)(optionator@0.9.4)(typescript@5.7.2)(vite@4.5.5(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1)):
+  vite-plugin-checker@0.5.6(eslint@8.57.1)(optionator@0.9.4)(typescript@5.7.3)(vite@4.5.9(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1)):
     dependencies:
       '@babel/code-frame': 7.26.2
       ansi-escapes: 4.3.2
@@ -8505,7 +8563,7 @@ snapshots:
       npm-run-path: 4.0.1
       strip-ansi: 6.0.1
       tiny-invariant: 1.3.3
-      vite: 4.5.5(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1)
+      vite: 4.5.9(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1)
       vscode-languageclient: 7.0.0
       vscode-languageserver: 7.0.0
       vscode-languageserver-textdocument: 1.0.12
@@ -8513,7 +8571,7 @@ snapshots:
     optionalDependencies:
       eslint: 8.57.1
       optionator: 0.9.4
-      typescript: 5.7.2
+      typescript: 5.7.3
 
   vite-plugin-checker@0.5.6(eslint@9.14.0)(optionator@0.9.4)(typescript@5.6.3)(vite@4.5.5(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1)):
     dependencies:
@@ -8550,7 +8608,18 @@ snapshots:
       sass: 1.32.13
       terser: 5.34.1
 
-  vite@5.4.11(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1):
+  vite@4.5.9(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1):
+    dependencies:
+      esbuild: 0.18.20
+      postcss: 8.5.1
+      rollup: 3.29.5
+    optionalDependencies:
+      '@types/node': 22.7.5
+      fsevents: 2.3.3
+      sass: 1.32.13
+      terser: 5.34.1
+
+  vite@5.4.14(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.4.49
@@ -8580,7 +8649,7 @@ snapshots:
       strip-literal: 2.1.1
       tinybench: 2.9.0
       tinypool: 0.8.4
-      vite: 5.4.11(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1)
+      vite: 5.4.14(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1)
       vite-node: 1.6.0(@types/node@22.7.5)(sass@1.32.13)(terser@5.34.1)
       why-is-node-running: 2.3.0
     optionalDependencies:

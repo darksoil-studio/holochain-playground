@@ -1,4 +1,6 @@
 import {
+	IntegrationLimboValue,
+	ValidationLimboStatus,
 	getDhtOpAction,
 	getDhtOpEntry,
 	getDhtOpType,
@@ -18,6 +20,7 @@ import {
 	Record,
 	encodeHashToBase64,
 } from '@holochain/client';
+import { ValidationStatus } from '@tnesh-stack/core-types';
 import {
 	AsyncComputed,
 	AsyncResult,
@@ -32,7 +35,6 @@ import { CellMap, HashType, hash, hashAction } from '@tnesh-stack/utils';
 import isEqual from 'lodash-es/isEqual.js';
 
 import { ConnectedConductorStore } from './connected-playground-store.js';
-import { PlaygroundMode } from './mode.js';
 import { SimulatedConductorStore } from './simulated-playground-store.js';
 import { joinAsyncCellMap, mapCellValues } from './utils.js';
 
@@ -42,6 +44,21 @@ export interface CellStore {
 	peers: AsyncSignal<AgentPubKey[]>;
 
 	dhtShard: AsyncSignal<Array<DhtOp>>;
+
+	validationQueue: AsyncSignal<{
+		validationLimbo: Array<{
+			op: DhtOp;
+			status: ValidationLimboStatus | undefined;
+		}>;
+		integrationLimbo: Array<{
+			op: DhtOp;
+			status: ValidationStatus | undefined;
+		}>;
+		integrated: Array<{
+			op: DhtOp;
+			status: ValidationStatus | undefined;
+		}>;
+	}>;
 
 	cellId: CellId;
 
@@ -269,7 +286,6 @@ export abstract class PlaygroundStore<
 		const activeDna = this.activeDna.get();
 		const allCells = this.allCells.get();
 		if (allCells.status !== 'completed') return allCells;
-
 		const map = new CellMap<CellStoreForConductorStore<T>>();
 
 		for (const [cellId, value] of allCells.value.entries()) {

@@ -139,15 +139,20 @@ export function allEntries(
 					const linkTag = simulatedDna ? link.tag : getLinkTagStr(link.tag);
 					const tag = JSON.stringify(linkTag);
 					const target = encodeHashToBase64(link.target_address);
+					const classes = ['explicit-link'];
+
+					if (summary.deletedAddLinks.has(link.add_link_hash)) {
+						classes.push('deleted');
+					}
 
 					edges.push({
 						data: {
-							id: `${strBaseHash}->${target}`,
+							id: `${encodeHashToBase64(link.add_link_hash)}`,
 							source: strBaseHash,
 							target,
 							label: tag,
 						},
-						classes: ['explicit-link'],
+						classes,
 					});
 					depsNotHeld.set(link.target_address, true);
 				}

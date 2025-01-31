@@ -1,6 +1,7 @@
 import {
 	ActionHash,
 	ActionType,
+	AgentPubKey,
 	EntryHash as AnyDhtHash,
 	ChainOp,
 	ChainOpType,
@@ -8,10 +9,13 @@ import {
 	CreateLink,
 	Delete,
 	DeleteLink,
+	Link,
 	LinkType,
 	NewEntryAction,
+	RegisterAgentActivity,
 	SignedActionHashed,
 	Update,
+	WarrantOp,
 	encodeHashToBase64,
 } from '@holochain/client';
 import {
@@ -22,10 +26,17 @@ import {
 } from '@tnesh-stack/core-types';
 import { HoloHashMap, hashAction } from '@tnesh-stack/utils';
 import { HashType, hash } from '@tnesh-stack/utils';
-import { uniqWith } from 'lodash-es';
+import { isEqual, uniqWith } from 'lodash-es';
 
 import { areEqual } from '../../../processors/hash.js';
-import { GetLinksResponse, Link } from '../cascade/types.js';
+import { ChainQueryFilter } from '../../../types.js';
+import {
+	ActivityRequest,
+	AgentActivity,
+} from '../../hdk/host-fn/get_agent_activity.js';
+import { ChainFilter } from '../../hdk/host-fn/must_get_agent_activity.js';
+import { GetLinksResponse } from '../cascade/types.js';
+import { DepsMissing } from '../index.js';
 import {
 	CellState,
 	IntegratedDhtOpsValue,
@@ -33,8 +44,14 @@ import {
 	ValidationLimboStatus,
 	ValidationLimboValue,
 } from '../state.js';
-import { LinkMetaVal, getSysMetaValActionHash } from '../state/metadata.js';
+import {
+	ChainStatus,
+	HighestObserved,
+	LinkMetaVal,
+	getSysMetaValActionHash,
+} from '../state/metadata.js';
 import { getDhtOpAction, getDhtOpType, isWarrantOp } from '../utils.js';
+import { MissingDependenciesError } from '../workflows/app_validation/types.js';
 
 export function getValidationLimboDhtOps(
 	state: CellState,
@@ -111,7 +128,7 @@ export function getEntryDetails(
 	const allActions = getActionsForEntry(state, entry_hash);
 	const dhtStatus = getEntryDhtStatus(state, entry_hash);
 
-	const live_actions: HoloHashMap<
+	const createActions: HoloHashMap<
 		ActionHash,
 		SignedActionHashed<Create>
 	> = new HoloHashMap();
@@ -136,7 +153,7 @@ export function getEntryDetails(
 			(actionContent as Create).entry_hash &&
 			areEqual((actionContent as Create).entry_hash, entry_hash)
 		) {
-			live_actions.set(
+			createActions.set(
 				action.hashed.hash,
 				action as SignedActionHashed<Create>,
 			);
@@ -149,7 +166,7 @@ export function getEntryDetails(
 
 	return {
 		entry,
-		actions: allActions,
+		actions: Array.from(createActions.values()),
 		entry_dht_status: dhtStatus as EntryDhtStatus,
 		updates: Array.from(updates.values()),
 		deletes: Array.from(deletes.values()),
@@ -296,6 +313,167 @@ export function getLinksForHash(
 	};
 }
 
+export type MustGetAgentActivityResponse =
+	| {
+			Activity: {
+				activity: Array<RegisterAgentActivity>;
+				warrants: Array<WarrantOp>;
+			};
+	  }
+	| {
+			IncompleteChain: void;
+	  }
+	| {
+			ChainTopNotFound: ActionHash;
+	  }
+	| {
+			EmptyRange: void;
+	  };
+
+export function mustGetAgentActivity(
+	state: CellState,
+	agent: AgentPubKey,
+	filter: ChainFilter,
+): MustGetAgentActivityResponse {
+	const agentActivity = state.metadata.activity.get(agent) || [];
+
+	const chainTop: SignedActionHashed = state.CAS.get(filter.chain_top);
+
+	if (
+		!agentActivity.find(actionHash => areEqual(actionHash, filter.chain_top)) ||
+		!chainTop
+	) {
+		return {
+			ChainTopNotFound: filter.chain_top,
+		};
+	}
+
+	const activity: RegisterAgentActivity[] = [
+		{
+			action: chainTop,
+		},
+	];
+
+	const getNextActionHash = () => {
+		const firstAction = activity[0].action.hashed.content;
+
+		const prevHash = (firstAction as { prev_action: ActionHash }).prev_action;
+
+		const takeFilters = filter.filters
+			.map(f => (f as { Take: number }).Take)
+			.filter(n => n !== undefined);
+		if (takeFilters.find(n => n >= activity.length)) return undefined;
+
+		const untilFilters = filter.filters
+			.map(f => (f as { Until: ActionHash[] }).Until)
+			.filter(n => n !== undefined);
+		if (untilFilters.find(hashes => hashes.find(h => areEqual(h, prevHash))))
+			return undefined;
+
+		const bothFilters = filter.filters
+			.map(f => (f as { Both: [number, ActionHash[]] }).Both)
+			.filter(n => n !== undefined);
+		if (
+			bothFilters.find(
+				([n, hashes]) =>
+					n >= activity.length || hashes.find(h => areEqual(h, prevHash)),
+			)
+		)
+			return undefined;
+
+		return prevHash;
+	};
+
+	let nextActionHash: ActionHash | undefined = getNextActionHash();
+
+	while (nextActionHash) {
+		const action: SignedActionHashed = state.CAS.get(filter.chain_top);
+		if (!action)
+			return {
+				IncompleteChain: undefined,
+			};
+		activity.unshift({
+			action,
+		});
+		nextActionHash = getNextActionHash();
+	}
+
+	return {
+		Activity: {
+			activity,
+			warrants: [], // TODO: implement warrants
+		},
+	};
+}
+
+export function getAgentActivity(
+	state: CellState,
+	agent: AgentPubKey,
+	filter: ChainQueryFilter, // TODO: use this
+	request: ActivityRequest,
+): AgentActivity {
+	const miscMeta = state.metadata.misc_meta.get(agent);
+
+	const status = (miscMeta as { ChainStatus: ChainStatus }).ChainStatus;
+
+	const activity = state.metadata.activity.get(agent) || [];
+
+	let actions: SignedActionHashed[] = activity.map(actionHash =>
+		state.CAS.get(actionHash),
+	);
+
+	if (filter.action_type) {
+		actions = actions.filter(action => {
+			const actionType = action.hashed.content.type;
+			return filter.action_type!.find(
+				wantedActionType => wantedActionType === actionType,
+			);
+		});
+	}
+
+	if (filter.entry_hashes) {
+		actions = actions.filter(action => {
+			const entryHash = (action.hashed.content as NewEntryAction).entry_hash;
+			if (!entryHash) return false;
+			return filter.entry_hashes!.find(wantedEntryHash =>
+				areEqual(wantedEntryHash, entryHash),
+			);
+		});
+	}
+
+	if (filter.entry_type) {
+		actions = actions.filter(action => {
+			const entryType = (action.hashed.content as NewEntryAction).entry_type;
+			if (!entryType) return false;
+			return filter.entry_type!.find(wantedEntryType =>
+				isEqual(wantedEntryType, entryType),
+			);
+		});
+	}
+
+	const valid_activity = actions.map(action => {
+		const content = action.hashed.content;
+		const sequenceNumber = (content as { action_seq: number }).action_seq || 0;
+
+		return [sequenceNumber, action.hashed.hash] as [number, ActionHash];
+	});
+
+	const highest_observed: HighestObserved | undefined =
+		valid_activity.length > 0
+			? {
+					hash: [valid_activity[valid_activity.length - 1][1]],
+					action_seq: valid_activity.length - 1,
+				}
+			: undefined;
+	return {
+		highest_observed,
+		rejected_activity: [], // TODO: fix this
+		status,
+		valid_activity,
+		warrants: [], // TODO: fix this
+	};
+}
+
 export function getCreateLinksForHash(
 	state: CellState,
 	hash: AnyDhtHash,
@@ -347,12 +525,17 @@ export function getLiveLinks(
 
 	const resultingLinks: Link[] = [];
 
-	for (const liveLink of linkAdds.values()) {
+	for (const [linkHash, liveLink] of Array.from(linkAdds.entries())) {
 		if (liveLink)
 			resultingLinks.push({
 				base: liveLink.base_address,
 				target: liveLink.target_address,
 				tag: liveLink.tag,
+				author: liveLink.author,
+				create_link_hash: linkHash,
+				link_type: liveLink.link_type,
+				timestamp: liveLink.timestamp,
+				zome_index: liveLink.zome_index,
 			});
 	}
 

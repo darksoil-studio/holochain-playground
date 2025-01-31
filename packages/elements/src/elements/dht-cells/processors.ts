@@ -41,7 +41,7 @@ export function dhtCellsNodes(
 		.entries()
 		.sort(
 			(a: [CellId, CellStore], b: [CellId, CellStore]) =>
-				location(a[0][1]) - location(b[0][1]),
+				location(b[0][1]) - location(a[0][1]),
 		);
 	const cellNodes = sortedCells.map(([cellId, cellStore]) => {
 		const simulated = cellStore instanceof SimulatedCellStore;
@@ -71,6 +71,10 @@ export function simulatedNeighbors(
 	const normalEdges = allPeersEdges(cells, peers);
 
 	// Add the far peers
+	const visitedFarPeers: HoloHashMap<
+		AgentPubKey,
+		HoloHashMap<AgentPubKey, boolean>
+	> = new HoloHashMap();
 
 	for (const [cellId, info] of farPeers.entries()) {
 		for (const farPeer of info) {
@@ -80,6 +84,13 @@ export function simulatedNeighbors(
 			if (!cells.has([cellId[0], farPeer])) {
 				continue;
 			}
+			if (visitedFarPeers.get(farPeer)?.get(cellId[1])) {
+				continue;
+			}
+			if (!visitedFarPeers.get(cellId[1])) {
+				visitedFarPeers.set(cellId[1], new HoloHashMap());
+			}
+			visitedFarPeers.get(cellId[1]).set(farPeer, true);
 			const myCellIdStr = stringifyCellId(cellId);
 			const farPeerCellIdStr = stringifyCellId([cellId[0], farPeer]);
 			normalEdges.push({
@@ -121,8 +132,10 @@ export function allPeersEdges(
 					visited.get(cellNeighbor).has(cellAgentPubKey)
 				)
 			) {
+				const neighborNotConnected = !cells.has([cellId[0], cellNeighbor]);
 				const neighborNeighbors = cellsNeighbors.get([cellId[0], cellNeighbor]);
 				if (
+					neighborNotConnected ||
 					neighborNeighbors?.find(
 						n => encodeHashToBase64(n) === encodeHashToBase64(cellAgentPubKey),
 					)
@@ -139,7 +152,7 @@ export function allPeersEdges(
 					});
 				}
 
-				if (!cells.has([cellId[0], cellNeighbor])) {
+				if (neighborNotConnected) {
 					neighborsNotConnected.set([cellId[0], cellNeighbor], true);
 				}
 			}
@@ -195,7 +208,7 @@ export function isHoldingEntry(dhtShard: DhtOp[], entryHash: EntryHash) {
 	return false;
 }
 
-export function isHoldingElement(dhtShard: DhtOp[], actionHash: ActionHash) {
+export function isHoldingRecord(dhtShard: DhtOp[], actionHash: ActionHash) {
 	for (const dhtOp of dhtShard) {
 		if (isWarrantOp(dhtOp)) {
 			continue;

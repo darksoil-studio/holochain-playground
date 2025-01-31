@@ -3,13 +3,16 @@ import {
 	AgentPubKeyB64,
 	CellId,
 	DnaHash,
+	DnaModifiers,
 	EntryVisibility,
 	HoloHash,
 	Record,
 } from '@holochain/client';
+import { encode } from '@msgpack/msgpack';
 import { HashType, hash } from '@tnesh-stack/utils';
 
 import { ValidationOutcome } from '../core/cell/sys_validate/types.js';
+import { Conductor } from '../core/conductor.js';
 import {
 	SimulatedValidateFunctionContext,
 	SimulatedZomeFunctionContext,
@@ -36,15 +39,7 @@ export interface SimulatedZome {
 	name: string;
 	entry_defs: Array<EntryDef>;
 	zome_functions: Dictionary<SimulatedZomeFunction>;
-	validation_functions: {
-		validate_create_agent?: (
-			context: SimulatedValidateFunctionContext,
-		) => (args: {
-			record: Record;
-			agent_pub_key: AgentPubKeyB64;
-			membrane_proof: any;
-		}) => Promise<ValidationOutcome>;
-	} & Dictionary<SimulatedValidateFunction>;
+	validate?: SimulatedValidateFunction;
 	blocklyCode?: string;
 }
 
@@ -55,7 +50,7 @@ export interface SimulatedDna {
 }
 
 export interface SimulatedDnaRole {
-	dna: SimulatedDna | DnaHash;
+	dna: SimulatedDna;
 	deferred: boolean;
 }
 export interface SimulatedHappBundle {
@@ -67,7 +62,7 @@ export interface SimulatedHappBundle {
 export interface AppRole {
 	base_cell_id: CellId;
 	is_provisioned: boolean;
-	clones: CellId[];
+	clones: Dictionary<CellId>;
 }
 
 export interface InstalledHapp {

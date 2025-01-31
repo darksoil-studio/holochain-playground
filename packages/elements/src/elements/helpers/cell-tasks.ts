@@ -247,7 +247,7 @@ export class CellTasks extends PlaygroundElement<SimulatedPlaygroundStore> {
 			<sl-card class="tasks-card" style="--padding: 0"
 				><div class="column">
 					<div
-						class="row"
+						class="column"
 						style="max-height: 200px; overflow-y: auto; max-width: 300px; margin: 8px"
 					>
 						${this._callZomeTasks.map(callZome =>

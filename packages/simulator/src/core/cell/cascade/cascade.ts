@@ -1,12 +1,16 @@
 import {
 	ActionHash,
+	AgentPubKey,
 	AnyDhtHash,
 	Entry,
 	EntryHash,
+	Link,
 	LinkType,
 	NewEntryAction,
 	Record,
+	RegisterAgentActivity,
 	SignedActionHashed,
+	WarrantOp,
 } from '@holochain/client';
 import {
 	Details,
@@ -14,14 +18,25 @@ import {
 	EntryDetails,
 	RecordDetails,
 } from '@tnesh-stack/core-types';
-import { HashType, getHashType } from '@tnesh-stack/utils';
+import { HashType, HoloHashMap, getHashType } from '@tnesh-stack/utils';
 
 import { areEqual } from '../../../processors/hash.js';
-import { GetLinksOptions, GetOptions, GetStrategy } from '../../../types.js';
+import {
+	ChainQueryFilter,
+	GetLinksOptions,
+	GetOptions,
+	GetStrategy,
+} from '../../../types.js';
+import {
+	ActivityRequest,
+	AgentActivity,
+} from '../../hdk/host-fn/get_agent_activity.js';
+import { LinkDetails } from '../../hdk/host-fn/get_link_details.js';
+import { ChainFilter } from '../../hdk/host-fn/must_get_agent_activity.js';
 import { P2pCell } from '../../network/p2p-cell.js';
 import { computeDhtStatus, getLiveLinks } from '../dht/get.js';
 import { CellState } from '../state.js';
-import { GetEntryResponse, GetRecordResponse, Link } from './types.js';
+import { GetEntryResponse, GetRecordResponse } from './types.js';
 
 // From https://github.com/holochain/holochain/blob/develop/crates/holochain_cascade/src/lib.rs#L1523
 
@@ -145,8 +160,19 @@ export class Cascade {
 				signed_action: (result as GetRecordResponse).signed_action,
 			};
 		} else {
+			const response = result as GetEntryResponse;
+			const liveActions = response.actions.filter(
+				a =>
+					!response.deletes.find(d =>
+						areEqual(a.hashed.hash, d.hashed.content.deletes_address),
+					),
+			);
+			if (liveActions.length === 0) return undefined;
+			const oldestLiveAction = liveActions.sort(
+				(a1, a2) => a1.hashed.content.timestamp - a2.hashed.content.timestamp,
+			)[0];
 			return {
-				signed_action: (result as GetEntryResponse).live_actions[0],
+				signed_action: oldestLiveAction,
 				entry: {
 					Present: (result as GetEntryResponse).entry,
 				},
@@ -182,7 +208,7 @@ export class Cascade {
 	}
 
 	public async dht_get_links(
-		base_address: EntryHash,
+		base_address: AnyDhtHash,
 		link_type: LinkType,
 		options: GetLinksOptions,
 	): Promise<Link[]> {
@@ -196,6 +222,94 @@ export class Cascade {
 		return getLiveLinks(linksResponses);
 	}
 
+	public async dht_get_link_details(
+		base_address: AnyDhtHash,
+		link_type: LinkType,
+		options: GetLinksOptions,
+	): Promise<LinkDetails> {
+		// TODO: check if we are an authority
+
+		const linksResponses = await this.p2p.get_links(
+			base_address,
+			link_type,
+			options,
+		);
+		const createLinks = new HoloHashMap<
+			ActionHash,
+			{ create: SignedActionHashed; deletes: Array<SignedActionHashed> }
+		>();
+
+		for (const response of linksResponses) {
+			for (const linkAdd of response.link_adds) {
+				if (!createLinks.has(linkAdd.hashed.hash)) {
+					createLinks.set(linkAdd.hashed.hash, {
+						create: linkAdd,
+						deletes: [],
+					});
+				}
+			}
+		}
+
+		for (const response of linksResponses) {
+			for (const linkDelete of response.link_removes) {
+				const linkAddHash = linkDelete.hashed.content.link_add_address;
+				const existing = createLinks.get(linkAddHash);
+				if (existing) {
+					createLinks.set(linkAddHash, {
+						create: existing.create,
+						deletes: [...existing.deletes, linkDelete],
+					});
+				}
+			}
+		}
+
+		return Array.from(createLinks.values()).map(({ create, deletes }) => [
+			create,
+			deletes,
+		]);
+	}
+
+	public async dht_get_agent_activity(
+		agent: AgentPubKey,
+		query: ChainQueryFilter,
+		request: ActivityRequest,
+	): Promise<AgentActivity> {
+		const activities = await this.p2p.get_agent_activity(agent, query, request);
+		// TODO: merge agent activities
+		return activities[0];
+	}
+
+	public async dht_must_get_agent_activity(
+		agent: AgentPubKey,
+		filter: ChainFilter,
+	): Promise<Array<RegisterAgentActivity>> {
+		const activities = await this.p2p.must_get_agent_activity(agent, filter);
+		const succesful = activities.find(
+			a =>
+				(
+					a as {
+						Activity: {
+							activity: RegisterAgentActivity[];
+							warrants: WarrantOp[];
+						};
+					}
+				).Activity,
+		);
+		if (succesful) {
+			return (
+				succesful as {
+					Activity: {
+						activity: RegisterAgentActivity[];
+						warrants: WarrantOp[];
+					};
+				}
+			).Activity.activity;
+		}
+		throw new Error(
+			`Error getting agent activity: ${Object.keys(activities[0])[0]}`,
+		);
+	}
+
 	async getEntryDetails(
 		entryHash: EntryHash,
 		options: GetOptions,
@@ -204,7 +318,7 @@ export class Cascade {
 		const result = await this.p2p.get(entryHash, options);
 
 		if (!result) return undefined;
-		if ((result as GetEntryResponse).live_actions === undefined)
+		if ((result as GetEntryResponse).actions === undefined)
 			throw new Error('Unreachable');
 
 		const getEntryFull = result as GetEntryResponse;
@@ -212,14 +326,14 @@ export class Cascade {
 		const allActions = [
 			...getEntryFull.deletes,
 			...getEntryFull.updates,
-			...getEntryFull.live_actions,
+			...getEntryFull.actions,
 		];
 
 		const { rejected_actions, entry_dht_status } = computeDhtStatus(allActions);
 
 		return {
 			entry: getEntryFull.entry,
-			actions: getEntryFull.live_actions,
+			actions: getEntryFull.actions,
 			deletes: getEntryFull.deletes,
 			updates: getEntryFull.updates,
 			rejected_actions,

@@ -1,9 +1,11 @@
 import { SimulatedDna } from '../../../dnas/simulated-dna.js';
 import { BadAgentConfig } from '../../bad-agent.js';
+import { Conductor } from '../../conductor.js';
 import { P2pCell } from '../../network/p2p-cell.js';
 import { CellState } from '../state.js';
 
 export interface Workspace {
+	conductor_handle: Conductor;
 	state: CellState;
 	p2p: P2pCell;
 	dna: SimulatedDna;

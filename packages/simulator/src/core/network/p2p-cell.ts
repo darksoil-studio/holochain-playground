@@ -6,21 +6,32 @@ import {
 	DhtOp,
 	EntryHash,
 	LinkType,
+	RegisterAgentActivity,
+	encodeHashToBase64,
 } from '@holochain/client';
 import { DhtOpHash } from '@tnesh-stack/core-types';
 import { HoloHashMap } from '@tnesh-stack/utils';
 import { isEqual } from 'lodash-es';
 
+import { sleep } from '../../executor/delay-middleware.js';
 import { MiddlewareExecutor } from '../../executor/middleware-executor.js';
 import { areEqual, location } from '../../processors/hash.js';
-import { GetLinksOptions, GetOptions } from '../../types.js';
+import { ChainQueryFilter, GetLinksOptions, GetOptions } from '../../types.js';
 import {
 	GetEntryResponse,
 	GetLinksResponse,
 	GetRecordResponse,
 } from '../cell/cascade/types.js';
 import { Cell } from '../cell/cell.js';
-import { getSourceChainRecords } from '../cell/index.js';
+import {
+	MustGetAgentActivityResponse,
+	getSourceChainRecords,
+} from '../cell/index.js';
+import {
+	ActivityRequest,
+	AgentActivity,
+} from '../hdk/host-fn/get_agent_activity.js';
+import { ChainFilter } from '../hdk/host-fn/must_get_agent_activity.js';
 import { Connection } from './connection.js';
 import { DhtArc } from './dht_arc.js';
 import { SimpleBloomMod } from './gossip/bloom/index.js';
@@ -101,12 +112,17 @@ export class P2pCell {
 	}
 
 	/** P2p actions */
-
+	joining!: Promise<void>;
+	joined = false;
 	async join(containerCell: Cell): Promise<void> {
-		this.network.bootstrapService.announceCell(this.cellId, containerCell);
-		this._gossipLoop = new SimpleBloomMod(this);
-
-		await this.syncNeighbors();
+		this.joining = new Promise(async resolve => {
+			this._gossipLoop = new SimpleBloomMod(this);
+			this.network.bootstrapService.announceCell(this.cellId, containerCell);
+			await this.syncNeighbors();
+			resolve();
+		});
+		await this.joining;
+		this.joined = true;
 	}
 
 	async leave(): Promise<void> {
@@ -131,20 +147,25 @@ export class P2pCell {
 		dht_hash: AnyDhtHash,
 		ops: HoloHashMap<DhtOpHash, DhtOp>,
 	): Promise<void> {
-		await this.network.kitsune.rpc_multi(
-			this.cellId[0],
-			this.cellId[1],
-			dht_hash,
-			this.redundancyFactor,
-			this.badAgents,
-			(cell: Cell) =>
-				this._executeNetworkRequest(
-					cell,
-					NetworkRequestType.PUBLISH_REQUEST,
-					{ dhtOps: ops },
-					(cell: Cell) => cell.handle_publish(this.cellId[1], true, ops),
-				),
-		);
+		await this.joining;
+		if (this.neighbors.length > 0) {
+			// In the case of a failed join by a bad actor,
+			// publishing makes the page freeze
+			await this.network.kitsune.rpc_multi(
+				this.cellId[0],
+				this.cellId[1],
+				dht_hash,
+				this.redundancyFactor,
+				this.badAgents,
+				(cell: Cell) =>
+					this._executeNetworkRequest(
+						cell,
+						NetworkRequestType.PUBLISH_REQUEST,
+						{ dhtOps: ops },
+						(cell: Cell) => cell.handle_publish(this.cellId[1], true, ops),
+					),
+			);
+		}
 	}
 
 	async get(
@@ -187,6 +208,47 @@ export class P2pCell {
 					{ hash: base_address, options },
 					(cell: Cell) =>
 						cell.handle_get_links(base_address, link_type, options),
+				),
+		);
+	}
+
+	async get_agent_activity(
+		agent: AgentPubKey,
+		query: ChainQueryFilter,
+		request: ActivityRequest,
+	): Promise<AgentActivity[]> {
+		return this.network.kitsune.rpc_multi(
+			this.cellId[0],
+			this.cellId[1],
+			agent,
+			1, // TODO: what about this?
+			this.badAgents,
+			(cell: Cell) =>
+				this._executeNetworkRequest(
+					cell,
+					NetworkRequestType.GET_REQUEST,
+					{ agent },
+					(cell: Cell) => cell.handle_get_agent_activity(agent, query, request),
+				),
+		);
+	}
+
+	async must_get_agent_activity(
+		agent: AgentPubKey,
+		filter: ChainFilter,
+	): Promise<Array<MustGetAgentActivityResponse>> {
+		return this.network.kitsune.rpc_multi(
+			this.cellId[0],
+			this.cellId[1],
+			agent,
+			1, // TODO: what about this?
+			this.badAgents,
+			(cell: Cell) =>
+				this._executeNetworkRequest(
+					cell,
+					NetworkRequestType.GET_REQUEST,
+					{ agent },
+					(cell: Cell) => cell.handle_must_get_agent_activity(agent, filter),
 				),
 		);
 	}
@@ -235,7 +297,7 @@ export class P2pCell {
 			if (!this.cell._state.badAgents.find(a => areEqual(a, peer.agentPubKey)))
 				this.cell._state.badAgents.push(peer.agentPubKey);
 
-			throw new Error('Invalid agent');
+			// throw new Error('Invalid agent');
 		}
 	}
 
@@ -261,25 +323,35 @@ export class P2pCell {
 		this.syncNeighbors();
 	}
 
+	connecting: HoloHashMap<AgentPubKey, Promise<void>> = new HoloHashMap();
+
 	async openNeighborConnection(withPeer: Cell): Promise<Connection> {
 		if (!this.neighborConnections.has(withPeer.agentPubKey)) {
-			// Try to connect: can fail due to validation
-			// TODO: uncomment
-			/*       await this._executeNetworkRequest(
-        withPeer,
-        NetworkRequestType.CONNECT,
-        {},
-        peer =>
-          Promise.all([
-            this.check_agent_valid(withPeer),
-            withPeer.p2p.check_agent_valid(this.cell),
-          ])
-      );
- */
-			const connection = await this.connectWith(withPeer);
-			this.neighborConnections.set(withPeer.agentPubKey, connection);
+			if (this.connecting.has(withPeer.agentPubKey)) {
+				await this.connecting.get(withPeer.agentPubKey);
+			} else if (withPeer.p2p.connecting.has(this.cellId[1])) {
+				await withPeer.p2p.connecting.get(withPeer.agentPubKey);
+			} else {
+				const connectTask = async () => {
+					// Try to connect: can fail due to validation
+					await this._executeNetworkRequest(
+						withPeer,
+						NetworkRequestType.CONNECT,
+						{},
+						peer => Promise.all([withPeer.p2p.check_agent_valid(this.cell)]),
+					);
 
-			withPeer.p2p.handleOpenNeighborConnection(this.cell, connection);
+					const connection = await this.connectWith(withPeer);
+					this.neighborConnections.set(withPeer.agentPubKey, connection);
+
+					withPeer.p2p.handleOpenNeighborConnection(this.cell, connection);
+				};
+
+				const promise = connectTask();
+				this.connecting.set(withPeer.agentPubKey, promise);
+				await promise;
+				this.connecting.delete(withPeer.agentPubKey);
+			}
 		}
 		return this.neighborConnections.get(withPeer.agentPubKey) as Connection;
 	}
@@ -316,13 +388,25 @@ export class P2pCell {
 			}
 		}
 
-		this.farKnownPeers = this.network.bootstrapService
-			.getFarKnownPeers(dnaHash, myPubKey, badAgents)
-			.map(p => p.agentPubKey);
-
 		const neighbors = this.network.bootstrapService
 			.getNeighborhood(dnaHash, myPubKey, this.neighborNumber, badAgents)
-			.filter(cell => !isEqual(cell.agentPubKey, myPubKey));
+			.filter(cell => !areEqual(cell.agentPubKey, myPubKey))
+			.filter(neighbor => {
+				const theirNeighborhood = this.network.bootstrapService.getNeighborhood(
+					dnaHash,
+					neighbor.agentPubKey,
+					this.neighborNumber,
+					badAgents,
+				);
+				return theirNeighborhood.find(cell =>
+					areEqual(cell.agentPubKey, myPubKey),
+				);
+			});
+
+		this.farKnownPeers = this.network.bootstrapService
+			.getFarKnownPeers(dnaHash, myPubKey, badAgents)
+			.map(p => p.agentPubKey)
+			.filter(a => !neighbors.find(cell => areEqual(cell.agentPubKey, a)));
 
 		const newNeighbors = neighbors.filter(
 			cell => !this.neighbors.find(a => areEqual(a, cell.agentPubKey)),
@@ -336,7 +420,8 @@ export class P2pCell {
 
 		const promises = newNeighbors.map(async neighbor => {
 			try {
-				await this.openNeighborConnection(neighbor);
+				if (!neighbor._state.badAgents.find(a => areEqual(a, this.cellId[1])))
+					await this.openNeighborConnection(neighbor);
 			} catch (e) {
 				// Couldn't open connection
 			}
@@ -345,7 +430,10 @@ export class P2pCell {
 		await Promise.all(promises);
 
 		if (
-			Array.from(this.neighborConnections.keys()).length < this.neighborNumber
+			Array.from(this.neighborConnections.keys()).length <
+				this.neighborNumber / 2 &&
+			this.network.bootstrapService.cells.agentsForDna(dnaHash).length >
+				this.neighborNumber / 2
 		) {
 			setTimeout(() => this.syncNeighbors(), 400);
 		}
@@ -406,7 +494,6 @@ export class P2pCell {
 			type,
 			details,
 		};
-
 		const connection = await this.connectWith(toCell);
 
 		const result = await this.networkRequestsExecutor.execute(

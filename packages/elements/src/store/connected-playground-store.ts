@@ -1,3 +1,4 @@
+import { ValidationLimboStatus } from '@holochain-playground/simulator';
 import {
 	AdminWebsocket,
 	AgentPubKey,
@@ -9,6 +10,7 @@ import {
 	FullStateDump,
 	Record,
 } from '@holochain/client';
+import { ValidationStatus } from '@tnesh-stack/core-types';
 import { AsyncComputed, AsyncSignal, Signal } from '@tnesh-stack/signals';
 import { AGENT_PREFIX, CellMap } from '@tnesh-stack/utils';
 import { Base64 } from 'js-base64';
@@ -29,6 +31,21 @@ export class ConnectedCellStore implements CellStore {
 	sourceChain: AsyncSignal<Record[]>;
 
 	peers: AsyncSignal<AgentPubKey[]>;
+
+	validationQueue: AsyncSignal<{
+		validationLimbo: Array<{
+			op: DhtOp;
+			status: ValidationLimboStatus | undefined;
+		}>;
+		integrationLimbo: Array<{
+			op: DhtOp;
+			status: ValidationStatus | undefined;
+		}>;
+		integrated: Array<{
+			op: DhtOp;
+			status: ValidationStatus | undefined;
+		}>;
+	}>;
 
 	dhtShard: AsyncSignal<Array<DhtOp>>;
 
@@ -124,11 +141,46 @@ export class ConnectedCellStore implements CellStore {
 				value,
 			};
 		});
-		this.dhtShard = new AsyncComputed(() => {
+		this.validationQueue = new AsyncComputed(() => {
 			const state = this._state.get();
 			if (state.status !== 'completed') return state;
 
-			const value = state.value ? state.value.integration_dump.integrated : [];
+			const integrationLimbo = state.value
+				? state.value.integration_dump.integration_limbo.map(op => ({
+						op,
+						status: undefined as ValidationStatus | undefined,
+					}))
+				: [];
+			const validationLimbo = state.value
+				? state.value.integration_dump.validation_limbo.map(op => ({
+						op,
+						status: undefined as ValidationLimboStatus | undefined,
+					}))
+				: [];
+			const integrated = state.value
+				? state.value.integration_dump.integrated.map(op => ({
+						op,
+						status: undefined as ValidationStatus | undefined,
+					}))
+				: [];
+			return {
+				status: 'completed',
+				value: {
+					integrationLimbo,
+					validationLimbo,
+					integrated,
+				},
+			};
+		});
+		this.dhtShard = new AsyncComputed(() => {
+			const queue = this.validationQueue.get();
+			if (queue.status !== 'completed') return queue;
+
+			const value = queue.value.integrated
+				.filter(
+					op => true, // TODO: change when the conductor returns the validation status in dump full state
+				)
+				.map(op => op.op);
 			return {
 				status: 'completed',
 				value,

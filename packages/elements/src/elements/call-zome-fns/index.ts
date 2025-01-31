@@ -1,3 +1,4 @@
+import '@alenaksu/json-viewer';
 import {
 	Cell,
 	SimulatedDna,
@@ -5,7 +6,6 @@ import {
 } from '@holochain-playground/simulator';
 import { decodeHashFromBase64, encodeHashToBase64 } from '@holochain/client';
 import { mdiAlertOutline, mdiCheckCircleOutline } from '@mdi/js';
-import '@power-elements/json-viewer';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/copy-button/copy-button.js';
 import '@shoelace-style/shoelace/dist/components/details/details.js';
@@ -53,6 +53,9 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 
 	@property({ type: Boolean, attribute: 'hide-header' })
 	hideHeader: boolean = false;
+
+	@property({ type: Boolean, attribute: 'hide-results' })
+	hideResults: boolean = false;
 
 	// Arguments segmented by dnaHash/agentPubKey/zome/fn_name/arg_name
 	_arguments: CellMap<Dictionary<Dictionary<Dictionary<any>>>> = new CellMap();
@@ -176,16 +179,21 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 		if (!result.result.payload || typeof payload === 'string')
 			return html`<div class="row" style="gap: 4px; align-items: center">
 				<sl-tag style="overflow: hidden; text-overflow: ellipsis; flex: 1">
-					${payload}</sl-tag
+					${!payload ? 'None' : payload}</sl-tag
 				>
 				<sl-copy-button .value=${payload}></sl-copy-button>
 			</div>`;
-		else
-			return html`
-				<sl-details summary="Expand to see result">
-					<json-viewer .object=${payload} class="fill"></json-viewer>
-				</sl-details>
-			`;
+		else {
+			if (typeof payload === 'object' && Object.keys(payload).length === 0)
+				return html`
+					<sl-tag style="overflow: hidden; text-overflow: ellipsis; flex: 1">
+						${Array.isArray(payload)
+							? '<Empty array>'
+							: '<Empty object>'}</sl-tag
+					>
+				`;
+			return html` <json-viewer .data=${payload} class="fill"></json-viewer> `;
+		}
 	}
 
 	renderResults() {
@@ -208,7 +216,7 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 								<div class="flex-scrollable-y">
 									<div
 										class="column"
-										style="flex-direction: column-reverse; margin: 8px;"
+										style="flex-direction: column; margin: 8px;"
 									>
 										${join(
 											results.map(
@@ -286,13 +294,13 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 																style="margin-left: 8px;"
 															></holo-identicon>`}
 											</div>
+
+											<span
+												class="horizontal-divider"
+												style="margin-top: 16px"
+											></span>
 										`
 							}
-
-								<span
-									class="horizontal-divider"
-									style="margin-top: 16px"
-								></span>
 
 								<div class="row" style="flex: 1;">
 									<div class="column" style="flex: 1">
@@ -325,9 +333,15 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 										}
 									</div>
 
-									<span class="vertical-divider"></span>
+									${
+										this.hideResults
+											? html``
+											: html`
+													<span class="vertical-divider"></span>
 
-									${this.renderResults()}
+													${this.renderResults()}
+												`
+									}
 								</div>
 							</div>
 						</div>

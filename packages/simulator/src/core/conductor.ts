@@ -1,4 +1,11 @@
-import { AgentPubKey, CapSecret, CellId, DnaHash } from '@holochain/client';
+import {
+	AgentPubKey,
+	CapSecret,
+	CellId,
+	DnaHash,
+	RoleSettingsMap,
+	encodeHashToBase64,
+} from '@holochain/client';
 import { CellMap, HashType, HoloHashMap, hash } from '@tnesh-stack/utils';
 import isEqual from 'lodash-es/isEqual.js';
 
@@ -143,10 +150,10 @@ export class Conductor {
     return templateHash;
   } */
 
-	async cloneCell(
+	async createCloneCell(
 		installedAppId: string,
 		cellRole: string,
-		networkSeed?: string,
+		networkSeed: string,
 		properties?: Dictionary<any>,
 		membraneProof?: any,
 	): Promise<Cell> {
@@ -170,7 +177,7 @@ export class Conductor {
 
 		const dna: SimulatedDna = { ...dnaToClone };
 
-		if (networkSeed) dna.networkSeed = networkSeed;
+		dna.networkSeed = networkSeed;
 		if (properties) dna.properties = properties;
 
 		const newDnaHash = hashDna(dna);
@@ -186,16 +193,22 @@ export class Conductor {
 			installedApp.agent_pub_key,
 			membraneProof,
 		);
-		this.installedHapps[installedAppId].roles[cellRole].clones.push(
-			cell.cellId,
-		);
 
+		const clonesIds = Object.keys(
+			this.installedHapps[installedAppId].roles[cellRole].clones,
+		).map(cloneName => parseInt(cloneName.split('.')[1]));
+		const cloneId = clonesIds.sort((a, b) => b - a)[0];
+
+		const cloneName = `${cellRole}.${cloneId !== undefined ? cloneId + 1 : 0}`;
+
+		this.installedHapps[installedAppId].roles[cellRole].clones[cloneName] =
+			cell.cellId;
 		return cell;
 	}
 
-	async installHapp(
+	async installApp(
 		happ: SimulatedHappBundle,
-		membrane_proofs: Dictionary<any>, // segmented by CellRole
+		roles_settings: RoleSettingsMap,
 	): Promise<void> {
 		const rand = `${Math.random().toString()}/${Date.now()}`;
 		const agentId = hash(rand, HashType.AGENT);
@@ -206,40 +219,41 @@ export class Conductor {
 			roles: {},
 		};
 
-		for (const [cellRole, dna] of Object.entries(happ.roles)) {
-			let dnaHash: DnaHash | undefined = undefined;
-			if (ArrayBuffer.isView(dna.dna)) {
-				dnaHash = dna.dna;
-				if (!this.registeredDnas.get(dnaHash))
-					throw new Error(
-						`Trying to reference a Dna that this conductor doesn't have registered`,
-					);
-			} else if (typeof dna.dna === 'object') {
-				dnaHash = hashDna(dna.dna);
-				this.registeredDnas.set(dnaHash, dna.dna);
-			} else {
-				throw new Error(
-					'Bad DNA Slot: you must pass in the hash of the dna or the simulated Dna object',
-				);
+		for (const [cellRole, dnaRole] of Object.entries(happ.roles)) {
+			const rolesSettings = roles_settings[cellRole];
+			const dna = { ...dnaRole.dna };
+			if (rolesSettings && rolesSettings.type === 'Provisioned') {
+				if (rolesSettings.modifiers?.network_seed) {
+					dna.networkSeed = rolesSettings.modifiers?.network_seed;
+				}
+				if (rolesSettings.modifiers?.properties) {
+					dna.properties = rolesSettings.modifiers?.properties;
+				}
 			}
+			const dnaHash = hashDna(dna);
 
 			this.installedHapps[happ.name].roles[cellRole] = {
 				base_cell_id: [dnaHash, agentId],
-				is_provisioned: !dna.deferred,
-				clones: [],
+				is_provisioned: !dnaRole.deferred,
+				clones: {},
 			};
-
-			if (!dna.deferred) {
+			this.registeredDnas.set(dnaHash, dna);
+			if (
+				!dnaRole.deferred &&
+				(!rolesSettings || rolesSettings.type === 'Provisioned')
+			) {
 				const cell = await this.createCell(
-					this.registeredDnas.get(dnaHash),
+					dna,
 					agentId,
-					membrane_proofs[cellRole],
+					rolesSettings?.modifiers?.network_seed,
+					rolesSettings?.modifiers?.properties,
+					rolesSettings?.membrane_proof,
 				);
 			}
 		}
 	}
 
-	public async uninstallHapp(appId: string) {
+	public async uninstallApp(appId: string) {
 		const happ = this.installedHapps[appId];
 		for (const [roleName, appRole] of Object.entries(happ.roles)) {
 			if (appRole.is_provisioned) {
@@ -250,7 +264,7 @@ export class Conductor {
 				}
 			}
 
-			for (const cloneCell of appRole.clones) {
+			for (const [cloneName, cloneCell] of Object.entries(appRole.clones)) {
 				const cell = this.cells.get(cloneCell);
 				if (cell) {
 					await cell.shutdown();
@@ -265,9 +279,18 @@ export class Conductor {
 	private async createCell(
 		dna: SimulatedDna,
 		agentPubKey: AgentPubKey,
+		networkSeed?: string,
+		properties?: any,
 		membraneProof?: any,
 	): Promise<Cell> {
-		const newDnaHash = hashDna(dna);
+		const dnaToInstall = { ...dna };
+		if (networkSeed) {
+			dnaToInstall.networkSeed = networkSeed;
+		}
+		if (properties) {
+			dnaToInstall.properties = properties;
+		}
+		const newDnaHash = hashDna(dnaToInstall);
 
 		const cellId: CellId = [newDnaHash, agentPubKey];
 		const cell = await Cell.create(this, cellId, membraneProof);
@@ -275,6 +298,8 @@ export class Conductor {
 		this.cells.set(cellId, cell);
 
 		this.emit(ConductorSignalType.CellsChanged);
+
+		await cell.p2p.join(cell);
 
 		return cell;
 	}
@@ -293,7 +318,9 @@ export class Conductor {
 		const cell = this.cells.get(args.cellId);
 
 		if (!cell)
-			throw new Error(`No cells existst with cellId ${dnaHash}:${agentPubKey}`);
+			throw new Error(
+				`No cells exists with cellId ${encodeHashToBase64(dnaHash)}:${encodeHashToBase64(agentPubKey)}`,
+			);
 
 		return cell.callZomeFn({
 			zome: args.zome,

@@ -5,6 +5,7 @@ import {
 	Record,
 	SignedActionHashed,
 } from '@holochain/client';
+import { ValidationStatus } from '@tnesh-stack/core-types';
 
 import { isPublic } from './core/cell/index.js';
 import { CellState } from './core/cell/state.js';
@@ -41,8 +42,4 @@ export function selectSourceChain(cellState: CellState): Record[] {
 						},
 		};
 	});
-}
-
-export function selectDhtShard(cellState: CellState): DhtOp[] {
-	return Array.from(cellState.integratedDHTOps.values()).map(v => v.op);
 }

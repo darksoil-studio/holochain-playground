@@ -33,7 +33,7 @@ import SlMenu from '@shoelace-style/shoelace/dist/components/menu/menu.js';
 import '@shoelace-style/shoelace/dist/components/range/range.js';
 import '@shoelace-style/shoelace/dist/components/range/range.js';
 import '@shoelace-style/shoelace/dist/components/switch/switch.js';
-import { DhtOpHash } from '@tnesh-stack/core-types';
+import { DhtOpHash, ValidationStatus } from '@tnesh-stack/core-types';
 import { wrapPathInSvg } from '@tnesh-stack/elements';
 import '@tnesh-stack/elements/dist/elements/holo-identicon.js';
 import { AsyncComputed, Signal, watch } from '@tnesh-stack/signals';
@@ -60,8 +60,8 @@ import { cytoscapeOptions, layoutConfig } from './graph.js';
 import {
 	allPeersEdges,
 	dhtCellsNodes,
-	isHoldingElement,
 	isHoldingEntry,
+	isHoldingRecord,
 	simulatedNeighbors,
 	stringifyCellId,
 } from './processors.js';
@@ -202,6 +202,7 @@ export class DhtCells extends PlaygroundElement {
 	firstUpdated() {
 		effect(() => {
 			this.store.activeDna.get();
+			if (!this._graph.cy) return;
 			const collection = this._graph.cy
 				.elements()
 				.filter((el: any) => el.data('ghost') === true);
@@ -228,7 +229,7 @@ export class DhtCells extends PlaygroundElement {
 			const holdingCells = dhtShards.value.filter(
 				dhtShard =>
 					isHoldingEntry(dhtShard, activeDhtHash) ||
-					isHoldingElement(dhtShard, activeDhtHash),
+					isHoldingRecord(dhtShard, activeDhtHash),
 			);
 
 			for (const cellId of holdingCells.cellIds()) {
@@ -581,7 +582,23 @@ export class DhtCells extends PlaygroundElement {
 									></sl-icon>
 									Worfklows</sl-button
 								>
-								<sl-menu id="active-workflows-menu">
+								<sl-menu
+									id="active-workflows-menu"
+									@sl-select=${(event: any) => {
+										const checked = event.detail.item.checked;
+										const value = event.detail.item.value;
+
+										this.workflowsToDisplay = this.workflowsToDisplay.filter(
+											w => w !== value,
+										);
+										if (checked) {
+											this.workflowsToDisplay = [
+												...this.workflowsToDisplay,
+												value,
+											];
+										}
+									}}
+								>
 									${workflowsNames.map(
 										type => html`
 											<sl-menu-item
@@ -590,19 +607,6 @@ export class DhtCells extends PlaygroundElement {
 													type as WorkflowType,
 												)}
 												value=${type}
-												@sl-select=${(event: any) => {
-													const checked = event.detail.item.checked;
-													const value = event.detail.item.value;
-
-													this.workflowsToDisplay =
-														this.workflowsToDisplay.filter(w => w !== value);
-													if (checked) {
-														this.workflowsToDisplay = [
-															...this.workflowsToDisplay,
-															value,
-														];
-													}
-												}}
 											>
 												${type}
 											</sl-menu-item>

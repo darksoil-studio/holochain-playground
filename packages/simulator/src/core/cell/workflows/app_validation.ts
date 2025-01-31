@@ -4,13 +4,17 @@ import {
 	AgentValidationPkg,
 	AppEntryDef,
 	ChainOp,
+	ChainOpType,
 	CreateLink,
+	Delete,
 	DeleteLink,
 	DhtOp,
 	Entry,
 	NewEntryAction,
 	Record,
 	RecordEntry,
+	SignedActionHashed,
+	Update,
 } from '@holochain/client';
 import { HashType, hash, hashAction } from '@tnesh-stack/utils';
 import { isEqual } from 'lodash-es';
@@ -46,7 +50,13 @@ import {
 	getDhtOpSignature,
 	getEntry,
 	isWarrantOp,
+	recordToDhtOps,
 } from '../utils.js';
+import {
+	MissingDependenciesError,
+	Op,
+	chainOpToRecord,
+} from './app_validation/types.js';
 import { integrate_dht_ops_task } from './integrate_dht_ops.js';
 import { DepsMissing } from './sys_validation.js';
 import {
@@ -111,7 +121,9 @@ export const app_validation = async (
 
 	let triggers = [integrate_dht_ops_task()];
 
-	if (!workComplete) triggers.push(app_validation_task());
+	if (!workComplete) {
+		triggers.push(app_validation_task());
+	}
 
 	return {
 		result: undefined,
@@ -140,20 +152,90 @@ function shouldValidate(
 	return !isEqual(getDhtOpAction(dhtOp).author, agentPubKey);
 }
 
+export async function chainOpToOp(
+	workspace: Workspace,
+	chainOp: ChainOp,
+): Promise<Op | DepsMissing> {
+	const record = chainOpToRecord(chainOp);
+	const entry = getEntry({ ChainOp: chainOp });
+	switch (Object.keys(chainOp)[0]) {
+		case ChainOpType.StoreRecord:
+			return {
+				StoreRecord: {
+					record,
+				},
+			};
+		case ChainOpType.StoreEntry:
+			return {
+				StoreEntry: {
+					action: record.signed_action as SignedActionHashed<NewEntryAction>,
+					entry: entry!,
+				},
+			};
+		case ChainOpType.RegisterUpdatedRecord:
+		case ChainOpType.RegisterUpdatedContent:
+			return {
+				RegisterUpdate: {
+					new_entry: entry,
+					update: record.signed_action as SignedActionHashed<Update>,
+				},
+			};
+		case ChainOpType.RegisterDeletedEntryAction:
+		case ChainOpType.RegisterDeletedBy:
+			return {
+				RegisterDelete: {
+					delete: record.signed_action as SignedActionHashed<Delete>,
+				},
+			};
+		case ChainOpType.RegisterAgentActivity:
+			return {
+				RegisterAgentActivity: {
+					action: record.signed_action,
+					cached_entry: undefined, // TODO: fix this
+				},
+			};
+		case ChainOpType.RegisterAddLink:
+			return {
+				RegisterCreateLink: {
+					create_link: record.signed_action as SignedActionHashed<CreateLink>,
+				},
+			};
+		case ChainOpType.RegisterRemoveLink:
+			const delete_link =
+				record.signed_action as SignedActionHashed<DeleteLink>;
+			const cascade = new Cascade(workspace.state, workspace.p2p);
+			const create_link = await cascade.retrieve_action(
+				delete_link.hashed.content.link_add_address,
+				{
+					strategy: GetStrategy.Contents,
+				},
+			);
+			if (!create_link)
+				return {
+					depsHashes: [delete_link.hashed.content.link_add_address],
+				};
+			return {
+				RegisterDeleteLink: {
+					delete_link,
+					create_link: create_link.hashed.content as CreateLink,
+				},
+			};
+		default:
+			throw new Error(`Unknown DhtOp type: ${Object.keys(chainOp)[0]}`);
+	}
+}
 export async function validate_op(
-	op: ChainOp,
+	chainOp: ChainOp,
 	from_agent: AgentPubKey | undefined,
 	workspace: Workspace,
 ): Promise<ValidationOutcome> {
-	const record = dht_ops_to_record(op);
-
-	const entry_type = (record.signed_action.hashed.content as NewEntryAction)
-		.entry_type;
-	if (entry_type === 'CapClaim' || entry_type === 'CapGrant')
+	const op = await chainOpToOp(workspace, chainOp);
+	if ((op as DepsMissing).depsHashes)
 		return {
-			valid: true,
-			resolved: true,
+			resolved: false,
+			depsHashes: (op as DepsMissing).depsHashes,
 		};
+	const record = chainOpToRecord(chainOp);
 
 	const maybeEntryDef = await get_associated_entry_def(
 		record,
@@ -176,53 +258,7 @@ export async function validate_op(
 
 	const zomes = zomes_to_invoke as Array<SimulatedZome>;
 
-	const action = record.signed_action.hashed.content;
-	if (action.type === ActionType.DeleteLink) {
-		return run_delete_link_validation_callback(zomes[0], action, workspace);
-	} else if (action.type === ActionType.CreateLink) {
-		return run_create_link_validation_callback(zomes[0], action, workspace);
-	} else {
-		return run_validation_callback_inner(
-			zomes,
-			record,
-			maybeEntryDef as EntryDef,
-			workspace,
-		);
-	}
-}
-
-function dht_ops_to_record(op: ChainOp): Record {
-	const action = getDhtOpAction(op);
-	const actionHash = hashAction(action);
-	let entry: RecordEntry = {
-		NotApplicable: undefined,
-	};
-	if ((action as NewEntryAction).entry_hash) {
-		const e = getEntry({ ChainOp: op });
-		const publicEntryType = isPublic((action as NewEntryAction).entry_type);
-		entry = e
-			? {
-					Present: e,
-				}
-			: publicEntryType
-				? {
-						NotStored: undefined,
-					}
-				: {
-						Hidden: undefined,
-					};
-	}
-
-	return {
-		entry,
-		signed_action: {
-			hashed: {
-				content: action,
-				hash: actionHash,
-			},
-			signature: getDhtOpSignature(op),
-		},
-	};
+	return run_validation_callback_inner(zomes, op as Op, workspace);
 }
 
 export async function run_validation_callback_direct(
@@ -231,6 +267,24 @@ export async function run_validation_callback_direct(
 	record: Record,
 	workspace: Workspace,
 ): Promise<ValidationOutcome> {
+	const ops = recordToDhtOps(record);
+
+	for (const dhtOp of ops) {
+		const op = await chainOpToOp(
+			workspace,
+			(dhtOp as { ChainOp: ChainOp }).ChainOp,
+		);
+		if ((op as DepsMissing).depsHashes)
+			throw new MissingDependenciesError((op as DepsMissing).depsHashes);
+
+		const outcome = await run_validation_callback_inner(
+			[zome],
+			op as Op,
+			workspace,
+		);
+		if (!outcome.resolved) return outcome;
+		if (!outcome.valid) return outcome;
+	}
 	const maybeEntryDef = await get_associated_entry_def(record, dna, workspace);
 
 	if (maybeEntryDef && (maybeEntryDef as DepsMissing).depsHashes)
@@ -239,14 +293,10 @@ export async function run_validation_callback_direct(
 			depsHashes: (maybeEntryDef as DepsMissing).depsHashes,
 		};
 
-	// TODO: implement validation package
-
-	return run_validation_callback_inner(
-		[zome],
-		record,
-		maybeEntryDef as EntryDef | undefined,
-		workspace,
-	);
+	return {
+		resolved: true,
+		valid: true,
+	};
 }
 
 async function get_associated_entry_def(
@@ -352,24 +402,15 @@ async function get_zomes_to_invoke(
 
 async function run_validation_callback_inner(
 	zomes_to_invoke: Array<SimulatedZome>,
-	record: Record,
-	entry_def: EntryDef | undefined,
+	op: Op,
 	workspace: Workspace,
 ): Promise<ValidationOutcome> {
-	const fnsToCall = get_record_validate_functions_to_invoke(record, entry_def);
-
-	return invoke_validation_fns(
-		zomes_to_invoke,
-		fnsToCall,
-		{ record },
-		workspace,
-	);
+	return invoke_validation_fns(zomes_to_invoke, op, workspace);
 }
 
 async function invoke_validation_fns(
 	zomes_to_invoke: Array<SimulatedZome>,
-	fnsToCall: string[],
-	payload: any,
+	payload: Op,
 	workspace: Workspace,
 ): Promise<ValidationOutcome> {
 	const cascade = new Cascade(workspace.state, workspace.p2p);
@@ -378,20 +419,28 @@ async function invoke_validation_fns(
 		state: workspace.state,
 		dna: workspace.dna,
 		p2p: workspace.p2p,
+		conductor_handle: workspace.conductor_handle,
 	};
 
 	for (const zome of zomes_to_invoke) {
-		for (const validateFn of fnsToCall) {
-			if (zome.validation_functions[validateFn]) {
-				const context = buildValidationFunctionContext(
-					hostFnWorkspace,
-					workspace.dna.zomes.findIndex(z => z === zome),
-				);
+		if (zome.validate) {
+			const context = buildValidationFunctionContext(
+				hostFnWorkspace,
+				workspace.dna.zomes.findIndex(z => z === zome),
+			);
 
+			try {
 				const outcome: ValidationOutcome =
-					await zome.validation_functions[validateFn](context)(payload);
+					await zome.validate(context)(payload);
 				if (!outcome.resolved) return outcome;
 				else if (!outcome.valid) return outcome;
+			} catch (e) {
+				if (e instanceof MissingDependenciesError) {
+					return {
+						resolved: false,
+						depsHashes: e.missingDepsHashes,
+					};
+				} else throw e;
 			}
 		}
 	}
@@ -402,126 +451,35 @@ async function invoke_validation_fns(
 export async function run_agent_validation_callback(
 	workspace: Workspace,
 	records: Record[],
-) {
+): Promise<ValidationOutcome> {
 	const create_agent_record = records[2];
-	const fnsToCall = ['validate_create_agent'];
 
 	const zomes_to_invoke = await get_zomes_to_invoke(
 		create_agent_record,
 		workspace,
 	);
 
-	const membrane_proof = (
-		records[1].signed_action.hashed.content as AgentValidationPkg
-	).membrane_proof;
+	const ops = recordToDhtOps(create_agent_record);
 
-	return invoke_validation_fns(
-		zomes_to_invoke as SimulatedZome[],
-		fnsToCall,
-		{
-			record: records[2],
-			membrane_proof,
-			agent_pub_key: create_agent_record.signed_action.hashed.content.author,
-		},
-		workspace,
-	);
-}
-
-export async function run_create_link_validation_callback(
-	zome: SimulatedZome,
-	create_link: CreateLink,
-	workspace: Workspace,
-): Promise<ValidationOutcome> {
-	const validateCreateLink = 'validate_create_link';
-
-	if (zome.validation_functions[validateCreateLink]) {
-		const hostFnWorkspace: HostFnWorkspace = {
-			cascade: new Cascade(workspace.state, workspace.p2p),
-			state: workspace.state,
-			dna: workspace.dna,
-			p2p: workspace.p2p,
-		};
-		const context = buildValidationFunctionContext(
-			hostFnWorkspace,
-			workspace.dna.zomes.findIndex(z => z === zome),
+	for (const dhtOp of ops) {
+		const op = await chainOpToOp(
+			workspace,
+			(dhtOp as { ChainOp: ChainOp }).ChainOp,
 		);
+		if ((op as DepsMissing).depsHashes)
+			throw new MissingDependenciesError((op as DepsMissing).depsHashes);
 
-		const outcome: ValidationOutcome = await zome.validation_functions[
-			validateCreateLink
-		](context)({ create_link });
-
-		return outcome;
+		const outcome = await run_validation_callback_inner(
+			zomes_to_invoke as SimulatedZome[],
+			op as Op,
+			workspace,
+		);
+		if (!outcome.resolved) return outcome;
+		if (!outcome.valid) return outcome;
 	}
 
 	return {
 		resolved: true,
 		valid: true,
 	};
-}
-
-export async function run_delete_link_validation_callback(
-	zome: SimulatedZome,
-	delete_link: DeleteLink,
-	workspace: Workspace,
-): Promise<ValidationOutcome> {
-	const validateCreateLink = 'validate_delete_link';
-
-	if (zome.validation_functions[validateCreateLink]) {
-		const hostFnWorkspace: HostFnWorkspace = {
-			cascade: new Cascade(workspace.state, workspace.p2p),
-			state: workspace.state,
-			dna: workspace.dna,
-			p2p: workspace.p2p,
-		};
-		const context = buildValidationFunctionContext(
-			hostFnWorkspace,
-			workspace.dna.zomes.findIndex(z => z === zome),
-		);
-
-		const outcome: ValidationOutcome = await zome.validation_functions[
-			validateCreateLink
-		](context)({ delete_link });
-
-		return outcome;
-	}
-
-	return {
-		resolved: true,
-		valid: true,
-	};
-}
-
-function get_record_validate_functions_to_invoke(
-	record: Record,
-	maybeEntryDef: EntryDef | undefined,
-): Array<string> {
-	const fnsComponents = ['validate'];
-
-	const action = record.signed_action.hashed.content;
-
-	if (action.type === ActionType.Create) fnsComponents.push('create');
-	if (action.type === ActionType.Update) fnsComponents.push('update');
-	if (action.type === ActionType.Delete) fnsComponents.push('delete');
-
-	const entry_type = (action as NewEntryAction).entry_type;
-	if (entry_type) {
-		// if (entry_type === 'Agent') fnsComponents.push('agent');
-		if ((entry_type as { App: AppEntryDef }).App) {
-			fnsComponents.push('entry');
-			if (maybeEntryDef) fnsComponents.push(maybeEntryDef.id);
-		}
-	}
-
-	return unpackValidateFnsComponents(fnsComponents);
-}
-
-function unpackValidateFnsComponents(
-	fnsComponents: Array<string>,
-): Array<string> {
-	const validateFunctions = [fnsComponents[0]];
-
-	for (let i = 1; i < fnsComponents.length; i++) {
-		validateFunctions.push(`${validateFunctions[i - 1]}_${fnsComponents[i]}`);
-	}
-	return validateFunctions;
 }

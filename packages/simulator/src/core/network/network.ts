@@ -59,7 +59,7 @@ export class Network {
 			neighbors: [],
 			farKnownPeers: [],
 			redundancyFactor: 3,
-			neighborNumber: 5,
+			neighborNumber: 6,
 			badAgents: [],
 		};
 

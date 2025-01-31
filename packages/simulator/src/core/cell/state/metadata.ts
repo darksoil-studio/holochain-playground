@@ -1,5 +1,6 @@
 import {
 	ActionHash,
+	AgentPubKey,
 	EntryHash,
 	LinkType,
 	NewEntryAction,
@@ -15,6 +16,7 @@ export interface Metadata {
 	system_meta: HoloHashMap<EntryHash, SysMetaVal[]>;
 	link_meta: Array<{ key: LinkMetaKey; value: LinkMetaVal }>;
 	misc_meta: HoloHashMap<ActionHash, MiscMetaVal>;
+	activity: HoloHashMap<AgentPubKey, ActionHash[]>;
 }
 
 export type SysMetaVal =
