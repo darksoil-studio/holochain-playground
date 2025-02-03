@@ -61,7 +61,7 @@ export class EntryContents extends PlaygroundElement {
 														? getEntryContents(activeContent.value)
 														: activeContent.value,
 												)}
-												class="fill"
+												style="flex: 1"
 											></json-viewer>
 										</div>
 									</div>
