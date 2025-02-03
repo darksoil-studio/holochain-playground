@@ -112,12 +112,12 @@ export class ConductorHapps extends PlaygroundElement {
 				encodeHashToBase64(activeDna) === encodeHashToBase64(dnaHash(cellInfo)),
 		}));
 		return html`
-			<vaadin-grid .items=${items} .allRowsVisible=${true}>
+			<vaadin-grid style="flex: 1" .items=${items} .allRowsVisible=${true}>
 				<vaadin-grid-sort-column
 					path="role"
 					header="Role"
 					width="12em"
-					flex-grow="0"
+					flex-grow="${this.hideDnaModifiers ? '1' : '0'}"
 				></vaadin-grid-sort-column>
 				${this.hideDnaModifiers
 					? html``
