@@ -54,6 +54,7 @@
 			window.decode = decode;
 
 			const context = document.getElementById('context');
+			context.numberOfSimulatedConductors = 1;
 			const dhtCells = document.querySelector('dht-cells');
 			dhtCells.networkRequestsToDisplay = [
 				...dhtCells.networkRequestsToDisplay,
@@ -68,7 +69,7 @@
 			}, 5000);
 			export const postsZome = {
 				name: 'posts',
-				entry_defs: [{ entry_def_id: 'post', visibility: 'Public' }],
+				entry_defs: [{ id: 'post', visibility: 'Public' }],
 				zome_functions: {
 					create_post: {
 						call:
@@ -181,101 +182,6 @@
 			context.simulatedHapp = forumHapp();
 
 			// context.urls = ['ws://localhost:38023'];
-			context.addEventListener('playground-ready', e => {
-				const store = e.detail.store;
-
-				const conductors = store.conductors.get();
-
-				for (let i = 0; i < 4; i += 2) {
-					const conductorStore1 = conductors[i];
-					const conductorStore2 = conductors[i + 1];
-					const members = [
-						Array.from(conductorStore1.conductor.cells.cellIds())[0][1],
-						Array.from(conductorStore2.conductor.cells.cellIds())[0][1],
-					];
-					conductorStore1.conductor.createCloneCell(
-						'forum',
-						'private_drafts',
-						'',
-						{
-							members,
-						},
-					);
-					const originalName =
-						conductorStore1.name.length < conductorStore2.name.length
-							? conductorStore1.name
-							: conductorStore2.name;
-					conductorStore1.conductor.name = `${originalName}'s Laptop`;
-					conductorStore2.conductor.createCloneCell(
-						'forum',
-						'private_drafts',
-						'',
-						{
-							members,
-						},
-					);
-					conductorStore2.conductor.name = `${originalName}'s Phone`;
-				}
-
-				for (let i = 4; i < conductors.length; i++) {
-					const conductorStore1 = conductors[i];
-					const members = [
-						Array.from(conductorStore1.conductor.cells.cellIds())[0][1],
-					];
-					conductorStore1.conductor.createCloneCell(
-						'forum',
-						'private_drafts',
-						'',
-						{
-							members,
-						},
-					);
-				} //	conductorStore.conductor.setBadAgent({
-				//		disable_validation_before_publish: true,
-				//		pretend_invalid_records_are_valid: true,
-				//	});
-			});
-			document.querySelector('sl-button').addEventListener('click', async e => {
-				const playgroundStore = document.querySelector(
-					'simulated-playground-context',
-				).store;
-				const [conductorStore] = await playgroundStore.createConductors(1);
-				await conductorStore.conductor.installApp(forumHapp(), {});
-
-				const cells = playgroundStore.cellsForActiveDna.get();
-				if (cells.value.cellIds().length === 2) {
-					conductorStore.conductor.setBadAgent({
-						disable_validation_before_publish: true,
-						pretend_invalid_records_are_valid: true,
-					});
-					const members = [
-						Array.from(cells.value.cellIds())[0][1],
-						Array.from(cells.value.cellIds())[1][1],
-					];
-					conductorStore.conductor.createCloneCell(
-						'forum',
-						'private_drafts',
-						'',
-						{
-							members,
-						},
-					);
-				} else if (cells.value.cellIds().length === 1) {
-					conductorStore.conductor.setBadAgent({
-						disable_validation_before_publish: true,
-						pretend_invalid_records_are_valid: true,
-					});
-					const members = [Array.from(cells.value.cellIds())[0][1]];
-					conductorStore.conductor.createCloneCell(
-						'forum',
-						'private_drafts',
-						'',
-						{
-							members,
-						},
-					);
-				}
-			});
 		</script>
 	</body>
 </html>

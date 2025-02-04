@@ -165,6 +165,14 @@ export class P2pCell {
 						(cell: Cell) => cell.handle_publish(this.cellId[1], true, ops),
 					),
 			);
+		} else {
+			// If we don't have neighbors, at least handle the publish ourselves
+			this._executeNetworkRequest(
+				this.cell,
+				NetworkRequestType.PUBLISH_REQUEST,
+				{ dhtOps: ops },
+				(cell: Cell) => cell.handle_publish(this.cellId[1], true, ops),
+			);
 		}
 	}
 
