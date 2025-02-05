@@ -61,7 +61,6 @@ export class SimulatedCellStore implements CellStore {
 	dhtShard: AsyncSignal<Array<DhtOp>> = new AsyncComputed(() => {
 		const queue = this.validationQueue.get();
 		if (queue.status !== 'completed') return queue;
-		console.log(queue);
 		const value = queue.value.integrated
 			.filter(
 				op => true, // TODO: change when the conductor returns the validation status in dump full state

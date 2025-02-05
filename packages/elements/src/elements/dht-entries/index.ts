@@ -177,6 +177,14 @@ export class DhtEntries extends PlaygroundElement {
 								.selectedNodesIds=${this.selectedNodesIds}
 								class="fill"
 								.options=${cytoscapeConfig}
+								.klayOptions=${{
+									klay: {
+										spacing: 40,
+										compactComponents: true,
+										direction: 'RIGHT',
+										aspectRatio: this.aspectRatio,
+									},
+								}}
 								@node-selected=${(e: any) =>
 									this.store.activeDhtHash.set(
 										decodeHashFromBase64(e.detail.id()),
@@ -199,6 +207,11 @@ export class DhtEntries extends PlaygroundElement {
 				${!this.hideFilter ? this.renderFilter() : html``}
 			</div>
 		`;
+	}
+
+	get aspectRatio() {
+		const rect = this.getBoundingClientRect();
+		return rect.width / rect.height + 3;
 	}
 
 	static get styles() {
