@@ -140,7 +140,6 @@ export class ValidationQueue extends PlaygroundElement {
 					header="Status"
 					width="12em"
 					flex-grow="0"
-					.autoWidth=${true}
 					.textAlign=${'center'}
 				></vaadin-grid-sort-column>
 			</vaadin-grid>

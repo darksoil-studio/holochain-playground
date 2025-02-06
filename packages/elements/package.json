@@ -1,6 +1,6 @@
 {
 	"name": "@holochain-playground/elements",
-	"version": "0.400.6",
+	"version": "0.400.7",
 	"description": "Holochain playground elements for visual introspection and simulator interaction",
 	"author": "guillem.cordoba@gmail.com",
 	"license": "MIT",
