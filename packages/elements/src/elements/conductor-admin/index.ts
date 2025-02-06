@@ -242,7 +242,7 @@ export class ConductorAdmin extends PlaygroundElement {
 			return html`
 				<div class="column fill center-content">
 					<span class="placeholder"
-						>Select a cell to inspect its conductor</span
+						>Select a cell to inspect its conductor.</span
 					>
 				</div>
 			`;

@@ -141,7 +141,7 @@ export class DhtEntries extends PlaygroundElement {
 				@sl-change=${(e: any) => {
 					this.excludedEntryTypes = e.target.value;
 				}}
-				placeholder="No filtered entry types"
+				placeholder="No filtered entry types."
 				style="min-width: 20em"
 			>
 				<sl-icon
@@ -201,7 +201,7 @@ export class DhtEntries extends PlaygroundElement {
 								class="column"
 								style="flex: 1; align-items: center; justify-content: center;"
 							>
-								<span class="placeholder">No entries match this filter</span>
+								<span class="placeholder">No entries match this filter.</span>
 							</div>
 						`}
 				${!this.hideFilter ? this.renderFilter() : html``}

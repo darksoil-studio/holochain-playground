@@ -106,7 +106,7 @@ export class CallFunctions extends LitElement {
 						<div class="column" style="flex: 1; margin: 0 16px;">
 							${callableFunction.args.length === 0
 								? html`<span class="placeholder" style="margin-top: 28px;"
-										>This function has no arguments</span
+										>This function has no arguments.</span
 									>`
 								: callableFunction.args.map(arg =>
 										this.renderField(callableFunction, arg),
@@ -128,7 +128,7 @@ export class CallFunctions extends LitElement {
 		if (Object.keys(this.callableFns).length === 0)
 			return html`<div class="fill center-content">
 				<span class="placeholder" style="padding: 24px;"
-					>There are no functions to call</span
+					>There are no functions to call.</span
 				>
 			</div> `;
 

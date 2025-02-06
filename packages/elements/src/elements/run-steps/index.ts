@@ -80,7 +80,7 @@ export class RunSteps extends PlaygroundElement<SimulatedPlaygroundStore> {
 			case 'completed':
 				if (!this.steps)
 					return html`<div class="center-content" style="flex: 1;">
-						<span class="placeholder">There are no steps to run</span>
+						<span class="placeholder">There are no steps to run.</span>
 					</div>`;
 				return html`
 					<div class="row">

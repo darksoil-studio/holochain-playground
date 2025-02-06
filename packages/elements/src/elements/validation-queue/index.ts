@@ -108,27 +108,39 @@ export class ValidationQueue extends PlaygroundElement {
 				<vaadin-grid-sort-column
 					path="type"
 					header="Type"
-					width="12em"
 					flex-grow="1"
 				></vaadin-grid-sort-column>
 				<vaadin-grid-template-renderer-column
 					header="Basis"
+					.textAlign=${'center'}
 					width="5em"
+					flex-grow="0"
+					.autoWidth=${true}
 					.getId=${(item: any) => `${item.type}${item.actionHash}`}
 					.templateRenderer=${(item: any) =>
-						html`<holo-identicon hash="${item.basis}"></holo-identicon>`}
+						html`<holo-identicon
+							style="height: 32px; justify-self: center"
+							hash="${item.basis}"
+						></holo-identicon>`}
 				></vaadin-grid-template-renderer-column>
 				<vaadin-grid-template-renderer-column
 					header="Action"
 					width="5em"
+					flex-grow="0"
+					.autoWidth=${true}
 					.getId=${(item: any) => `${item.type}${item.actionHash}`}
 					.templateRenderer=${(item: any) =>
-						html`<holo-identicon hash="${item.actionHash}"></holo-identicon>`}
+						html`<holo-identicon
+							style="height: 32px;; justify-self: center"
+							hash="${item.actionHash}"
+						></holo-identicon>`}
 				></vaadin-grid-template-renderer-column>
 				<vaadin-grid-sort-column
 					path="status"
 					header="Status"
 					width="8em"
+					flex-grow="0"
+					.autoWidth=${true}
 					.textAlign=${'center'}
 				></vaadin-grid-sort-column>
 			</vaadin-grid>
@@ -384,7 +396,7 @@ export class ValidationQueue extends PlaygroundElement {
 				vaadin-grid::part(action) {
 					background-color: lightgrey;
 				}
-				vaadin-grid::part(row) {
+				vaadin-grid::part(body-row) {
 					height: 46px;
 				}
 			`,

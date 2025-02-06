@@ -31,7 +31,7 @@ export function adminApi(
 					render(args, setValue) {
 						if (nonInstalledHapps.length === 0)
 							return html`<span class="placeholder"
-								>There are no hApps that you don't have installed</span
+								>There are no hApps that you don't have installed.</span
 							>`;
 
 						return html`<mwc-select
@@ -59,7 +59,7 @@ export function adminApi(
 							return html`<div class="column">
 								<span>Membrane Proofs</span
 								><span style="margin-top: 4px;" class="placeholder"
-									>Select a hApp to install</span
+									>Select a hApp to install.</span
 								>
 							</div>`;
 
@@ -166,7 +166,7 @@ export function adminApi(
 							${args['cellRole']
 								? propertyNames.length === 0
 									? html`<span style="margin-top: 4px;" class="placeholder"
-											>This Dna has no properties</span
+											>This Dna has no properties.</span
 										>`
 									: html`
 											${propertyNames.map(
@@ -185,7 +185,7 @@ export function adminApi(
 											)}
 										`
 								: html`<span style="margin-top: 4px;" class="placeholder"
-										>Select a Dna role</span
+										>Select a Dna role.</span
 									>`}
 						</div>`;
 					},

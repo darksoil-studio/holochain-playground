@@ -147,7 +147,7 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 		if (zomeFns.length === 0)
 			return html`<div class="fill center-content">
 				<span class="placeholder" style="padding: 24px;"
-					>This zome has no functions</span
+					>This zome has no functions.</span
 				>
 			</div> `;
 
@@ -207,7 +207,7 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 					? html`
 							<div class="row fill center-content">
 								<span class="placeholder" style="margin: 0 24px;"
-									>Call a ZomeFn to see its results</span
+									>Call a ZomeFn to see its results.</span
 								>
 							</div>
 						`
@@ -348,7 +348,7 @@ export class CallZomeFns extends PlaygroundElement<SimulatedPlaygroundStore> {
 						`
 					: html`<div class="fill center-content placeholder">
 							<span style="padding: 24px;"
-								>Select a cell to call its zome functions</span
+								>Select a cell to call its zome functions.</span
 							>
 						</div>`}
 			</div>

@@ -70,7 +70,7 @@ export class EntryContents extends PlaygroundElement {
 						`
 					: html`
 							<div class="column fill center-content">
-								<span class="placeholder">Select entry to inspect</span>
+								<span class="placeholder">Select entry to inspect.</span>
 							</div>
 						`}
 			</div>
