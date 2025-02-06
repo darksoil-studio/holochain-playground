@@ -113,7 +113,6 @@ export class ValidationQueue extends PlaygroundElement {
 				<vaadin-grid-template-renderer-column
 					header="Basis"
 					.textAlign=${'center'}
-					width="5em"
 					flex-grow="0"
 					.autoWidth=${true}
 					.getId=${(item: any) => `${item.type}${item.actionHash}`}
@@ -125,7 +124,6 @@ export class ValidationQueue extends PlaygroundElement {
 				></vaadin-grid-template-renderer-column>
 				<vaadin-grid-template-renderer-column
 					header="Action"
-					width="5em"
 					flex-grow="0"
 					.autoWidth=${true}
 					.getId=${(item: any) => `${item.type}${item.actionHash}`}
@@ -138,7 +136,7 @@ export class ValidationQueue extends PlaygroundElement {
 				<vaadin-grid-sort-column
 					path="status"
 					header="Status"
-					width="12em"
+					width="160px"
 					flex-grow="0"
 					.textAlign=${'center'}
 				></vaadin-grid-sort-column>
