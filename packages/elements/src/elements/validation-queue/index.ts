@@ -104,6 +104,7 @@ export class ValidationQueue extends PlaygroundElement {
 					if (hashB64 === model.item.basis) return 'basis';
 					if (hashB64 === model.item.actionHash) return 'action';
 				}}
+				style="height: 100%"
 			>
 				<vaadin-grid-sort-column
 					path="type"
@@ -247,7 +248,7 @@ export class ValidationQueue extends PlaygroundElement {
 			return this.renderIntegrationLimbo(integrationLimbo);
 
 		return html`
-			<sl-tab-group>
+			<sl-tab-group style="flex: 1">
 				${this.hideValidationLimbo
 					? html``
 					: html`
@@ -395,6 +396,9 @@ export class ValidationQueue extends PlaygroundElement {
 				}
 				vaadin-grid::part(body-row) {
 					height: 46px;
+				}
+				sl-tab-panel {
+					--padding: 0;
 				}
 			`,
 		];
