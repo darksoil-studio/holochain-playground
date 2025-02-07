@@ -57,6 +57,7 @@ export const call: HostFn<CallFn> =
 			to_cell,
 			workspace.conductor_handle,
 		);
+		if (!cellId) throw new Error('Target cell was not found.');
 
 		return workspace.conductor_handle.callZomeFn({
 			cellId,
