@@ -80,6 +80,7 @@ export class EntryContents extends PlaygroundElement {
 	static styles = [
 		css`
 			:host {
+				display: flex;
 				flex: 1;
 			}
 		`,

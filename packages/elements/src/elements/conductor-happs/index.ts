@@ -116,7 +116,7 @@ export class ConductorHapps extends PlaygroundElement {
 				<vaadin-grid-sort-column
 					path="role"
 					header="Role"
-					width="12em"
+					width="180px"
 					flex-grow="${this.hideDnaModifiers ? '1' : '0'}"
 				></vaadin-grid-sort-column>
 				${this.hideDnaModifiers
@@ -140,6 +140,7 @@ export class ConductorHapps extends PlaygroundElement {
 				<vaadin-grid-template-renderer-column
 					header="DNA Hash"
 					flex-grow="0"
+					.autoWidth=${true}
 					.getId=${(item: any) => item.dnaHash}
 					.templateRenderer=${(item: any) =>
 						html`<div
@@ -300,6 +301,7 @@ export class ConductorHapps extends PlaygroundElement {
 			css`
 				:host {
 					display: flex;
+					flex: 1;
 					min-height: 300px;
 				}
 				.bottom-border {
