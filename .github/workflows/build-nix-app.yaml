@@ -3,9 +3,9 @@ on:
   # Trigger the workflow on push or pull request,
   # but only for the main branch
   push: 
-    branches: [ main ]
+    branches: [ main, main-0.4 ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, main-0.4 ]
 
 jobs:
   build-and-cache-nix-tauri-app:
@@ -45,7 +45,7 @@ jobs:
         uses: dcarbone/install-jq-action@v2
 
       - name: Pin hc-playground
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && github.ref_name == 'main'
         env:
           CACHIX_AUTH_TOKEN: "${{ secrets.DARKSOIL_CACHIX_AUTH_TOKEN }}"
         run: |
