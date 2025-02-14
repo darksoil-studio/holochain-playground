@@ -26,7 +26,7 @@
       perSystem = { config, pkgs, system, inputs', lib, ... }: rec {
         devShells.default = pkgs.mkShell {
           inputsFrom = [
-            inputs.holonix.devShells.${system}.default
+            inputs'.holonix.devShells.default
             inputs'.tnesh-stack.devShells.synchronized-pnpm
           ];
           packages = [ pkgs.nodejs_20 inputs'.p2p-shipyard.packages.hc-pilot ];
