@@ -1,6 +1,6 @@
 import '@alenaksu/json-viewer';
 import { areEqual } from '@holochain-playground/simulator';
-import { AnyDhtHash } from '@holochain/client';
+import { AnyDhtHash, encodeHashToBase64 } from '@holochain/client';
 import { mdiHelpCircleOutline, mdiInformationOutline } from '@mdi/js';
 import { decode } from '@msgpack/msgpack';
 import { SlInput } from '@shoelace-style/shoelace';
@@ -48,7 +48,7 @@ export class SearchDhtEntry extends PlaygroundElement {
 
 		for (const [actionHash, action] of Array.from(summary.actions.entries())) {
 			const str = JSON.stringify(shortenStrRec(action));
-			if (str.includes(filter)) {
+			if (encodeHashToBase64(actionHash) === filter || str.includes(filter)) {
 				matchingEntries.set(actionHash, {
 					dhtObject: action,
 					matchingString: '',
@@ -59,7 +59,7 @@ export class SearchDhtEntry extends PlaygroundElement {
 		for (const [entryHash, entry] of Array.from(summary.entries.entries())) {
 			const object = entry.entry_type === 'App' ? decode(entry.entry) : entry;
 			const str = JSON.stringify(shortenStrRec(object));
-			if (str.includes(filter)) {
+			if (encodeHashToBase64(entryHash) === filter || str.includes(filter)) {
 				matchingEntries.set(entryHash, {
 					dhtObject: object,
 					matchingString: '',
