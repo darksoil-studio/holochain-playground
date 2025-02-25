@@ -17,6 +17,7 @@ export * from './elements/conductor-happs/index.js';
 export * from './elements/validation-queue/index.js';
 
 export * from './elements/helpers/call-functions.js';
+export * from './elements/helpers/search-dht-entry.js';
 export * from './elements/helpers/cell-tasks.js';
 export * from './elements/helpers/help-button.js';
 export * from './elements/utils/shared-styles.js';

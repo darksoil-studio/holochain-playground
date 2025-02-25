@@ -1,13 +1,15 @@
 import {
 	ConnectedPlaygroundStore,
+	SearchDhtEntry,
 	sharedStyles,
 } from '@holochain-playground/elements';
 import '@holochain-playground/elements';
-import { mdiMenu } from '@mdi/js';
+import { mdiMagnify, mdiMenu } from '@mdi/js';
 import { SlDrawer } from '@shoelace-style/shoelace';
 import '@shoelace-style/shoelace/dist/components/drawer/drawer.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
+import { wrapPathInSvg } from '@tnesh-stack/elements';
 import { watch } from '@tnesh-stack/signals';
 import { DockviewApi, SerializedDockview } from 'dockview-core';
 import { LitElement, css, html } from 'lit';
@@ -88,6 +90,7 @@ export class HolochainPlayground extends LitElement {
 						style="padding: 8px; align-items: center; color: white; gap: 12px; background-color: var(--sl-color-primary-500);"
 					>
 						<select-active-dna> </select-active-dna>
+						<div style="flex: 1"></div>
 					</div>
 					<dock-view
 						style="flex: 1"
@@ -135,6 +138,13 @@ export class HolochainPlayground extends LitElement {
 								},
 							});
 
+							dockview.addPanel({
+								id: 'Search Dht Entry',
+								component: 'search-dht-entry',
+								position: {
+									referenceGroup: root,
+								},
+							});
 							dockview.addPanel({
 								id: 'Source Chain',
 								component: 'source-chain',
