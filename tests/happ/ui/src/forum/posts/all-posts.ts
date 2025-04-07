@@ -40,6 +40,7 @@ export class AllPosts extends LitElement {
 
 	firstUpdated() {
 		this.client.on('signal', signal => {
+			if (signal.type !== 'app') return;
 			if (signal.zome_name !== 'posts') return;
 			const payload = signal.payload as PostsSignal;
 			if (payload.type !== 'EntryCreated') return;

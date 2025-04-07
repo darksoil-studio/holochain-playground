@@ -222,12 +222,12 @@ export class Conductor {
 		for (const [cellRole, dnaRole] of Object.entries(happ.roles)) {
 			const rolesSettings = roles_settings[cellRole];
 			const dna = { ...dnaRole.dna };
-			if (rolesSettings && rolesSettings.type === 'Provisioned') {
-				if (rolesSettings.modifiers?.network_seed) {
-					dna.networkSeed = rolesSettings.modifiers?.network_seed;
+			if (rolesSettings && rolesSettings.type === 'provisioned') {
+				if (rolesSettings.value.modifiers?.network_seed) {
+					dna.networkSeed = rolesSettings.value.modifiers?.network_seed;
 				}
-				if (rolesSettings.modifiers?.properties) {
-					dna.properties = rolesSettings.modifiers?.properties;
+				if (rolesSettings.value.modifiers?.properties) {
+					dna.properties = rolesSettings.value.modifiers?.properties;
 				}
 			}
 			const dnaHash = hashDna(dna);
@@ -240,14 +240,14 @@ export class Conductor {
 			this.registeredDnas.set(dnaHash, dna);
 			if (
 				!dnaRole.deferred &&
-				(!rolesSettings || rolesSettings.type === 'Provisioned')
+				(!rolesSettings || rolesSettings.type === 'provisioned')
 			) {
 				const cell = await this.createCell(
 					dna,
 					agentId,
-					rolesSettings?.modifiers?.network_seed,
-					rolesSettings?.modifiers?.properties,
-					rolesSettings?.membrane_proof,
+					rolesSettings?.value.modifiers?.network_seed,
+					rolesSettings?.value.modifiers?.properties,
+					rolesSettings?.value.membrane_proof,
 				);
 			}
 		}

@@ -3,7 +3,6 @@ import {
 	ActionType,
 	AgentPubKey,
 	AppEntryDef,
-	CapAccessType,
 	CapSecret,
 	CellId,
 	Delete,
@@ -173,44 +172,21 @@ function isCapGrantValid(
 	check_agent: AgentPubKey,
 	check_secret: CapSecret | undefined,
 ): boolean {
-	if (GrantedFunctionsType.All === capGrant.functions) return true;
+	if (capGrant.functions.type === 'all') return true;
 
 	if (
-		!capGrant.functions[GrantedFunctionsType.Listed].find(
+		!capGrant.functions.value.find(
 			([zome_name, fn_name]) => fn_name === fnName && zome_name === zome,
 		)
 	)
 		return false;
 
-	if (
-		(
-			capGrant.access as {
-				Assigned: { assignees: AgentPubKey[]; secret: CapSecret };
-			}
-		).Assigned
-	) {
-		return !!(
-			capGrant.access as {
-				Assigned: {
-					secret: CapSecret;
-					assignees: AgentPubKey[];
-				};
-			}
-		).Assigned.assignees.find(a => areEqual(a, check_agent));
-	} else if (
-		(
-			capGrant.access as {
-				Transferable: { secret: CapSecret };
-			}
-		).Transferable
-	) {
-		return (
-			(
-				capGrant.access as {
-					Transferable: { secret: CapSecret };
-				}
-			).Transferable.secret === check_secret
+	if (capGrant.access.type === 'assigned') {
+		return !!capGrant.access.value.assignees.find(a =>
+			areEqual(a, check_agent),
 		);
+	} else if (capGrant.access.type === 'transferable') {
+		return capGrant.access.value.secret === check_secret;
 	} else {
 		return true;
 	}

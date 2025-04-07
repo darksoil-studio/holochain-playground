@@ -1,6 +1,6 @@
 {
   "name": "@holochain-playground/cli",
-  "version": "0.400.0",
+  "version": "0.500.0-dev",
   "description": "CLI tool that boots up the holochain playground to connect to a real running Holochain conductor",
   "author": "guillem.cordoba@gmail.com",
   "scripts": {
@@ -27,7 +27,7 @@
   "devDependencies": {
     "@babel/core": "^7.15.5",
     "@babel/preset-env": "^7.15.6",
-    "@holochain-playground/cli-client": "workspace:^0.400.0",
+    "@holochain-playground/cli-client": "workspace:^0.500.0-dev",
     "@mdi/font": "5.9.55",
     "@types/body-parser": "^1.19.0",
     "@types/dotenv": "^8.2.0",

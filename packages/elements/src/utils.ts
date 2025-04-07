@@ -15,31 +15,31 @@ export function cellCount(appInfo: AppInfo): number {
 }
 
 export function dnaHash(cellInfo: CellInfo): DnaHash {
-	if (CellType.Provisioned in cellInfo) {
-		return cellInfo[CellType.Provisioned].cell_id[0];
-	} else if (CellType.Cloned in cellInfo) {
-		return cellInfo[CellType.Cloned].cell_id[0];
+	if (cellInfo.type === CellType.Provisioned) {
+		return cellInfo.value.cell_id[0];
+	} else if (cellInfo.type === CellType.Cloned) {
+		return cellInfo.value.cell_id[0];
 	} else {
-		return cellInfo[CellType.Stem].dna;
+		return cellInfo.value.dna;
 	}
 }
 
 export function cellName(cellInfo: CellInfo): string {
-	if (CellType.Provisioned in cellInfo) {
-		return cellInfo[CellType.Provisioned].name;
-	} else if (CellType.Cloned in cellInfo) {
-		return cellInfo[CellType.Cloned].clone_id;
+	if (cellInfo.type === CellType.Provisioned) {
+		return cellInfo.value.name;
+	} else if (cellInfo.type === CellType.Cloned) {
+		return cellInfo.value.clone_id;
 	} else {
-		return cellInfo[CellType.Stem].name!;
+		return cellInfo.value.name!;
 	}
 }
 
 export function dnaModifiers(cellInfo: CellInfo): DnaModifiers {
-	if (CellType.Provisioned in cellInfo) {
-		return cellInfo[CellType.Provisioned].dna_modifiers;
-	} else if (CellType.Cloned in cellInfo) {
-		return cellInfo[CellType.Cloned].dna_modifiers;
+	if (cellInfo.type === CellType.Provisioned) {
+		return cellInfo.value.dna_modifiers;
+	} else if (cellInfo.type === CellType.Cloned) {
+		return cellInfo.value.dna_modifiers;
 	} else {
-		return cellInfo[CellType.Stem].dna_modifiers!;
+		return cellInfo.value.dna_modifiers!;
 	}
 }

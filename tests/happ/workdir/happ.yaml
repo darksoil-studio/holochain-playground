@@ -12,8 +12,6 @@ roles:
       modifiers:
         network_seed: ~
         properties: ~
-        origin_time: ~
-        quantum_time: ~
       installed_hash: ~
       clone_limit: 0
   - name: forum2
@@ -25,7 +23,5 @@ roles:
       modifiers:
         network_seed: asdfasdf
         properties: ~
-        origin_time: ~
-        quantum_time: ~
       installed_hash: ~
       clone_limit: 0

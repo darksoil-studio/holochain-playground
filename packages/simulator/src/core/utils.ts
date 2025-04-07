@@ -19,7 +19,8 @@ export function simulatedRolesToCellInfo(
 		cellInfo[roleName] = role.is_provisioned
 			? [
 					{
-						[CellType.Provisioned]: {
+						type: CellType.Provisioned,
+						value: {
 							cell_id: role.base_cell_id,
 							dna_modifiers: {
 								network_seed: registeredDnas.get(role.base_cell_id[0])
@@ -38,7 +39,8 @@ export function simulatedRolesToCellInfo(
 
 		for (const [cloneName, clone] of Object.entries(role.clones)) {
 			cellInfo[roleName].push({
-				[CellType.Cloned]: {
+				type: CellType.Cloned,
+				value: {
 					cell_id: clone,
 					enabled: true,
 					original_dna_hash: role.base_cell_id[0],
