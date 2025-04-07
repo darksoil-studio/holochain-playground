@@ -128,7 +128,7 @@ export class DhtEntries extends PlaygroundElement {
 			<sl-checkbox
 				.checked=${this.showOnlyActiveAgentsShard}
 				style="margin-right: 16px"
-				@change=${(e: any) => {
+				@sl-change=${(e: any) => {
 					this.showOnlyActiveAgentsShard = e.target.checked;
 				}}
 				>Show Only Active Agent's Shard</sl-checkbox
