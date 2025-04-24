@@ -1,4 +1,4 @@
-import { CellMap } from '@tnesh-stack/utils';
+import { CellMap } from '@darksoil-studio/holochain-utils';
 
 import { SimulatedDna } from '../dnas/simulated-dna.js';
 

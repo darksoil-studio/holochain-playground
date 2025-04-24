@@ -5,8 +5,8 @@ import {
 	DnaHash,
 	HoloHash,
 } from '@holochain/client';
-import { DhtOpHash, ValidationReceipt } from '@tnesh-stack/core-types';
-import { HoloHashMap } from '@tnesh-stack/utils';
+import { DhtOpHash, ValidationReceipt } from '@darksoil-studio/holochain-core-types';
+import { HoloHashMap } from '@darksoil-studio/holochain-utils';
 
 import { location } from '../../processors/hash.js';
 import { DhtArc, contains } from '../network/dht_arc.js';

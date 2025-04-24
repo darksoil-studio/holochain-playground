@@ -2,11 +2,11 @@
   description = "Template for Holochain app development";
 
   inputs = {
-    holonix.url = "github:holochain/holonix";
+    holonix.url = "github:holochain/holonix/main-0.5";
     nixpkgs.follows = "holonix/nixpkgs";
 
     p2p-shipyard.url = "github:darksoil-studio/p2p-shipyard/main-0.5";
-    tnesh-stack.url = "github:darksoil-studio/tnesh-stack/main-0.5";
+    scaffolding.url = "github:darksoil-studio/scaffolding/main-0.5";
   };
 
   nixConfig = {
@@ -25,18 +25,16 @@
       systems = builtins.attrNames inputs.holonix.devShells;
       perSystem = { config, pkgs, system, inputs', lib, ... }: rec {
         devShells.default = pkgs.mkShell {
-          inputsFrom = [
-            inputs.holonix.devShells.${system}.default
-            inputs'.tnesh-stack.devShells.synchronized-pnpm
-          ];
-          packages = [ pkgs.nodejs_20 inputs'.p2p-shipyard.packages.hc-pilot ];
+          inputsFrom = [ inputs.holonix.devShells.${system}.default ];
+          packages =
+            [ pkgs.pnpm pkgs.nodejs_20 inputs'.p2p-shipyard.packages.hc-pilot ];
         };
 
         packages.hc-playground = let
           cliDist = pkgs.stdenv.mkDerivation (finalAttrs: {
-            version = "0.400.0";
+            version = "0.500.0";
             pname = "holochain-playground-cli";
-            src = (inputs.tnesh-stack.outputs.lib.cleanPnpmDepsSource {
+            src = (inputs.scaffolding.outputs.lib.cleanPnpmDepsSource {
               inherit lib;
             }) ./.;
 
@@ -44,7 +42,7 @@
             pnpmDeps = pkgs.pnpm.fetchDeps {
               inherit (finalAttrs) version pname src;
 
-              hash = "sha256-e0JKsgLZvyn6cqkBzC7N5xqf65oizoMjveX7TCNw7p0=";
+              hash = "sha256-gm/SFDrC40CjuvLNBXuyryJKz9wuBUBdLMJgFkzruMc=";
             };
             buildPhase = ''
               runHook preBuild

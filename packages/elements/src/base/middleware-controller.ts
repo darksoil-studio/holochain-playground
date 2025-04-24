@@ -6,7 +6,7 @@ import {
 	SuccessMiddleware,
 } from '@holochain-playground/simulator';
 import { CellId } from '@holochain/client';
-import { CellMap } from '@tnesh-stack/utils';
+import { CellMap } from '@darksoil-studio/holochain-utils';
 import { ReactiveController, ReactiveElement } from 'lit';
 
 import { cellChanges } from '../store/utils.js';

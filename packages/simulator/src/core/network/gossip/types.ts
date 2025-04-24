@@ -1,6 +1,6 @@
 import { AgentPubKey, DhtOp } from '@holochain/client';
-import { DhtOpHash, ValidationReceipt } from '@tnesh-stack/core-types';
-import { HoloHashMap } from '@tnesh-stack/utils';
+import { DhtOpHash, ValidationReceipt } from '@darksoil-studio/holochain-core-types';
+import { HoloHashMap } from '@darksoil-studio/holochain-utils';
 
 import { BadAction } from '../utils.js';
 

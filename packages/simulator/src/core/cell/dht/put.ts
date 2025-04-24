@@ -19,8 +19,8 @@ import {
 	DhtOpHash,
 	EntryDhtStatus,
 	ValidationReceipt,
-} from '@tnesh-stack/core-types';
-import { HashType, HoloHashMap, hash, hashAction } from '@tnesh-stack/utils';
+} from '@darksoil-studio/holochain-core-types';
+import { HashType, HoloHashMap, hash, hashAction } from '@darksoil-studio/holochain-utils';
 import isEqual from 'lodash-es/isEqual.js';
 
 import {

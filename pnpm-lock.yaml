@@ -41,11 +41,20 @@ importers:
 
   packages/cli/client:
     dependencies:
+      '@darksoil-studio/holochain-core-types':
+        specifier: ^0.500.0
+        version: 0.500.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@darksoil-studio/holochain-elements':
+        specifier: ^0.500.0
+        version: 0.500.0(@floating-ui/utils@0.2.9)(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@darksoil-studio/holochain-signals':
+        specifier: ^0.500.0
+        version: 0.500.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@holochain-playground/elements':
-        specifier: workspace:^0.500.0-dev
+        specifier: workspace:^0.500.0
         version: link:../../elements
       '@holochain-playground/simulator':
-        specifier: workspace:^0.500.0-dev
+        specifier: workspace:^0.500.0
         version: link:../../simulator
       '@mdi/js':
         specifier: ^7.4.47
@@ -53,15 +62,6 @@ importers:
       '@shoelace-style/shoelace':
         specifier: ^2.16.0
         version: 2.17.1(@types/react@18.3.11)
-      '@tnesh-stack/core-types':
-        specifier: ^0.500.0-dev
-        version: 0.500.0-dev.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@tnesh-stack/elements':
-        specifier: ^0.500.0-dev
-        version: 0.500.0-dev.0(@floating-ui/utils@0.2.9)(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@tnesh-stack/signals':
-        specifier: ^0.500.0-dev
-        version: 0.500.0-dev.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       dockview-core:
         specifier: ^1.17.1
         version: 1.17.1
@@ -118,7 +118,7 @@ importers:
         specifier: ^7.15.6
         version: 7.25.8(@babel/core@7.25.8)
       '@holochain-playground/cli-client':
-        specifier: workspace:^0.500.0-dev
+        specifier: workspace:^0.500.0
         version: link:../client
       '@mdi/font':
         specifier: 5.9.55
@@ -246,8 +246,17 @@ importers:
 
   packages/demo:
     dependencies:
+      '@darksoil-studio/holochain-core-types':
+        specifier: ^0.500.0
+        version: 0.500.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@darksoil-studio/holochain-elements':
+        specifier: ^0.500.0
+        version: 0.500.0(@types/react@18.3.11)
+      '@holochain-playground/elements':
+        specifier: workspace:^0.500.0
+        version: link:../elements
       '@holochain-playground/simulator':
-        specifier: workspace:^0.500.0-dev
+        specifier: workspace:^0.500.0
         version: link:../simulator
       '@mdi/js':
         specifier: ^7.4.47
@@ -255,12 +264,6 @@ importers:
       '@shoelace-style/shoelace':
         specifier: ^2.16.0
         version: 2.17.1(@types/react@18.3.11)
-      '@tnesh-stack/core-types':
-        specifier: ^0.500.0-dev
-        version: 0.500.0-dev.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@tnesh-stack/elements':
-        specifier: ^0.500.0-dev
-        version: 0.500.0-dev.0(@floating-ui/utils@0.2.9)(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       lit:
         specifier: ^3.0.0
         version: 3.2.1
@@ -304,12 +307,24 @@ importers:
       '@alenaksu/json-viewer':
         specifier: ^2.1.2
         version: 2.1.2
+      '@darksoil-studio/holochain-core-types':
+        specifier: ^0.500.0
+        version: 0.500.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@darksoil-studio/holochain-elements':
+        specifier: ^0.500.0
+        version: 0.500.0(@floating-ui/utils@0.2.9)(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@darksoil-studio/holochain-signals':
+        specifier: ^0.500.0
+        version: 0.500.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@darksoil-studio/holochain-utils':
+        specifier: ^0.500.0
+        version: 0.500.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@holochain-playground/simulator':
-        specifier: workspace:^0.500.0-dev
+        specifier: workspace:^0.500.0
         version: link:../simulator
       '@holochain/client':
-        specifier: ^0.19.0-dev
-        version: 0.19.0-dev.8(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.19.0
+        version: 0.19.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@lit/context':
         specifier: ^1.1.3
         version: 1.1.3
@@ -325,18 +340,6 @@ importers:
       '@shoelace-style/shoelace':
         specifier: ^2.19.1
         version: 2.19.1(@floating-ui/utils@0.2.9)(@types/react@18.3.11)
-      '@tnesh-stack/core-types':
-        specifier: ^0.500.0-dev
-        version: 0.500.0-dev.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@tnesh-stack/elements':
-        specifier: ^0.500.0-dev
-        version: 0.500.0-dev.0(@floating-ui/utils@0.2.9)(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@tnesh-stack/signals':
-        specifier: ^0.500.0-dev
-        version: 0.500.0-dev.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@tnesh-stack/utils':
-        specifier: ^0.500.0-dev
-        version: 0.500.0-dev.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@vaadin/component-base':
         specifier: ^24.0.0
         version: 24.6.2
@@ -380,18 +383,18 @@ importers:
 
   packages/simulator:
     dependencies:
+      '@darksoil-studio/holochain-core-types':
+        specifier: ^0.500.0
+        version: 0.500.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@darksoil-studio/holochain-utils':
+        specifier: ^0.500.0
+        version: 0.500.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@holochain/client':
-        specifier: ^0.19.0-dev
-        version: 0.19.0-dev.8(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+        specifier: ^0.19.0
+        version: 0.19.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@msgpack/msgpack':
         specifier: ^2.8.0
         version: 2.8.0
-      '@tnesh-stack/core-types':
-        specifier: ^0.500.0-dev
-        version: 0.500.0-dev.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@tnesh-stack/utils':
-        specifier: ^0.500.0-dev
-        version: 0.500.0-dev.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       blakejs:
         specifier: ^1.2.1
         version: 1.2.1
@@ -1004,6 +1007,18 @@ packages:
     resolution: {integrity: sha512-pKQM0dAUPAaoAWJvPSpFtxAc1/pi0xb8wKYSUJbCBYwWA5L8vf/UowDaV0m9G3CtbiqkHI/4eKzFAqE14iY6vg==}
     hasBin: true
 
+  '@darksoil-studio/holochain-core-types@0.500.0':
+    resolution: {integrity: sha512-J7p3YAeO3/BZ41xMAgpJDEQ+I+Qm7sF8j74lP0ASItvz7FwleqBAvouB+cOn5DOnBOULaW/QsGatLBrzl7EpXg==}
+
+  '@darksoil-studio/holochain-elements@0.500.0':
+    resolution: {integrity: sha512-ByatMh1LW6je5Ne27UP8JvnZBjzBm0RJuXjqi7Jvm0CoGLbYXIqtTso0A6n7sPeIM+Qu/IHx1uRFfDj4MoYWIA==}
+
+  '@darksoil-studio/holochain-signals@0.500.0':
+    resolution: {integrity: sha512-qMv9lxT2Ll4boP/xoFoAgB3p6wsFA+qqGwmI0MNOpyQu3Raaw3lkOizOg9wP942gWFT2GTwiwbVl0R8IarbVlw==}
+
+  '@darksoil-studio/holochain-utils@0.500.0':
+    resolution: {integrity: sha512-E966Km27pimvxpSfpcCG8rjt+qBYTRJOhxe7LcJ4aS0HJuDQqb+m1VD/woDy6BPQ1UTEziYiw/ocnQ1YW4fgVA==}
+
   '@discoveryjs/json-ext@0.5.7':
     resolution: {integrity: sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==}
     engines: {node: '>=10.0.0'}
@@ -1378,8 +1393,8 @@ packages:
   '@holo-host/identicon@0.1.0':
     resolution: {integrity: sha512-Dn5pTV/m3XaK1Zvq3liw/vQUt7goM7Y84x2zUyH8cb9CNMs4kPCNHs3kalbJZ/ymzFvwcdiLwwNW8AKk+WWN5A==}
 
-  '@holochain/client@0.19.0-dev.8':
-    resolution: {integrity: sha512-O4NnmMFNDueOapeqCFd+611lte80GE4mDe3ZR0VJiKs0DfrJQlXCzkLyaYxQM+nWl2dGxSinUNrbP1IC+YmymQ==}
+  '@holochain/client@0.19.0':
+    resolution: {integrity: sha512-LAiuQwyAQlLJp5Y0uT7EKuWy2AoCxMLdTECCLOs8ALADZzhNykFi2rmeC9hzskPXMR441bOhHPBWynqzQH95Ew==}
     engines: {node: '>=18.0.0 || >=20.0.0'}
 
   '@humanfs/core@0.19.1':
@@ -1480,6 +1495,10 @@ packages:
   '@msgpack/msgpack@2.8.0':
     resolution: {integrity: sha512-h9u4u/jiIRKbq25PM+zymTyW6bhTzELvOoUd+AvYriWOAKpLGnIamaET3pnHYoI5iYphAHBI4ayx0MehR+VVPQ==}
     engines: {node: '>= 10'}
+
+  '@msgpack/msgpack@3.1.1':
+    resolution: {integrity: sha512-DnBpqkMOUGayNVKyTLlkM6ILmU/m/+VUxGkuQlPQVAcvreLz5jn1OlQnWd8uHKL/ZSiljpM12rjRhr51VtvJUQ==}
+    engines: {node: '>= 18'}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -1627,18 +1646,6 @@ packages:
 
   '@socket.io/component-emitter@3.1.2':
     resolution: {integrity: sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==}
-
-  '@tnesh-stack/core-types@0.500.0-dev.0':
-    resolution: {integrity: sha512-XvE7kV84RPhEGeyjftopX3bpDzBrk73QmJ92i6NoW+IHMVOzUsjxKEUtpMUvQUPWKnV5LIKY3sk7u2xS0m5a4Q==}
-
-  '@tnesh-stack/elements@0.500.0-dev.0':
-    resolution: {integrity: sha512-ORI1UeBteIigOW6orAc7rAUPQtVJPmuaz6wZVHJbalBA/sODf2CrDezDxE101qNlEmo0mnXEYJnvBeLeDgv4BQ==}
-
-  '@tnesh-stack/signals@0.500.0-dev.0':
-    resolution: {integrity: sha512-2vwYcyurrpjva2XjDenFmuohCVEmcBUFtIGRuJWseEXkS98YlU/ICkzJ/JtW7T3X+ZqtFJdFvEMNbpHlqY1f2g==}
-
-  '@tnesh-stack/utils@0.500.0-dev.0':
-    resolution: {integrity: sha512-bJ7gG/xgfRngVB4NMlxBZViRLSogMfCK/UuLxPo6o9pe4W+aQvBnlH4mzwfYuvkRqt+jkDdqzo/6qZJWz4iHkw==}
 
   '@trivago/prettier-plugin-sort-imports@4.3.0':
     resolution: {integrity: sha512-r3n0onD3BTOVUNPhR4lhVK4/pABGpbA7bW3eumZnYdKaHkf1qEC+Mag6DPbGNuuh0eG8AaYj+YqmVHSiGslaTQ==}
@@ -5219,6 +5226,75 @@ snapshots:
       globby: 11.0.4
       typescript: 4.3.5
 
+  '@darksoil-studio/holochain-core-types@0.500.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+    dependencies:
+      '@holochain/client': 0.19.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
+  '@darksoil-studio/holochain-elements@0.500.0(@floating-ui/utils@0.2.9)(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+    dependencies:
+      '@darksoil-studio/holochain-signals': 0.500.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@darksoil-studio/holochain-utils': 0.500.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@holo-host/identicon': 0.1.0
+      '@holochain/client': 0.19.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@lit-labs/router': 0.1.3
+      '@lit/context': 1.1.3
+      '@lit/localize': 0.12.2
+      '@mdi/js': 7.4.47
+      '@shoelace-style/shoelace': 2.19.1(@floating-ui/utils@0.2.9)(@types/react@18.3.11)
+      lit: 3.2.1
+    transitivePeerDependencies:
+      - '@floating-ui/utils'
+      - '@types/react'
+      - bufferutil
+      - utf-8-validate
+
+  '@darksoil-studio/holochain-elements@0.500.0(@types/react@18.3.11)':
+    dependencies:
+      '@darksoil-studio/holochain-signals': 0.500.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@darksoil-studio/holochain-utils': 0.500.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@holo-host/identicon': 0.1.0
+      '@holochain/client': 0.19.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@lit-labs/router': 0.1.3
+      '@lit/context': 1.1.3
+      '@lit/localize': 0.12.2
+      '@mdi/js': 7.4.47
+      '@shoelace-style/shoelace': 2.19.1(@floating-ui/utils@0.2.9)(@types/react@18.3.11)
+      lit: 3.2.1
+    transitivePeerDependencies:
+      - '@floating-ui/utils'
+      - '@types/react'
+      - bufferutil
+      - utf-8-validate
+
+  '@darksoil-studio/holochain-signals@0.500.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+    dependencies:
+      '@darksoil-studio/holochain-utils': 0.500.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@holochain/client': 0.19.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@msgpack/msgpack': 2.8.0
+      async-signals: 0.1.11
+      lit-signal-watcher: 0.1.1
+      lodash-es: 4.17.21
+      signal-polyfill: 0.1.2
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
+  '@darksoil-studio/holochain-utils@0.500.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+    dependencies:
+      '@holochain/client': 0.19.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@msgpack/msgpack': 2.8.0
+      blakejs: 1.2.1
+      emittery: 1.0.3
+      js-base64: 3.7.7
+      lodash-es: 4.17.21
+      sort-keys: 5.1.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
   '@discoveryjs/json-ext@0.5.7': {}
 
   '@esbuild/aix-ppc64@0.21.5':
@@ -5483,10 +5559,10 @@ snapshots:
 
   '@holo-host/identicon@0.1.0': {}
 
-  '@holochain/client@0.19.0-dev.8(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+  '@holochain/client@0.19.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
       '@bitgo/blake2b': 3.2.4
-      '@msgpack/msgpack': 2.8.0
+      '@msgpack/msgpack': 3.1.1
       emittery: 1.0.3
       isomorphic-ws: 5.0.0(ws@8.18.0)
       js-base64: 3.7.7
@@ -5590,6 +5666,8 @@ snapshots:
   '@mdi/js@7.4.47': {}
 
   '@msgpack/msgpack@2.8.0': {}
+
+  '@msgpack/msgpack@3.1.1': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -5727,57 +5805,6 @@ snapshots:
   '@sinclair/typebox@0.27.8': {}
 
   '@socket.io/component-emitter@3.1.2': {}
-
-  '@tnesh-stack/core-types@0.500.0-dev.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@holochain/client': 0.19.0-dev.8(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-
-  '@tnesh-stack/elements@0.500.0-dev.0(@floating-ui/utils@0.2.9)(@types/react@18.3.11)(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@holo-host/identicon': 0.1.0
-      '@holochain/client': 0.19.0-dev.8(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@lit-labs/router': 0.1.3
-      '@lit/context': 1.1.3
-      '@lit/localize': 0.12.2
-      '@mdi/js': 7.4.47
-      '@shoelace-style/shoelace': 2.19.1(@floating-ui/utils@0.2.9)(@types/react@18.3.11)
-      '@tnesh-stack/signals': 0.500.0-dev.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@tnesh-stack/utils': 0.500.0-dev.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      lit: 3.2.1
-    transitivePeerDependencies:
-      - '@floating-ui/utils'
-      - '@types/react'
-      - bufferutil
-      - utf-8-validate
-
-  '@tnesh-stack/signals@0.500.0-dev.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@holochain/client': 0.19.0-dev.8(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@msgpack/msgpack': 2.8.0
-      '@tnesh-stack/utils': 0.500.0-dev.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      async-signals: 0.1.11
-      lit-signal-watcher: 0.1.1
-      lodash-es: 4.17.21
-      signal-polyfill: 0.1.2
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-
-  '@tnesh-stack/utils@0.500.0-dev.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@holochain/client': 0.19.0-dev.8(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@msgpack/msgpack': 2.8.0
-      blakejs: 1.2.1
-      emittery: 1.0.3
-      js-base64: 3.7.7
-      lodash-es: 4.17.21
-      sort-keys: 5.1.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
 
   '@trivago/prettier-plugin-sort-imports@4.3.0(prettier@3.4.2)':
     dependencies:

@@ -1,10 +1,12 @@
 import '@alenaksu/json-viewer';
+import '@darksoil-studio/holochain-elements/dist/elements/holo-identicon.js';
+import { AsyncComputed } from '@darksoil-studio/holochain-signals';
 import {
+	AppInfoStatus,
 	CellInfo,
 	CellType,
 	DnaHash,
 	DnaHashB64,
-	InstalledAppInfoStatus,
 	decodeHashFromBase64,
 	encodeHashToBase64,
 } from '@holochain/client';
@@ -18,8 +20,6 @@ import '@shoelace-style/shoelace/dist/components/tab-group/tab-group.js';
 import '@shoelace-style/shoelace/dist/components/tab-panel/tab-panel.js';
 import '@shoelace-style/shoelace/dist/components/tab/tab.js';
 import '@shoelace-style/shoelace/dist/components/tag/tag.js';
-import '@tnesh-stack/elements/dist/elements/holo-identicon.js';
-import { AsyncComputed } from '@tnesh-stack/signals';
 import '@vaadin/grid';
 import '@vaadin/grid/vaadin-grid-column.js';
 import { PropertyValues, css, html } from 'lit';
@@ -83,18 +83,18 @@ export class ConductorHapps extends PlaygroundElement {
 		`;
 	}
 
-	renderHappStatus(status: InstalledAppInfoStatus) {
-		if (status === 'running') {
+	renderHappStatus(status: AppInfoStatus) {
+		if (status.type === 'running') {
 			return html`<sl-tag variant="success">Running</sl-tag>`;
 		}
-		if (status === 'awaiting_memproofs') {
+		if (status.type === 'awaiting_memproofs') {
 			return html`<sl-tag variant="neutral">Awaiting Memproofs</sl-tag>`;
 		}
 
-		if ('disabled' in status) {
+		if (status.type === 'disabled') {
 			return html`<sl-tag variant="danger">Disabled</sl-tag>`;
 		}
-		if ('paused' in status) {
+		if (status.type === 'paused') {
 			return html`<sl-tag variant="warning">Paused</sl-tag>`;
 		}
 	}

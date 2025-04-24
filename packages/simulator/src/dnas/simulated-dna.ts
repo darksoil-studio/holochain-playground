@@ -1,3 +1,4 @@
+import { HashType, hash } from '@darksoil-studio/holochain-utils';
 import {
 	AgentPubKey,
 	AgentPubKeyB64,
@@ -9,7 +10,6 @@ import {
 	Record,
 } from '@holochain/client';
 import { encode } from '@msgpack/msgpack';
-import { HashType, hash } from '@tnesh-stack/utils';
 
 import { ValidationOutcome } from '../core/cell/sys_validate/types.js';
 import { Conductor } from '../core/conductor.js';
@@ -69,6 +69,7 @@ export interface InstalledHapp {
 	app_id: string;
 	agent_pub_key: AgentPubKey;
 	roles: Dictionary<AppRole>;
+	installed_at: number;
 }
 
 export interface EntryDef {

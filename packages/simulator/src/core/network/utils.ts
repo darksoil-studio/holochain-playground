@@ -1,5 +1,5 @@
 import { AgentPubKey, AnyDhtHash, ChainOp, DhtOp } from '@holochain/client';
-import { ValidationReceipt, ValidationStatus } from '@tnesh-stack/core-types';
+import { ValidationReceipt, ValidationStatus } from '@darksoil-studio/holochain-core-types';
 import { uniq } from 'lodash-es';
 
 import { distance, location, wrap } from '../../processors/hash.js';

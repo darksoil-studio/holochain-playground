@@ -14,7 +14,7 @@ import {
 	HoloHashMap,
 	getHashType,
 	retype,
-} from '@tnesh-stack/utils';
+} from '@darksoil-studio/holochain-utils';
 import uniq from 'lodash-es/uniq.js';
 
 import { shortenStrRec } from '../utils/hash.js';

@@ -1,5 +1,5 @@
 import { consume } from '@lit/context';
-import { SignalWatcher } from '@tnesh-stack/signals';
+import { SignalWatcher } from '@darksoil-studio/holochain-signals';
 import { LitElement } from 'lit';
 import { state } from 'lit/decorators.js';
 

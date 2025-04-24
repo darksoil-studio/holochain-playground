@@ -5,7 +5,7 @@ import {
 	Record,
 	SignedActionHashed,
 } from '@holochain/client';
-import { HashType, hash, hashAction } from '@tnesh-stack/utils';
+import { HashType, hash, hashAction } from '@darksoil-studio/holochain-utils';
 
 import { areEqual } from '../../../processors/hash.js';
 import { CellState } from '../state.js';

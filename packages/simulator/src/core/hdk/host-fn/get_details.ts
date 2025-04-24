@@ -1,5 +1,5 @@
 import { AnyDhtHash } from '@holochain/client';
-import { Details } from '@tnesh-stack/core-types';
+import { Details } from '@darksoil-studio/holochain-core-types';
 
 import { GetOptions, GetStrategy } from '../../../types.js';
 import { HostFn, HostFnWorkspace } from '../host-fn.js';

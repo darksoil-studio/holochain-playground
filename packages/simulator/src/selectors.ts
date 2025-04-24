@@ -5,7 +5,7 @@ import {
 	Record,
 	SignedActionHashed,
 } from '@holochain/client';
-import { ValidationStatus } from '@tnesh-stack/core-types';
+import { ValidationStatus } from '@darksoil-studio/holochain-core-types';
 
 import { isPublic } from './core/cell/index.js';
 import { CellState } from './core/cell/state.js';

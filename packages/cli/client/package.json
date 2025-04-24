@@ -3,7 +3,7 @@
   "description": "Webcomponent devcamp-8 following open-wc recommendations",
   "license": "MIT",
   "author": "guillem.cordoba@gmail.com",
-  "version": "0.500.0-dev",
+  "version": "0.500.0",
   "scripts": {
     "lint": "eslint src && prettier \"**/*.ts\" --check --ignore-path .gitignore",
     "format": "eslint src && prettier \"**/*.ts\" --write --ignore-path .gitignore",
@@ -12,11 +12,11 @@
     "prepare": "pnpm build"
   },
   "dependencies": {
-    "@tnesh-stack/core-types": "^0.500.0-dev",
-    "@tnesh-stack/elements": "^0.500.0-dev",
-    "@tnesh-stack/signals": "^0.500.0-dev",
-    "@holochain-playground/elements": "workspace:^0.500.0-dev",
-    "@holochain-playground/simulator": "workspace:^0.500.0-dev",
+    "@darksoil-studio/holochain-core-types": "^0.500.0",
+    "@darksoil-studio/holochain-elements": "^0.500.0",
+    "@darksoil-studio/holochain-signals": "^0.500.0",
+    "@holochain-playground/elements": "workspace:^0.500.0",
+    "@holochain-playground/simulator": "workspace:^0.500.0",
     "@mdi/js": "^7.4.47",
     "@shoelace-style/shoelace": "^2.16.0",
     "dockview-core": "^1.17.1",

@@ -24,7 +24,7 @@ import {
 	NewEntryAction,
 	Update,
 } from '@holochain/client';
-import { CellMap, HoloHashMap, hashAction } from '@tnesh-stack/utils';
+import { CellMap, HoloHashMap, hashAction } from '@darksoil-studio/holochain-utils';
 
 function appendToArray<T>(
 	map: HoloHashMap<HoloHash, T[]>,

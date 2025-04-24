@@ -18,7 +18,7 @@ import {
 	Update,
 	WarrantOp,
 } from '@holochain/client';
-import { HashType, hash, hashAction } from '@tnesh-stack/utils';
+import { HashType, hash, hashAction } from '@darksoil-studio/holochain-utils';
 
 import { SimulatedDna } from '../../dnas/simulated-dna.js';
 import { isPublic } from './source-chain/utils.js';

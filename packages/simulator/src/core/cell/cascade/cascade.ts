@@ -17,8 +17,8 @@ import {
 	DetailsType,
 	EntryDetails,
 	RecordDetails,
-} from '@tnesh-stack/core-types';
-import { HashType, HoloHashMap, getHashType } from '@tnesh-stack/utils';
+} from '@darksoil-studio/holochain-core-types';
+import { HashType, HoloHashMap, getHashType } from '@darksoil-studio/holochain-utils';
 
 import { areEqual } from '../../../processors/hash.js';
 import {

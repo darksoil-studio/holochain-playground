@@ -1,4 +1,4 @@
-import { sharedStyles as nativeSharedStyles } from '@tnesh-stack/elements';
+import { sharedStyles as nativeSharedStyles } from '@darksoil-studio/holochain-elements';
 import { css, unsafeCSS } from 'lit';
 
 export const sharedStyles = css`

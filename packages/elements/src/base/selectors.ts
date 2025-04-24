@@ -12,7 +12,7 @@ import {
 	NewEntryAction,
 	SignedActionHashed,
 } from '@holochain/client';
-import { HashType, HoloHashMap, getHashType } from '@tnesh-stack/utils';
+import { HashType, HoloHashMap, getHashType } from '@darksoil-studio/holochain-utils';
 import { cloneDeep } from 'lodash-es';
 
 export function selectCells(dna: DnaHash, conductor: Conductor): Cell[] {

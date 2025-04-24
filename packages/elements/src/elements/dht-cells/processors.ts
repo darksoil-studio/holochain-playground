@@ -23,7 +23,7 @@ import {
 	HoloHashMap,
 	hash,
 	hashAction,
-} from '@tnesh-stack/utils';
+} from '@darksoil-studio/holochain-utils';
 import isEqual from 'lodash-es/isEqual.js';
 
 import { CellStore } from '../../store/playground-store.js';

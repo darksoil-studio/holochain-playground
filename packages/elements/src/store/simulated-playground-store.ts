@@ -1,3 +1,11 @@
+import { ValidationStatus } from '@darksoil-studio/holochain-core-types';
+import {
+	AsyncComputed,
+	AsyncSignal,
+	AsyncState,
+	Signal,
+} from '@darksoil-studio/holochain-signals';
+import { CellMap } from '@darksoil-studio/holochain-utils';
 import {
 	AppRole,
 	BadAgent,
@@ -26,14 +34,6 @@ import {
 	Record,
 } from '@holochain/client';
 import { encode } from '@msgpack/msgpack';
-import { ValidationStatus } from '@tnesh-stack/core-types';
-import {
-	AsyncComputed,
-	AsyncSignal,
-	AsyncState,
-	Signal,
-} from '@tnesh-stack/signals';
-import { CellMap } from '@tnesh-stack/utils';
 
 import { ConnectedCellStore } from './connected-playground-store.js';
 import {
@@ -188,11 +188,14 @@ export class SimulatedConductorStore
 					({
 						agent_pub_key: h.agent_pub_key,
 						installed_app_id: h.app_id,
-						status: 'running',
+						status: {
+							type: 'running',
+						},
 						cell_info: simulatedRolesToCellInfo(
 							h.roles,
 							this.conductor.registeredDnas,
 						),
+						installed_at: h.installed_at,
 					}) as AppInfo,
 			);
 		});

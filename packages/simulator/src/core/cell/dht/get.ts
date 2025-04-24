@@ -23,9 +23,9 @@ import {
 	EntryDetails,
 	EntryDhtStatus,
 	ValidationReceipt,
-} from '@tnesh-stack/core-types';
-import { HoloHashMap, hashAction } from '@tnesh-stack/utils';
-import { HashType, hash } from '@tnesh-stack/utils';
+} from '@darksoil-studio/holochain-core-types';
+import { HoloHashMap, hashAction } from '@darksoil-studio/holochain-utils';
+import { HashType, hash } from '@darksoil-studio/holochain-utils';
 import { isEqual, uniqWith } from 'lodash-es';
 
 import { areEqual } from '../../../processors/hash.js';

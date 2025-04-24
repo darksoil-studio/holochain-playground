@@ -18,19 +18,12 @@ export const dna_info: HostFn<DnaInfoFn> =
 	async (): Promise<DnaInfo> => {
 		const cellId = getCellId(workspace.state);
 		const dnaHash = cellId[0];
-		const origin_time = Date.now() * 1000;
-		const quantum_time = {
-			secs: 1000,
-			nanos: 0,
-		};
 		return {
 			name: '',
 			hash: dnaHash,
 			modifiers: {
 				network_seed: workspace.dna.networkSeed,
 				properties: encode(workspace.dna.properties),
-				origin_time,
-				quantum_time,
 			},
 			zome_names: workspace.dna.zomes.map(z => z.name),
 		};

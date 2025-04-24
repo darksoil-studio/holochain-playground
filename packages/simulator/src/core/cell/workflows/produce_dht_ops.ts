@@ -1,4 +1,4 @@
-import { HashType, hash } from '@tnesh-stack/utils';
+import { HashType, hash } from '@darksoil-studio/holochain-utils';
 
 import { getNewActions } from '../source-chain/get.js';
 import { getRecord } from '../source-chain/utils.js';

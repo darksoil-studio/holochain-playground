@@ -2,7 +2,7 @@ import {
 	Dictionary,
 	SimulatedHappBundle,
 } from '@holochain-playground/simulator';
-import { notifyError } from '@tnesh-stack/elements';
+import { notifyError } from '@darksoil-studio/holochain-elements';
 import { html } from 'lit';
 
 import { PlaygroundElement } from '../../base/playground-element.js';

@@ -1,4 +1,4 @@
-import { sharedStyles } from '@tnesh-stack/elements';
+import { sharedStyles } from '@darksoil-studio/holochain-elements';
 import { DockviewApi, SerializedDockview, createDockview } from 'dockview-core';
 // @ts-ignore
 import styles from 'dockview-core/dist/styles/dockview.css?raw';

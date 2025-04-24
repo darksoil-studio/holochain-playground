@@ -13,7 +13,7 @@ import {
 	Update,
 	encodeHashToBase64,
 } from '@holochain/client';
-import { hashAction } from '@tnesh-stack/utils';
+import { hashAction } from '@darksoil-studio/holochain-utils';
 
 import { isPublic } from '../../source-chain/utils';
 import { getDhtOpAction, getDhtOpSignature, getEntry } from '../../utils';

@@ -9,9 +9,9 @@ import {
 	LinkType,
 	Record,
 } from '@holochain/client';
-import { DhtOpHash } from '@tnesh-stack/core-types';
-import { HashType, getHashType, hash } from '@tnesh-stack/utils';
-import { HoloHashMap } from '@tnesh-stack/utils';
+import { DhtOpHash } from '@darksoil-studio/holochain-core-types';
+import { HashType, getHashType, hash } from '@darksoil-studio/holochain-utils';
+import { HoloHashMap } from '@darksoil-studio/holochain-utils';
 import { cloneDeep, isEqual, uniqWith } from 'lodash-es';
 
 import { sleep } from '../../executor/delay-middleware.js';

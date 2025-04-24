@@ -10,9 +10,9 @@ import {
 	FullStateDump,
 	Record,
 } from '@holochain/client';
-import { ValidationStatus } from '@tnesh-stack/core-types';
-import { AsyncComputed, AsyncSignal, Signal } from '@tnesh-stack/signals';
-import { AGENT_PREFIX, CellMap } from '@tnesh-stack/utils';
+import { ValidationStatus } from '@darksoil-studio/holochain-core-types';
+import { AsyncComputed, AsyncSignal, Signal } from '@darksoil-studio/holochain-signals';
+import { AGENT_PREFIX, CellMap } from '@darksoil-studio/holochain-utils';
 import { Base64 } from 'js-base64';
 import isEqual from 'lodash-es/isEqual.js';
 

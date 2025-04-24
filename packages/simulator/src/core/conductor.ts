@@ -1,4 +1,10 @@
 import {
+	CellMap,
+	HashType,
+	HoloHashMap,
+	hash,
+} from '@darksoil-studio/holochain-utils';
+import {
 	AgentPubKey,
 	CapSecret,
 	CellId,
@@ -6,7 +12,6 @@ import {
 	RoleSettingsMap,
 	encodeHashToBase64,
 } from '@holochain/client';
-import { CellMap, HashType, HoloHashMap, hash } from '@tnesh-stack/utils';
 import isEqual from 'lodash-es/isEqual.js';
 
 import { BootstrapService } from '../bootstrap/bootstrap-service.js';
@@ -217,6 +222,7 @@ export class Conductor {
 			agent_pub_key: agentId,
 			app_id: happ.name,
 			roles: {},
+			installed_at: Date.now() * 1000,
 		};
 
 		for (const [cellRole, dnaRole] of Object.entries(happ.roles)) {

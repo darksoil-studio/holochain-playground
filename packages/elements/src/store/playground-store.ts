@@ -20,7 +20,7 @@ import {
 	Record,
 	encodeHashToBase64,
 } from '@holochain/client';
-import { ValidationStatus } from '@tnesh-stack/core-types';
+import { ValidationStatus } from '@darksoil-studio/holochain-core-types';
 import {
 	AsyncComputed,
 	AsyncResult,
@@ -30,8 +30,8 @@ import {
 	joinAsyncMap,
 	uniquify,
 	watch,
-} from '@tnesh-stack/signals';
-import { CellMap, HashType, hash, hashAction } from '@tnesh-stack/utils';
+} from '@darksoil-studio/holochain-signals';
+import { CellMap, HashType, hash, hashAction } from '@darksoil-studio/holochain-utils';
 import isEqual from 'lodash-es/isEqual.js';
 
 import { ConnectedConductorStore } from './connected-playground-store.js';

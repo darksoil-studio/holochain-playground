@@ -1,6 +1,6 @@
 import { mdiClose, mdiContentSave, mdiPencil } from '@mdi/js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
-import { wrapPathInSvg } from '@tnesh-stack/elements';
+import { wrapPathInSvg } from '@darksoil-studio/holochain-elements';
 import { LitElement, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { ref } from 'lit/directives/ref.js';

@@ -6,7 +6,7 @@ import '@scoped-elements/golden-layout';
 import { SlDrawer } from '@shoelace-style/shoelace';
 import '@shoelace-style/shoelace/dist/components/drawer/drawer.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
-import { wrapPathInSvg } from '@tnesh-stack/elements';
+import { wrapPathInSvg } from '@darksoil-studio/holochain-elements';
 import { LitElement, css, html } from 'lit';
 import { customElement, query } from 'lit/decorators.js';
 

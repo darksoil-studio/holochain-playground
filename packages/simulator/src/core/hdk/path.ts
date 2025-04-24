@@ -1,5 +1,5 @@
 import { EntryHash, LinkType } from '@holochain/client';
-import { HashType, retype } from '@tnesh-stack/utils';
+import { HashType, retype } from '@darksoil-studio/holochain-utils';
 
 import { areEqual } from '../../processors/hash.js';
 import { Hdk } from './context.js';

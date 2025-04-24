@@ -19,8 +19,8 @@ import {
 	Update,
 	ZomeCallCapGrant,
 } from '@holochain/client';
-import { DhtOpHash } from '@tnesh-stack/core-types';
-import { HoloHashMap } from '@tnesh-stack/utils';
+import { DhtOpHash } from '@darksoil-studio/holochain-core-types';
+import { HoloHashMap } from '@darksoil-studio/holochain-utils';
 
 import { areEqual } from '../../../processors/hash.js';
 import { CellState } from '../state.js';

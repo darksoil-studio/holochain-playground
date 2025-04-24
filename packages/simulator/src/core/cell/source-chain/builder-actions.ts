@@ -19,7 +19,7 @@ import {
 	Timestamp,
 	Update,
 } from '@holochain/client';
-import { hashAction } from '@tnesh-stack/utils';
+import { hashAction } from '@darksoil-studio/holochain-utils';
 
 import { CellState } from '../state.js';
 import { hashEntry } from '../utils.js';
