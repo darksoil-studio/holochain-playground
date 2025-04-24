@@ -46,6 +46,9 @@ export class DhtEntries extends PlaygroundElement {
 	@property({ type: Boolean, attribute: 'show-only-active-agents-shard' })
 	showOnlyActiveAgentsShard: boolean = false;
 
+	@property({ type: Boolean, attribute: 'show-only-related-entries' })
+	showOnlyRelatedEntries: boolean = false;
+
 	@property({ type: Array })
 	excludedEntryTypes: string[] = [];
 
@@ -84,6 +87,8 @@ export class DhtEntries extends PlaygroundElement {
 			this.showEntryContents,
 			!this.hideDeleted,
 			this.excludedEntryTypes,
+			this.store.activeDhtHash.get(),
+			this.showOnlyRelatedEntries,
 		);
 		this._entryTypes = entryTypes;
 
@@ -132,6 +137,15 @@ export class DhtEntries extends PlaygroundElement {
 					this.showOnlyActiveAgentsShard = e.target.checked;
 				}}
 				>Show Only Active Agent's Shard</sl-checkbox
+			>
+
+			<sl-checkbox
+				.checked=${this.showOnlyRelatedEntries}
+				style="margin-right: 16px"
+				@sl-change=${(e: any) => {
+					this.showOnlyRelatedEntries = e.target.checked;
+				}}
+				>Show Only Related Entries</sl-checkbox
 			>
 
 			<div style="flex: 1"></div>

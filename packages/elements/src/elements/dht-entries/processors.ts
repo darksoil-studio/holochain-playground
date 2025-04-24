@@ -1,6 +1,7 @@
 import { SimulatedDna, getAppEntryType } from '@holochain-playground/simulator';
 import {
 	Action,
+	AnyDhtHash,
 	DhtOp,
 	EntryHashB64,
 	HoloHash,
@@ -27,10 +28,12 @@ export function allEntries(
 	showEntryContents: boolean,
 	showDeleted: boolean,
 	excludedEntryTypes: string[],
+	activeDhtHash: AnyDhtHash | undefined,
+	showOnlyRelatedEntries: boolean,
 ) {
 	const summary = summarizeDht(dhtShards, simulatedDna);
 	let nodes: any[] = [];
-	const edges: any[] = [];
+	let edges: any[] = [];
 
 	const depsNotHeld = new HoloHashMap<HoloHash, boolean>();
 	const nodesDrawn = new HoloHashMap<HoloHash, boolean>();
@@ -269,6 +272,36 @@ export function allEntries(
 	}
 
 	const allEntryTypes = uniq(Array.from(summary.entryTypes.values()));
+
+	if (activeDhtHash && showOnlyRelatedEntries) {
+		const activeDhtHashB64 = encodeHashToBase64(activeDhtHash);
+		const maxNeighborDistance = 2;
+
+		const finalEdges: Set<string> = new Set();
+		const finalNodes: Set<string> = new Set();
+
+		let nodesToExplore = new Set([activeDhtHashB64]);
+
+		for (let i = 0; i < maxNeighborDistance; i++) {
+			const nextNodesToExplore: Set<string> = new Set();
+			for (const edge of edges) {
+				if (
+					nodesToExplore.has(edge.data.source) ||
+					nodesToExplore.has(edge.data.target)
+				) {
+					finalEdges.add(edge.data.id);
+					finalNodes.add(edge.data.source);
+					finalNodes.add(edge.data.target);
+					nextNodesToExplore.add(edge.data.source);
+					nextNodesToExplore.add(edge.data.target);
+				}
+			}
+			nodesToExplore = nextNodesToExplore;
+		}
+
+		edges = edges.filter(edge => finalEdges.has(edge.data.id));
+		nodes = nodes.filter(node => finalNodes.has(node.data.id));
+	}
 
 	return {
 		nodes,
