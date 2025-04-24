@@ -1368,11 +1368,11 @@
         "scaffolding": "scaffolding"
       },
       "locked": {
-        "lastModified": 1745497871,
-        "narHash": "sha256-Y4/npZwk8Ci5ns8fSGo/U31JEsZgibPA866llPX/dcA=",
+        "lastModified": 1745500723,
+        "narHash": "sha256-c8TqdZkx1ipGUJIeVw2hYN1KKdeT8rSANUXO1kzC0og=",
         "owner": "darksoil-studio",
         "repo": "p2p-shipyard",
-        "rev": "a864f96a525275964acfcc63b83f00d49bc4dec7",
+        "rev": "d84f004238c292cc53ebbb5409fe1bc0186bed3e",
         "type": "github"
       },
       "original": {

@@ -14,14 +14,3 @@ roles:
         properties: ~
       installed_hash: ~
       clone_limit: 0
-  - name: forum2
-    provisioning:
-      strategy: create
-      deferred: false
-    dna:
-      bundled: "../dnas/forum/workdir/forum.dna"
-      modifiers:
-        network_seed: asdfasdf
-        properties: ~
-      installed_hash: ~
-      clone_limit: 0

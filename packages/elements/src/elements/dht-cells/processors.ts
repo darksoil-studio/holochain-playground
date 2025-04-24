@@ -1,4 +1,11 @@
 import {
+	CellMap,
+	HashType,
+	HoloHashMap,
+	hash,
+	hashAction,
+} from '@darksoil-studio/holochain-utils';
+import {
 	BadAgent,
 	Cell,
 	getDhtOpAction,
@@ -17,13 +24,6 @@ import {
 	NewEntryAction,
 	encodeHashToBase64,
 } from '@holochain/client';
-import {
-	CellMap,
-	HashType,
-	HoloHashMap,
-	hash,
-	hashAction,
-} from '@darksoil-studio/holochain-utils';
 import isEqual from 'lodash-es/isEqual.js';
 
 import { CellStore } from '../../store/playground-store.js';
@@ -126,6 +126,11 @@ export function allPeersEdges(
 		visited.set(cellAgentPubKey, new HoloHashMap());
 
 		for (const cellNeighbor of neighbors) {
+			if (
+				encodeHashToBase64(cellNeighbor) === encodeHashToBase64(cellAgentPubKey)
+			) {
+				continue;
+			}
 			if (
 				!(
 					visited.has(cellNeighbor) &&

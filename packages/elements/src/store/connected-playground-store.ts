@@ -1,3 +1,14 @@
+import { ValidationStatus } from '@darksoil-studio/holochain-core-types';
+import {
+	AsyncComputed,
+	AsyncSignal,
+	Signal,
+} from '@darksoil-studio/holochain-signals';
+import {
+	AGENT_PREFIX,
+	CellMap,
+	locationBytes,
+} from '@darksoil-studio/holochain-utils';
 import { ValidationLimboStatus } from '@holochain-playground/simulator';
 import {
 	AdminWebsocket,
@@ -9,13 +20,13 @@ import {
 	FullIntegrationStateDump,
 	FullStateDump,
 	Record,
+	decodeHashFromBase64,
+	encodeHashToBase64,
 } from '@holochain/client';
-import { ValidationStatus } from '@darksoil-studio/holochain-core-types';
-import { AsyncComputed, AsyncSignal, Signal } from '@darksoil-studio/holochain-signals';
-import { AGENT_PREFIX, CellMap } from '@darksoil-studio/holochain-utils';
 import { Base64 } from 'js-base64';
 import isEqual from 'lodash-es/isEqual.js';
 
+import { kitsuneAgentToAgentPubKey } from '../utils.js';
 import {
 	CellStore,
 	ConductorStore,
@@ -127,12 +138,10 @@ export class ConnectedCellStore implements CellStore {
 			const state = this._state.get();
 			if (state.status !== 'completed') return state;
 			const value = state.value
-				? state.value.peer_dump.peers.map(
-						peerDump =>
-							new Uint8Array([
-								...Base64.toUint8Array(AGENT_PREFIX),
-								...peerDump.kitsune_agent,
-							]),
+				? state.value.peer_dump.peers.map(peerDump =>
+						kitsuneAgentToAgentPubKey(
+							peerDump.kitsune_agent as unknown as string,
+						),
 					)
 				: [];
 

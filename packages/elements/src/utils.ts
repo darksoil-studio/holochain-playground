@@ -1,4 +1,6 @@
+import { AGENT_PREFIX, locationBytes } from '@darksoil-studio/holochain-utils';
 import {
+	AgentPubKey,
 	AppInfo,
 	CellId,
 	CellInfo,
@@ -6,6 +8,7 @@ import {
 	DnaHash,
 	DnaModifiers,
 } from '@holochain/client';
+import { Base64 } from 'js-base64';
 
 export function cellCount(appInfo: AppInfo): number {
 	return Object.values(appInfo.cell_info).reduce(
@@ -42,4 +45,14 @@ export function dnaModifiers(cellInfo: CellInfo): DnaModifiers {
 	} else {
 		return cellInfo.value.dna_modifiers!;
 	}
+}
+
+export function kitsuneAgentToAgentPubKey(kitsuneAgent: string): AgentPubKey {
+	const kitsuneAgentHash = Base64.toUint8Array(kitsuneAgent);
+
+	return new Uint8Array([
+		...Base64.toUint8Array(AGENT_PREFIX),
+		...kitsuneAgentHash,
+		...locationBytes(kitsuneAgentHash),
+	]);
 }

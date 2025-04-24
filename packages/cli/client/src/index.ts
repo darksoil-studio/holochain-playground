@@ -137,6 +137,13 @@ export class HolochainPlayground extends LitElement {
 							});
 
 							dockview.addPanel({
+								id: 'Conductor hApps',
+								component: 'conductor-happs',
+								position: {
+									referenceGroup: root,
+								},
+							});
+							dockview.addPanel({
 								id: 'Search Dht Entry',
 								component: 'search-dht-entry',
 								position: {
@@ -146,14 +153,6 @@ export class HolochainPlayground extends LitElement {
 							dockview.addPanel({
 								id: 'Source Chain',
 								component: 'source-chain',
-								position: {
-									referenceGroup: root,
-								},
-							});
-
-							dockview.addPanel({
-								id: 'Conductor hApps',
-								component: 'conductor-happs',
 								position: {
 									referenceGroup: root,
 								},

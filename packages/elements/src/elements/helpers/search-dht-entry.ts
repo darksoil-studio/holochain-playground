@@ -1,4 +1,11 @@
 import '@alenaksu/json-viewer';
+import { wrapPathInSvg } from '@darksoil-studio/holochain-elements';
+import {
+	AsyncComputed,
+	Signal,
+	SignalWatcher,
+} from '@darksoil-studio/holochain-signals';
+import { HoloHashMap } from '@darksoil-studio/holochain-utils';
 import { areEqual } from '@holochain-playground/simulator';
 import { AnyDhtHash, encodeHashToBase64 } from '@holochain/client';
 import { mdiHelpCircleOutline, mdiInformationOutline } from '@mdi/js';
@@ -7,9 +14,6 @@ import { SlInput } from '@shoelace-style/shoelace';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/dialog/dialog.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
-import { wrapPathInSvg } from '@tnesh-stack/elements';
-import { AsyncComputed, Signal, SignalWatcher } from '@tnesh-stack/signals';
-import { HoloHashMap } from '@tnesh-stack/utils';
 import { css, html } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { join } from 'lit/directives/join.js';
