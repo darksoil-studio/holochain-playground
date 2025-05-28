@@ -5,7 +5,8 @@
     holonix.url = "github:holochain/holonix/main-0.5";
     nixpkgs.follows = "holonix/nixpkgs";
 
-    p2p-shipyard.url = "github:darksoil-studio/p2p-shipyard/main-0.5";
+    tauri-plugin-holochain.url =
+      "github:darksoil-studio/tauri-plugin-holochain/main-0.5";
     scaffolding.url = "github:darksoil-studio/scaffolding/main-0.5";
   };
 
@@ -26,14 +27,17 @@
       perSystem = { config, pkgs, system, inputs', lib, ... }: rec {
         devShells.default = pkgs.mkShell {
           inputsFrom = [ inputs.holonix.devShells.${system}.default ];
-          packages =
-            [ pkgs.pnpm pkgs.nodejs_20 inputs'.p2p-shipyard.packages.hc-pilot ];
+          packages = [
+            pkgs.pnpm
+            pkgs.nodejs_20
+            inputs'.tauri-plugin-holochain.packages.hc-pilot
+          ];
         };
 
         packages.hc-playground = let
           cliDist = pkgs.stdenv.mkDerivation (finalAttrs: {
             version = "0.500.0";
-            pname = "holochain-playground-cli";
+            pname = "hc-playground";
             src = (inputs.scaffolding.outputs.lib.cleanPnpmDepsSource {
               inherit lib;
             }) ./.;
@@ -42,7 +46,7 @@
             pnpmDeps = pkgs.pnpm.fetchDeps {
               inherit (finalAttrs) version pname src;
 
-              hash = "sha256-gakSG1K/DkS/7pt5PCdS9ODsUEiv56ZkHBdFcJgmlk4=";
+              hash = "sha256-iakSG1K/DkS/7pt5PCdS9ODsUEiv56ZkHBdFcJgmlk4=";
             };
             buildPhase = ''
               runHook preBuild
