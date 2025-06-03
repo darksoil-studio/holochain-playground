@@ -29,7 +29,7 @@
           inputsFrom = [ inputs.holonix.devShells.${system}.default ];
           packages = [
             pkgs.pnpm
-            pkgs.nodejs_20
+            pkgs.nodejs_22
             inputs'.tauri-plugin-holochain.packages.hc-pilot
           ];
         };
@@ -59,7 +59,7 @@
             '';
           });
         in pkgs.writeShellScriptBin "hc-playground" ''
-          ${pkgs.nodejs_20}/bin/node ${cliDist}/dist/app.js "$@"
+          ${pkgs.nodejs_22}/bin/node ${cliDist}/dist/app.js "$@"
         '';
         apps.default.program = pkgs.writeShellApplication {
           name = "hc-playground";
