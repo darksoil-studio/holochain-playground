@@ -49,4 +49,5 @@ jobs:
         env:
           CACHIX_AUTH_TOKEN: "${{ secrets.DARKSOIL_CACHIX_AUTH_TOKEN }}"
         run: |
+          cachix push darksoil-studio $(nix path-info --json --accept-flake-config --no-warn-dirty .#hc-playground | jq -r 'keys[0]')
           cachix pin darksoil-studio hc-playground $(nix path-info --json --accept-flake-config --no-warn-dirty .#hc-playground | jq -r 'keys[0]')
