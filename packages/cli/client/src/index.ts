@@ -87,7 +87,7 @@ export class HolochainPlayground extends LitElement {
 						class="row"
 						style="padding: 8px; align-items: center; color: white; gap: 12px; background-color: var(--sl-color-primary-500);"
 					>
-						<select-active-dna> </select-active-dna>
+						<select-active-dna style="width: 42em"> </select-active-dna>
 						<div style="flex: 1"></div>
 					</div>
 					<dock-view
