@@ -8,7 +8,10 @@
 
     tauri-plugin-holochain.url =
       "github:darksoil-studio/tauri-plugin-holochain/main-0.5";
+    tauri-plugin-holochain.inputs.holonix.follows = "holonix";
+    tauri-plugin-holochain.inputs.scaffolding.follows = "scaffolding";
     scaffolding.url = "github:darksoil-studio/scaffolding/main-0.5";
+    scaffolding.inputs.holonix.follows = "holonix";
   };
 
   nixConfig = {
