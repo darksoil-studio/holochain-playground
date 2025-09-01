@@ -1,3 +1,4 @@
+import { HashType, hash, hashAction } from '@darksoil-studio/holochain-utils';
 import {
 	Action,
 	ActionType,
@@ -18,7 +19,6 @@ import {
 	Update,
 	WarrantOp,
 } from '@holochain/client';
-import { HashType, hash, hashAction } from '@darksoil-studio/holochain-utils';
 
 import { SimulatedDna } from '../../dnas/simulated-dna.js';
 import { isPublic } from './source-chain/utils.js';
@@ -276,6 +276,12 @@ export function getDhtOpAction(op: ChainOp): Action {
 	) {
 		return {
 			type: 'Delete',
+			...action,
+		};
+	}
+	if (opType === ChainOpType.RegisterRemoveLink) {
+		return {
+			type: 'DeleteLink',
 			...action,
 		};
 	}

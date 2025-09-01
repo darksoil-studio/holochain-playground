@@ -3,6 +3,7 @@ import {
 	AsyncComputed,
 	AsyncSignal,
 	Signal,
+    watch,
 } from '@darksoil-studio/holochain-signals';
 import {
 	AGENT_PREFIX,
@@ -16,9 +17,11 @@ import {
 	AnyDhtHash,
 	AppInfo,
 	CellId,
+	ChainOp,
 	DhtOp,
 	FullIntegrationStateDump,
 	FullStateDump,
+	NetworkMetrics,
 	Record,
 	decodeHashFromBase64,
 	encodeHashToBase64,
@@ -42,6 +45,8 @@ export class ConnectedCellStore implements CellStore {
 	sourceChain: AsyncSignal<Record[]>;
 
 	peers: AsyncSignal<AgentPubKey[]>;
+
+	// networkMetrics: AsyncSignal<NetworkMetrics>;
 
 	validationQueue: AsyncSignal<{
 		validationLimbo: Array<{
@@ -106,6 +111,16 @@ export class ConnectedCellStore implements CellStore {
 				integration_dump,
 			} as FullStateDump;
 		});
+
+		// this.networkMetrics = pollingSignal(async ()=> {
+		// 	const metrics = await adminWs.dumpNetworkMetrics({
+		// 		dna: cellId[0],
+		// 		include_dht_summary: true
+		// 	});
+		// 	console.log(metrics);
+		// 	return metrics[encodeHashToBase64(cellId[0])];
+		// });
+		// watch(this.networkMetrics, () =>{})
 
 		this.sourceChain = new AsyncComputed<Record[]>(() => {
 			const state = this._state.get();

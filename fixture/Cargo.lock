@@ -667,6 +667,7 @@ name = "posts"
 version = "0.0.1"
 dependencies = [
  "hdk",
+ "holochain_serialized_bytes",
  "posts_integrity",
  "serde",
 ]
@@ -676,6 +677,7 @@ name = "posts_integrity"
 version = "0.0.1"
 dependencies = [
  "hdi",
+ "holochain_serialized_bytes",
  "serde",
 ]
 
