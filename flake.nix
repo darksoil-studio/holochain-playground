@@ -2,15 +2,15 @@
   description = "Template for Holochain app development";
 
   inputs = {
-    holonix.url = "github:holochain/holonix/main-0.5";
+    holonix.url = "github:holochain/holonix/main-0.6";
 
     nixpkgs.follows = "holonix/nixpkgs";
 
     tauri-plugin-holochain.url =
-      "github:darksoil-studio/tauri-plugin-holochain/main-0.5";
+      "github:darksoil-studio/tauri-plugin-holochain/main-0.6";
     tauri-plugin-holochain.inputs.holonix.follows = "holonix";
     tauri-plugin-holochain.inputs.scaffolding.follows = "scaffolding";
-    scaffolding.url = "github:darksoil-studio/scaffolding/main-0.5";
+    scaffolding.url = "github:darksoil-studio/scaffolding/main-0.6";
     scaffolding.inputs.holonix.follows = "holonix";
   };
 
